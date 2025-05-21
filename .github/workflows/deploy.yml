@@ -3,26 +3,24 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main    # hoặc branch bạn muốn deploy
+      - main   # hoặc branch bạn muốn deploy
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Copy SSH key and set permissions
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 34.142.168.171 >> ~/.ssh/known_hosts
+        shell: bash
 
-    - name: Add VPS to known_hosts to avoid prompt
-      run: |
-        ssh-keyscan -H 34.142.168.171 >> ~/.ssh/known_hosts
-
-    - name: Deploy and restart service on VPS
-      run: |
-          ssh -i ~/.ssh/id_rsa trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
+      - name: Run deploy script on VPS
+        run: ssh -i ~/.ssh/id_rsa trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
+        shell: bash
