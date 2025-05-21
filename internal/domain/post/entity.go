@@ -1,7 +1,7 @@
 package post
 
 import (
-	"final-project/internal/domain/item"
+	"final_project/internal/domain/item"
 	"os/user"
 	"time"
 

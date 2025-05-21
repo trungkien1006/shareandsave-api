@@ -1,8 +1,8 @@
 package reference
 
 import (
-	exportinvoice "final-project/internal/domain/export_invoice"
-	"final-project/internal/domain/item"
+	exportinvoice "final_project/internal/domain/export_invoice"
+	"final_project/internal/domain/item"
 	"time"
 
 	"gorm.io/gorm"

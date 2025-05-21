@@ -1,7 +1,7 @@
 package importinvoice
 
 import (
-	"final-project/internal/domain/admin"
+	"final_project/internal/domain/admin"
 	"os/user"
 	"time"
 

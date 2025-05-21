@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"final-project/internal/domain/role"
+	"final_project/internal/domain/role"
 	"time"
 
 	"gorm.io/gorm"

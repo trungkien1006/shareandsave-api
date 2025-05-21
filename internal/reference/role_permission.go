@@ -1,6 +1,6 @@
 package reference
 
-import "final-project/internal/domain/role"
+import "final_project/internal/domain/role"
 
 type RolePermission struct {
 	RoleID       uint       `gorm:"primaryKey"`

@@ -1,7 +1,7 @@
 package warehouse
 
 import (
-	"final-project/internal/domain/item"
+	"final_project/internal/domain/item"
 	"time"
 
 	"gorm.io/gorm"

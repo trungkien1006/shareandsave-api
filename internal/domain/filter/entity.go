@@ -1,6 +1,6 @@
-package userDTO
+package filter
 
-type GetUserRequest struct {
+type FilterRequest struct {
 	Page   int    `query:"page" binding:"required"`
 	Limit  int    `query:"limit" binding:"required"`
 	Sort   string `query:"sort" binding:"required; oneof:ASC DESC"`

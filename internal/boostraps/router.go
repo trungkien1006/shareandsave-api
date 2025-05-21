@@ -1,13 +1,18 @@
-package main
+package boostraps
 
 import (
-	"final-project/internal/application/userapp"
-	"final-project/internal/infrastructure/persistence"
-	"final-project/internal/interface/http/handler"
+	"final_project/internal/application/userapp"
+	"final_project/internal/infrastructure/persistence"
+	"final_project/internal/interface/http/handler"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	_ "final_project/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func InitRoute(db *gorm.DB) *gin.Engine {
@@ -31,6 +36,8 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 		c.Next()
 	})
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.POST("/users", h.GetAllUser)
 

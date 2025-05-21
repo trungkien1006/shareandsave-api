@@ -1,8 +1,8 @@
 package request
 
 import (
-	"final-project/internal/domain/item"
-	"final-project/internal/domain/post"
+	"final_project/internal/domain/item"
+	"final_project/internal/domain/post"
 	"os/user"
 	"time"
 

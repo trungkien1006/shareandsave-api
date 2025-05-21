@@ -2,7 +2,9 @@ package userapp
 
 import (
 	"context"
-	"final-project/internal/domain/user"
+	"final_project/internal/domain/filter"
+	"final_project/internal/domain/user"
+	"final_project/internal/dto/userDTO"
 )
 
 type UseCase struct {
@@ -13,12 +15,22 @@ func NewUseCase(r user.Repository) *UseCase {
 	return &UseCase{repo: r}
 }
 
-func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User) error {
-	if err := uc.repo.GetAll(ctx, users); err != nil {
-		return err
+func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, req userDTO.GetUserRequest) (int, error) {
+	var domain_req filter.FilterRequest = filter.FilterRequest{
+		Page:   req.Page,
+		Limit:  req.Limit,
+		Sort:   req.Sort,
+		Order:  req.Order,
+		Filter: req.Filter,
 	}
 
-	return nil
+	totalPage, err := uc.repo.GetAll(ctx, users, domain_req)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return totalPage, nil
 }
 
 func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, user_id int) error {

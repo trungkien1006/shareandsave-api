@@ -1,6 +1,7 @@
 package main
 
 import (
+	"final_project/internal/boostraps"
 	"fmt"
 	"net"
 	"net/http"
@@ -11,6 +12,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title           API DATN 2025
+// @version         1.0
+// @description     Đây là tài liệu Swagger cho hệ thống.
+// @termsOfService  http://swagger.io/terms/
+// @contact.name    Kin
+// @contact.email   trannguyentrungkien1006@gmail.com
+// @license.name    Apache 2.0
+// @host            localhost:8000
+// @BasePath        /api/v1
 func main() {
 	//Tải các biến môi trường
 	err := godotenv.Load("../../.env")
@@ -20,9 +30,9 @@ func main() {
 
 	gin.SetMode(os.Getenv("GIN_MODE"))
 
-	db := GormConnection()
+	db := boostraps.GormConnection()
 
-	route := InitRoute(db)
+	route := boostraps.InitRoute(db)
 
 	port := os.Getenv("PORT")
 
