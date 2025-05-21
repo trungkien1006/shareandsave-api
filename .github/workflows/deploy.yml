@@ -16,9 +16,9 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/gcp-vm-key
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/gcp-vm-key
           chmod 600 ~/.ssh/gcp-vm-key
           ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy script on VPS
-        run: ssh -i ~/.ssh/gcp-vm-key trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
+        run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/gcp-vm-key trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
