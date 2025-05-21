@@ -25,4 +25,4 @@ jobs:
 
     - name: Deploy and restart service on VPS
       run: |
-          ssh -i ~/.ssh/id_rsa trungkien@34.142.168.171 'bash /home/trungkien/deploy.sh'
+          ssh -i ~/.ssh/id_rsa trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
