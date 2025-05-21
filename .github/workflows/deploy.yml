@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main   # hoặc branch bạn muốn deploy
+      - main
 
 jobs:
   deploy:
@@ -16,11 +16,9 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 34.142.168.171 >> ~/.ssh/known_hosts
-        shell: bash
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/gcp-vm-key
+          chmod 600 ~/.ssh/gcp-vm-key
+          ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
 
-      - name: Run deploy script on VPS
-        run: ssh -i ~/.ssh/id_rsa trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
-        shell: bash
+      - name: Deploy script on VPS
+        run: ssh -i ~/.ssh/gcp-vm-key trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
