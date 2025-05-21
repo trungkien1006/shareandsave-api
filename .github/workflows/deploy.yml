@@ -23,4 +23,4 @@ jobs:
       - name: Deploy script on VPS
         run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/gcp-vm-key trungkien@${{ secrets.SSH_IP }} 'bash /home/trungkien/deploy.sh'
 
-# again2
+# again3
