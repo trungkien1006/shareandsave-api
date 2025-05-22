@@ -56,7 +56,7 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 		return
 	}
 
-	var usersDTORes []userDTO.UserDTO
+	usersDTORes := make([]userDTO.UserDTO, 0)
 
 	for _, user := range users {
 		usersDTORes = append(usersDTORes, userDTO.ToUserDTO(user))
@@ -102,9 +102,9 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 		return
 	}
 
-	var userDTORes []userDTO.UserDTO
+	var userDTORes userDTO.UserDTO
 
-	userDTORes = append(userDTORes, userDTO.ToUserDTO(user))
+	userDTORes = userDTO.ToUserDTO(user)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,

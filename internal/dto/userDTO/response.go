@@ -31,7 +31,7 @@ type GetUserByIDResponseWrapper struct {
 }
 
 type GetUserByIDResponse struct {
-	User []UserDTO `json:"user"`
+	User UserDTO `json:"user"`
 }
 
 func ToUserDTO(u user.User) UserDTO {
