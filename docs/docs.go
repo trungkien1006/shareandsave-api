@@ -24,7 +24,7 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
-                "description": "Bao gồm cả lọc, phân trang và sắp xếp",
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
                 ],
@@ -86,13 +86,52 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userDTO.GetUserResponse"
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/enums.AppError"
+                            "$ref": "#/definitions/final_project_internal_pkg_enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/:userID": {
+            "get": {
+                "description": "API lấy ra user bằng id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "description": "ID nhân viên",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/final_project_internal_pkg_enums.AppError"
                         }
                     }
                 }
@@ -100,24 +139,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "enums.AppError": {
+        "final_project_internal_dto_userDTO.GetUserByIDResponse": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "INVALID_QUERY_PARAM"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Tham số truy vấn không hợp lệ"
-                },
-                "status_code": {
-                    "type": "integer",
-                    "example": 400
+                "user": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
+                    }
                 }
             }
         },
-        "userDTO.GetUserResponse": {
+        "final_project_internal_dto_userDTO.GetUserResponse": {
             "type": "object",
             "properties": {
                 "totalPage": {
@@ -126,12 +159,12 @@ const docTemplate = `{
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/userDTO.UserDTO"
+                        "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
                     }
                 }
             }
         },
-        "userDTO.UserDTO": {
+        "final_project_internal_dto_userDTO.UserDTO": {
             "type": "object",
             "properties": {
                 "address": {
@@ -157,6 +190,23 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "final_project_internal_pkg_enums.AppError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "INVALID_QUERY_PARAM"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Tham số truy vấn không hợp lệ"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 400
                 }
             }
         }

@@ -1,27 +1,22 @@
 basePath: /api/v1
 definitions:
-  enums.AppError:
+  final_project_internal_dto_userDTO.GetUserByIDResponse:
     properties:
-      code:
-        example: INVALID_QUERY_PARAM
-        type: string
-      message:
-        example: Tham số truy vấn không hợp lệ
-        type: string
-      status_code:
-        example: 400
-        type: integer
+      user:
+        items:
+          $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
+        type: array
     type: object
-  userDTO.GetUserResponse:
+  final_project_internal_dto_userDTO.GetUserResponse:
     properties:
       totalPage:
         type: integer
       users:
         items:
-          $ref: '#/definitions/userDTO.UserDTO'
+          $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
         type: array
     type: object
-  userDTO.UserDTO:
+  final_project_internal_dto_userDTO.UserDTO:
     properties:
       address:
         type: string
@@ -40,6 +35,18 @@ definitions:
       status:
         type: integer
     type: object
+  final_project_internal_pkg_enums.AppError:
+    properties:
+      code:
+        example: INVALID_QUERY_PARAM
+        type: string
+      message:
+        example: Tham số truy vấn không hợp lệ
+        type: string
+      status_code:
+        example: 400
+        type: integer
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -56,7 +63,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Bao gồm cả lọc, phân trang và sắp xếp
+      description: API bao gồm cả lọc, phân trang và sắp xếp
       parameters:
       - description: Số trang hiện tại
         example: 1
@@ -98,12 +105,38 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userDTO.GetUserResponse'
+            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/enums.AppError'
+            $ref: '#/definitions/final_project_internal_pkg_enums.AppError'
       summary: Get user
+      tags:
+      - users
+  /users/:userID:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra user bằng id
+      parameters:
+      - description: ID nhân viên
+        example: 1
+        in: query
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/final_project_internal_pkg_enums.AppError'
+      summary: Get user by ID
       tags:
       - users
 swagger: "2.0"
