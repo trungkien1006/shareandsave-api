@@ -3,6 +3,8 @@ package docs
 
 import "github.com/swaggo/swag"
 
+// regenerate
+
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
