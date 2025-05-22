@@ -19,7 +19,7 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 }
 
 // @Summary Get user
-// @Description Bao gồm cả lọc, phân trang và sắp xếp
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
 // @Tags users
 // @Accept json
 // @Produce json
@@ -54,18 +54,61 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 		return
 	}
 
-	var usersDTO []userDTO.UserDTO
+	var usersDTORes []userDTO.UserDTO
 
 	for _, user := range users {
-		usersDTO = append(usersDTO, userDTO.ToUserDTO(user))
+		usersDTORes = append(usersDTORes, userDTO.ToUserDTO(user))
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Fetched user successfully",
 		"data": userDTO.GetUserResponse{
-			Users:     usersDTO,
+			Users:     usersDTORes,
 			TotalPage: totalPage,
+		},
+	})
+}
+
+// @Summary Get user by ID
+// @Description API lấy ra user bằng id
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param userID query int true "ID nhân viên" example(1)
+// @Success 200 {object} userDTO.GetUserByIDResponse
+// @Failure 400 {object} enums.AppError
+// @Router /users/:userID [get]
+func (h *UserHandler) GetUserByID(c *gin.Context) {
+	var req userDTO.GetUserByIDRequest
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError("ERR_VALIDATION", err.Error(), http.StatusBadRequest),
+		)
+		return
+	}
+
+	var user user.User
+
+	if err := h.uc.GetUserByID(c.Request.Context(), &user, req.UserID); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError("ERR_USER_NOT_FOUND", err.Error(), http.StatusNotFound),
+		)
+		return
+	}
+
+	var userDTORes []userDTO.UserDTO
+
+	userDTORes = append(userDTORes, userDTO.ToUserDTO(user))
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Fetched user successfully",
+		"data": userDTO.GetUserByIDResponse{
+			User: userDTORes,
 		},
 	})
 }

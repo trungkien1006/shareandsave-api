@@ -7,3 +7,7 @@ type GetUserRequest struct {
 	Order  string `query:"order" binding:"required"`
 	Filter string `query:"filter" binding:"required"`
 }
+
+type GetUserByIDRequest struct {
+	UserID int `query:"userID" binding:"required"`
+}

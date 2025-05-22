@@ -18,6 +18,10 @@ type GetUserResponse struct {
 	TotalPage int       `json:"totalPage"`
 }
 
+type GetUserByIDResponse struct {
+	User []UserDTO `json:"user"`
+}
+
 func ToUserDTO(u user.User) UserDTO {
 	return UserDTO{
 		ID:          u.ID,

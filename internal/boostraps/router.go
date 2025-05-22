@@ -41,6 +41,12 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 	r.POST("/users", h.GetAllUser)
 
+	v1 := r.Group("/api/v1")
+	{
+		v1.GET("/users", h.GetAllUser)
+		v1.GET("/users/:userID", h.GetUserByID)
+	}
+
 	// r.Static("/public/images", "./public/images")
 
 	//test
