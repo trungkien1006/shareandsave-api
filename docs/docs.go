@@ -42,8 +42,7 @@ const docTemplate = `{
                         "example": 1,
                         "description": "Số trang hiện tại",
                         "name": "page",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "minimum": 1,
@@ -51,16 +50,14 @@ const docTemplate = `{
                         "example": 10,
                         "description": "Số lượng mỗi trang",
                         "name": "limit",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "example": "name",
                         "description": "Trường cần sắp xếp (vd: name, email)",
                         "name": "sort",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "enum": [
@@ -71,8 +68,7 @@ const docTemplate = `{
                         "example": "ASC",
                         "description": "Thứ tự sắp xếp: ASC hoặc DESC",
                         "name": "order",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",

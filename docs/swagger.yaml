@@ -88,20 +88,17 @@ paths:
         in: query
         minimum: 1
         name: page
-        required: true
         type: integer
       - description: Số lượng mỗi trang
         example: 10
         in: query
         minimum: 1
         name: limit
-        required: true
         type: integer
       - description: 'Trường cần sắp xếp (vd: name, email)'
         example: name
         in: query
         name: sort
-        required: true
         type: string
       - description: 'Thứ tự sắp xếp: ASC hoặc DESC'
         enum:
@@ -110,7 +107,6 @@ paths:
         example: ASC
         in: query
         name: order
-        required: true
         type: string
       - description: Lọc theo tên hoặc email
         example: '"{"name": "John", "email": "john@gmail.com"}"'
