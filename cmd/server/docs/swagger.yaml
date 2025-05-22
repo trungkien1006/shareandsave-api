@@ -1,0 +1,160 @@
+basePath: /api/v1
+definitions:
+  enums.AppError:
+    properties:
+      code:
+        example: INVALID_QUERY_PARAM
+        type: string
+      message:
+        example: Tham số truy vấn không hợp lệ
+        type: string
+      status_code:
+        example: 400
+        type: integer
+    type: object
+  userDTO.GetUserByIDResponse:
+    properties:
+      user:
+        items:
+          $ref: '#/definitions/userDTO.UserDTO'
+        type: array
+    type: object
+  userDTO.GetUserByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userDTO.GetUserByIDResponse'
+      message:
+        type: string
+    type: object
+  userDTO.GetUserResponse:
+    properties:
+      totalPage:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/userDTO.UserDTO'
+        type: array
+    type: object
+  userDTO.GetUserResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userDTO.GetUserResponse'
+      message:
+        type: string
+    type: object
+  userDTO.UserDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      status:
+        type: integer
+    type: object
+host: 34.142.168.171:8000
+info:
+  contact:
+    email: trannguyentrungkien1006@gmail.com
+    name: Kin
+  description: Đây là tài liệu Swagger cho hệ thống.
+  license:
+    name: Apache 2.0
+  termsOfService: http://swagger.io/terms/
+  title: API DATN 2025
+  version: "1.0"
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Số trang hiện tại
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - description: Số lượng mỗi trang
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        required: true
+        type: integer
+      - description: 'Trường cần sắp xếp (vd: name, email)'
+        example: name
+        in: query
+        name: sort
+        required: true
+        type: string
+      - description: 'Thứ tự sắp xếp: ASC hoặc DESC'
+        enum:
+        - ASC
+        - DESC
+        example: ASC
+        in: query
+        name: order
+        required: true
+        type: string
+      - description: Lọc theo tên hoặc email
+        example: '"{"name": "John", "email": "john@gmail.com"}"'
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userDTO.GetUserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get user
+      tags:
+      - users
+  /users/:userID:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra user bằng id
+      parameters:
+      - description: ID nhân viên
+        example: 1
+        in: query
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userDTO.GetUserByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get user by ID
+      tags:
+      - users
+swagger: "2.0"
