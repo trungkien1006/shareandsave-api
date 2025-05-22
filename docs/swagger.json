@@ -13,7 +13,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8000",
+    "host": "34.142.168.171:8000",
     "basePath": "/api/v1",
     "paths": {
         "/users": {
@@ -80,7 +80,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponseWrapper"
                         }
                     },
                     "400": {
@@ -119,7 +119,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponseWrapper"
                         }
                     },
                     "400": {
@@ -144,6 +144,20 @@
                 }
             }
         },
+        "final_project_internal_dto_userDTO.GetUserByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "final_project_internal_dto_userDTO.GetUserResponse": {
             "type": "object",
             "properties": {
@@ -155,6 +169,20 @@
                     "items": {
                         "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
                     }
+                }
+            }
+        },
+        "final_project_internal_dto_userDTO.GetUserResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -170,16 +198,16 @@
                 "email": {
                     "type": "string"
                 },
-                "fullname": {
+                "fullName": {
                     "type": "string"
                 },
-                "good_point": {
+                "goodPoint": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "phone_number": {
+                "phoneNumber": {
                     "type": "string"
                 },
                 "status": {

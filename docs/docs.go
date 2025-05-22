@@ -86,7 +86,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponseWrapper"
                         }
                     },
                     "400": {
@@ -125,7 +125,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponseWrapper"
                         }
                     },
                     "400": {
@@ -150,6 +150,20 @@ const docTemplate = `{
                 }
             }
         },
+        "final_project_internal_dto_userDTO.GetUserByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "final_project_internal_dto_userDTO.GetUserResponse": {
             "type": "object",
             "properties": {
@@ -161,6 +175,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
                     }
+                }
+            }
+        },
+        "final_project_internal_dto_userDTO.GetUserResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -176,16 +204,16 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "fullname": {
+                "fullName": {
                     "type": "string"
                 },
-                "good_point": {
+                "goodPoint": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "phone_number": {
+                "phoneNumber": {
                     "type": "string"
                 },
                 "status": {
@@ -216,7 +244,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8000",
+	Host:             "34.142.168.171:8000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "API DATN 2025",

@@ -7,6 +7,15 @@ definitions:
           $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
         type: array
     type: object
+  final_project_internal_dto_userDTO.GetUserByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse'
+      message:
+        type: string
+    type: object
   final_project_internal_dto_userDTO.GetUserResponse:
     properties:
       totalPage:
@@ -16,6 +25,15 @@ definitions:
           $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
         type: array
     type: object
+  final_project_internal_dto_userDTO.GetUserResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponse'
+      message:
+        type: string
+    type: object
   final_project_internal_dto_userDTO.UserDTO:
     properties:
       address:
@@ -24,13 +42,13 @@ definitions:
         type: string
       email:
         type: string
-      fullname:
+      fullName:
         type: string
-      good_point:
+      goodPoint:
         type: integer
       id:
         type: integer
-      phone_number:
+      phoneNumber:
         type: string
       status:
         type: integer
@@ -47,7 +65,7 @@ definitions:
         example: 400
         type: integer
     type: object
-host: localhost:8000
+host: 34.142.168.171:8000
 info:
   contact:
     email: trannguyentrungkien1006@gmail.com
@@ -105,7 +123,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponse'
+            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -131,7 +149,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse'
+            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponseWrapper'
         "400":
           description: Bad Request
           schema:
