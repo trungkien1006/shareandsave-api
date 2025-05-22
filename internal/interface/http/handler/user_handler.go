@@ -42,6 +42,8 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 		return
 	}
 
+	req.SetDefaults()
+
 	var users []user.User
 
 	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, req)
