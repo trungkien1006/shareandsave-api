@@ -28,7 +28,7 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Param sort query string true "Trường cần sắp xếp (vd: name, email)" example(name)
 // @Param order query string true "Thứ tự sắp xếp: ASC hoặc DESC" Enums(ASC, DESC) example(ASC)
 // @Param filter query string false "Lọc theo tên hoặc email" example("{"name": "John", "email": "john@gmail.com"}")
-// @Success 200 {object} userDTO.GetUserResponse
+// @Success 200 {object} userDTO.GetUserResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users [get]
 func (h *UserHandler) GetAllUser(c *gin.Context) {
@@ -76,7 +76,7 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param userID query int true "ID nhân viên" example(1)
-// @Success 200 {object} userDTO.GetUserByIDResponse
+// @Success 200 {object} userDTO.GetUserByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users/:userID [get]
 func (h *UserHandler) GetUserByID(c *gin.Context) {

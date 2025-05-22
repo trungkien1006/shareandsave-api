@@ -5,17 +5,29 @@ import "final_project/internal/domain/user"
 type UserDTO struct {
 	ID          uint   `json:"id"`
 	Email       string `json:"email"`
-	Fullname    string `json:"fullname"`
+	Fullname    string `json:"fullName"`
 	Avatar      string `json:"avatar,omitempty"`
-	PhoneNumber string `json:"phone_number,omitempty"`
+	PhoneNumber string `json:"phoneNumber,omitempty"`
 	Address     string `json:"address,omitempty"`
 	Status      int8   `json:"status"`
-	GoodPoint   int    `json:"good_point"`
+	GoodPoint   int    `json:"goodPoint"`
+}
+
+type GetUserResponseWrapper struct {
+	Code    int             `json:"code"`
+	Message string          `json:"message"`
+	Data    GetUserResponse `json:"data"`
 }
 
 type GetUserResponse struct {
 	Users     []UserDTO `json:"users"`
 	TotalPage int       `json:"totalPage"`
+}
+
+type GetUserByIDResponseWrapper struct {
+	Code    int                 `json:"code"`
+	Message string              `json:"message"`
+	Data    GetUserByIDResponse `json:"data"`
 }
 
 type GetUserByIDResponse struct {

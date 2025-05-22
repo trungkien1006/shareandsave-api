@@ -1,11 +1,11 @@
 package userDTO
 
 type GetUserRequest struct {
-	Page   int    `query:"page" binding:"required"`
-	Limit  int    `query:"limit" binding:"required"`
-	Sort   string `query:"sort" binding:"required; oneof:ASC DESC"`
-	Order  string `query:"order" binding:"required"`
-	Filter string `query:"filter" binding:"required"`
+	Page   int    `query:"page" binding:"default:1"`
+	Limit  int    `query:"limit" binding:"default:8"`
+	Sort   string `query:"sort" binding:"default:'ASC';oneof:ASC DESC"`
+	Order  string `query:"order" binding:"default:''"`
+	Filter string `query:"filter" binding:"default:''"`
 }
 
 type GetUserByIDRequest struct {
