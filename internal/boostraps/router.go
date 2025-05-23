@@ -45,6 +45,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	{
 		v1.GET("/users", h.GetAllUser)
 		v1.GET("/users/:userID", h.GetUserByID)
+		v1.POST("/users", h.CreateUser)
 	}
 
 	// r.Static("/public/images", "./public/images")

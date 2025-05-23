@@ -24,11 +24,11 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param page query int false "Số trang hiện tại" minimum(1) example(1)
-// @Param limit query int false "Số lượng mỗi trang" minimum(1) example(10)
-// @Param sort query string false "Trường cần sắp xếp (vd: name, email)" example(name)
-// @Param order query string false "Thứ tự sắp xếp: ASC hoặc DESC" Enums(ASC, DESC) example(ASC)
-// @Param filter query string false "Lọc theo tên hoặc email" example("{"name": "John", "email": "john@gmail.com"}")
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record of page" minimum(1) example(10)
+// @Param sort query string false "Sort column (vd: name, email)" example(name)
+// @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param filter query string false "Filter by name or email" example("{\"name\":\"John\", \"email\":\"john@gmail.com\"}")
 // @Success 200 {object} userDTO.GetUserResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users [get]
@@ -84,14 +84,14 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 }
 
 // @Summary Get user by ID
-// @Description API lấy ra user bằng id
+// @Description API get user by id
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param userID query int true "ID nhân viên" example(1)
+// @Param userID path int true "ID user"
 // @Success 200 {object} userDTO.GetUserByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
-// @Router /users/:userID [get]
+// @Router /users/{userID} [get]
 func (h *UserHandler) GetUserByID(c *gin.Context) {
 	var req userDTO.GetUserByIDRequest
 
@@ -131,10 +131,9 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param request body userDTO.CreateUserRequest true "Thông tin tạo user"
-// @Success 201 {object} userDTO.CreateUserResponse "Tạo user thành công"
-// @Failure 400 {object} enums.AppError "Dữ liệu không hợp lệ"
-// @Failure 409 {object} enums.AppError "Xung đột dữ liệu (VD: Email đã tồn tại)"
+// @Param request body userDTO.CreateUserRequest true "Create user info"
+// @Success 201 {object} userDTO.CreateUserResponseWrapper "Created user successfully"
+// @Failure 400 {object} enums.AppError
 // @Router /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req userDTO.CreateUserRequest

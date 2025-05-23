@@ -58,6 +58,15 @@ definitions:
       user:
         $ref: '#/definitions/userDTO.UserDTO'
     type: object
+  userDTO.CreateUserResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userDTO.CreateUserResponse'
+      message:
+        type: string
+    type: object
   userDTO.GetUserByIDResponse:
     properties:
       user:
@@ -127,33 +136,30 @@ paths:
       - application/json
       description: API bao gồm cả lọc, phân trang và sắp xếp
       parameters:
-      - description: Số trang hiện tại
+      - description: Current page
         example: 1
         in: query
         minimum: 1
         name: page
         type: integer
-      - description: Số lượng mỗi trang
+      - description: Number record of page
         example: 10
         in: query
         minimum: 1
         name: limit
         type: integer
-      - description: 'Trường cần sắp xếp (vd: name, email)'
+      - description: 'Sort column (vd: name, email)'
         example: name
         in: query
         name: sort
         type: string
-      - description: 'Thứ tự sắp xếp: ASC hoặc DESC'
-        enum:
-        - ASC
-        - DESC
+      - description: 'Sort type: ASC hoặc DESC'
         example: ASC
         in: query
         name: order
         type: string
-      - description: Lọc theo tên hoặc email
-        example: '"{"name": "John", "email": "john@gmail.com"}"'
+      - description: Filter by name or email
+        example: '"{\"name\":\"John\", \"email\":\"john@gmail.com\"}"'
         in: query
         name: filter
         type: string
@@ -176,7 +182,7 @@ paths:
       - application/json
       description: API thêm người dùng
       parameters:
-      - description: Thông tin tạo user
+      - description: Create user info
         in: body
         name: request
         required: true
@@ -186,29 +192,24 @@ paths:
       - application/json
       responses:
         "201":
-          description: Tạo user thành công
+          description: Created user successfully
           schema:
-            $ref: '#/definitions/userDTO.CreateUserResponse'
+            $ref: '#/definitions/userDTO.CreateUserResponseWrapper'
         "400":
-          description: Dữ liệu không hợp lệ
-          schema:
-            $ref: '#/definitions/enums.AppError'
-        "409":
-          description: 'Xung đột dữ liệu (VD: Email đã tồn tại)'
+          description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Create user
       tags:
       - users
-  /users/:userID:
+  /users/{userID}:
     get:
       consumes:
       - application/json
-      description: API lấy ra user bằng id
+      description: API get user by id
       parameters:
-      - description: ID nhân viên
-        example: 1
-        in: query
+      - description: ID user
+        in: path
         name: userID
         required: true
         type: integer

@@ -40,7 +40,7 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "example": 1,
-                        "description": "Số trang hiện tại",
+                        "description": "Current page",
                         "name": "page",
                         "in": "query"
                     },
@@ -48,32 +48,28 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "example": 10,
-                        "description": "Số lượng mỗi trang",
+                        "description": "Number record of page",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "example": "name",
-                        "description": "Trường cần sắp xếp (vd: name, email)",
+                        "description": "Sort column (vd: name, email)",
                         "name": "sort",
                         "in": "query"
                     },
                     {
-                        "enum": [
-                            "ASC",
-                            "DESC"
-                        ],
                         "type": "string",
                         "example": "ASC",
-                        "description": "Thứ tự sắp xếp: ASC hoặc DESC",
+                        "description": "Sort type: ASC hoặc DESC",
                         "name": "order",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "example": "\"{\"name\": \"John\", \"email\": \"john@gmail.com\"}\"",
-                        "description": "Lọc theo tên hoặc email",
+                        "example": "\"{\\\"name\\\":\\\"John\\\", \\\"email\\\":\\\"john@gmail.com\\\"}\"",
+                        "description": "Filter by name or email",
                         "name": "filter",
                         "in": "query"
                     }
@@ -107,7 +103,7 @@ const docTemplate = `{
                 "summary": "Create user",
                 "parameters": [
                     {
-                        "description": "Thông tin tạo user",
+                        "description": "Create user info",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -118,19 +114,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Tạo user thành công",
+                        "description": "Created user successfully",
                         "schema": {
-                            "$ref": "#/definitions/userDTO.CreateUserResponse"
+                            "$ref": "#/definitions/userDTO.CreateUserResponseWrapper"
                         }
                     },
                     "400": {
-                        "description": "Dữ liệu không hợp lệ",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    },
-                    "409": {
-                        "description": "Xung đột dữ liệu (VD: Email đã tồn tại)",
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -138,9 +128,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/:userID": {
+        "/users/{userID}": {
             "get": {
-                "description": "API lấy ra user bằng id",
+                "description": "API get user by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -154,10 +144,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "example": 1,
-                        "description": "ID nhân viên",
+                        "description": "ID user",
                         "name": "userID",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -260,6 +249,20 @@ const docTemplate = `{
             "properties": {
                 "user": {
                     "$ref": "#/definitions/userDTO.UserDTO"
+                }
+            }
+        },
+        "userDTO.CreateUserResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userDTO.CreateUserResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
