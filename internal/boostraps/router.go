@@ -37,7 +37,9 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		c.Next()
 	})
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	url := ginSwagger.URL("/swagger/doc.json")
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	r.POST("/users", h.GetAllUser)
 
