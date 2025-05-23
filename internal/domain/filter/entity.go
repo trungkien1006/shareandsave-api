@@ -7,3 +7,13 @@ type FilterRequest struct {
 	Order  string `query:"order" binding:"required"`
 	Filter string `query:"filter" binding:"required"`
 }
+
+func (f *FilterRequest) NewFilterRequest(page int, limit int, sort string, order string, filter string) *FilterRequest {
+	return &FilterRequest{
+		Page:   page,
+		Limit:  limit,
+		Sort:   sort,
+		Order:  order,
+		Filter: filter,
+	}
+}

@@ -2,9 +2,12 @@ package userapp
 
 import (
 	"context"
+	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
-	"final_project/internal/dto/userDTO"
+	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/hash"
+	"final_project/internal/pkg/helpers"
 )
 
 type UseCase struct {
@@ -15,15 +18,7 @@ func NewUseCase(r user.Repository) *UseCase {
 	return &UseCase{repo: r}
 }
 
-func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, req userDTO.GetUserRequest) (int, error) {
-	var domain_req filter.FilterRequest = filter.FilterRequest{
-		Page:   req.Page,
-		Limit:  req.Limit,
-		Sort:   req.Sort,
-		Order:  req.Order,
-		Filter: req.Filter,
-	}
-
+func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, domain_req filter.FilterRequest) (int, error) {
 	totalPage, err := uc.repo.GetAll(ctx, users, domain_req)
 
 	if err != nil {
@@ -41,26 +36,45 @@ func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, user_id in
 	return nil
 }
 
-// func (uc *UseCase) CreateUser(ctx context.Context, name, email, password string) error {
+func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
+	emailExisted, err := uc.repo.IsEmailExist(ctx, user.Email)
 
-// 	exist, err := uc.repo.IsEmailExist(ctx, email)
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	if exist {
-// 		return ErrEmailTaken
-// 	}
+	if emailExisted {
+		return errors.New(enums.ErrEmailExisted)
+	}
 
-// 	hashed, err := hash.HashPassword(password)
+	phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, user.PhoneNumber)
 
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	u := user.NewUser(name, email, hashed)
+	if phoneNumberExisted {
+		return errors.New(enums.ErrEmailExisted)
+	}
 
-// 	return uc.repo.Save(ctx, u)
-// }
+	hashedPassword, err := hash.HashPassword(user.Password)
 
-// var ErrEmailTaken = errors.New("email already taken")
+	if err != nil {
+		return err
+	}
+
+	strBase64Image, err := helpers.ResizeImageFromFileToBase64(enums.ImagePath+"/user.jpg", enums.UserImageWidth, enums.UserImageHeight)
+
+	if err != nil {
+		return err
+	}
+
+	user.Password = hashedPassword
+	user.Avatar = strBase64Image
+
+	if err := uc.repo.Save(ctx, user); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -1,40 +1,96 @@
 basePath: /api/v1
 definitions:
-  final_project_internal_dto_userDTO.GetUserByIDResponse:
+  enums.AppError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: Name is require
+        type: string
+      status_code:
+        example: INVALID_QUERY_PARAM
+        type: string
+    type: object
+  enums.UserStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      UserStatusActive: "1"
+      UserStatusInactive: "0"
+      UserStatusLocked: "2"
+    x-enum-varnames:
+    - UserStatusInactive
+    - UserStatusActive
+    - UserStatusLocked
+  userDTO.CreateUserRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      password:
+        minLength: 8
+        type: string
+      phoneNumber:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        enum:
+        - 0
+        - 1
+        - 2
+    required:
+    - email
+    - fullName
+    - password
+    type: object
+  userDTO.CreateUserResponse:
     properties:
       user:
-        items:
-          $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
-        type: array
+        $ref: '#/definitions/userDTO.UserDTO'
     type: object
-  final_project_internal_dto_userDTO.GetUserByIDResponseWrapper:
+  userDTO.GetUserByIDResponse:
+    properties:
+      user:
+        $ref: '#/definitions/userDTO.UserDTO'
+    type: object
+  userDTO.GetUserByIDResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse'
+        $ref: '#/definitions/userDTO.GetUserByIDResponse'
       message:
         type: string
     type: object
-  final_project_internal_dto_userDTO.GetUserResponse:
+  userDTO.GetUserResponse:
     properties:
       totalPage:
         type: integer
       users:
         items:
-          $ref: '#/definitions/final_project_internal_dto_userDTO.UserDTO'
+          $ref: '#/definitions/userDTO.UserDTO'
         type: array
     type: object
-  final_project_internal_dto_userDTO.GetUserResponseWrapper:
+  userDTO.GetUserResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponse'
+        $ref: '#/definitions/userDTO.GetUserResponse'
       message:
         type: string
     type: object
-  final_project_internal_dto_userDTO.UserDTO:
+  userDTO.UserDTO:
     properties:
       address:
         type: string
@@ -51,18 +107,6 @@ definitions:
       phoneNumber:
         type: string
       status:
-        type: integer
-    type: object
-  final_project_internal_pkg_enums.AppError:
-    properties:
-      code:
-        example: INVALID_QUERY_PARAM
-        type: string
-      message:
-        example: Tham số truy vấn không hợp lệ
-        type: string
-      status_code:
-        example: 400
         type: integer
     type: object
 host: 34.142.168.171:8000
@@ -119,12 +163,41 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserResponseWrapper'
+            $ref: '#/definitions/userDTO.GetUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/final_project_internal_pkg_enums.AppError'
+            $ref: '#/definitions/enums.AppError'
       summary: Get user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: API thêm người dùng
+      parameters:
+      - description: Thông tin tạo user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userDTO.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Tạo user thành công
+          schema:
+            $ref: '#/definitions/userDTO.CreateUserResponse'
+        "400":
+          description: Dữ liệu không hợp lệ
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: 'Xung đột dữ liệu (VD: Email đã tồn tại)'
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create user
       tags:
       - users
   /users/:userID:
@@ -145,11 +218,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponseWrapper'
+            $ref: '#/definitions/userDTO.GetUserByIDResponseWrapper'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/final_project_internal_pkg_enums.AppError'
+            $ref: '#/definitions/enums.AppError'
       summary: Get user by ID
       tags:
       - users

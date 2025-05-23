@@ -76,13 +76,57 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponseWrapper"
+                            "$ref": "#/definitions/userDTO.GetUserResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_pkg_enums.AppError"
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "API thêm người dùng",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create user",
+                "parameters": [
+                    {
+                        "description": "Thông tin tạo user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userDTO.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tạo user thành công",
+                        "schema": {
+                            "$ref": "#/definitions/userDTO.CreateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Dữ liệu không hợp lệ",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Xung đột dữ liệu (VD: Email đã tồn tại)",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
                         }
                     }
                 }
@@ -115,13 +159,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponseWrapper"
+                            "$ref": "#/definitions/userDTO.GetUserByIDResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/final_project_internal_pkg_enums.AppError"
+                            "$ref": "#/definitions/enums.AppError"
                         }
                     }
                 }
@@ -129,32 +173,113 @@
         }
     },
     "definitions": {
-        "final_project_internal_dto_userDTO.GetUserByIDResponse": {
+        "enums.AppError": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
-                    }
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Name is require"
+                },
+                "status_code": {
+                    "type": "string",
+                    "example": "INVALID_QUERY_PARAM"
                 }
             }
         },
-        "final_project_internal_dto_userDTO.GetUserByIDResponseWrapper": {
+        "enums.UserStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "UserStatusActive": "1",
+                "UserStatusInactive": "0",
+                "UserStatusLocked": "2"
+            },
+            "x-enum-varnames": [
+                "UserStatusInactive",
+                "UserStatusActive",
+                "UserStatusLocked"
+            ]
+        },
+        "userDTO.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "fullName",
+                "password"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ]
+                }
+            }
+        },
+        "userDTO.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/userDTO.UserDTO"
+                }
+            }
+        },
+        "userDTO.GetUserByIDResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/userDTO.UserDTO"
+                }
+            }
+        },
+        "userDTO.GetUserByIDResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserByIDResponse"
+                    "$ref": "#/definitions/userDTO.GetUserByIDResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "final_project_internal_dto_userDTO.GetUserResponse": {
+        "userDTO.GetUserResponse": {
             "type": "object",
             "properties": {
                 "totalPage": {
@@ -163,26 +288,26 @@
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/final_project_internal_dto_userDTO.UserDTO"
+                        "$ref": "#/definitions/userDTO.UserDTO"
                     }
                 }
             }
         },
-        "final_project_internal_dto_userDTO.GetUserResponseWrapper": {
+        "userDTO.GetUserResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/final_project_internal_dto_userDTO.GetUserResponse"
+                    "$ref": "#/definitions/userDTO.GetUserResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "final_project_internal_dto_userDTO.UserDTO": {
+        "userDTO.UserDTO": {
             "type": "object",
             "properties": {
                 "address": {
@@ -208,23 +333,6 @@
                 },
                 "status": {
                     "type": "integer"
-                }
-            }
-        },
-        "final_project_internal_pkg_enums.AppError": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "INVALID_QUERY_PARAM"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Tham số truy vấn không hợp lệ"
-                },
-                "status_code": {
-                    "type": "integer",
-                    "example": 400
                 }
             }
         }

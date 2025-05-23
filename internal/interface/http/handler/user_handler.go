@@ -2,6 +2,7 @@ package handler
 
 import (
 	"final_project/internal/application/userapp"
+	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
 	"final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
@@ -37,7 +38,7 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			enums.NewAppError("ERR_VALIDATION", err.Error(), http.StatusBadRequest),
+			enums.NewAppError(http.StatusBadRequest, err.Error(), "ERR_VALIDATION"),
 		)
 		return
 	}
@@ -46,12 +47,22 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 
 	var users []user.User
 
-	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, req)
+	var domain_req filter.FilterRequest
+
+	domain_req.NewFilterRequest(
+		req.Page,
+		req.Limit,
+		req.Sort,
+		req.Order,
+		req.Filter,
+	)
+
+	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, domain_req)
 
 	if err != nil {
 		c.JSON(
 			http.StatusNotFound,
-			enums.NewAppError("ERR_USER_NOT_FOUND", err.Error(), http.StatusNotFound),
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_USER_NOT_FOUND"),
 		)
 		return
 	}
@@ -87,7 +98,7 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			enums.NewAppError("ERR_VALIDATION", err.Error(), http.StatusBadRequest),
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
 		)
 		return
 	}
@@ -97,7 +108,7 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 	if err := h.uc.GetUserByID(c.Request.Context(), &user, req.UserID); err != nil {
 		c.JSON(
 			http.StatusNotFound,
-			enums.NewAppError("ERR_USER_NOT_FOUND", err.Error(), http.StatusNotFound),
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
 		)
 		return
 	}
@@ -110,6 +121,61 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 		"code":    http.StatusOK,
 		"message": "Fetched user successfully",
 		"data": userDTO.GetUserByIDResponse{
+			User: userDTORes,
+		},
+	})
+}
+
+// @Summary Create user
+// @Description API thêm người dùng
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body userDTO.CreateUserRequest true "Thông tin tạo user"
+// @Success 201 {object} userDTO.CreateUserResponse "Tạo user thành công"
+// @Failure 400 {object} enums.AppError "Dữ liệu không hợp lệ"
+// @Failure 409 {object} enums.AppError "Xung đột dữ liệu (VD: Email đã tồn tại)"
+// @Router /users [post]
+func (h *UserHandler) CreateUser(c *gin.Context) {
+	var req userDTO.CreateUserRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	var user user.User
+
+	user.NewUser(
+		req.Email,
+		req.Password,
+		"",
+		req.FullName,
+		req.PhoneNumber,
+		req.Address,
+		int(req.Status),
+		req.GoodPoint,
+	)
+
+	if err := h.uc.CreateUser(c.Request.Context(), &user); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	var userDTORes userDTO.UserDTO
+
+	userDTORes = userDTO.ToUserDTO(user)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"code":    http.StatusCreated,
+		"message": "Created user successfully",
+		"data": userDTO.CreateUserResponse{
 			User: userDTORes,
 		},
 	})

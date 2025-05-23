@@ -9,7 +9,7 @@ type UserDTO struct {
 	Avatar      string `json:"avatar,omitempty"`
 	PhoneNumber string `json:"phoneNumber,omitempty"`
 	Address     string `json:"address,omitempty"`
-	Status      int8   `json:"status"`
+	Status      int    `json:"status"`
 	GoodPoint   int    `json:"goodPoint"`
 }
 
@@ -31,6 +31,16 @@ type GetUserByIDResponseWrapper struct {
 }
 
 type GetUserByIDResponse struct {
+	User UserDTO `json:"user"`
+}
+
+type CreateUserResponseWrapper struct {
+	Code    int                `json:"code"`
+	Message string             `json:"message"`
+	Data    CreateUserResponse `json:"data"`
+}
+
+type CreateUserResponse struct {
 	User UserDTO `json:"user"`
 }
 

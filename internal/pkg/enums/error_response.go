@@ -1,33 +1,25 @@
 package enums
 
-import (
-	"fmt"
-	"net/http"
-)
-
 type AppError struct {
-	Code       string `json:"code" example:"INVALID_QUERY_PARAM"`
-	Message    string `json:"message" example:"Tham số truy vấn không hợp lệ"`
-	StatusCode int    `json:"status_code" example:"400"`
+	Code    int    `json:"code" example:"400"`
+	Message string `json:"message" example:"Name is require"`
+	Error   string `json:"status_code" example:"INVALID_QUERY_PARAM"`
 }
 
-func (e *AppError) Error() string {
-	return fmt.Sprintf("[%s] %s", e.Code, e.Message)
-}
-
-func NewAppError(code string, message string, statusCode int) *AppError {
+func NewAppError(code int, message string, err string) *AppError {
 	return &AppError{
-		Code:       code,
-		Message:    message,
-		StatusCode: statusCode,
+		Code:    code,
+		Message: message,
+		Error:   err,
 	}
 }
 
 // Các lỗi phổ biến
 var (
-	ErrNotFound       = NewAppError("ERR_NOT_FOUND", "Resource not found", http.StatusNotFound)
-	ErrUnauthorized   = NewAppError("ERR_UNAUTHORIZED", "Unauthorized access", http.StatusUnauthorized)
-	ErrBadRequest     = NewAppError("ERR_BAD_REQUEST", "Bad request", http.StatusBadRequest)
-	ErrInternalServer = NewAppError("ERR_INTERNAL", "Internal server error", http.StatusInternalServerError)
-	ErrConflict       = NewAppError("ERR_CONFLICT", "Conflict resource", http.StatusConflict)
+	ErrNotFound       = "ERR_NOT_FOUND"
+	ErrUnauthorized   = "ERR_UNAUTHORIZED"
+	ErrBadRequest     = "ERR_BAD_REQUEST"
+	ErrInternalServer = "ERR_INTERNAL"
+	ErrConflict       = "ERR_CONFLICT"
+	ErrValidate       = "ERR_VALIDATE"
 )

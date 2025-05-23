@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/helpers"
@@ -31,7 +32,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 
 		err := json.Unmarshal([]byte(req.Filter), &filters)
 		if err != nil {
-			return 0, err
+			return 0, errors.New("Lỗi khi chuyển đổi filter từ JSON thành struct: " + err.Error())
 		}
 
 		helpers.Filter(query, filters, tableName)
@@ -41,7 +42,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 
 	//lay ra tong so record
 	if err := query.Count(&totalRecord).Error; err != nil {
-		return 0, err
+		return 0, errors.New("Lỗi khi đếm tổng số record của user: " + err.Error())
 	}
 
 	//phan trang
@@ -62,20 +63,44 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 
 func (r *UserRepoDB) GetByID(ctx context.Context, user *user.User, user_id int) error {
 	if err := r.db.Debug().WithContext(ctx).Where("id = ?", user_id).First(&user).Error; err != nil {
-		return err
+		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
 
 	return nil
 }
 
-// func (r *UserRepoDB) Save(ctx context.Context, u *user.User) error {
-// 	_, err := r.db.ExecContext(ctx, `INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)`,
-// 		u.ID, u.Name, u.Email, u.Password)
-// 	return err
-// }
+func (r *UserRepoDB) Save(ctx context.Context, user *user.User) error {
+	if err := r.db.Debug().WithContext(ctx).Create(&user).Error; err != nil {
+		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())
+	}
 
-// func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string) (bool, error) {
-// 	var exists bool
-// 	err := r.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)`, email).Scan(&exists)
-// 	return exists, err
-// }
+	return nil
+}
+
+func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string) (bool, error) {
+	var count int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).Where("email LIKE ?", email).Count(&count).Error; err != nil {
+		return false, errors.New("Lỗi khi kiểm tra email đã tồn tại: " + err.Error())
+	}
+
+	if count > 0 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (r *UserRepoDB) IsPhoneNumberExist(ctx context.Context, phoneNumber string) (bool, error) {
+	var count int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).Where("phone_number LIKE ?", phoneNumber).Count(&count).Error; err != nil {
+		return false, errors.New("Lỗi khi kiểm tra số điện thoại đã tồn tại: " + err.Error())
+	}
+
+	if count > 0 {
+		return true, nil
+	}
+
+	return false, nil
+}
