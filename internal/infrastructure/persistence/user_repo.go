@@ -77,6 +77,14 @@ func (r *UserRepoDB) Save(ctx context.Context, user *user.User) error {
 	return nil
 }
 
+func (r *UserRepoDB) Update(ctx context.Context, user *user.User) error {
+	if err := r.db.Debug().WithContext(ctx).Save(&user).Error; err != nil {
+		return errors.New("Lỗi khi cập nhật người dùng mới: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string) (bool, error) {
 	var count int64 = 0
 

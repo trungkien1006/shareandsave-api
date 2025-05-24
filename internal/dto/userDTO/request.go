@@ -17,8 +17,19 @@ type GetUserByIDRequest struct {
 type CreateUserRequest struct {
 	FullName    string           `json:"fullName" binding:"required"`
 	Email       string           `json:"email" binding:"required"`
-	PhoneNumber string           `json:""`
+	PhoneNumber string           `json:"phoneNumber"`
 	Password    string           `json:"password" binding:"required,min=8"`
+	Status      enums.UserStatus `json:"status" binding:"oneof=0 1 2"`
+	Address     string           `json:"address"`
+	GoodPoint   int              `json:"goodPoint"`
+}
+
+type UpdateUserRequest struct {
+	ID          int              `json:"id"`
+	FullName    string           `json:"fullName"`
+	Email       string           `json:"email"`
+	PhoneNumber string           `json:"phoneNumber"`
+	Password    string           `json:"password" binding:"min=8"`
 	Status      enums.UserStatus `json:"status" binding:"oneof=0 1 2"`
 	Address     string           `json:"address"`
 	GoodPoint   int              `json:"goodPoint"`

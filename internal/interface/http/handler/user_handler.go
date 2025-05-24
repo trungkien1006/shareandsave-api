@@ -179,3 +179,52 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Update user
+// @Description API cập nhật người dùng
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body userDTO.UpdateUserRequest true "Update user info"
+// @Success 200 {object} userDTO.UpdateUserResponseWrapper "Updated user successfully"
+// @Failure 400 {object} enums.AppError
+// @Router /users [put]
+func (h *UserHandler) UpdateUser(c *gin.Context) {
+	var req userDTO.UpdateUserRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	var user user.User
+
+	user.NewUser(
+		req.Email,
+		req.Password,
+		"",
+		req.FullName,
+		req.PhoneNumber,
+		req.Address,
+		int(req.Status),
+		req.GoodPoint,
+	)
+
+	user.ID = uint(req.ID)
+
+	if err := h.uc.UpdateUser(c.Request.Context(), &user); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Updated user successfully",
+	})
+}

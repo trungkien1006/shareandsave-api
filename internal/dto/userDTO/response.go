@@ -44,6 +44,11 @@ type CreateUserResponse struct {
 	User UserDTO `json:"user"`
 }
 
+type UpdateUserResponseWrapper struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
 func ToUserDTO(u user.User) UserDTO {
 	return UserDTO{
 		ID:          u.ID,

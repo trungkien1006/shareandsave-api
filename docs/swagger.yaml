@@ -99,6 +99,38 @@ definitions:
       message:
         type: string
     type: object
+  userDTO.UpdateUserRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      password:
+        minLength: 8
+        type: string
+      phoneNumber:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        enum:
+        - 0
+        - 1
+        - 2
+    type: object
+  userDTO.UpdateUserResponseWrapper:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
   userDTO.UserDTO:
     properties:
       address:
@@ -200,6 +232,31 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Create user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: API cập nhật người dùng
+      parameters:
+      - description: Update user info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userDTO.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user successfully
+          schema:
+            $ref: '#/definitions/userDTO.UpdateUserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update user
       tags:
       - users
   /users/{userID}:
