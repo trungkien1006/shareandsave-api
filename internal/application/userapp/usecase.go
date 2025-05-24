@@ -63,7 +63,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ResizeImageFromFileToBase64(enums.ImagePath+"/user.jpg", enums.UserImageWidth, enums.UserImageHeight)
+	strBase64Image, err := helpers.ResizeImageFromFileToBase64(enums.ImagePath+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
 
 	if err != nil {
 		return err
