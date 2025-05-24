@@ -91,32 +91,47 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 		return errors.New(enums.ErrUserExist)
 	}
 
-	emailExisted, err := uc.repo.IsEmailExist(ctx, domainUser.Email)
+	if domainUser.Email != "" {
+		emailExisted, err := uc.repo.IsEmailExist(ctx, domainUser.Email)
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		if emailExisted {
+			return errors.New(enums.ErrEmailExisted)
+		}
+
+		updateUser.Email = domainUser.Email
 	}
 
-	if emailExisted {
-		return errors.New(enums.ErrEmailExisted)
+	if domainUser.PhoneNumber != "" {
+		phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, domainUser.PhoneNumber)
+
+		if err != nil {
+			return err
+		}
+
+		if phoneNumberExisted {
+			return errors.New(enums.ErrPhoneNumberExisted)
+		}
+
+		updateUser.PhoneNumber = domainUser.PhoneNumber
 	}
 
-	phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, domainUser.PhoneNumber)
-
-	if err != nil {
-		return err
+	if domainUser.FullName != "" {
+		updateUser.FullName = domainUser.FullName
 	}
 
-	if phoneNumberExisted {
-		return errors.New(enums.ErrEmailExisted)
+	if domainUser.Address != "" {
+		updateUser.Address = domainUser.Address
 	}
 
-	updateUser.Email = domainUser.Email
-	updateUser.FullName = domainUser.FullName
-	updateUser.PhoneNumber = domainUser.PhoneNumber
-	updateUser.Address = domainUser.Address
+	if domainUser.GoodPoint >= 0 {
+		updateUser.GoodPoint = domainUser.GoodPoint
+	}
+
 	updateUser.Status = domainUser.Status
-	updateUser.GoodPoint = domainUser.GoodPoint
 
 	if domainUser.Password != "" {
 		hashedPassword, err := hash.HashPassword(domainUser.Password)
