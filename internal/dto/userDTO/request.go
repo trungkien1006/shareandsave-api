@@ -11,7 +11,7 @@ type GetUserRequest struct {
 }
 
 type GetUserByIDRequest struct {
-	UserID int `query:"userID" binding:"required"`
+	UserID int `uri:"userID" binding:"required"`
 }
 
 type CreateUserRequest struct {
@@ -25,10 +25,11 @@ type CreateUserRequest struct {
 }
 
 type UpdateUserRequest struct {
-	ID          int              `json:"id"`
+	ID          uint             `json:"id"`
 	FullName    string           `json:"fullName"`
 	Email       string           `json:"email"`
 	PhoneNumber string           `json:"phoneNumber"`
+	Avatar      string           `json:"avatar"`
 	Password    string           `json:"password" binding:"min=8"`
 	Status      enums.UserStatus `json:"status" binding:"oneof=0 1 2"`
 	Address     string           `json:"address"`

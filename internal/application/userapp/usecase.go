@@ -8,6 +8,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
+	"os"
 )
 
 type UseCase struct {
@@ -63,7 +64,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ResizeImageFromFileToBase64(enums.ImagePath+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
+	strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
 
 	if err != nil {
 		return err
@@ -111,7 +112,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 	}
 
 	updateUser.Email = domainUser.Email
-	updateUser.Fullname = domainUser.Fullname
+	updateUser.FullName = domainUser.FullName
 	updateUser.PhoneNumber = domainUser.PhoneNumber
 	updateUser.Address = domainUser.Address
 	updateUser.Status = domainUser.Status

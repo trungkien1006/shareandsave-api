@@ -52,7 +52,7 @@ func ResizeImageFromFileToBase64(inputPath string, width int, height int) (strin
 	return "data:" + mimeType + ";base64," + base64Str, nil
 }
 
-// ✅ Hàm resize ảnh từ base64, trả về []byte (ảnh JPEG)
+// ✅ Hàm resize ảnh từ base64
 func ResizeImageFromBase64(base64Str string, width int, height int) (string, error) {
 	// Loại bỏ prefix nếu có (data:image/png;base64,...)
 	commaIdx := strings.Index(base64Str, ",")

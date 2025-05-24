@@ -49,13 +49,11 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 
 	var domain_req filter.FilterRequest
 
-	domain_req.NewFilterRequest(
-		req.Page,
-		req.Limit,
-		req.Sort,
-		req.Order,
-		req.Filter,
-	)
+	domain_req.Page = req.Page
+	domain_req.Limit = req.Limit
+	domain_req.Sort = req.Sort
+	domain_req.Order = req.Order
+	domain_req.Filter = req.Filter
 
 	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, domain_req)
 
@@ -95,7 +93,7 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 func (h *UserHandler) GetUserByID(c *gin.Context) {
 	var req userDTO.GetUserByIDRequest
 
-	if err := c.ShouldBindQuery(&req); err != nil {
+	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
@@ -148,16 +146,14 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	var user user.User
 
-	user.NewUser(
-		req.Email,
-		req.Password,
-		"",
-		req.FullName,
-		req.PhoneNumber,
-		req.Address,
-		int(req.Status),
-		req.GoodPoint,
-	)
+	user.Email = req.Email
+	user.Password = req.Password
+	user.Avatar = "" // nếu có field Avatar
+	user.FullName = req.FullName
+	user.PhoneNumber = req.PhoneNumber
+	user.Address = req.Address
+	user.Status = int(req.Status)
+	user.GoodPoint = req.GoodPoint
 
 	if err := h.uc.CreateUser(c.Request.Context(), &user); err != nil {
 		c.JSON(
@@ -202,18 +198,15 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 	var user user.User
 
-	user.NewUser(
-		req.Email,
-		req.Password,
-		"",
-		req.FullName,
-		req.PhoneNumber,
-		req.Address,
-		int(req.Status),
-		req.GoodPoint,
-	)
-
-	user.ID = uint(req.ID)
+	user.ID = req.ID
+	user.Email = req.Email
+	user.Password = req.Password
+	user.Avatar = req.Avatar
+	user.FullName = req.FullName
+	user.PhoneNumber = req.PhoneNumber
+	user.Address = req.Address
+	user.Status = int(req.Status)
+	user.GoodPoint = req.GoodPoint
 
 	if err := h.uc.UpdateUser(c.Request.Context(), &user); err != nil {
 		c.JSON(

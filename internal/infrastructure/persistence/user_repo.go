@@ -55,6 +55,10 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 		query.Order(req.Sort + " " + req.Order)
 	}
 
+	if err := query.Find(&users).Error; err != nil {
+		return 0, errors.New("Lỗi khi lọc người dùng: " + err.Error())
+	}
+
 	//tinh toan total page
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(req.Limit)))
 

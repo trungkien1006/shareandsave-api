@@ -11,7 +11,7 @@ type User struct {
 	Email       string `gorm:"unique;size:255;not null"`
 	Password    string `gorm:"size:255;not null"`
 	Avatar      string `gorm:"type:LONGTEXT"`
-	Fullname    string `gorm:"size:64"`
+	FullName    string `gorm:"size:64"`
 	PhoneNumber string `gorm:"unique;size:16"`
 	Address     string `gorm:"type:TEXT"`
 	Status      int    `gorm:"type:TINYINT"`
@@ -26,7 +26,7 @@ func (u *User) NewUser(email string, password string, avatar string, fullname st
 		Email:       email,
 		Password:    password,
 		Avatar:      avatar,
-		Fullname:    fullname,
+		FullName:    fullname,
 		PhoneNumber: phoneNumber,
 		Address:     address,
 		Status:      status,

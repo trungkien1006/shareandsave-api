@@ -53,7 +53,7 @@ func ToUserDTO(u user.User) UserDTO {
 	return UserDTO{
 		ID:          u.ID,
 		Email:       u.Email,
-		Fullname:    u.Fullname,
+		Fullname:    u.FullName,
 		Avatar:      u.Avatar,
 		PhoneNumber: u.PhoneNumber,
 		Address:     u.Address,
