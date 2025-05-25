@@ -26,6 +26,108 @@ definitions:
     - UserStatusInactive
     - UserStatusActive
     - UserStatusLocked
+  itemDTO.CreateItemRequest:
+    properties:
+      description:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  itemDTO.CreateItemResponse:
+    properties:
+      item:
+        $ref: '#/definitions/itemDTO.ItemDTO'
+    type: object
+  itemDTO.CreateItemResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/itemDTO.CreateItemResponse'
+      message:
+        type: string
+    type: object
+  itemDTO.DeleteItemResponseWrapper:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  itemDTO.GetItemByIDResponse:
+    properties:
+      item:
+        $ref: '#/definitions/itemDTO.ItemDTO'
+    type: object
+  itemDTO.GetItemByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/itemDTO.GetItemByIDResponse'
+      message:
+        type: string
+    type: object
+  itemDTO.GetItemResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/itemDTO.ItemDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  itemDTO.GetItemResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/itemDTO.GetItemResponse'
+      message:
+        type: string
+    type: object
+  itemDTO.ItemDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+    type: object
+  itemDTO.UpdateItemRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+    required:
+    - id
+    type: object
+  itemDTO.UpdateItemResponse:
+    properties:
+      item:
+        $ref: '#/definitions/itemDTO.ItemDTO'
+    type: object
+  itemDTO.UpdateItemResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/itemDTO.UpdateItemResponse'
+      message:
+        type: string
+    type: object
   userDTO.CreateUserRequest:
     properties:
       address:
@@ -171,6 +273,172 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
+  /items:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record per page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: 'Sort column (vd: name)'
+        example: name
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: Filter by name or description
+        example: '"{\"name\":\"item1\"}"'
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/itemDTO.GetItemResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get items
+      tags:
+      - items
+    post:
+      consumes:
+      - application/json
+      description: API thêm item mới
+      parameters:
+      - description: Create item info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/itemDTO.CreateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created item successfully
+          schema:
+            $ref: '#/definitions/itemDTO.CreateItemResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create new item
+      tags:
+      - items
+    put:
+      consumes:
+      - application/json
+      description: API cập nhật item
+      parameters:
+      - description: Update item info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/itemDTO.UpdateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated item successfully
+          schema:
+            $ref: '#/definitions/itemDTO.UpdateItemResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update item
+      tags:
+      - items
+  /items/{itemID}:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa item theo ID
+      parameters:
+      - description: ID item
+        in: path
+        name: itemID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted item successfully
+          schema:
+            $ref: '#/definitions/itemDTO.DeleteItemResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Delete item
+      tags:
+      - items
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin item theo ID
+      parameters:
+      - description: ID item
+        in: path
+        name: itemID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/itemDTO.GetItemByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get item by ID
+      tags:
+      - items
   /users:
     get:
       consumes:
@@ -215,7 +483,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Get user
+      summary: Get users
       tags:
       - users
     post:

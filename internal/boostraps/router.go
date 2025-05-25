@@ -1,6 +1,7 @@
 package boostraps
 
 import (
+	"final_project/internal/application/itemapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/infrastructure/persistence"
 	"final_project/internal/interface/http/handler"
@@ -18,9 +19,15 @@ import (
 func InitRoute(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
-	repo := persistence.NewUserRepoDB(db)
-	uc := userapp.NewUseCase(repo)
-	h := handler.NewUserHandler(uc)
+	//user dependency
+	userRepo := persistence.NewUserRepoDB(db)
+	userUC := userapp.NewUseCase(userRepo)
+	userHandler := handler.NewUserHandler(userUC)
+
+	//item dependency
+	itemRepo := persistence.NewItemRepoDB(db)
+	itemUC := itemapp.NewUseCase(itemRepo)
+	itemHandler := handler.NewItemHandler(itemUC)
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
@@ -41,15 +48,21 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
-	r.POST("/users", h.GetAllUser)
-
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/users", h.GetAllUser)
-		v1.GET("/users/:userID", h.GetUserByID)
-		v1.POST("/users", h.CreateUser)
-		v1.PUT("/users", h.UpdateUser)
-		v1.DELETE("/users", h.DeleteUser)
+		//user CRUD API
+		v1.GET("/users", userHandler.GetAllUser)
+		v1.GET("/users/:userID", userHandler.GetUserByID)
+		v1.POST("/users", userHandler.CreateUser)
+		v1.PUT("/users", userHandler.UpdateUser)
+		v1.DELETE("/users/:userID", userHandler.DeleteUser)
+
+		//item CRUD API
+		v1.GET("/items", itemHandler.GetAllItem)
+		v1.GET("/items/:itemID", itemHandler.GetItemByID)
+		v1.POST("/items", itemHandler.CreateItem)
+		v1.PUT("/items", itemHandler.UpdateItem)
+		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 	}
 
 	// r.Static("/public/images", "./public/images")

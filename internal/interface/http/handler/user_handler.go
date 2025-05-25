@@ -19,7 +19,7 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 	return &UserHandler{uc: uc}
 }
 
-// @Summary Get user
+// @Summary Get users
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
 // @Tags users
 // @Accept json

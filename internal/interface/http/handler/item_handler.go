@@ -1,0 +1,189 @@
+package handler
+
+import (
+	"final_project/internal/application/itemapp"
+	"final_project/internal/domain/filter"
+	"final_project/internal/domain/item"
+	"final_project/internal/dto/itemDTO"
+	"final_project/internal/pkg/enums"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type ItemHandler struct {
+	uc *itemapp.UseCase
+}
+
+func NewItemHandler(uc *itemapp.UseCase) *ItemHandler {
+	return &ItemHandler{uc: uc}
+}
+
+// @Summary Get items
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record per page" minimum(1) example(10)
+// @Param sort query string false "Sort column (vd: name)" example(name)
+// @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param filter query string false "Filter by name or description" example("{\"name\":\"item1\"}")
+// @Success 200 {object} itemDTO.GetItemResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /items [get]
+func (h *ItemHandler) GetAllItem(c *gin.Context) {
+	var req itemDTO.GetAllItemRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+	req.SetDefaults()
+	var items []item.Item
+	domainReq := filter.FilterRequest{
+		Page:   req.Page,
+		Limit:  req.Limit,
+		Sort:   req.Sort,
+		Order:  req.Order,
+		Filter: req.Filter,
+	}
+	totalPage, err := h.uc.GetAllItem(c.Request.Context(), &items, domainReq)
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+	itemDTOs := make([]itemDTO.ItemDTO, 0)
+	for _, i := range items {
+		itemDTOs = append(itemDTOs, itemDTO.ToItemDTO(i))
+	}
+	c.JSON(http.StatusOK, itemDTO.GetItemResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched items successfully",
+		Data: itemDTO.GetItemResponse{
+			Items:     itemDTOs,
+			TotalPage: totalPage,
+		},
+	})
+}
+
+// @Summary Get item by ID
+// @Description API lấy thông tin item theo ID
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param itemID path int true "ID item"
+// @Success 200 {object} itemDTO.GetItemByIDResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /items/{itemID} [get]
+func (h *ItemHandler) GetItemByID(c *gin.Context) {
+	var req itemDTO.GetItemByIDRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+	var itm item.Item
+	if err := h.uc.GetItemByID(c.Request.Context(), &itm, req.ItemID); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+	c.JSON(http.StatusOK, itemDTO.GetItemByIDResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Item fetched successfully",
+		Data: itemDTO.GetItemByIDResponse{
+			Item: itemDTO.ToItemDTO(itm),
+		},
+	})
+}
+
+// @Summary Create new item
+// @Description API thêm item mới
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param request body itemDTO.CreateItemRequest true "Create item info"
+// @Success 200 {object} itemDTO.CreateItemResponseWrapper "Created item successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /items [post]
+func (h *ItemHandler) CreateItem(c *gin.Context) {
+	var req itemDTO.CreateItemRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+	itm := item.NewItem(req.Name, req.Description, req.Image)
+	if err := h.uc.CreateItem(c.Request.Context(), itm); err != nil {
+		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		return
+	}
+	c.JSON(http.StatusOK, itemDTO.CreateItemResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Item created successfully",
+		Data: itemDTO.CreateItemResponse{
+			Item: itemDTO.ToItemDTO(*itm),
+		},
+	})
+}
+
+// @Summary Update item
+// @Description API cập nhật item
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param request body itemDTO.UpdateItemRequest true "Update item info"
+// @Success 200 {object} itemDTO.UpdateItemResponseWrapper "Updated item successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /items [put]
+func (h *ItemHandler) UpdateItem(c *gin.Context) {
+	var req itemDTO.UpdateItemRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+	itm := &item.Item{
+		ID:          req.ID,
+		Name:        req.Name,
+		Description: req.Description,
+		Image:       req.Image,
+	}
+	if err := h.uc.UpdateItem(c.Request.Context(), itm); err != nil {
+		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		return
+	}
+	c.JSON(http.StatusOK, itemDTO.UpdateItemResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Item updated successfully",
+		Data: itemDTO.UpdateItemResponse{
+			Item: itemDTO.ToItemDTO(*itm),
+		},
+	})
+}
+
+// @Summary Delete item
+// @Description API xóa item theo ID
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param itemID path int true "ID item"
+// @Success 200 {object} itemDTO.DeleteItemResponseWrapper "Deleted item successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /items/{itemID} [delete]
+func (h *ItemHandler) DeleteItem(c *gin.Context) {
+	var req itemDTO.DeleteItemRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+	if err := h.uc.DeleteItem(c.Request.Context(), req.ItemID); err != nil {
+		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Item deleted successfully",
+	})
+}

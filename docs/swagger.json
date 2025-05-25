@@ -16,6 +16,254 @@
     "host": "34.142.168.171:8000",
     "basePath": "/api/v1",
     "paths": {
+        "/items": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get items",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "name",
+                        "description": "Sort column (vd: name)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"{\\\"name\\\":\\\"item1\\\"}\"",
+                        "description": "Filter by name or description",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.GetItemResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "API cập nhật item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Update item",
+                "parameters": [
+                    {
+                        "description": "Update item info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.UpdateItemRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated item successfully",
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.UpdateItemResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "API thêm item mới",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Create new item",
+                "parameters": [
+                    {
+                        "description": "Create item info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.CreateItemRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created item successfully",
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.CreateItemResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/items/{itemID}": {
+            "get": {
+                "description": "API lấy thông tin item theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get item by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID item",
+                        "name": "itemID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.GetItemByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API xóa item theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Delete item",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID item",
+                        "name": "itemID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted item successfully",
+                        "schema": {
+                            "$ref": "#/definitions/itemDTO.DeleteItemResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -28,7 +276,7 @@
                 "tags": [
                     "users"
                 ],
-                "summary": "Get user",
+                "summary": "Get users",
                 "parameters": [
                     {
                         "minimum": 1,
@@ -270,6 +518,165 @@
                 "UserStatusActive",
                 "UserStatusLocked"
             ]
+        },
+        "itemDTO.CreateItemRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.CreateItemResponse": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                }
+            }
+        },
+        "itemDTO.CreateItemResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/itemDTO.CreateItemResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.DeleteItemResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.GetItemByIDResponse": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                }
+            }
+        },
+        "itemDTO.GetItemByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/itemDTO.GetItemByIDResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.GetItemResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/itemDTO.ItemDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "itemDTO.GetItemResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/itemDTO.GetItemResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.ItemDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.UpdateItemRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "itemDTO.UpdateItemResponse": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                }
+            }
+        },
+        "itemDTO.UpdateItemResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/itemDTO.UpdateItemResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
         },
         "userDTO.CreateUserRequest": {
             "type": "object",

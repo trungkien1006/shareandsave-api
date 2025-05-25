@@ -87,8 +87,8 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 		return err
 	}
 
-	if updateUser.ID != 0 {
-		return errors.New(enums.ErrUserExist)
+	if updateUser.ID == 0 {
+		return errors.New(enums.ErrUserNotExist)
 	}
 
 	if domainUser.Email != "" {
@@ -167,8 +167,8 @@ func (uc *UseCase) DeleteUser(ctx context.Context, userID int) error {
 		return err
 	}
 
-	if deleteUser.ID != 0 {
-		return errors.New(enums.ErrUserExist)
+	if deleteUser.ID == 0 {
+		return errors.New(enums.ErrUserNotExist)
 	}
 
 	if err := uc.repo.Delete(ctx, &deleteUser); err != nil {
