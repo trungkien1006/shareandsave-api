@@ -221,3 +221,37 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		"message": "Updated user successfully",
 	})
 }
+
+// @Summary Delete user
+// @Description API delete user by id
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param userID path int true "ID user"
+// @Success 200 {object} userDTO.DeleteUserResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /users/{userID} [delete]
+func (h *UserHandler) DeleteUser(c *gin.Context) {
+	var req userDTO.DeleteUserRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.DeleteUser(c.Request.Context(), req.UserID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Deleted user successfully",
+	})
+}

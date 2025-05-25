@@ -89,6 +89,14 @@ func (r *UserRepoDB) Update(ctx context.Context, domainUser *user.User) error {
 	return nil
 }
 
+func (r *UserRepoDB) Delete(ctx context.Context, domainUser *user.User) error {
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Delete(&domainUser).Error; err != nil {
+		return errors.New("Lỗi khi xóa người dùng: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string) (bool, error) {
 	var count int64 = 0
 

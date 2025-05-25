@@ -36,6 +36,10 @@ type UpdateUserRequest struct {
 	GoodPoint   int              `json:"goodPoint"`
 }
 
+type DeleteUserRequest struct {
+	UserID int `uri:"userID" binding:"required"`
+}
+
 func (r *GetUserRequest) SetDefaults() {
 	if r.Page == 0 {
 		r.Page = 1

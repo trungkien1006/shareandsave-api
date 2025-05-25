@@ -202,6 +202,42 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "API delete user by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID user",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userDTO.DeleteUserResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         }
     },
@@ -304,6 +340,17 @@ const docTemplate = `{
                 }
             }
         },
+        "userDTO.DeleteUserResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "userDTO.GetUserByIDResponse": {
             "type": "object",
             "properties": {
@@ -358,6 +405,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "avatar": {
                     "type": "string"
                 },
                 "email": {

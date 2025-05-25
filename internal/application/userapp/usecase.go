@@ -159,3 +159,21 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 
 	return nil
 }
+
+func (uc *UseCase) DeleteUser(ctx context.Context, userID int) error {
+	var deleteUser user.User
+
+	if err := uc.repo.GetByID(ctx, &deleteUser, int(userID)); err != nil {
+		return err
+	}
+
+	if deleteUser.ID != 0 {
+		return errors.New(enums.ErrUserExist)
+	}
+
+	if err := uc.repo.Delete(ctx, &deleteUser); err != nil {
+		return err
+	}
+
+	return nil
+}

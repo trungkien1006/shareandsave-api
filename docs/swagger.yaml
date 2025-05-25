@@ -67,6 +67,13 @@ definitions:
       message:
         type: string
     type: object
+  userDTO.DeleteUserResponseWrapper:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
   userDTO.GetUserByIDResponse:
     properties:
       user:
@@ -102,6 +109,8 @@ definitions:
   userDTO.UpdateUserRequest:
     properties:
       address:
+        type: string
+      avatar:
         type: string
       email:
         type: string
@@ -260,6 +269,30 @@ paths:
       tags:
       - users
   /users/{userID}:
+    delete:
+      consumes:
+      - application/json
+      description: API delete user by id
+      parameters:
+      - description: ID user
+        in: path
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userDTO.DeleteUserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Delete user
+      tags:
+      - users
     get:
       consumes:
       - application/json
