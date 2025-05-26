@@ -22,6 +22,231 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admins": {
+            "get": {
+                "description": "Lấy danh sách admin với phân trang, lọc, sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Lấy danh sách admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Trang",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Số lượng/trang",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường sắp xếp",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Thứ tự sắp xếp (ASC/DESC)",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bộ lọc",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.GetAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Tạo mới admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Tạo mới admin",
+                "parameters": [
+                    {
+                        "description": "Thông tin admin",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admindto.CreateAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.CreateAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/{id}": {
+            "get": {
+                "description": "Lấy chi tiết admin theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Lấy thông tin admin theo ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Admin ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.GetAdminByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Cập nhật thông tin admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Cập nhật admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Admin ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Thông tin cập nhật",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admindto.UpdateAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.UpdateAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Xóa admin theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Xóa admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Admin ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.UpdateAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -490,6 +715,178 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "admindto.AdminDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "roleId": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admindto.CreateAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "fullname",
+                "password",
+                "roleId"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "roleId": {
+                    "type": "integer"
+                },
+                "status": {
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ]
+                }
+            }
+        },
+        "admindto.CreateAdminResponse": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "$ref": "#/definitions/admindto.AdminDTO"
+                }
+            }
+        },
+        "admindto.CreateAdminResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/admindto.CreateAdminResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "admindto.GetAdminByIDResponse": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "$ref": "#/definitions/admindto.AdminDTO"
+                }
+            }
+        },
+        "admindto.GetAdminByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/admindto.GetAdminByIDResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "admindto.GetAdminResponse": {
+            "type": "object",
+            "properties": {
+                "admins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/admindto.AdminDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admindto.GetAdminResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/admindto.GetAdminResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "admindto.UpdateAdminRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "roleId": {
+                    "type": "integer"
+                },
+                "status": {
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ]
+                }
+            }
+        },
+        "admindto.UpdateAdminResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "enums.AppError": {
             "type": "object",
             "properties": {
@@ -497,13 +894,13 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 400
                 },
+                "error": {
+                    "type": "string",
+                    "example": "INVALID_QUERY_PARAM"
+                },
                 "message": {
                     "type": "string",
                     "example": "Name is require"
-                },
-                "status_code": {
-                    "type": "string",
-                    "example": "INVALID_QUERY_PARAM"
                 }
             }
         },
@@ -753,6 +1150,7 @@ const docTemplate = `{
                 "code": {
                     "type": "integer"
                 },
+                "data": {},
                 "message": {
                     "type": "string"
                 }
@@ -817,9 +1215,6 @@ const docTemplate = `{
                 "avatar": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "fullName": {
                     "type": "string"
                 },
@@ -829,9 +1224,8 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "password": {
-                    "type": "string",
-                    "minLength": 8
+                "major": {
+                    "type": "string"
                 },
                 "phoneNumber": {
                     "type": "string"
@@ -856,6 +1250,7 @@ const docTemplate = `{
                 "code": {
                     "type": "integer"
                 },
+                "data": {},
                 "message": {
                     "type": "string"
                 }
@@ -881,6 +1276,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "major": {
+                    "type": "string"
                 },
                 "phoneNumber": {
                     "type": "string"

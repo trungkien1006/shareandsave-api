@@ -3,7 +3,7 @@ package enums
 type AppError struct {
 	Code    int    `json:"code" example:"400"`
 	Message string `json:"message" example:"Name is require"`
-	Error   string `json:"status_code" example:"INVALID_QUERY_PARAM"`
+	Error   string `json:"error" example:"INVALID_QUERY_PARAM"`
 }
 
 func NewAppError(code int, message string, err string) *AppError {

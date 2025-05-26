@@ -27,13 +27,12 @@ type CreateUserRequest struct {
 type UpdateUserRequest struct {
 	ID          uint             `json:"id"`
 	FullName    string           `json:"fullName"`
-	Email       string           `json:"email"`
 	PhoneNumber string           `json:"phoneNumber"`
 	Avatar      string           `json:"avatar"`
-	Password    string           `json:"password" binding:"min=8"`
 	Status      enums.UserStatus `json:"status" binding:"oneof=0 1 2"`
 	Address     string           `json:"address"`
 	GoodPoint   int              `json:"goodPoint"`
+	Major       string           `json:"major"`
 }
 
 type DeleteUserRequest struct {

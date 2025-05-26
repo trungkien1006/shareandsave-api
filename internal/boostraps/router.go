@@ -1,6 +1,7 @@
 package boostraps
 
 import (
+	"final_project/internal/application/adminapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/infrastructure/persistence"
@@ -28,6 +29,11 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	itemRepo := persistence.NewItemRepoDB(db)
 	itemUC := itemapp.NewUseCase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
+
+	//admin dependency
+	adminRepo := persistence.NewAdminRepoDB(db)
+	adminUC := adminapp.NewUseCase(adminRepo)
+	adminHandler := handler.NewAdminHandler(adminUC)
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
@@ -63,6 +69,13 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.POST("/items", itemHandler.CreateItem)
 		v1.PUT("/items", itemHandler.UpdateItem)
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
+
+		//admin CRUD API
+		v1.GET("/admins", adminHandler.GetAllAdmins)
+		v1.GET("/admins/:adminID", adminHandler.GetAdminByID)
+		v1.POST("/admins", adminHandler.CreateAdmin)
+		v1.PUT("/admins", adminHandler.UpdateAdmin)
+		v1.DELETE("/admins/:adminID", adminHandler.DeleteAdmin)
 	}
 
 	// r.Static("/public/images", "./public/images")

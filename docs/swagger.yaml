@@ -1,15 +1,126 @@
 basePath: /api/v1
 definitions:
+  admindto.AdminDTO:
+    properties:
+      email:
+        type: string
+      fullname:
+        type: string
+      id:
+        type: integer
+      roleId:
+        type: integer
+      status:
+        type: integer
+    type: object
+  admindto.CreateAdminRequest:
+    properties:
+      email:
+        type: string
+      fullname:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      roleId:
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        enum:
+        - 0
+        - 1
+        - 2
+    required:
+    - email
+    - fullname
+    - password
+    - roleId
+    type: object
+  admindto.CreateAdminResponse:
+    properties:
+      admin:
+        $ref: '#/definitions/admindto.AdminDTO'
+    type: object
+  admindto.CreateAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/admindto.CreateAdminResponse'
+      message:
+        type: string
+    type: object
+  admindto.GetAdminByIDResponse:
+    properties:
+      admin:
+        $ref: '#/definitions/admindto.AdminDTO'
+    type: object
+  admindto.GetAdminByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/admindto.GetAdminByIDResponse'
+      message:
+        type: string
+    type: object
+  admindto.GetAdminResponse:
+    properties:
+      admins:
+        items:
+          $ref: '#/definitions/admindto.AdminDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  admindto.GetAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/admindto.GetAdminResponse'
+      message:
+        type: string
+    type: object
+  admindto.UpdateAdminRequest:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      roleId:
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        enum:
+        - 0
+        - 1
+        - 2
+    required:
+    - id
+    type: object
+  admindto.UpdateAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   enums.AppError:
     properties:
       code:
         example: 400
         type: integer
+      error:
+        example: INVALID_QUERY_PARAM
+        type: string
       message:
         example: Name is require
-        type: string
-      status_code:
-        example: INVALID_QUERY_PARAM
         type: string
     type: object
   enums.UserStatus:
@@ -173,6 +284,7 @@ definitions:
     properties:
       code:
         type: integer
+      data: {}
       message:
         type: string
     type: object
@@ -214,16 +326,13 @@ definitions:
         type: string
       avatar:
         type: string
-      email:
-        type: string
       fullName:
         type: string
       goodPoint:
         type: integer
       id:
         type: integer
-      password:
-        minLength: 8
+      major:
         type: string
       phoneNumber:
         type: string
@@ -239,6 +348,7 @@ definitions:
     properties:
       code:
         type: integer
+      data: {}
       message:
         type: string
     type: object
@@ -256,6 +366,8 @@ definitions:
         type: integer
       id:
         type: integer
+      major:
+        type: string
       phoneNumber:
         type: string
       status:
@@ -273,6 +385,155 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
+  /admins:
+    get:
+      consumes:
+      - application/json
+      description: Lấy danh sách admin với phân trang, lọc, sắp xếp
+      parameters:
+      - description: Trang
+        in: query
+        name: page
+        type: integer
+      - description: Số lượng/trang
+        in: query
+        name: limit
+        type: integer
+      - description: Trường sắp xếp
+        in: query
+        name: sort
+        type: string
+      - description: Thứ tự sắp xếp (ASC/DESC)
+        in: query
+        name: order
+        type: string
+      - description: Bộ lọc
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admindto.GetAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Lấy danh sách admin
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Tạo mới admin
+      parameters:
+      - description: Thông tin admin
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admindto.CreateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/admindto.CreateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Tạo mới admin
+      tags:
+      - admin
+  /admins/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Xóa admin theo ID
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Xóa admin
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: Lấy chi tiết admin theo ID
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admindto.GetAdminByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Lấy thông tin admin theo ID
+      tags:
+      - admin
+    put:
+      consumes:
+      - application/json
+      description: Cập nhật thông tin admin
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Thông tin cập nhật
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admindto.UpdateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Cập nhật admin
+      tags:
+      - admin
   /items:
     get:
       consumes:

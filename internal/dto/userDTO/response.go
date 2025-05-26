@@ -1,18 +1,5 @@
 package userDTO
 
-import "final_project/internal/domain/user"
-
-type UserDTO struct {
-	ID          uint   `json:"id"`
-	Email       string `json:"email"`
-	Fullname    string `json:"fullName"`
-	Avatar      string `json:"avatar,omitempty"`
-	PhoneNumber string `json:"phoneNumber,omitempty"`
-	Address     string `json:"address,omitempty"`
-	Status      int    `json:"status"`
-	GoodPoint   int    `json:"goodPoint"`
-}
-
 type GetUserResponseWrapper struct {
 	Code    int             `json:"code"`
 	Message string          `json:"message"`
@@ -45,24 +32,13 @@ type CreateUserResponse struct {
 }
 
 type UpdateUserResponseWrapper struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type DeleteUserResponseWrapper struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-}
-
-func ToUserDTO(u user.User) UserDTO {
-	return UserDTO{
-		ID:          u.ID,
-		Email:       u.Email,
-		Fullname:    u.FullName,
-		Avatar:      u.Avatar,
-		PhoneNumber: u.PhoneNumber,
-		Address:     u.Address,
-		Status:      u.Status,
-		GoodPoint:   u.GoodPoint,
-	}
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }

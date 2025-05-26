@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"final_project/internal/domain/role"
+	"final_project/internal/domain/role_permission"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,8 +16,8 @@ type Admin struct {
 	RoleID    uint   `gorm:"index"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Role      role.Role      `gorm:"foreignKey:RoleID"`
+	DeletedAt gorm.DeletedAt       `gorm:"index"`
+	Role      role_permission.Role `gorm:"foreignKey:RoleID"`
 }
 
 func NewAdmin(email, password, fullname string, status int8, roleID uint) *Admin {

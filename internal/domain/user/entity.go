@@ -16,12 +16,13 @@ type User struct {
 	Address     string `gorm:"type:TEXT"`
 	Status      int    `gorm:"type:TINYINT"`
 	GoodPoint   int    `gorm:"default:0"`
+	Major       string `gorm:"size:64"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
 
-func (u *User) NewUser(email string, password string, avatar string, fullname string, phoneNumber string, address string, status int, goodPoint int) *User {
+func (u *User) NewUser(email string, password string, avatar string, fullname string, phoneNumber string, address string, status int, goodPoint int, major string) *User {
 	return &User{
 		Email:       email,
 		Password:    password,
@@ -31,5 +32,6 @@ func (u *User) NewUser(email string, password string, avatar string, fullname st
 		Address:     address,
 		Status:      status,
 		GoodPoint:   goodPoint,
+		Major:       major,
 	}
 }

@@ -199,14 +199,13 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	var user user.User
 
 	user.ID = req.ID
-	user.Email = req.Email
-	user.Password = req.Password
 	user.Avatar = req.Avatar
 	user.FullName = req.FullName
 	user.PhoneNumber = req.PhoneNumber
 	user.Address = req.Address
 	user.Status = int(req.Status)
 	user.GoodPoint = req.GoodPoint
+	user.Major = req.Major
 
 	if err := h.uc.UpdateUser(c.Request.Context(), &user); err != nil {
 		c.JSON(

@@ -91,20 +91,6 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 		return errors.New(enums.ErrUserNotExist)
 	}
 
-	if domainUser.Email != "" {
-		emailExisted, err := uc.repo.IsEmailExist(ctx, domainUser.Email)
-
-		if err != nil {
-			return err
-		}
-
-		if emailExisted {
-			return errors.New(enums.ErrEmailExisted)
-		}
-
-		updateUser.Email = domainUser.Email
-	}
-
 	if domainUser.PhoneNumber != "" {
 		phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, domainUser.PhoneNumber)
 
@@ -129,6 +115,10 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 
 	if domainUser.GoodPoint >= 0 {
 		updateUser.GoodPoint = domainUser.GoodPoint
+	}
+
+	if domainUser.Major != "" {
+		updateUser.Major = domainUser.Major
 	}
 
 	updateUser.Status = domainUser.Status
