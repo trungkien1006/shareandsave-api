@@ -85,7 +85,7 @@ definitions:
     type: object
   admindto.UpdateAdminRequest:
     properties:
-      fulln=Name:
+      fullName:
         type: string
       id:
         type: integer

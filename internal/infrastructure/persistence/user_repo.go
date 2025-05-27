@@ -124,3 +124,11 @@ func (r *UserRepoDB) IsPhoneNumberExist(ctx context.Context, phoneNumber string)
 
 	return false, nil
 }
+
+func (r *UserRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&user.User{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}

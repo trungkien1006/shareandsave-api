@@ -5,6 +5,7 @@ import (
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/infrastructure/persistence"
+	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
 	"net/http"
 
@@ -34,6 +35,17 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	adminRepo := persistence.NewAdminRepoDB(db)
 	adminUC := adminapp.NewUseCase(adminRepo)
 	adminHandler := handler.NewAdminHandler(adminUC)
+
+	rolePerRepo := persistence.NewRolePerRepoDB(db)
+
+	seed := seeder.NewSeeder(
+		rolePerRepo,
+		adminRepo,
+		itemRepo,
+		userRepo,
+	)
+
+	seed.Seed()
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request

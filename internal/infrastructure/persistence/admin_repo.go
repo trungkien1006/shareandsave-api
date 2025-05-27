@@ -104,3 +104,11 @@ func (r *AdminRepoDB) IsRoleExist(ctx context.Context, roleId uint) (bool, error
 	}
 	return count > 0, nil
 }
+
+func (r *AdminRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&admin.Admin{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}

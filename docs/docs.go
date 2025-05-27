@@ -842,7 +842,7 @@ const docTemplate = `{
                 "id"
             ],
             "properties": {
-                "fulln=Name": {
+                "fullName": {
                     "type": "string"
                 },
                 "id": {

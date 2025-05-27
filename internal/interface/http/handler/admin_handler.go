@@ -35,20 +35,27 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 // @Router /admins [get]
 func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 	var req filter.FilterRequest
+
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
 	var admins []admin.Admin
+
 	totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), &admins, req)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
+
 	var adminDTOs []adminDTO.AdminDTO
+
 	for _, a := range admins {
 		adminDTOs = append(adminDTOs, adminDTO.ToAdminDTO(a))
 	}
+
 	c.JSON(http.StatusOK, adminDTO.GetAdminResponseWrapper{
 		Code:    200,
 		Message: "Success",

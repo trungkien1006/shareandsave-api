@@ -11,4 +11,5 @@ type Repository interface {
 	Save(ctx context.Context, item *Item) error
 	Update(ctx context.Context, item *Item) error
 	Delete(ctx context.Context, item *Item) error
+	IsTableEmpty(ctx context.Context) (bool, error)
 }

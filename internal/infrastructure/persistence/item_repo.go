@@ -78,3 +78,11 @@ func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {
 func (r *ItemRepoDB) Delete(ctx context.Context, i *item.Item) error {
 	return r.db.Debug().WithContext(ctx).Delete(i).Error
 }
+
+func (r *ItemRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&item.Item{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}

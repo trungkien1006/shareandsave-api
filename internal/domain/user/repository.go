@@ -13,4 +13,5 @@ type Repository interface {
 	Delete(ctx context.Context, domainUser *User) error
 	IsEmailExist(ctx context.Context, email string) (bool, error)
 	IsPhoneNumberExist(ctx context.Context, phoneNumber string) (bool, error)
+	IsTableEmpty(ctx context.Context) (bool, error)
 }

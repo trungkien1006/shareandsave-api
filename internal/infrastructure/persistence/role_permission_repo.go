@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"context"
 	"final_project/internal/domain/role_permission"
 
 	"gorm.io/gorm"
@@ -52,4 +53,28 @@ func (r *RolePerRepoDB) SaveRolePermission(rolePermissions *[]role_permission.Ro
 	}
 
 	return nil
+}
+
+func (r *RolePerRepoDB) IsRoleTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&role_permission.Role{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}
+
+func (r *RolePerRepoDB) IsPermissionTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&role_permission.Permission{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}
+
+func (r *RolePerRepoDB) IsRolePermissionTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&role_permission.RolePermission{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
 }
