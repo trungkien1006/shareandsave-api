@@ -451,7 +451,32 @@ paths:
       summary: Create admin
       tags:
       - admin
-  /admins/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Cập nhật thông tin admin
+      parameters:
+      - description: Thông tin cập nhật
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/admindto.UpdateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update admin
+      tags:
+      - admin
+  /admins/{adminID}:
     delete:
       consumes:
       - application/json
@@ -502,31 +527,6 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Get admin by ID
-      tags:
-      - admin
-    put:
-      consumes:
-      - application/json
-      description: Cập nhật thông tin admin
-      parameters:
-      - description: Thông tin cập nhật
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/admindto.UpdateAdminRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Update admin
       tags:
       - admin
   /items:

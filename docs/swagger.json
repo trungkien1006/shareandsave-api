@@ -77,6 +77,44 @@
                     }
                 }
             },
+            "put": {
+                "description": "Cập nhật thông tin admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Update admin",
+                "parameters": [
+                    {
+                        "description": "Thông tin cập nhật",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admindto.UpdateAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admindto.UpdateAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Tạo mới admin",
                 "consumes": [
@@ -116,7 +154,7 @@
                 }
             }
         },
-        "/admins/{id}": {
+        "/admins/{adminID}": {
             "get": {
                 "description": "Lấy chi tiết admin theo ID",
                 "consumes": [
@@ -153,44 +191,6 @@
                     },
                     "404": {
                         "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Cập nhật thông tin admin",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin"
-                ],
-                "summary": "Update admin",
-                "parameters": [
-                    {
-                        "description": "Thông tin cập nhật",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/admindto.UpdateAdminRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/admindto.UpdateAdminResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }

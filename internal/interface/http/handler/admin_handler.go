@@ -69,7 +69,7 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 // @Success 200 {object} adminDTO.GetAdminByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
-// @Router /admins/{id} [get]
+// @Router /admins/{adminID} [get]
 func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 	var req adminDTO.GetAdminByIDRequest
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -131,7 +131,7 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 // @Param   body  body  adminDTO.UpdateAdminRequest  true  "Thông tin cập nhật"
 // @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
-// @Router /admins/{id} [put]
+// @Router /admins [put]
 func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 	var req adminDTO.UpdateAdminRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -165,7 +165,7 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 // @Param   adminID   path  int  true  "Admin ID"
 // @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
-// @Router /admins/{id} [delete]
+// @Router /admins/{adminID} [delete]
 func (h *AdminHandler) DeleteAdmin(c *gin.Context) {
 	var req adminDTO.DeleteAdminRequest
 	if err := c.ShouldBindUri(&req); err != nil {
