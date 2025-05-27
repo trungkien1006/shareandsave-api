@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"final_project/internal/application/adminapp"
 	"final_project/internal/domain/admin"
@@ -21,7 +20,7 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 }
 
 // GetAllAdmins godoc
-// @Summary Lấy danh sách admin
+// @Summary Get admin
 // @Description Lấy danh sách admin với phân trang, lọc, sắp xếp
 // @Tags admin
 // @Accept  json
@@ -61,7 +60,7 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 }
 
 // GetAdminByID godoc
-// @Summary Lấy thông tin admin theo ID
+// @Summary Get admin by ID
 // @Description Lấy chi tiết admin theo ID
 // @Tags admin
 // @Accept  json
@@ -72,17 +71,18 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 // @Failure 404 {object} enums.AppError
 // @Router /admins/{id} [get]
 func (h *AdminHandler) GetAdminByID(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid admin ID"})
+	var req adminDTO.GetAdminByIDRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
 	var a admin.Admin
-	if err := h.usecase.GetAdminByID(c.Request.Context(), &a, id); err != nil {
+	if err := h.usecase.GetAdminByID(c.Request.Context(), &a, req.AdminID); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, adminDTO.GetAdminByIDResponseWrapper{
 		Code:    200,
 		Message: "Success",
@@ -93,7 +93,7 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 }
 
 // CreateAdmin godoc
-// @Summary Tạo mới admin
+// @Summary Create admin
 // @Description Tạo mới admin
 // @Tags admin
 // @Accept  json
@@ -108,7 +108,7 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	a := admin.NewAdmin(req.Email, req.Password, req.Fullname, int8(req.Status), req.RoleID)
+	a := admin.NewAdmin(req.Email, req.Password, req.FullName, int8(req.Status), req.RoleID)
 	if err := h.usecase.CreateAdmin(c.Request.Context(), a); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -123,12 +123,11 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 }
 
 // UpdateAdmin godoc
-// @Summary Cập nhật admin
+// @Summary Update admin
 // @Description Cập nhật thông tin admin
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param   id    path  int  true  "Admin ID"
 // @Param   body  body  adminDTO.UpdateAdminRequest  true  "Thông tin cập nhật"
 // @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -141,7 +140,7 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 	}
 	a := &admin.Admin{
 		ID:       req.ID,
-		Fullname: req.Fullname,
+		FullName: req.FullName,
 		Password: req.Password,
 		Status:   int8(req.Status),
 		RoleID:   req.RoleID,
@@ -158,7 +157,7 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 }
 
 // DeleteAdmin godoc
-// @Summary Xóa admin
+// @Summary Delete admin
 // @Description Xóa admin theo ID
 // @Tags admin
 // @Accept  json
@@ -168,13 +167,12 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 // @Failure 400 {object} enums.AppError
 // @Router /admins/{id} [delete]
 func (h *AdminHandler) DeleteAdmin(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid admin ID"})
+	var req adminDTO.DeleteAdminRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	if err := h.usecase.DeleteAdmin(c.Request.Context(), id); err != nil {
+	if err := h.usecase.DeleteAdmin(c.Request.Context(), req.AdminID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}

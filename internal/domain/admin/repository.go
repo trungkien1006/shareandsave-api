@@ -12,4 +12,5 @@ type Repository interface {
 	Update(ctx context.Context, admin *Admin) error
 	Delete(ctx context.Context, domainAdmin *Admin) error
 	IsEmailExist(ctx context.Context, email string) (bool, error)
+	IsRoleExist(ctx context.Context, roleID uint) (bool, error)
 }

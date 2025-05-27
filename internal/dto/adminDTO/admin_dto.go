@@ -5,17 +5,17 @@ import "final_project/internal/domain/admin"
 type AdminDTO struct {
 	ID       uint   `json:"id"`
 	Email    string `json:"email"`
-	Fullname string `json:"fullname"`
+	Fullname string `json:"fullName"`
 	Status   int8   `json:"status"`
-	RoleID   uint   `json:"roleId"`
+	RoleName string `json:"roleName"`
 }
 
 func ToAdminDTO(a admin.Admin) AdminDTO {
 	return AdminDTO{
 		ID:       a.ID,
 		Email:    a.Email,
-		Fullname: a.Fullname,
+		Fullname: a.FullName,
 		Status:   a.Status,
-		RoleID:   a.RoleID,
+		RoleName: a.Role.Name,
 	}
 }

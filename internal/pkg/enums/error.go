@@ -7,4 +7,5 @@ var (
 	ErrUserNotExist       = "Người dùng không tồn tại"
 	ErrInternal           = "Lỗi hệ thống"
 	ErrItemNotExist       = "Đồ không tồn tại"
+	ErrRoleNotExist       = "Chức vụ không tồn tại"
 )

@@ -33,6 +33,14 @@ func (uc *UseCase) GetAdminByID(ctx context.Context, adminObj *admin.Admin, admi
 }
 
 func (uc *UseCase) CreateAdmin(ctx context.Context, adminObj *admin.Admin) error {
+	roleExisted, err := uc.repo.IsRoleExist(ctx, adminObj.RoleID)
+	if err != nil {
+		return err
+	}
+	if !roleExisted {
+		return errors.New(enums.ErrRoleNotExist)
+	}
+
 	emailExisted, err := uc.repo.IsEmailExist(ctx, adminObj.Email)
 	if err != nil {
 		return err
@@ -64,11 +72,20 @@ func (uc *UseCase) UpdateAdmin(ctx context.Context, domainAdmin *admin.Admin) er
 		return errors.New(enums.ErrUserNotExist)
 	}
 
-	if domainAdmin.Fullname != "" {
-		updateAdmin.Fullname = domainAdmin.Fullname
+	if domainAdmin.FullName != "" {
+		updateAdmin.FullName = domainAdmin.FullName
 	}
 	updateAdmin.Status = domainAdmin.Status
+
 	if domainAdmin.RoleID != 0 {
+		roleExisted, err := uc.repo.IsRoleExist(ctx, domainAdmin.RoleID)
+		if err != nil {
+			return err
+		}
+		if !roleExisted {
+			return errors.New(enums.ErrRoleNotExist)
+		}
+
 		updateAdmin.RoleID = domainAdmin.RoleID
 	}
 	if domainAdmin.Password != "" {

@@ -11,7 +11,7 @@ type Admin struct {
 	ID        uint   `gorm:"primaryKey;autoIncrement"`
 	Email     string `gorm:"size:255"`
 	Password  string `gorm:"size:255"`
-	Fullname  string `gorm:"size:64"`
+	FullName  string `gorm:"size:64"`
 	Status    int8   `gorm:"type:TINYINT"`
 	RoleID    uint   `gorm:"index"`
 	CreatedAt time.Time
@@ -20,11 +20,11 @@ type Admin struct {
 	Role      role_permission.Role `gorm:"foreignKey:RoleID"`
 }
 
-func NewAdmin(email, password, fullname string, status int8, roleID uint) *Admin {
+func NewAdmin(email, password, fullName string, status int8, roleID uint) *Admin {
 	return &Admin{
 		Email:    email,
 		Password: password,
-		Fullname: fullname,
+		FullName: fullName,
 		Status:   status,
 		RoleID:   roleID,
 	}

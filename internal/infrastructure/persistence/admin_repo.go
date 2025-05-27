@@ -6,6 +6,7 @@ import (
 	"errors"
 	"final_project/internal/domain/admin"
 	"final_project/internal/domain/filter"
+	"final_project/internal/domain/role_permission"
 	"final_project/internal/pkg/helpers"
 	"final_project/internal/reference"
 	"math"
@@ -25,7 +26,7 @@ func (r *AdminRepoDB) GetAll(ctx context.Context, admins *[]admin.Admin, req fil
 	var tableName = "admin"
 	var query *gorm.DB
 
-	query = r.db.Debug().WithContext(ctx).Model(&admin.Admin{})
+	query = r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Preload("Role")
 
 	if req.Filter != "" {
 		var filters []reference.FilterStruc
@@ -61,7 +62,7 @@ func (r *AdminRepoDB) GetAll(ctx context.Context, admins *[]admin.Admin, req fil
 }
 
 func (r *AdminRepoDB) GetByID(ctx context.Context, domainAdmin *admin.Admin, adminID int) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Where("id = ?", adminID).First(&domainAdmin).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Preload("Role").Where("id = ?", adminID).First(&domainAdmin).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm admin bằng id: " + err.Error())
 	}
 	return nil
@@ -92,6 +93,14 @@ func (r *AdminRepoDB) IsEmailExist(ctx context.Context, email string) (bool, err
 	var count int64 = 0
 	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Where("email LIKE ?", email).Count(&count).Error; err != nil {
 		return false, errors.New("Lỗi khi kiểm tra email đã tồn tại: " + err.Error())
+	}
+	return count > 0, nil
+}
+
+func (r *AdminRepoDB) IsRoleExist(ctx context.Context, roleId uint) (bool, error) {
+	var count int64 = 0
+	if err := r.db.Debug().WithContext(ctx).Model(&role_permission.Role{}).Where("id = ?", roleId).Count(&count).Error; err != nil {
+		return false, errors.New("Lỗi khi kiểm tra chức vụ đã tồn tại: " + err.Error())
 	}
 	return count > 0, nil
 }
