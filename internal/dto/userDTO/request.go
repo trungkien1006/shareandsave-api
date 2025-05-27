@@ -3,11 +3,26 @@ package userDTO
 import "final_project/internal/pkg/enums"
 
 type GetUserRequest struct {
-	Page   int    `query:"page" binding:"min=1"`
-	Limit  int    `query:"limit" binding:"min=8"`
+	Page   int    `query:"page"`
+	Limit  int    `query:"limit"`
 	Sort   string `query:"sort" binding:"omitempty,oneof=ASC DESC"`
 	Order  string `query:"order"`
 	Filter string `query:"filter"`
+}
+
+func (r *GetUserRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 8
+	}
+	if r.Sort == "" {
+		r.Sort = "id"
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
 }
 
 type GetUserByIDRequest struct {
