@@ -122,6 +122,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 	}
 
 	updateUser.Status = domainUser.Status
+	updateUser.ID = domainUser.ID
 
 	if domainUser.Password != "" {
 		hashedPassword, err := hash.HashPassword(domainUser.Password)

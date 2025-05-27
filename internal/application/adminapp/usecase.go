@@ -75,7 +75,9 @@ func (uc *UseCase) UpdateAdmin(ctx context.Context, domainAdmin *admin.Admin) er
 	if domainAdmin.FullName != "" {
 		updateAdmin.FullName = domainAdmin.FullName
 	}
+
 	updateAdmin.Status = domainAdmin.Status
+	updateAdmin.ID = domainAdmin.ID
 
 	if domainAdmin.RoleID != 0 {
 		roleExisted, err := uc.repo.IsRoleExist(ctx, domainAdmin.RoleID)

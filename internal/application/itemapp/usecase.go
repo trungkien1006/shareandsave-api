@@ -69,6 +69,8 @@ func (uc *UseCase) UpdateItem(ctx context.Context, domainItem *item.Item) error 
 		updateItem.Description = domainItem.Description
 	}
 
+	updateItem.ID = domainItem.ID
+
 	if domainItem.Image != "" {
 		strBase64Image, err := helpers.ResizeImageFromBase64(domainItem.Image, enums.ItemImageWidth, enums.ItemImageHeight)
 		if err != nil {
