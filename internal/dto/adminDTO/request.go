@@ -3,11 +3,26 @@ package admindto
 import "final_project/internal/pkg/enums"
 
 type GetAllAdminRequest struct {
-	Page   int    `query:"page" binding:"omitempty,min=1"`
-	Limit  int    `query:"limit" binding:"omitempty,min=8"`
-	Sort   string `query:"sort" binding:"omitempty,oneof=ASC DESC"`
-	Order  string `query:"order"`
-	Filter string `query:"filter"`
+	Page   int    `form:"page"`
+	Limit  int    `form:"limit"`
+	Sort   string `form:"sort" binding:"omitempty,oneof=ASC DESC"`
+	Order  string `form:"order"`
+	Filter string `form:"filter"`
+}
+
+func (r *GetAllAdminRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 10
+	}
+	if r.Sort == "" {
+		r.Sort = "id"
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
 }
 
 type GetAdminByIDRequest struct {

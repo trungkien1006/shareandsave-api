@@ -42,6 +42,8 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 		return
 	}
 
+	req.SetDefault()
+
 	var admins []admin.Admin
 
 	var domainReq filter.FilterRequest

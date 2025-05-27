@@ -41,6 +41,8 @@ func (h *ItemHandler) GetAllItem(c *gin.Context) {
 		return
 	}
 
+	req.SetDefault()
+
 	var items []item.Item
 	domainReq := filter.FilterRequest{
 		Page:   req.Page,
