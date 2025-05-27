@@ -35,11 +35,12 @@ func NewItemHandler(uc *itemapp.UseCase) *ItemHandler {
 // @Router /items [get]
 func (h *ItemHandler) GetAllItem(c *gin.Context) {
 	var req itemDTO.GetAllItemRequest
+
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
-	req.SetDefaults()
+
 	var items []item.Item
 	domainReq := filter.FilterRequest{
 		Page:   req.Page,

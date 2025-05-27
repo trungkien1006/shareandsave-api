@@ -7,6 +7,7 @@ import (
 	"final_project/internal/domain/admin"
 	"final_project/internal/domain/filter"
 	adminDTO "final_project/internal/dto/adminDTO"
+	admindto "final_project/internal/dto/adminDTO"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,10 +32,10 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 // @Param   order    query    string  false  "Thứ tự sắp xếp (ASC/DESC)"
 // @Param   filter   query    string  false  "Bộ lọc"
 // @Success 200 {object} adminDTO.GetAdminResponseWrapper
-// @Failure 400 {object} map[string]interface{}
+// @Failure 400 {object} enums.AppError
 // @Router /admins [get]
 func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
-	var req filter.FilterRequest
+	var req admindto.GetAllAdminRequest
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -43,7 +44,15 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 
 	var admins []admin.Admin
 
-	totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), &admins, req)
+	var domainReq filter.FilterRequest
+
+	domainReq.Page = req.Page
+	domainReq.Limit = req.Limit
+	domainReq.Sort = req.Sort
+	domainReq.Order = req.Order
+	domainReq.Filter = req.Filter
+
+	totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), &admins, domainReq)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})

@@ -43,8 +43,6 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 		return
 	}
 
-	req.SetDefaults()
-
 	var users []user.User
 
 	var domain_req filter.FilterRequest
