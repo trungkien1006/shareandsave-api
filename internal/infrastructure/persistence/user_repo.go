@@ -82,7 +82,7 @@ func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 }
 
 func (r *UserRepoDB) Update(ctx context.Context, domainUser *user.User) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Save(&domainUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Where("id = ?", domainUser.ID).Save(&domainUser).Error; err != nil {
 		return errors.New("Lỗi khi cập nhật người dùng mới: " + err.Error())
 	}
 

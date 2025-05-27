@@ -76,7 +76,7 @@ func (r *AdminRepoDB) Save(ctx context.Context, domainAdmin *admin.Admin) error 
 }
 
 func (r *AdminRepoDB) Update(ctx context.Context, domainAdmin *admin.Admin) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Save(&domainAdmin).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Where("id = ?", domainAdmin.ID).Save(&domainAdmin).Error; err != nil {
 		return errors.New("Lỗi khi cập nhật admin: " + err.Error())
 	}
 	return nil
