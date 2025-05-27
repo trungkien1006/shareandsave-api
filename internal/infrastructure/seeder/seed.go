@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"fmt"
 )
 
 type Seeder struct {
@@ -41,11 +42,11 @@ func (s *Seeder) Seed() error {
 	// 	return err
 	// }
 
-	// if err := s.SeedItems(); err != nil {
+	// if err := s.seedItems(); err != nil {
 	// 	return err
 	// }
 
-	if err := s.SeedUsers(); err != nil {
+	if err := s.seedUsers(); err != nil {
 		return err
 	}
 
@@ -255,7 +256,7 @@ func (s *Seeder) seedAdmin() error {
 	return nil
 }
 
-func (s *Seeder) SeedItems() error {
+func (s *Seeder) seedItems() error {
 	ctx := context.Background()
 	isEmpty, err := s.itemRepo.IsTableEmpty(ctx)
 	if err != nil {
@@ -283,15 +284,22 @@ func (s *Seeder) SeedItems() error {
 	return nil
 }
 
-func (s *Seeder) SeedUsers() error {
+func (s *Seeder) seedUsers() error {
 	ctx := context.Background()
+
+	fmt.Println("Check user table...")
+
 	isEmpty, err := s.userRepo.IsTableEmpty(ctx)
+
 	if err != nil {
 		return err
 	}
+
 	if !isEmpty {
 		return nil
 	}
+
+	fmt.Println("Seeding users...")
 
 	users := []user.User{
 		{
@@ -598,6 +606,8 @@ func (s *Seeder) SeedUsers() error {
 			return err
 		}
 	}
+
+	fmt.Println("Seeding users success...")
 
 	return nil
 }
