@@ -3,8 +3,8 @@ package userDTO
 import "final_project/internal/pkg/enums"
 
 type GetUserRequest struct {
-	Page   int    `query:"page" binding:"omitempty,min=1"`
-	Limit  int    `query:"limit" binding:"omitempty,min=8"`
+	Page   int    `query:"page" binding:"min=1"`
+	Limit  int    `query:"limit" binding:"min=8"`
 	Sort   string `query:"sort" binding:"omitempty,oneof=ASC DESC"`
 	Order  string `query:"order"`
 	Filter string `query:"filter"`
