@@ -34,7 +34,7 @@ const docTemplate = `{
                 "tags": [
                     "admin"
                 ],
-                "summary": "Lấy danh sách admin",
+                "summary": "Get admin",
                 "parameters": [
                     {
                         "type": "integer",
@@ -94,7 +94,7 @@ const docTemplate = `{
                 "tags": [
                     "admin"
                 ],
-                "summary": "Tạo mới admin",
+                "summary": "Create admin",
                 "parameters": [
                     {
                         "description": "Thông tin admin",
@@ -134,7 +134,7 @@ const docTemplate = `{
                 "tags": [
                     "admin"
                 ],
-                "summary": "Lấy thông tin admin theo ID",
+                "summary": "Get admin by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -176,15 +176,8 @@ const docTemplate = `{
                 "tags": [
                     "admin"
                 ],
-                "summary": "Cập nhật admin",
+                "summary": "Update admin",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Admin ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "Thông tin cập nhật",
                         "name": "body",
@@ -221,7 +214,7 @@ const docTemplate = `{
                 "tags": [
                     "admin"
                 ],
-                "summary": "Xóa admin",
+                "summary": "Delete admin",
                 "parameters": [
                     {
                         "type": "integer",
@@ -721,14 +714,14 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "fullname": {
+                "fullName": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "roleId": {
-                    "type": "integer"
+                "roleName": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "integer"
@@ -739,7 +732,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "fullname",
+                "fullName",
                 "password",
                 "roleId"
             ],
@@ -747,7 +740,7 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "fullname": {
+                "fullName": {
                     "type": "string"
                 },
                 "password": {
@@ -849,7 +842,7 @@ const docTemplate = `{
                 "id"
             ],
             "properties": {
-                "fullname": {
+                "fulln=Name": {
                     "type": "string"
                 },
                 "id": {

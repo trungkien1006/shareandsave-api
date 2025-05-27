@@ -4,12 +4,12 @@ definitions:
     properties:
       email:
         type: string
-      fullname:
+      fullName:
         type: string
       id:
         type: integer
-      roleId:
-        type: integer
+      roleName:
+        type: string
       status:
         type: integer
     type: object
@@ -17,7 +17,7 @@ definitions:
     properties:
       email:
         type: string
-      fullname:
+      fullName:
         type: string
       password:
         minLength: 8
@@ -33,7 +33,7 @@ definitions:
         - 2
     required:
     - email
-    - fullname
+    - fullName
     - password
     - roleId
     type: object
@@ -85,7 +85,7 @@ definitions:
     type: object
   admindto.UpdateAdminRequest:
     properties:
-      fullname:
+      fulln=Name:
         type: string
       id:
         type: integer
@@ -423,7 +423,7 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      summary: Lấy danh sách admin
+      summary: Get admin
       tags:
       - admin
     post:
@@ -448,7 +448,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Tạo mới admin
+      summary: Create admin
       tags:
       - admin
   /admins/{id}:
@@ -473,7 +473,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Xóa admin
+      summary: Delete admin
       tags:
       - admin
     get:
@@ -501,7 +501,7 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Lấy thông tin admin theo ID
+      summary: Get admin by ID
       tags:
       - admin
     put:
@@ -509,11 +509,6 @@ paths:
       - application/json
       description: Cập nhật thông tin admin
       parameters:
-      - description: Admin ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Thông tin cập nhật
         in: body
         name: body
@@ -531,7 +526,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Cập nhật admin
+      summary: Update admin
       tags:
       - admin
   /items:
