@@ -459,7 +459,7 @@ paths:
       parameters:
       - description: Admin ID
         in: path
-        name: id
+        name: adminID
         required: true
         type: integer
       produces:
@@ -483,7 +483,7 @@ paths:
       parameters:
       - description: Admin ID
         in: path
-        name: id
+        name: adminID
         required: true
         type: integer
       produces:

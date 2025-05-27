@@ -133,7 +133,7 @@
                     {
                         "type": "integer",
                         "description": "Admin ID",
-                        "name": "id",
+                        "name": "adminID",
                         "in": "path",
                         "required": true
                     }
@@ -213,7 +213,7 @@
                     {
                         "type": "integer",
                         "description": "Admin ID",
-                        "name": "id",
+                        "name": "adminID",
                         "in": "path",
                         "required": true
                     }

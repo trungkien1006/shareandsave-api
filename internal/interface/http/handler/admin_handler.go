@@ -65,7 +65,7 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param   id   path     int  true  "Admin ID"
+// @Param   adminID   path     int  true  "Admin ID"
 // @Success 200 {object} adminDTO.GetAdminByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
@@ -162,7 +162,7 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param   id   path  int  true  "Admin ID"
+// @Param   adminID   path  int  true  "Admin ID"
 // @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins/{id} [delete]

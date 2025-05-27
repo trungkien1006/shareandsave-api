@@ -139,7 +139,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Admin ID",
-                        "name": "id",
+                        "name": "adminID",
                         "in": "path",
                         "required": true
                     }
@@ -219,7 +219,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Admin ID",
-                        "name": "id",
+                        "name": "adminID",
                         "in": "path",
                         "required": true
                     }
