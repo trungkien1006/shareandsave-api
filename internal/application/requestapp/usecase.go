@@ -74,8 +74,6 @@ func (uc *UseCase) CreateRequest(ctx context.Context, req *request.Request, user
 	}
 
 	req.Status = int8(enums.RequestStatusPending) // Mặc định trạng thái là Pending
-	req.ItemWarehouseID = 0                       // Mặc định ItemWarehouseID là 0
-	req.PostID = 0                                // Mặc định PostID là 0
 	req.ReplyMessage = ""                         // Mặc định ReplyMessage là rỗng
 
 	if err := uc.repo.Create(ctx, req); err != nil {
