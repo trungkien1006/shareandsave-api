@@ -101,9 +101,14 @@ func (r *AdminRepoDB) GetAll(ctx context.Context, admins *[]admin.Admin, req fil
 }
 
 func (r *AdminRepoDB) GetByID(ctx context.Context, domainAdmin *admin.Admin, adminID int) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Preload("Role").Where("id = ?", adminID).First(&domainAdmin).Error; err != nil {
+	var dbAdmin dbmodel.Admin
+
+	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Preload("Role").Where("id = ?", adminID).First(&dbAdmin).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm admin bằng id: " + err.Error())
 	}
+
+	*domainAdmin = dbmodel.AdminDBToDomain(dbAdmin)
+
 	return nil
 }
 
@@ -138,16 +143,30 @@ func (r *AdminRepoDB) Save(ctx context.Context, domainAdmin admin.Admin) (admin.
 }
 
 func (r *AdminRepoDB) Update(ctx context.Context, domainAdmin *admin.Admin) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Where("id = ?", domainAdmin.ID).Save(&domainAdmin).Error; err != nil {
+	var dbAdmin dbmodel.Admin
+
+	dbAdmin = dbmodel.AdminDomainToDB(*domainAdmin)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Where("id = ?", domainAdmin.ID).Save(&dbAdmin).Error; err != nil {
 		return errors.New("Lỗi khi cập nhật admin: " + err.Error())
 	}
+
+	*domainAdmin = dbmodel.AdminDBToDomain(dbAdmin)
+
 	return nil
 }
 
 func (r *AdminRepoDB) Delete(ctx context.Context, domainAdmin *admin.Admin) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Delete(&domainAdmin).Error; err != nil {
+	var dbAdmin dbmodel.Admin
+
+	dbAdmin = dbmodel.AdminDomainToDB(*domainAdmin)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Delete(&dbAdmin).Error; err != nil {
 		return errors.New("Lỗi khi xóa admin: " + err.Error())
 	}
+
+	*domainAdmin = dbmodel.AdminDBToDomain(dbAdmin)
+
 	return nil
 }
 

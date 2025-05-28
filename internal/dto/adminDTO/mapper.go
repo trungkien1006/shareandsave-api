@@ -3,10 +3,19 @@ package admindto
 import "final_project/internal/domain/admin"
 
 // DTO → Domain
-func ToDomainAdmin(dto CreateAdminRequest) admin.Admin {
+func CToDomainAdmin(dto CreateAdminRequest) admin.Admin {
 	return admin.Admin{
 		Email:    dto.Email,
 		Password: dto.Password,
+		FullName: dto.FullName,
+		Status:   int8(dto.Status),
+		RoleID:   dto.RoleID,
+	}
+}
+
+// DTO → Domain
+func UToDomainAdmin(dto UpdateAdminRequest) admin.Admin {
+	return admin.Admin{
 		FullName: dto.FullName,
 		Status:   int8(dto.Status),
 		RoleID:   dto.RoleID,

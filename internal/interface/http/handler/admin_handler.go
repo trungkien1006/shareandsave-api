@@ -4,9 +4,7 @@ import (
 	"net/http"
 
 	"final_project/internal/application/adminapp"
-	"final_project/internal/domain/admin"
 	"final_project/internal/domain/filter"
-	adminDTO "final_project/internal/dto/adminDTO"
 	admindto "final_project/internal/dto/adminDTO"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +30,7 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 // @Param   order    query    string  false  "Thứ tự sắp xếp (ASC/DESC)"
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
-// @Success 200 {object} adminDTO.GetAdminResponseWrapper
+// @Success 200 {object} admindto.GetAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins [get]
 func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
@@ -57,16 +55,16 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 		return
 	}
 
-	var adminDTOs []adminDTO.AdminDTO
+	var adminDTOs []admindto.AdminDTO
 	for _, a := range admins {
 		// Lấy roleName từ usecase trả về (nếu cần, có thể trả về []struct{admin, roleName})
-		adminDTOs = append(adminDTOs, adminDTO.ToAdminDTO(a.Admin, a.RoleName))
+		adminDTOs = append(adminDTOs, admindto.ToAdminDTO(a.Admin, a.RoleName))
 	}
 
-	c.JSON(http.StatusOK, adminDTO.GetAdminResponseWrapper{
+	c.JSON(http.StatusOK, admindto.GetAdminResponseWrapper{
 		Code:    200,
 		Message: "Success",
-		Data: adminDTO.GetAdminResponse{
+		Data: admindto.GetAdminResponse{
 			Admins:    adminDTOs,
 			TotalPage: totalPage,
 		},
@@ -80,12 +78,12 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param   adminID   path     int  true  "Admin ID"
-// @Success 200 {object} adminDTO.GetAdminByIDResponseWrapper
+// @Success 200 {object} admindto.GetAdminByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
 // @Router /admins/{adminID} [get]
 func (h *AdminHandler) GetAdminByID(c *gin.Context) {
-	var req adminDTO.GetAdminByIDRequest
+	var req admindto.GetAdminByIDRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -97,11 +95,14 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, adminDTO.GetAdminByIDResponseWrapper{
+	// Chuyển đổi domain admin sang DTO
+	result := admindto.ToAdminDTO(admin, roleName)
+
+	c.JSON(http.StatusOK, admindto.GetAdminByIDResponseWrapper{
 		Code:    200,
 		Message: "Success",
-		Data: adminDTO.GetAdminByIDResponse{
-			Admin: adminDTO.ToAdminDTO(admin, roleName),
+		Data: admindto.GetAdminByIDResponse{
+			Admin: result,
 		},
 	})
 }
@@ -112,18 +113,18 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param   body  body  adminDTO.CreateAdminRequest  true  "Thông tin admin"
-// @Success 201 {object} adminDTO.CreateAdminResponseWrapper
+// @Param   body  body  admindto.CreateAdminRequest  true  "Thông tin admin"
+// @Success 201 {object} admindto.CreateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins [post]
 func (h *AdminHandler) CreateAdmin(c *gin.Context) {
-	var req adminDTO.CreateAdminRequest
+	var req admindto.CreateAdminRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	// DTO → Domain
-	domainAdmin := adminDTO.ToDomainAdmin(req)
+	domainAdmin := admindto.CToDomainAdmin(req)
 
 	// Gửi domain entity sang usecase
 	createdDomainAdmin, roleName, err := h.usecase.CreateAdmin(c.Request.Context(), domainAdmin)
@@ -132,11 +133,12 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 		return
 	}
 	// Domain → DTO (response)
-	resp := adminDTO.ToAdminDTO(createdDomainAdmin, roleName)
-	c.JSON(http.StatusCreated, adminDTO.CreateAdminResponseWrapper{
+	resp := admindto.ToAdminDTO(createdDomainAdmin, roleName)
+
+	c.JSON(http.StatusCreated, admindto.CreateAdminResponseWrapper{
 		Code:    201,
 		Message: "Created",
-		Data:    adminDTO.CreateAdminResponse{Admin: resp},
+		Data:    admindto.CreateAdminResponse{Admin: resp},
 	})
 }
 
@@ -146,28 +148,27 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param   body  body  adminDTO.UpdateAdminRequest  true  "Thông tin cập nhật"
-// @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
+// @Param   body  body  admindto.UpdateAdminRequest  true  "Thông tin cập nhật"
+// @Success 200 {object} admindto.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins [put]
 func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
-	var req adminDTO.UpdateAdminRequest
+	var req admindto.UpdateAdminRequest
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	a := &admin.Admin{
-		ID:       req.ID,
-		FullName: req.FullName,
-		Password: req.Password,
-		Status:   int8(req.Status),
-		RoleID:   req.RoleID,
-	}
-	if err := h.usecase.UpdateAdmin(c.Request.Context(), a); err != nil {
+
+	// DTO → Domain
+	a := admindto.UToDomainAdmin(req)
+
+	if err := h.usecase.UpdateAdmin(c.Request.Context(), &a); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, adminDTO.UpdateAdminResponseWrapper{
+
+	c.JSON(http.StatusOK, admindto.UpdateAdminResponseWrapper{
 		Code:    200,
 		Message: "Updated",
 		Data:    nil,
@@ -181,20 +182,22 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param   adminID   path  int  true  "Admin ID"
-// @Success 200 {object} adminDTO.UpdateAdminResponseWrapper
+// @Success 200 {object} admindto.UpdateAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins/{adminID} [delete]
 func (h *AdminHandler) DeleteAdmin(c *gin.Context) {
-	var req adminDTO.DeleteAdminRequest
+	var req admindto.DeleteAdminRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
 	if err := h.usecase.DeleteAdmin(c.Request.Context(), req.AdminID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, adminDTO.UpdateAdminResponseWrapper{
+
+	c.JSON(http.StatusOK, admindto.UpdateAdminResponseWrapper{
 		Code:    200,
 		Message: "Deleted",
 		Data:    nil,

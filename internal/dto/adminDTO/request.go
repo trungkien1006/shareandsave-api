@@ -41,7 +41,6 @@ type CreateAdminRequest struct {
 type UpdateAdminRequest struct {
 	ID       uint             `json:"id" binding:"required"`
 	FullName string           `json:"fullName" example:"John Doe"`
-	Password string           `json:"password"`
 	Status   enums.UserStatus `json:"status" binding:"oneof=0 1 2" example:"0"` // 0: Inactive, 1: Active, 2: Suspended
 	RoleID   uint             `json:"roleId" example:"1"`                       // Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
 }
