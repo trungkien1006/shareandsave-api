@@ -30,7 +30,8 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 // @Param   limit    query    int     false  "Số lượng/trang"
 // @Param   sort     query    string  false  "Trường sắp xếp"
 // @Param   order    query    string  false  "Thứ tự sắp xếp (ASC/DESC)"
-// @Param   filter   query    string  false  "Bộ lọc"
+// @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
+// @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} adminDTO.GetAdminResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /admins [get]

@@ -1,11 +1,11 @@
 package requestdto
 
-type CreateSendOldItemRequestWrapper struct {
-	Code    int                      `json:"code"`
-	Message string                   `json:"message"`
-	Data    CreateSendOldItemRequest `json:"data"`
+type CreateSendOldItemRequestResponseWrapper struct {
+	Code    int                              `json:"code"`
+	Message string                           `json:"message"`
+	Data    CreateSendOldItemRequestResponse `json:"data"`
 }
 
-type CreateSendOldItemRequest struct {
+type CreateSendOldItemRequestResponse struct {
 	Request RequestSendOldItem `json:"request"`
 }

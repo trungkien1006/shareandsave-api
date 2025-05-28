@@ -28,7 +28,8 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column (vd: name, email)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param filter query string false "Filter by name or email" example("{\"name\":\"John\", \"email\":\"john@gmail.com\"}")
+// @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
+// @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} userDTO.GetUserResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users [get]

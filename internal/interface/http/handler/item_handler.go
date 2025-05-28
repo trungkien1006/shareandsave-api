@@ -28,7 +28,8 @@ func NewItemHandler(uc *itemapp.UseCase) *ItemHandler {
 // @Param limit query int false "Number record per page" minimum(1) example(10)
 // @Param sort query string false "Sort column (vd: name)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param filter query string false "Filter by name or description" example("{\"name\":\"item1\"}")
+// @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
+// @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} itemDTO.GetItemResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
