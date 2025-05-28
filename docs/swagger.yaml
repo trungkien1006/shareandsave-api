@@ -16,21 +16,27 @@ definitions:
   admindto.CreateAdminRequest:
     properties:
       email:
+        example: john@gmail.com
         type: string
       fullName:
+        example: John Doe
         type: string
       password:
         minLength: 8
         type: string
       roleId:
+        description: Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
+        example: 1
         type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
+        description: '0: Inactive, 1: Active, 2: Suspended'
         enum:
         - 0
         - 1
         - 2
+        example: 0
     required:
     - email
     - fullName
@@ -86,20 +92,25 @@ definitions:
   admindto.UpdateAdminRequest:
     properties:
       fullName:
+        example: John Doe
         type: string
       id:
         type: integer
       password:
         type: string
       roleId:
+        description: Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
+        example: 1
         type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
+        description: '0: Inactive, 1: Active, 2: Suspended'
         enum:
         - 0
         - 1
         - 2
+        example: 0
     required:
     - id
     type: object
@@ -257,15 +268,20 @@ definitions:
     properties:
       appointmentLocation:
         description: Location of the appointment
+        example: 123 Main St, City, Country
         type: string
       appointmentTime:
         description: Time in RFC3339 format
+        example: "2025-05-28T07:23:45Z"
         type: string
       description:
+        example: I want to send this old item to the charity organization.
         type: string
       email:
+        example: john@gmail.com
         type: string
       fullName:
+        example: John Doe
         type: string
       id:
         type: integer
@@ -276,12 +292,14 @@ definitions:
         - false
         type: boolean
       phoneNumber:
+        example: "0123456789"
         type: string
       requestType:
         allOf:
         - $ref: '#/definitions/enums.RequestType'
         description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
           Post'
+        example: 1
       userId:
         type: integer
     required:
@@ -289,10 +307,19 @@ definitions:
     - appointmentTime
     - id
     type: object
-  requestdto.CreateSendOldItemRequest:
+  requestdto.CreateSendOldItemRequestResponse:
     properties:
       request:
         $ref: '#/definitions/requestdto.RequestSendOldItem'
+    type: object
+  requestdto.CreateSendOldItemRequestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/requestdto.CreateSendOldItemRequestResponse'
+      message:
+        type: string
     type: object
   requestdto.RequestSendOldItem:
     properties:
@@ -322,8 +349,10 @@ definitions:
       address:
         type: string
       email:
+        example: john@gmail.com
         type: string
       fullName:
+        example: John Doe
         type: string
       goodPoint:
         type: integer
@@ -331,14 +360,17 @@ definitions:
         minLength: 8
         type: string
       phoneNumber:
+        example: "0123456789"
         type: string
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
+        description: '0: inactive, 1: active, 2: banned'
         enum:
         - 0
         - 1
         - 2
+        example: 1
     required:
     - email
     - fullName
@@ -405,22 +437,27 @@ definitions:
       avatar:
         type: string
       fullName:
+        example: John Doe
         type: string
       goodPoint:
         type: integer
       id:
         type: integer
       major:
+        example: Information Technology
         type: string
       phoneNumber:
+        example: "0123456789"
         type: string
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
+        description: '0: inactive, 1: active, 2: banned'
         enum:
         - 0
         - 1
         - 2
+        example: 1
     type: object
   userDTO.UpdateUserResponseWrapper:
     properties:
@@ -485,9 +522,13 @@ paths:
         in: query
         name: order
         type: string
-      - description: Bộ lọc
+      - description: 'Trường lọc (vd: email, full_name)'
         in: query
-        name: filter
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
         type: string
       produces:
       - application/json
@@ -634,10 +675,13 @@ paths:
         in: query
         name: order
         type: string
-      - description: Filter by name or description
-        example: '"{\"name\":\"item1\"}"'
+      - description: 'Trường lọc (vd: email, full_name)'
         in: query
-        name: filter
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
         type: string
       produces:
       - application/json
@@ -790,7 +834,7 @@ paths:
         "201":
           description: Created request successfully
           schema:
-            $ref: '#/definitions/requestdto.CreateSendOldItemRequest'
+            $ref: '#/definitions/requestdto.CreateSendOldItemRequestResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -826,10 +870,13 @@ paths:
         in: query
         name: order
         type: string
-      - description: Filter by name or email
-        example: '"{\"name\":\"John\", \"email\":\"john@gmail.com\"}"'
+      - description: 'Trường lọc (vd: email, full_name)'
         in: query
-        name: filter
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
         type: string
       produces:
       - application/json

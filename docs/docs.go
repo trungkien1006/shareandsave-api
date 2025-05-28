@@ -62,8 +62,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Bộ lọc",
-                        "name": "filter",
+                        "description": "Trường lọc (vd: email, full_name)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
                         "in": "query"
                     }
                 ],
@@ -285,9 +291,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"{\\\"name\\\":\\\"item1\\\"}\"",
-                        "description": "Filter by name or description",
-                        "name": "filter",
+                        "description": "Trường lọc (vd: email, full_name)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
                         "in": "query"
                     }
                 ],
@@ -515,7 +526,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created request successfully",
                         "schema": {
-                            "$ref": "#/definitions/requestdto.CreateSendOldItemRequest"
+                            "$ref": "#/definitions/requestdto.CreateSendOldItemRequestResponseWrapper"
                         }
                     },
                     "400": {
@@ -573,9 +584,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"{\\\"name\\\":\\\"John\\\", \\\"email\\\":\\\"john@gmail.com\\\"}\"",
-                        "description": "Filter by name or email",
-                        "name": "filter",
+                        "description": "Trường lọc (vd: email, full_name)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
                         "in": "query"
                     }
                 ],
@@ -777,19 +793,24 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "john@gmail.com"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "password": {
                     "type": "string",
                     "minLength": 8
                 },
                 "roleId": {
-                    "type": "integer"
+                    "description": "Role ID must be provided, e.g., 1 for Admin, 2 for Moderator",
+                    "type": "integer",
+                    "example": 1
                 },
                 "status": {
+                    "description": "0: Inactive, 1: Active, 2: Suspended",
                     "enum": [
                         0,
                         1,
@@ -799,7 +820,8 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/enums.UserStatus"
                         }
-                    ]
+                    ],
+                    "example": 0
                 }
             }
         },
@@ -882,7 +904,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "id": {
                     "type": "integer"
@@ -891,9 +914,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "roleId": {
-                    "type": "integer"
+                    "description": "Role ID must be provided, e.g., 1 for Admin, 2 for Moderator",
+                    "type": "integer",
+                    "example": 1
                 },
                 "status": {
+                    "description": "0: Inactive, 1: Active, 2: Suspended",
                     "enum": [
                         0,
                         1,
@@ -903,7 +929,8 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/enums.UserStatus"
                         }
-                    ]
+                    ],
+                    "example": 0
                 }
             }
         },
@@ -1141,20 +1168,25 @@ const docTemplate = `{
             "properties": {
                 "appointmentLocation": {
                     "description": "Location of the appointment",
-                    "type": "string"
+                    "type": "string",
+                    "example": "123 Main St, City, Country"
                 },
                 "appointmentTime": {
                     "description": "Time in RFC3339 format",
-                    "type": "string"
+                    "type": "string",
+                    "example": "2025-05-28T07:23:45Z"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "I want to send this old item to the charity organization."
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "john@gmail.com"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "id": {
                     "type": "integer"
@@ -1168,7 +1200,8 @@ const docTemplate = `{
                     ]
                 },
                 "phoneNumber": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "0123456789"
                 },
                 "requestType": {
                     "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
@@ -1176,18 +1209,33 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/enums.RequestType"
                         }
-                    ]
+                    ],
+                    "example": 1
                 },
                 "userId": {
                     "type": "integer"
                 }
             }
         },
-        "requestdto.CreateSendOldItemRequest": {
+        "requestdto.CreateSendOldItemRequestResponse": {
             "type": "object",
             "properties": {
                 "request": {
                     "$ref": "#/definitions/requestdto.RequestSendOldItem"
+                }
+            }
+        },
+        "requestdto.CreateSendOldItemRequestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/requestdto.CreateSendOldItemRequestResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -1237,10 +1285,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "john@gmail.com"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "goodPoint": {
                     "type": "integer"
@@ -1250,9 +1300,11 @@ const docTemplate = `{
                     "minLength": 8
                 },
                 "phoneNumber": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "0123456789"
                 },
                 "status": {
+                    "description": "0: inactive, 1: active, 2: banned",
                     "enum": [
                         0,
                         1,
@@ -1262,7 +1314,8 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/enums.UserStatus"
                         }
-                    ]
+                    ],
+                    "example": 1
                 }
             }
         },
@@ -1360,7 +1413,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "goodPoint": {
                     "type": "integer"
@@ -1369,12 +1423,15 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "major": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Information Technology"
                 },
                 "phoneNumber": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "0123456789"
                 },
                 "status": {
+                    "description": "0: inactive, 1: active, 2: banned",
                     "enum": [
                         0,
                         1,
@@ -1384,7 +1441,8 @@ const docTemplate = `{
                         {
                             "$ref": "#/definitions/enums.UserStatus"
                         }
-                    ]
+                    ],
+                    "example": 1
                 }
             }
         },
