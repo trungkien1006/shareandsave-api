@@ -118,8 +118,12 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
-	itm := item.NewItem(req.Name, req.Description, req.Image)
-	if err := h.uc.CreateItem(c.Request.Context(), itm); err != nil {
+	itm := item.Item{
+		Name:        req.Name,
+		Description: req.Description,
+		Image:       req.Image,
+	}
+	if err := h.uc.CreateItem(c.Request.Context(), &itm); err != nil {
 		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
 		return
 	}
@@ -127,7 +131,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		Code:    http.StatusOK,
 		Message: "Item created successfully",
 		Data: itemDTO.CreateItemResponse{
-			Item: itemDTO.ToItemDTO(*itm),
+			Item: itemDTO.ToItemDTO(itm),
 		},
 	})
 }

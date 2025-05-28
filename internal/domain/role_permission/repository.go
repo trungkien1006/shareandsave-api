@@ -1,8 +1,9 @@
-package role_permission
+package rolepermission
 
 import "context"
 
 type Repository interface {
+	GetRoleNameByID(ctx context.Context, roleID uint) (string, error)
 	SavePermission(permissions *[]Permission) error
 	SaveRole(roles *[]Role) error
 	GetAllRoles(roles *[]Role) error

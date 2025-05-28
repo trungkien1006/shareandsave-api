@@ -1,37 +1,14 @@
 package user
 
-import (
-	"time"
-
-	"gorm.io/gorm"
-)
-
 type User struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	Email       string `gorm:"unique;size:255;not null"`
-	Password    string `gorm:"size:255;not null"`
-	Avatar      string `gorm:"type:LONGTEXT"`
-	FullName    string `gorm:"size:64"`
-	PhoneNumber string `gorm:"unique;size:16"`
-	Address     string `gorm:"type:TEXT"`
-	Status      int    `gorm:"type:TINYINT"`
-	GoodPoint   int    `gorm:"default:0"`
-	Major       string `gorm:"size:64"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
-}
-
-func (u *User) NewUser(email string, password string, avatar string, fullname string, phoneNumber string, address string, status int, goodPoint int, major string) *User {
-	return &User{
-		Email:       email,
-		Password:    password,
-		Avatar:      avatar,
-		FullName:    fullname,
-		PhoneNumber: phoneNumber,
-		Address:     address,
-		Status:      status,
-		GoodPoint:   goodPoint,
-		Major:       major,
-	}
+	ID          uint
+	Email       string
+	Password    string
+	Avatar      string
+	FullName    string
+	PhoneNumber string
+	Address     string
+	Status      int8
+	GoodPoint   int
+	Major       string
 }

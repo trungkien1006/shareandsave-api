@@ -1,1 +1,1 @@
-package importinvoice
+package import_invoice

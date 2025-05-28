@@ -9,7 +9,7 @@ type UserDTO struct {
 	Avatar      string `json:"avatar,omitempty"`
 	PhoneNumber string `json:"phoneNumber,omitempty"`
 	Address     string `json:"address,omitempty"`
-	Status      int    `json:"status"`
+	Status      int8   `json:"status"`
 	GoodPoint   int    `json:"goodPoint"`
 	Major       string `json:"major,omitempty"`
 }

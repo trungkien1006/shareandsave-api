@@ -7,6 +7,7 @@ import (
 	"final_project/internal/domain/user"
 	"math"
 
+	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +25,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 	query = r.db.Debug().WithContext(ctx).Model(&user.User{})
 
 	if req.SearchBy != "" && req.SearchValue != "" {
-		query = query.Where("? LIKE ?", req.SearchBy, "%"+req.SearchValue+"%")
+		query = query.Where(strcase.ToSnake(req.SearchBy)+" LIKE ?", "%"+req.SearchValue+"%")
 	}
 
 	var totalRecord int64 = 0
@@ -41,7 +42,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 
 	//sort du lieu
 	if req.Sort != "" {
-		query.Order(req.Sort + " " + req.Order)
+		query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
 	}
 
 	if err := query.Find(&users).Error; err != nil {

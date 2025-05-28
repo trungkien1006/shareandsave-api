@@ -5,6 +5,7 @@ import (
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
 
+	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
 )
 
@@ -29,7 +30,7 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 	query = r.db.Debug().WithContext(ctx).Model(&item.Item{})
 
 	if req.SearchBy != "" && req.SearchValue != "" {
-		query = query.Where("? LIKE ?", req.SearchBy, "%"+req.SearchValue+"%")
+		query = query.Where(strcase.ToSnake(req.SearchBy)+" LIKE ?", "%"+req.SearchValue+"%")
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {
@@ -37,7 +38,7 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 	}
 
 	if req.Sort != "" && req.Order != "" {
-		query = query.Order(req.Sort + " " + req.Order)
+		query = query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
 	}
 
 	if req.Limit > 0 && req.Page > 0 {

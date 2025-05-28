@@ -37,18 +37,13 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 // @Router /admins [get]
 func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 	var req admindto.GetAllAdminRequest
-
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-
 	req.SetDefault()
 
-	var admins []admin.Admin
-
 	var domainReq filter.FilterRequest
-
 	domainReq.Page = req.Page
 	domainReq.Limit = req.Limit
 	domainReq.Sort = req.Sort
@@ -56,17 +51,16 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 	domainReq.SearchBy = req.SearchBy
 	domainReq.SearchValue = req.SearchValue
 
-	totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), &admins, domainReq)
-
+	admins, totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), domainReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
 	var adminDTOs []adminDTO.AdminDTO
-
 	for _, a := range admins {
-		adminDTOs = append(adminDTOs, adminDTO.ToAdminDTO(a))
+		// Lấy roleName từ usecase trả về (nếu cần, có thể trả về []struct{admin, roleName})
+		adminDTOs = append(adminDTOs, adminDTO.ToAdminDTO(a.Admin, a.RoleName))
 	}
 
 	c.JSON(http.StatusOK, adminDTO.GetAdminResponseWrapper{
@@ -97,8 +91,8 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 		return
 	}
 
-	var a admin.Admin
-	if err := h.usecase.GetAdminByID(c.Request.Context(), &a, req.AdminID); err != nil {
+	admin, roleName, err := h.usecase.GetAdminByID(c.Request.Context(), uint(req.AdminID))
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
@@ -107,7 +101,7 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 		Code:    200,
 		Message: "Success",
 		Data: adminDTO.GetAdminByIDResponse{
-			Admin: adminDTO.ToAdminDTO(a),
+			Admin: adminDTO.ToAdminDTO(admin, roleName),
 		},
 	})
 }
@@ -128,17 +122,21 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	a := admin.NewAdmin(req.Email, req.Password, req.FullName, int8(req.Status), req.RoleID)
-	if err := h.usecase.CreateAdmin(c.Request.Context(), a); err != nil {
+	// DTO → Domain
+	domainAdmin := adminDTO.ToDomainAdmin(req)
+
+	// Gửi domain entity sang usecase
+	createdDomainAdmin, roleName, err := h.usecase.CreateAdmin(c.Request.Context(), domainAdmin)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+	// Domain → DTO (response)
+	resp := adminDTO.ToAdminDTO(createdDomainAdmin, roleName)
 	c.JSON(http.StatusCreated, adminDTO.CreateAdminResponseWrapper{
 		Code:    201,
 		Message: "Created",
-		Data: adminDTO.CreateAdminResponse{
-			Admin: adminDTO.ToAdminDTO(*a),
-		},
+		Data:    adminDTO.CreateAdminResponse{Admin: resp},
 	})
 }
 

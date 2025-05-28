@@ -26,9 +26,9 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Produce json
 // @Param page query int false "Current page" minimum(1) example(1)
 // @Param limit query int false "Number record of page" minimum(1) example(10)
-// @Param sort query string false "Sort column (vd: name, email)" example(name)
+// @Param sort query string false "Sort column (vd: fullName, email)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
+// @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} userDTO.GetUserResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -154,7 +154,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	user.FullName = req.FullName
 	user.PhoneNumber = req.PhoneNumber
 	user.Address = req.Address
-	user.Status = int(req.Status)
+	user.Status = int8(req.Status)
 	user.GoodPoint = req.GoodPoint
 
 	if err := h.uc.CreateUser(c.Request.Context(), &user); err != nil {
@@ -205,7 +205,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	user.FullName = req.FullName
 	user.PhoneNumber = req.PhoneNumber
 	user.Address = req.Address
-	user.Status = int(req.Status)
+	user.Status = int8(req.Status)
 	user.GoodPoint = req.GoodPoint
 	user.Major = req.Major
 

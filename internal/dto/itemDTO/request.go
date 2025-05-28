@@ -3,8 +3,8 @@ package itemDTO
 type GetAllItemRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
-	Sort        string `form:"sort" binding:"omitempty,oneof=ASC DESC"`
-	Order       string `form:"order"`
+	Sort        string `form:"sort"`
+	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
 	SearchBy    string `form:"searchBy"`
 	SearchValue string `form:"searchValue"`
 }

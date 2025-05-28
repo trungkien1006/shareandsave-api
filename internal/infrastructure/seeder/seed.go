@@ -4,7 +4,7 @@ import (
 	"context"
 	"final_project/internal/domain/admin"
 	"final_project/internal/domain/item"
-	"final_project/internal/domain/role_permission"
+	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
@@ -14,13 +14,13 @@ import (
 )
 
 type Seeder struct {
-	rolePerRepo role_permission.Repository
+	rolePerRepo rolepermission.Repository
 	adminRepo   admin.Repository
 	itemRepo    item.Repository
 	userRepo    user.Repository
 }
 
-func NewSeeder(rolePerRepo role_permission.Repository, adminRepo admin.Repository, itemRepo item.Repository, userRepo user.Repository) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, adminRepo admin.Repository, itemRepo item.Repository, userRepo user.Repository) *Seeder {
 	return &Seeder{
 		rolePerRepo: rolePerRepo,
 		adminRepo:   adminRepo,
@@ -67,7 +67,7 @@ func (s *Seeder) seedPermission() error {
 		return nil // Đã có dữ liệu, không seed nữa
 	}
 
-	var permissions = []role_permission.Permission{
+	var permissions = []rolepermission.Permission{
 		//user management permissions
 		{Name: "Create User", Code: "create_user"},
 		{Name: "Read User", Code: "read_user"},
@@ -138,7 +138,7 @@ func (s *Seeder) seedRole() error {
 		return nil
 	}
 
-	var roles = []role_permission.Role{
+	var roles = []rolepermission.Role{
 		{Name: "Super Admin"},
 		{Name: "Content Manager"},
 		{Name: "Warehouse Manager"},
@@ -171,9 +171,9 @@ func (s *Seeder) seedRolePer() error {
 		"Client Manager":          {"read_user", "update_user", "delete_user", "read_notification", "read_request", "reply_request", "delete_request"},
 	}
 
-	var roles []role_permission.Role
-	var permissions []role_permission.Permission
-	var rolePerms []role_permission.RolePermission
+	var roles []rolepermission.Role
+	var permissions []rolepermission.Permission
+	var rolePerms []rolepermission.RolePermission
 
 	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
 		return err
@@ -198,7 +198,7 @@ func (s *Seeder) seedRolePer() error {
 
 		if len(codes) == 1 && codes[0] == "*" {
 			for _, p := range permissions {
-				rolePerms = append(rolePerms, role_permission.RolePermission{
+				rolePerms = append(rolePerms, rolepermission.RolePermission{
 					RoleID:       role.ID,
 					PermissionID: p.ID,
 				})
@@ -206,7 +206,7 @@ func (s *Seeder) seedRolePer() error {
 		} else {
 			for _, code := range codes {
 				if permID, ok := permCodeToID[code]; ok {
-					rolePerms = append(rolePerms, role_permission.RolePermission{
+					rolePerms = append(rolePerms, rolepermission.RolePermission{
 						RoleID:       role.ID,
 						PermissionID: permID,
 					})
@@ -232,7 +232,7 @@ func (s *Seeder) seedAdmin() error {
 		return nil
 	}
 
-	var roles []role_permission.Role
+	var roles []rolepermission.Role
 
 	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
 		return err
@@ -244,15 +244,15 @@ func (s *Seeder) seedAdmin() error {
 	}
 
 	admins := []admin.Admin{
-		*admin.NewAdmin("superadmin@example.com", "superadmin", "Super Admin", 1, roleMap["Super Admin"]),
-		*admin.NewAdmin("content@example.com", "contentmanager", "Content Manager", 1, roleMap["Content Manager"]),
-		*admin.NewAdmin("warehouse@example.com", "warehousemanager", "Warehouse Manager", 1, roleMap["Warehouse Manager"]),
-		*admin.NewAdmin("hr@example.com", "hrmanager", "HR Manager", 1, roleMap["Human Resources Manager"]),
-		*admin.NewAdmin("client@example.com", "clientmanager", "Client Manager", 1, roleMap["Client Manager"]),
+		{Email: "superadmin@example.com", Password: "superadmin", FullName: "Super Admin", Status: 1, RoleID: roleMap["Super Admin"]},
+		{Email: "content@example.com", Password: "contentmanager", FullName: "Content Manager", Status: 1, RoleID: roleMap["Content Manager"]},
+		{Email: "warehouse@example.com", Password: "warehousemanager", FullName: "Warehouse Manager", Status: 1, RoleID: roleMap["Warehouse Manager"]},
+		{Email: "hr@example.com", Password: "hrmanager", FullName: "HR Manager", Status: 1, RoleID: roleMap["Human Resources Manager"]},
+		{Email: "client@example.com", Password: "clientmanager", FullName: "Client Manager", Status: 1, RoleID: roleMap["Client Manager"]},
 	}
 
 	for i := range admins {
-		if err := s.adminRepo.Save(ctx, &admins[i]); err != nil {
+		if _, err := s.adminRepo.Save(ctx, admins[i]); err != nil {
 			return err
 		}
 	}
@@ -271,12 +271,12 @@ func (s *Seeder) seedItems() error {
 	}
 
 	items := []item.Item{
-		*item.NewItem("Giáo trình chính trị 1", "Giáo trình dạy về ...", ""),
-		*item.NewItem("Giáo trình toán cao cấp", "Giáo trình dạy về ...", ""),
-		*item.NewItem("Giáo trình cơ sở dữ liệu", "Giáo trình dạy về ...", ""),
-		*item.NewItem("Giáo trình pháp luật", "Giáo trình dạy về ...", ""),
-		*item.NewItem("Giáo trình mạng máy tính", "Giáo trình dạy về ...", ""),
-		*item.NewItem("Giáo trình tiếng anh 3", "Giáo trình dạy về ...", ""),
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
 	}
 
 	for i := range items {

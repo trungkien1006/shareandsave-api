@@ -5,7 +5,7 @@ import (
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/requestapp"
 	"final_project/internal/application/userapp"
-	"final_project/internal/infrastructure/persistence"
+	persistence "final_project/internal/infrastructure/persistence/repo"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
 	"net/http"
@@ -22,6 +22,8 @@ import (
 func InitRoute(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
+	rolePerRepo := persistence.NewRolePerRepoDB(db)
+
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
 	userUC := userapp.NewUseCase(userRepo)
@@ -34,15 +36,13 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 	//admin dependency
 	adminRepo := persistence.NewAdminRepoDB(db)
-	adminUC := adminapp.NewUseCase(adminRepo)
+	adminUC := adminapp.NewUseCase(adminRepo, rolePerRepo)
 	adminHandler := handler.NewAdminHandler(adminUC)
 
 	//request dependency
 	requestRepo := persistence.NewRequestRepoDB(db)
 	requestUC := requestapp.NewUseCase(requestRepo, userRepo)
 	requestHandler := handler.NewRequestHandler(requestUC)
-
-	rolePerRepo := persistence.NewRolePerRepoDB(db)
 
 	seed := seeder.NewSeeder(
 		rolePerRepo,

@@ -61,7 +61,7 @@ func (uc *UseCase) CreateRequest(ctx context.Context, req *request.Request, user
 			user.Avatar = strBase64Image
 			user.Password = hash.HashEmailPhone(user.Email, user.PhoneNumber) // Mã hóa mật khẩu bằng email và số điện thoại
 			user.Address = ""
-			user.Status = int(enums.UserStatusInactive)
+			user.Status = int8(enums.UserStatusInactive)
 			user.GoodPoint = 0
 			user.ID = 0 // Đặt ID về 0 để đảm bảo tạo mới
 
@@ -71,6 +71,10 @@ func (uc *UseCase) CreateRequest(ctx context.Context, req *request.Request, user
 
 			req.UserID = user.ID
 		}
+	}
+
+	if req.UserID == 0 {
+		return errors.New("Không thể tạo yêu cầu mà không có người dùng")
 	}
 
 	req.Status = int8(enums.RequestStatusPending) // Mặc định trạng thái là Pending
