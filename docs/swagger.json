@@ -1156,8 +1156,7 @@
             "type": "object",
             "required": [
                 "appointmentLocation",
-                "appointmentTime",
-                "id"
+                "appointmentTime"
             ],
             "properties": {
                 "appointmentLocation": {
@@ -1181,9 +1180,6 @@
                 "fullName": {
                     "type": "string",
                     "example": "John Doe"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "isAnonymous": {
                     "description": "true: anonymous, false: not anonymous",

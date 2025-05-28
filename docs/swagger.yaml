@@ -283,8 +283,6 @@ definitions:
       fullName:
         example: John Doe
         type: string
-      id:
-        type: integer
       isAnonymous:
         description: 'true: anonymous, false: not anonymous'
         enum:
@@ -305,7 +303,6 @@ definitions:
     required:
     - appointmentLocation
     - appointmentTime
-    - id
     type: object
   requestdto.CreateSendOldItemRequestResponse:
     properties:

@@ -6,7 +6,6 @@ import (
 )
 
 type CreateRequestSendOldItem struct {
-	ID                  uint              `json:"id" binding:"required"`
 	Email               string            `json:"email" example:"john@gmail.com"`
 	FullName            string            `json:"fullName" example:"John Doe"`
 	PhoneNumber         string            `json:"phoneNumber" example:"0123456789"`

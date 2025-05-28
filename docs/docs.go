@@ -1162,8 +1162,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "appointmentLocation",
-                "appointmentTime",
-                "id"
+                "appointmentTime"
             ],
             "properties": {
                 "appointmentLocation": {
@@ -1187,9 +1186,6 @@ const docTemplate = `{
                 "fullName": {
                     "type": "string",
                     "example": "John Doe"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "isAnonymous": {
                     "description": "true: anonymous, false: not anonymous",
