@@ -3,6 +3,7 @@ package boostraps
 import (
 	"final_project/internal/application/adminapp"
 	"final_project/internal/application/itemapp"
+	"final_project/internal/application/requestapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/infrastructure/persistence"
 	"final_project/internal/infrastructure/seeder"
@@ -35,6 +36,11 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	adminRepo := persistence.NewAdminRepoDB(db)
 	adminUC := adminapp.NewUseCase(adminRepo)
 	adminHandler := handler.NewAdminHandler(adminUC)
+
+	//request dependency
+	requestRepo := persistence.NewRequestRepoDB(db)
+	requestUC := requestapp.NewUseCase(requestRepo, userRepo)
+	requestHandler := handler.NewRequestHandler(requestUC)
 
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
 
@@ -88,6 +94,9 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.POST("/admins", adminHandler.CreateAdmin)
 		v1.PUT("/admins", adminHandler.UpdateAdmin)
 		v1.DELETE("/admins/:adminID", adminHandler.DeleteAdmin)
+
+		//request API
+		v1.POST("/requests/send-old-item", requestHandler.CreateSendOldItemRequest)
 	}
 
 	// r.Static("/public/images", "./public/images")
