@@ -3,8 +3,8 @@ package filter
 type FilterRequest struct {
 	Page        int    `query:"page" binding:"required"`
 	Limit       int    `query:"limit" binding:"required"`
-	Sort        string `query:"sort" binding:"required; oneof:ASC DESC"`
-	Order       string `query:"order" binding:"required"`
+	Sort        string `query:"sort" `
+	Order       string `query:"order" binding:"required; oneof:ASC DESC"`
 	SearchBy    string `form:"searchBy"`
 	SearchValue string `form:"searchValue"`
 }
