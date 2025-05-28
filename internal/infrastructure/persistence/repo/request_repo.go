@@ -16,7 +16,7 @@ func NewRequestRepoDB(db *gorm.DB) *RequestRepoDB {
 }
 
 func (r *RequestRepoDB) Create(ctx context.Context, request *request.Request) error {
-	if err := r.db.Create(request).Error; err != nil {
+	if err := r.db.Create(&request).Error; err != nil {
 		return err
 	}
 
