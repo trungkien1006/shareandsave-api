@@ -285,9 +285,6 @@ definitions:
         type: string
       isAnonymous:
         description: 'true: anonymous, false: not anonymous'
-        enum:
-        - true
-        - false
         type: boolean
       phoneNumber:
         example: "0123456789"

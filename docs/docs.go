@@ -1189,11 +1189,7 @@ const docTemplate = `{
                 },
                 "isAnonymous": {
                     "description": "true: anonymous, false: not anonymous",
-                    "type": "boolean",
-                    "enum": [
-                        true,
-                        false
-                    ]
+                    "type": "boolean"
                 },
                 "phoneNumber": {
                     "type": "string",

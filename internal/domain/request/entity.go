@@ -1,8 +1,6 @@
 package request
 
 import (
-	"final_project/internal/domain/post"
-	"os/user"
 	"time"
 
 	"gorm.io/gorm"
@@ -23,9 +21,6 @@ type Request struct {
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 	DeletedAt           gorm.DeletedAt `gorm:"index"`
-
-	User user.User `gorm:"foreignKey:UserID"`
-	Post post.Post `gorm:"foreignKey:PostID"`
 }
 
 func NewRequest(userID uint, requestType int, description string, isAnonymous bool, item, itemWarehouseID, postID uint, appointmentTime time.Time, location string, status int8) *Request {

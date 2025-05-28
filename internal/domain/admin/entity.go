@@ -8,16 +8,16 @@ import (
 )
 
 type Admin struct {
-	ID        uint   `gorm:"primaryKey;autoIncrement"`
-	Email     string `gorm:"size:255"`
-	Password  string `gorm:"size:255"`
-	FullName  string `gorm:"size:64"`
-	Status    int8   `gorm:"type:TINYINT"`
-	RoleID    uint   `gorm:"index"`
+	ID        uint                 `gorm:"primaryKey;autoIncrement"`
+	Email     string               `gorm:"unique;size:255;not null"`
+	Password  string               `gorm:"size:255;not null"`
+	FullName  string               `gorm:"size:64"`
+	Status    int8                 `gorm:"type:TINYINT"`
+	RoleID    uint                 `gorm:"index"`
+	Role      role_permission.Role `gorm:"foreignKey:RoleID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt       `gorm:"index"`
-	Role      role_permission.Role `gorm:"foreignKey:RoleID"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func NewAdmin(email, password, fullName string, status int8, roleID uint) *Admin {

@@ -1,8 +1,6 @@
 package exportinvoice
 
 import (
-	"final_project/internal/domain/admin"
-	"os/user"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,8 +18,6 @@ type ExportInvoice struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	Admin       admin.Admin    `gorm:"foreignKey:AdminID"`
-	Receiver    user.User      `gorm:"foreignKey:ReceiverID"`
 }
 
 func NewExportInvoice(id string, invoiceNum int, adminID, receiverID uint, itemType string, receiveDate time.Time, description string, isLock bool) *ExportInvoice {
