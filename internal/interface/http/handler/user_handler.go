@@ -47,15 +47,16 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 
 	var users []user.User
 
-	var domain_req filter.FilterRequest
+	var domainReq filter.FilterRequest
 
-	domain_req.Page = req.Page
-	domain_req.Limit = req.Limit
-	domain_req.Sort = req.Sort
-	domain_req.Order = req.Order
-	domain_req.Filter = req.Filter
+	domainReq.Page = req.Page
+	domainReq.Limit = req.Limit
+	domainReq.Sort = req.Sort
+	domainReq.Order = req.Order
+	domainReq.SearchBy = req.SearchBy
+	domainReq.SearchValue = req.SearchValue
 
-	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, domain_req)
+	totalPage, err := h.uc.GetAllUser(c.Request.Context(), &users, domainReq)
 
 	if err != nil {
 		c.JSON(

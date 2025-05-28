@@ -70,7 +70,7 @@ func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched user successfully",
+		"message": "Create send old item request successfully",
 		"data": requestdto.CreateSendOldItemRequest{
 			Request: requestDTO,
 		},

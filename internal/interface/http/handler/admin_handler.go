@@ -52,7 +52,8 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 	domainReq.Limit = req.Limit
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
-	domainReq.Filter = req.Filter
+	domainReq.SearchBy = req.SearchBy
+	domainReq.SearchValue = req.SearchValue
 
 	totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), &admins, domainReq)
 

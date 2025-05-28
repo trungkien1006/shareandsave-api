@@ -45,11 +45,12 @@ func (h *ItemHandler) GetAllItem(c *gin.Context) {
 
 	var items []item.Item
 	domainReq := filter.FilterRequest{
-		Page:   req.Page,
-		Limit:  req.Limit,
-		Sort:   req.Sort,
-		Order:  req.Order,
-		Filter: req.Filter,
+		Page:        req.Page,
+		Limit:       req.Limit,
+		Sort:        req.Sort,
+		Order:       req.Order,
+		SearchBy:    req.SearchBy,
+		SearchValue: req.SearchValue,
 	}
 	totalPage, err := h.uc.GetAllItem(c.Request.Context(), &items, domainReq)
 	if err != nil {

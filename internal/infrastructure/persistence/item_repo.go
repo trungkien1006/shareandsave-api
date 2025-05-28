@@ -2,12 +2,8 @@ package persistence
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
-	"final_project/internal/pkg/helpers"
-	"final_project/internal/reference"
 
 	"gorm.io/gorm"
 )
@@ -26,20 +22,14 @@ func (r *ItemRepoDB) Save(ctx context.Context, i *item.Item) error {
 
 func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.FilterRequest) (int, error) {
 	var (
-		tableName    = "item"
 		query        *gorm.DB
 		totalRecords int64
 	)
 
 	query = r.db.Debug().WithContext(ctx).Model(&item.Item{})
 
-	if req.Filter != "" {
-		var filters []reference.FilterStruc
-		err := json.Unmarshal([]byte(req.Filter), &filters)
-		if err != nil {
-			return 0, errors.New("Lỗi khi chuyển đổi filter từ JSON thành struct: " + err.Error())
-		}
-		helpers.Filter(query, filters, tableName)
+	if req.SearchBy != "" && req.SearchValue != "" {
+		query = query.Where("? LIKE ?", req.SearchBy, "%"+req.SearchValue+"%")
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {

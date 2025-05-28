@@ -2,13 +2,10 @@ package persistence
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"final_project/internal/domain/admin"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/role_permission"
-	"final_project/internal/pkg/helpers"
-	"final_project/internal/reference"
 	"math"
 
 	"gorm.io/gorm"
@@ -23,20 +20,12 @@ func NewAdminRepoDB(db *gorm.DB) *AdminRepoDB {
 }
 
 func (r *AdminRepoDB) GetAll(ctx context.Context, admins *[]admin.Admin, req filter.FilterRequest) (int, error) {
-	var tableName = "admin"
 	var query *gorm.DB
 
 	query = r.db.Debug().WithContext(ctx).Model(&admin.Admin{}).Preload("Role")
 
-	if req.Filter != "" {
-		var filters []reference.FilterStruc
-
-		err := json.Unmarshal([]byte(req.Filter), &filters)
-		if err != nil {
-			return 0, errors.New("Lỗi khi chuyển đổi filter từ JSON thành struct: " + err.Error())
-		}
-
-		helpers.Filter(query, filters, tableName)
+	if req.SearchBy != "" && req.SearchValue != "" {
+		query = query.Where("? LIKE ?", req.SearchBy, "%"+req.SearchValue+"%")
 	}
 
 	var totalRecord int64 = 0

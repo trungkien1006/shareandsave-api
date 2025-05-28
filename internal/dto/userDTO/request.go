@@ -3,11 +3,12 @@ package userDTO
 import "final_project/internal/pkg/enums"
 
 type GetUserRequest struct {
-	Page   int    `form:"page"`
-	Limit  int    `form:"limit"`
-	Sort   string `form:"sort" binding:"omitempty,oneof=ASC DESC"`
-	Order  string `form:"order"`
-	Filter string `form:"filter"`
+	Page        int    `form:"page"`
+	Limit       int    `form:"limit"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=ASC DESC"`
+	Order       string `form:"order"`
+	SearchBy    string `form:"searchBy"`
+	SearchValue string `form:"searchValue"`
 }
 
 func (r *GetUserRequest) SetDefault() {
