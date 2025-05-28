@@ -31,11 +31,10 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 		var filters []reference.FilterStruc
 
 		err := json.Unmarshal([]byte(req.Filter), &filters)
-		if err != nil {
-			return 0, errors.New("Lỗi khi chuyển đổi filter từ JSON thành struct: " + err.Error())
+		if err == nil {
+			// return 0, errors.New("Lỗi khi chuyển đổi filter từ JSON thành struct: " + err.Error())
+			helpers.Filter(query, filters, tableName)
 		}
-
-		helpers.Filter(query, filters, tableName)
 	}
 
 	var totalRecord int64 = 0

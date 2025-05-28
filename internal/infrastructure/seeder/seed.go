@@ -6,7 +6,11 @@ import (
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/hash"
+	"final_project/internal/pkg/helpers"
 	"fmt"
+	"os"
 )
 
 type Seeder struct {
@@ -602,6 +606,18 @@ func (s *Seeder) seedUsers() error {
 	}
 
 	for i := range users {
+		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
+		if err != nil {
+			return fmt.Errorf("error resizing image: %w", err)
+		}
+
+		users[i].Avatar = strBase64Image
+		users[i].Password, err = hash.HashPassword(users[i].Password)
+
+		if err != nil {
+			return fmt.Errorf("error hash user password: %w", err)
+		}
+
 		if err := s.userRepo.Save(ctx, &users[i]); err != nil {
 			return err
 		}
