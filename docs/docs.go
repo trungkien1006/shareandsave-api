@@ -571,7 +571,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "name",
-                        "description": "Sort column (vd: name, email)",
+                        "description": "Sort column (vd: fullName, email)",
                         "name": "sort",
                         "in": "query"
                     },
@@ -584,7 +584,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (vd: email, full_name)",
+                        "description": "Trường lọc (vd: email, fullName)",
                         "name": "searchBy",
                         "in": "query"
                     },
