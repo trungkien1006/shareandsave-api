@@ -55,7 +55,8 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 		return
 	}
 
-	var adminDTOs []admindto.AdminDTO
+	adminDTOs := make([]admindto.AdminDTO, 0)
+
 	for _, a := range admins {
 		// Lấy roleName từ usecase trả về (nếu cần, có thể trả về []struct{admin, roleName})
 		adminDTOs = append(adminDTOs, admindto.ToAdminDTO(a.Admin, a.RoleName))
