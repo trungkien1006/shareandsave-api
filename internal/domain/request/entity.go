@@ -13,8 +13,8 @@ type Request struct {
 	Description         string `gorm:"type:TEXT"`
 	IsAnonymous         bool
 	Status              int8   `gorm:"type:TINYINT"`
-	ItemWarehouseID     uint   `gorm:"index"`
-	PostID              uint   `gorm:"index"`
+	ItemWarehouseID     *uint  `gorm:"index"`
+	PostID              *uint  `gorm:"index"`
 	ReplyMessage        string `gorm:"type:TEXT"`
 	AppointmentTime     time.Time
 	AppointmentLocation string `gorm:"size:255"`
@@ -29,8 +29,8 @@ func NewRequest(userID uint, requestType int, description string, isAnonymous bo
 		RequestType:         requestType,
 		Description:         description,
 		IsAnonymous:         isAnonymous,
-		ItemWarehouseID:     itemWarehouseID,
-		PostID:              postID,
+		ItemWarehouseID:     &itemWarehouseID,
+		PostID:              &postID,
 		AppointmentTime:     appointmentTime,
 		AppointmentLocation: location,
 		Status:              status,
