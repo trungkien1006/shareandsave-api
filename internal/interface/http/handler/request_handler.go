@@ -48,7 +48,6 @@ func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 		user.PhoneNumber = req.PhoneNumber
 	}
 
-	domainReq.ID = req.ID
 	domainReq.UserID = req.UserID
 	domainReq.RequestType = int(req.RequestType)
 	domainReq.Description = req.Description
