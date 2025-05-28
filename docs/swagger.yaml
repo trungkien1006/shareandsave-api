@@ -123,6 +123,20 @@ definitions:
         example: Name is require
         type: string
     type: object
+  enums.RequestType:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      RequestTypeReceiveOldItem: "1"
+      RequestTypeSendLoseItem: "2"
+      RequestTypeSendOldItem: "0"
+    x-enum-varnames:
+    - RequestTypeSendOldItem
+    - RequestTypeReceiveOldItem
+    - RequestTypeSendLoseItem
   enums.UserStatus:
     enum:
     - 0
@@ -238,6 +252,70 @@ definitions:
         $ref: '#/definitions/itemDTO.UpdateItemResponse'
       message:
         type: string
+    type: object
+  requestdto.CreateRequestSendOldItem:
+    properties:
+      appointmentLocation:
+        description: Location of the appointment
+        type: string
+      appointmentTime:
+        description: Time in RFC3339 format
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+      isAnonymous:
+        description: 'true: anonymous, false: not anonymous'
+        enum:
+        - true
+        - false
+        type: boolean
+      phoneNumber:
+        type: string
+      requestType:
+        allOf:
+        - $ref: '#/definitions/enums.RequestType'
+        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
+          Post'
+      userId:
+        type: integer
+    required:
+    - appointmentLocation
+    - appointmentTime
+    - id
+    type: object
+  requestdto.CreateSendOldItemRequest:
+    properties:
+      request:
+        $ref: '#/definitions/requestdto.RequestSendOldItem'
+    type: object
+  requestdto.RequestSendOldItem:
+    properties:
+      appointmentLocation:
+        description: Location of the appointment
+        type: string
+      appointmentTime:
+        description: Time in RFC3339 format
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      isAnonymous:
+        description: 'true: anonymous, false: not anonymous'
+        type: boolean
+      requestType:
+        allOf:
+        - $ref: '#/definitions/enums.RequestType'
+        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
+          Post'
+      userId:
+        type: integer
     type: object
   userDTO.CreateUserRequest:
     properties:
@@ -421,8 +499,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/enums.AppError'
       summary: Get admin
       tags:
       - admin
@@ -695,6 +772,32 @@ paths:
       summary: Get item by ID
       tags:
       - items
+  /requests/send-old-item:
+    post:
+      consumes:
+      - application/json
+      description: API gửi yêu cầu gửi đồ cũ
+      parameters:
+      - description: Create request send old item
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requestdto.CreateRequestSendOldItem'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created request successfully
+          schema:
+            $ref: '#/definitions/requestdto.CreateSendOldItemRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create request to send old item
+      tags:
+      - requests
   /users:
     get:
       consumes:

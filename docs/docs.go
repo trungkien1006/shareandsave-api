@@ -77,8 +77,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/enums.AppError"
                         }
                     }
                 }
@@ -481,6 +480,46 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/requests/send-old-item": {
+            "post": {
+                "description": "API gửi yêu cầu gửi đồ cũ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "requests"
+                ],
+                "summary": "Create request to send old item",
+                "parameters": [
+                    {
+                        "description": "Create request send old item",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requestdto.CreateRequestSendOldItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created request successfully",
+                        "schema": {
+                            "$ref": "#/definitions/requestdto.CreateSendOldItemRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -897,6 +936,24 @@ const docTemplate = `{
                 }
             }
         },
+        "enums.RequestType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "RequestTypeReceiveOldItem": "1",
+                "RequestTypeSendLoseItem": "2",
+                "RequestTypeSendOldItem": "0"
+            },
+            "x-enum-varnames": [
+                "RequestTypeSendOldItem",
+                "RequestTypeReceiveOldItem",
+                "RequestTypeSendLoseItem"
+            ]
+        },
         "enums.UserStatus": {
             "type": "integer",
             "enum": [
@@ -1071,6 +1128,100 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "requestdto.CreateRequestSendOldItem": {
+            "type": "object",
+            "required": [
+                "appointmentLocation",
+                "appointmentTime",
+                "id"
+            ],
+            "properties": {
+                "appointmentLocation": {
+                    "description": "Location of the appointment",
+                    "type": "string"
+                },
+                "appointmentTime": {
+                    "description": "Time in RFC3339 format",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isAnonymous": {
+                    "description": "true: anonymous, false: not anonymous",
+                    "type": "boolean",
+                    "enum": [
+                        true,
+                        false
+                    ]
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "requestType": {
+                    "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.RequestType"
+                        }
+                    ]
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requestdto.CreateSendOldItemRequest": {
+            "type": "object",
+            "properties": {
+                "request": {
+                    "$ref": "#/definitions/requestdto.RequestSendOldItem"
+                }
+            }
+        },
+        "requestdto.RequestSendOldItem": {
+            "type": "object",
+            "properties": {
+                "appointmentLocation": {
+                    "description": "Location of the appointment",
+                    "type": "string"
+                },
+                "appointmentTime": {
+                    "description": "Time in RFC3339 format",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isAnonymous": {
+                    "description": "true: anonymous, false: not anonymous",
+                    "type": "boolean"
+                },
+                "requestType": {
+                    "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.RequestType"
+                        }
+                    ]
+                },
+                "userId": {
+                    "type": "integer"
                 }
             }
         },

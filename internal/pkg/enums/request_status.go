@@ -3,11 +3,13 @@ package enums
 type RequestStatus int
 
 const (
-	RequestStatusSendOldItem    RequestStatus = iota // 0
-	RequestStatusReceiveOldItem                      // 1
-	RequestStatusSendLoseItem                        // 2
+	RequestStatusPending     RequestStatus = iota // 0 Người dùng đã gửi yêu cầu và đang chờ xử lý
+	RequestStatusWaitingUser                      // 1 Admin đã xác nhận và đang chờ người dùng xác nhận lần cuối
+	RequestStatusReject                           // 2 Admin đã từ chối yêu cầu
+	RequestStatusSuccess                          // 3 Người dùng đồng ý
+	RequestStatusFail                             // 4 Người dùng đã hủy
 )
 
 func (s RequestStatus) String() string {
-	return [...]string{"SEND_OLD_ITEM", "RECEIVE_OLD_ITEM", "SEND_LOSE_ITEM"}[s]
+	return [...]string{"PENDING", "WAITING_USER", "REJECT", "SUCCESS", "FAIL"}[s]
 }

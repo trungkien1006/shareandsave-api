@@ -1,0 +1,78 @@
+package handler
+
+import (
+	"final_project/internal/application/requestapp"
+	"final_project/internal/domain/request"
+	"final_project/internal/domain/user"
+	requestdto "final_project/internal/dto/requestDTO"
+	"final_project/internal/pkg/enums"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type RequestHandler struct {
+	uc *requestapp.UseCase
+}
+
+func NewRequestHandler(uc *requestapp.UseCase) *RequestHandler {
+	return &RequestHandler{uc: uc}
+}
+
+// @Summary Create request to send old item
+// @Description API gửi yêu cầu gửi đồ cũ
+// @Tags requests
+// @Accept json
+// @Produce json
+// @Param request body requestdto.CreateRequestSendOldItem true "Create request send old item"
+// @Success 201 {object} requestdto.CreateSendOldItemRequest "Created request successfully"
+// @Failure 400 {object} enums.AppError
+// @Router /requests/send-old-item [post]
+func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
+	var (
+		req       requestdto.CreateRequestSendOldItem
+		user      user.User
+		domainReq request.Request
+	)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if req.UserID == 0 {
+		user.FullName = req.FullName
+		user.Email = req.Email
+		user.PhoneNumber = req.PhoneNumber
+	}
+
+	domainReq.ID = req.ID
+	domainReq.UserID = req.UserID
+	domainReq.RequestType = int(req.RequestType)
+	domainReq.Description = req.Description
+	domainReq.IsAnonymous = req.IsAnonymous
+	domainReq.AppointmentTime = req.AppointmentTime
+	domainReq.AppointmentLocation = req.AppointmentLocation
+
+	if err := h.uc.CreateRequest(c.Request.Context(), &domainReq, &user); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	var requestDTO requestdto.RequestSendOldItem
+
+	requestDTO = requestdto.ToRequestDTO(domainReq)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Fetched user successfully",
+		"data": requestdto.CreateSendOldItemRequest{
+			Request: requestDTO,
+		},
+	})
+}

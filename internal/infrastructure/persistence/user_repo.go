@@ -72,6 +72,20 @@ func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID 
 	return nil
 }
 
+func (r *UserRepoDB) GetIDByEmailPhoneNumber(ctx context.Context, email string, phoneNumber string) (uint, error) {
+	var id uint
+
+	// Truy vấn chỉ lấy trường "id" (không cần toàn bộ user)
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).
+		Select("id").
+		Where("email = ? AND phone_number = ?", email, phoneNumber).
+		Scan(&id).Error; err != nil {
+		return 0, errors.New("Lỗi khi tìm kiếm user bằng email và số điện thoại: " + err.Error())
+	}
+
+	return id, nil
+}
+
 func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Create(&domainUser).Error; err != nil {
 		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())

@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	GetAll(ctx context.Context, users *[]User, req filter.FilterRequest) (int, error)
 	GetByID(ctx context.Context, domainUser *User, userID int) error
+	GetIDByEmailPhoneNumber(ctx context.Context, email string, phoneNumber string) (uint, error)
 	Save(ctx context.Context, user *User) error
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, domainUser *User) error
