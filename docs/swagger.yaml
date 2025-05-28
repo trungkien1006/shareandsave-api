@@ -292,12 +292,6 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
-      requestType:
-        allOf:
-        - $ref: '#/definitions/enums.RequestType'
-        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
-          Post'
-        example: 1
       userId:
         type: integer
     required:

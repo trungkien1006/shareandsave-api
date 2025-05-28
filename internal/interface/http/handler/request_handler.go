@@ -49,7 +49,7 @@ func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 	}
 
 	domainReq.UserID = req.UserID
-	domainReq.RequestType = int(req.RequestType)
+	domainReq.RequestType = int(enums.RequestTypeSendOldItem)
 	domainReq.Description = req.Description
 	domainReq.IsAnonymous = req.IsAnonymous
 	domainReq.AppointmentTime = req.AppointmentTime

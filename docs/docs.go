@@ -1199,15 +1199,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "0123456789"
                 },
-                "requestType": {
-                    "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/enums.RequestType"
-                        }
-                    ],
-                    "example": 1
-                },
                 "userId": {
                     "type": "integer"
                 }
