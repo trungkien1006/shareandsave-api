@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
+	"fmt"
 	"math"
 
 	"github.com/iancoleman/strcase"
@@ -25,7 +26,8 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 	query = r.db.Debug().WithContext(ctx).Model(&user.User{})
 
 	if req.SearchBy != "" && req.SearchValue != "" {
-		query = query.Where(strcase.ToSnake(req.SearchBy)+" LIKE ?", "%"+req.SearchValue+"%")
+		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+		query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), "%"+req.SearchValue+"%")
 	}
 
 	var totalRecord int64 = 0
