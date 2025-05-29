@@ -2,6 +2,7 @@ package dbmodel
 
 import (
 	"final_project/internal/domain/request"
+	"final_project/internal/pkg/enums"
 	"time"
 
 	"gorm.io/gorm"
@@ -24,11 +25,11 @@ type SendRequest struct {
 }
 
 // Domain → DB
-func RequestDomainToDB(a request.SendRequest) request.SendRequest {
-	return request.SendRequest{
+func RequestDomainToDB(a request.SendRequest) SendRequest {
+	return SendRequest{
 		ID:                  a.ID,
 		UserID:              a.UserID,
-		Type:                a.Type,
+		Type:                int(a.Type), // Convert RequestType to int
 		Description:         a.Description,
 		Status:              a.Status,
 		ReplyMessage:        a.ReplyMessage,
@@ -38,11 +39,11 @@ func RequestDomainToDB(a request.SendRequest) request.SendRequest {
 }
 
 // DB → Domain
-func SendRequestToDomain(a request.SendRequest) request.SendRequest {
+func SendRequestToDomain(a SendRequest) request.SendRequest {
 	return request.SendRequest{
 		ID:                  a.ID,
 		UserID:              a.UserID,
-		Type:                a.Type,
+		Type:                enums.RequestType(a.Type), // Convert int to RequestType
 		Description:         a.Description,
 		Status:              a.Status,
 		ReplyMessage:        a.ReplyMessage,

@@ -48,10 +48,7 @@ func (h *SendRequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 		user.PhoneNumber = req.PhoneNumber
 	}
 
-	domainReq.UserID = req.UserID
-	domainReq.Description = req.Description
-	domainReq.AppointmentTime = req.AppointmentTime
-	domainReq.AppointmentLocation = req.AppointmentLocation
+	domainReq = requestdto.ToDomainRequest(req)
 
 	if err := h.uc.CreateRequest(c.Request.Context(), &domainReq, &user); err != nil {
 		c.JSON(

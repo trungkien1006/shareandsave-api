@@ -1,11 +1,14 @@
 package request
 
-import "time"
+import (
+	"final_project/internal/pkg/enums"
+	"time"
+)
 
 type SendRequest struct {
 	ID                  uint
 	UserID              uint
-	Type                int
+	Type                enums.RequestType // 1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post
 	Description         string
 	Status              int8
 	ReplyMessage        string
@@ -16,7 +19,7 @@ type SendRequest struct {
 type ReceiveRequest struct {
 	ID                  uint
 	UserID              uint
-	Type                int
+	Type                enums.RequestType // 1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post
 	Description         string
 	Status              int8
 	ItemWarehouseID     *uint

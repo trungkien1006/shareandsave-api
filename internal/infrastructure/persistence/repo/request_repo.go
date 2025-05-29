@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"final_project/internal/domain/request"
+	"final_project/internal/infrastructure/persistence/dbmodel"
 
 	"gorm.io/gorm"
 )
@@ -16,9 +17,13 @@ func NewRequestRepoDB(db *gorm.DB) *RequestRepoDB {
 }
 
 func (r *RequestRepoDB) Create(ctx context.Context, request *request.SendRequest) error {
-	if err := r.db.Create(&request).Error; err != nil {
+	var dbRequest = dbmodel.RequestDomainToDB(*request)
+
+	if err := r.db.Create(&dbRequest).Error; err != nil {
 		return err
 	}
+
+	*request = dbmodel.SendRequestToDomain(dbRequest)
 
 	return nil
 }

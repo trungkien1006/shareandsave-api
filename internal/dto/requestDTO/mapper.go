@@ -6,11 +6,10 @@ import (
 )
 
 // DTO → Domain
-func DTOToDomainRequest(dto RequestSendOldItem) request.SendRequest {
+func ToDomainRequest(dto CreateRequestSendOldItem) request.SendRequest {
 	return request.SendRequest{
-		ID:                  dto.ID,
 		UserID:              dto.UserID,
-		Type:                int(dto.Type),
+		Type:                enums.RequestType(dto.Type),
 		Description:         dto.Description,
 		AppointmentTime:     dto.AppointmentTime,
 		AppointmentLocation: dto.AppointmentLocation,
