@@ -105,14 +105,14 @@ func (s *Seeder) seedPermission() error {
 
 		//import_invoice management permissions
 		{Name: "Read Import Invoice", Code: "read_import_invoice"},
-		{Name: "Create Import Invoice", Code: "read_import_invoice"},
+		{Name: "Create Import Invoice", Code: "create_import_invoice"},
 		{Name: "Update Import Invoice", Code: "update_import_invoice"},
 		{Name: "Lock Import Invoice", Code: "lock_import_invoice"},
 		{Name: "Delete Import Invoice", Code: "delete_import_invoice"},
 
 		//export_invoice management permissions
 		{Name: "Read Export Invoice", Code: "read_export_invoice"},
-		{Name: "Create Export Invoice", Code: "read_export_invoice"},
+		{Name: "Create Export Invoice", Code: "create_export_invoice"},
 		{Name: "Update Export Invoice", Code: "update_export_invoice"},
 		{Name: "Lock Export Invoice", Code: "lock_export_invoice"},
 		{Name: "Delete Export Invoice", Code: "delete_export_invoice"},
