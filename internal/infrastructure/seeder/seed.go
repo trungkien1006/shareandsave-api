@@ -59,6 +59,9 @@ func (s *Seeder) Seed() error {
 
 func (s *Seeder) seedPermission() error {
 	ctx := context.Background()
+
+	fmt.Println("Start seed permission...")
+
 	isEmpty, err := s.rolePerRepo.IsPermissionTableEmpty(ctx)
 	if err != nil {
 		return err
@@ -125,11 +128,16 @@ func (s *Seeder) seedPermission() error {
 		return err
 	}
 
+	fmt.Println("Finish seed permission...")
+
 	return nil
 }
 
 func (s *Seeder) seedRole() error {
 	ctx := context.Background()
+
+	fmt.Println("Start seed role...")
+
 	isEmpty, err := s.rolePerRepo.IsRoleTableEmpty(ctx)
 	if err != nil {
 		return err
@@ -150,11 +158,16 @@ func (s *Seeder) seedRole() error {
 		return err
 	}
 
+	fmt.Println("Finish seed role...")
+
 	return nil
 }
 
 func (s *Seeder) seedRolePer() error {
 	ctx := context.Background()
+
+	fmt.Println("Start seed role permission...")
+
 	isEmpty, err := s.rolePerRepo.IsRolePermissionTableEmpty(ctx)
 	if err != nil {
 		return err
@@ -219,11 +232,16 @@ func (s *Seeder) seedRolePer() error {
 		return err
 	}
 
+	fmt.Println("Finish seed role permission...")
+
 	return nil
 }
 
 func (s *Seeder) seedAdmin() error {
 	ctx := context.Background()
+
+	fmt.Println("Start seed admin...")
+
 	isEmpty, err := s.adminRepo.IsTableEmpty(ctx)
 	if err != nil {
 		return err
@@ -257,11 +275,16 @@ func (s *Seeder) seedAdmin() error {
 		}
 	}
 
+	fmt.Println("Finish seed admin...")
+
 	return nil
 }
 
 func (s *Seeder) seedItems() error {
 	ctx := context.Background()
+
+	fmt.Println("Start seed items...")
+
 	isEmpty, err := s.itemRepo.IsTableEmpty(ctx)
 	if err != nil {
 		return err
@@ -284,6 +307,8 @@ func (s *Seeder) seedItems() error {
 			return err
 		}
 	}
+
+	fmt.Println("Finish seed items...")
 
 	return nil
 }
