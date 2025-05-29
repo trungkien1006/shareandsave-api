@@ -1,9 +1,9 @@
-package sendrequestapp
+package requestapp
 
 import (
 	"context"
 	"errors"
-	sendrequest "final_project/internal/domain/send_request"
+	"final_project/internal/domain/request"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
@@ -13,18 +13,18 @@ import (
 )
 
 type UseCase struct {
-	repo     sendrequest.Repository
+	repo     request.Repository
 	userRepo user.Repository
 }
 
-func NewUseCase(r sendrequest.Repository, userRepo user.Repository) *UseCase {
+func NewUseCase(r request.Repository, userRepo user.Repository) *UseCase {
 	return &UseCase{
 		repo:     r,
 		userRepo: userRepo,
 	}
 }
 
-func (uc *UseCase) CreateRequest(ctx context.Context, req *sendrequest.SendRequest, user *user.User) error {
+func (uc *UseCase) CreateRequest(ctx context.Context, req *request.SendRequest, user *user.User) error {
 	//Nếu không truyền userID sẽ kiểm tra để tạo tài khoản cho người dùng
 	if req.UserID == 0 {
 		//Kiểm tra email đã tồn tại trong hệ thống chưa

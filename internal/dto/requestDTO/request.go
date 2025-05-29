@@ -1,4 +1,4 @@
-package sendrequestdto
+package requestdto
 
 import (
 	"time"

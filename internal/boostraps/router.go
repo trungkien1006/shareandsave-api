@@ -3,7 +3,7 @@ package boostraps
 import (
 	"final_project/internal/application/adminapp"
 	"final_project/internal/application/itemapp"
-	"final_project/internal/application/sendrequestapp"
+	"final_project/internal/application/requestapp"
 	"final_project/internal/application/userapp"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	"final_project/internal/infrastructure/seeder"
@@ -40,8 +40,8 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	adminHandler := handler.NewAdminHandler(adminUC)
 
 	//request dependency
-	sendRequestRepo := persistence.NewSendRequestRepoDB(db)
-	sendRequestUC := sendrequestapp.NewUseCase(sendRequestRepo, userRepo)
+	sendRequestRepo := persistence.NewRequestRepoDB(db)
+	sendRequestUC := requestapp.NewUseCase(sendRequestRepo, userRepo)
 	sendRequestHandler := handler.NewSendRequestHandler(sendRequestUC)
 
 	seed := seeder.NewSeeder(

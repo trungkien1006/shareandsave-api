@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"final_project/internal/application/sendrequestapp"
-	sendrequest "final_project/internal/domain/send_request"
+	"final_project/internal/application/requestapp"
+	"final_project/internal/domain/request"
 	"final_project/internal/domain/user"
-	sendrequestdto "final_project/internal/dto/sendrequestDTO"
+	requestdto "final_project/internal/dto/requestDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
 
@@ -12,10 +12,10 @@ import (
 )
 
 type SendRequestHandler struct {
-	uc *sendrequestapp.UseCase
+	uc *requestapp.UseCase
 }
 
-func NewSendRequestHandler(uc *sendrequestapp.UseCase) *SendRequestHandler {
+func NewSendRequestHandler(uc *requestapp.UseCase) *SendRequestHandler {
 	return &SendRequestHandler{uc: uc}
 }
 
@@ -30,9 +30,9 @@ func NewSendRequestHandler(uc *sendrequestapp.UseCase) *SendRequestHandler {
 // @Router /requests/send-old-item [post]
 func (h *SendRequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 	var (
-		req       sendrequestdto.CreateRequestSendOldItem
+		req       requestdto.CreateRequestSendOldItem
 		user      user.User
-		domainReq sendrequest.SendRequest
+		domainReq request.SendRequest
 	)
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(
@@ -61,14 +61,14 @@ func (h *SendRequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 		return
 	}
 
-	var requestDTO sendrequestdto.RequestSendOldItem
+	var requestDTO requestdto.RequestSendOldItem
 
-	requestDTO = sendrequestdto.ToRequestDTO(domainReq)
+	requestDTO = requestdto.DomainToDTORequest(domainReq)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Create send old item request successfully",
-		"data": sendrequestdto.CreateSendOldItemRequestResponse{
+		"data": requestdto.CreateSendOldItemRequestResponse{
 			Request: requestDTO,
 		},
 	})

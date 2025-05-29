@@ -1,4 +1,4 @@
-package sendrequest
+package request
 
 import "context"
 

@@ -1,7 +1,6 @@
-package sendrequestdto
+package requestdto
 
 import (
-	sendrequest "final_project/internal/domain/send_request"
 	"final_project/internal/pkg/enums"
 	"time"
 )
@@ -13,15 +12,4 @@ type RequestSendOldItem struct {
 	Description         string            `json:"description"`
 	AppointmentTime     time.Time         `json:"appointmentTime"`     // Time in RFC3339 format
 	AppointmentLocation string            `json:"appointmentLocation"` // Location of the appointment
-}
-
-func ToRequestDTO(u sendrequest.SendRequest) RequestSendOldItem {
-	return RequestSendOldItem{
-		ID:                  u.ID,
-		UserID:              u.UserID,
-		Type:                enums.RequestType(u.Type),
-		Description:         u.Description,
-		AppointmentTime:     u.AppointmentTime,
-		AppointmentLocation: u.AppointmentLocation,
-	}
 }

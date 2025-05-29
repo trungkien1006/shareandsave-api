@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/request"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,4 +21,32 @@ type SendRequest struct {
 	DeletedAt           gorm.DeletedAt `gorm:"index"`                    // deleted_at timestamp
 	// Relations
 	User User `gorm:"foreignKey:UserID"` // Quan hệ với bảng user
+}
+
+// Domain → DB
+func RequestDomainToDB(a request.SendRequest) request.SendRequest {
+	return request.SendRequest{
+		ID:                  a.ID,
+		UserID:              a.UserID,
+		Type:                a.Type,
+		Description:         a.Description,
+		Status:              a.Status,
+		ReplyMessage:        a.ReplyMessage,
+		AppointmentTime:     a.AppointmentTime,
+		AppointmentLocation: a.AppointmentLocation,
+	}
+}
+
+// DB → Domain
+func SendRequestToDomain(a request.SendRequest) request.SendRequest {
+	return request.SendRequest{
+		ID:                  a.ID,
+		UserID:              a.UserID,
+		Type:                a.Type,
+		Description:         a.Description,
+		Status:              a.Status,
+		ReplyMessage:        a.ReplyMessage,
+		AppointmentTime:     a.AppointmentTime,
+		AppointmentLocation: a.AppointmentLocation,
+	}
 }
