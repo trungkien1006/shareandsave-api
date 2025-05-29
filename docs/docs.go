@@ -1272,6 +1272,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "isAnonymous": {
+                    "type": "boolean"
+                },
                 "replyMessage": {
                     "description": "Optional, used for replies",
                     "type": "string"
