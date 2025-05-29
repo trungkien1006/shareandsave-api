@@ -10,5 +10,5 @@ const (
 )
 
 func (s RequestType) String() string {
-	return [...]string{"SEND_OLD_ITEM", "RECEIVE_OLD_ITEM", "SEND_LOSE_ITEM", "RECEIVE_LOSE_ITEM"}[s]
+	return [...]string{"SEND_OLD_ITEM", "SEND_LOSE_ITEM", "RECEIVE_OLD_ITEM", "RECEIVE_LOSE_ITEM"}[s]
 }

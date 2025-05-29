@@ -38,7 +38,7 @@ func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, userID int
 }
 
 func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
-	emailExisted, err := uc.repo.IsEmailExist(ctx, user.Email)
+	emailExisted, err := uc.repo.IsEmailExist(ctx, user.Email, 0)
 
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 		return errors.New(enums.ErrEmailExisted)
 	}
 
-	phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, user.PhoneNumber)
+	phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, user.PhoneNumber, 0)
 
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 	}
 
 	if domainUser.PhoneNumber != "" {
-		phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, domainUser.PhoneNumber)
+		phoneNumberExisted, err := uc.repo.IsPhoneNumberExist(ctx, domainUser.PhoneNumber, int(domainUser.ID))
 
 		if err != nil {
 			return err

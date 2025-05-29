@@ -14,6 +14,7 @@ type SendRequest struct {
 	ReplyMessage        string
 	AppointmentTime     time.Time
 	AppointmentLocation string
+	IsAnonymous         bool
 }
 
 type ReceiveRequest struct {

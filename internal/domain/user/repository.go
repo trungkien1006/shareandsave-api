@@ -12,7 +12,7 @@ type Repository interface {
 	Save(ctx context.Context, user *User) error
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, domainUser *User) error
-	IsEmailExist(ctx context.Context, email string) (bool, error)
-	IsPhoneNumberExist(ctx context.Context, phoneNumber string) (bool, error)
+	IsEmailExist(ctx context.Context, email string, userID int) (bool, error)
+	IsPhoneNumberExist(ctx context.Context, phoneNumber string, userID int) (bool, error)
 	IsTableEmpty(ctx context.Context) (bool, error)
 }

@@ -103,29 +103,37 @@ func (r *UserRepoDB) Delete(ctx context.Context, domainUser *user.User) error {
 	return nil
 }
 
-func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string) (bool, error) {
-	var count int64 = 0
+func (r *UserRepoDB) IsEmailExist(ctx context.Context, email string, userID int) (bool, error) {
+	var id int64 = 0
 
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Where("email LIKE ?", email).Count(&count).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Select("id").Where("email LIKE ?", email).Scan(&id).Error; err != nil {
 		return false, errors.New("Lỗi khi kiểm tra email đã tồn tại: " + err.Error())
 	}
 
-	if count > 0 {
-		return true, nil
+	if id > 0 {
+		if userID == 0 {
+			return true, nil
+		} else if id == int64(userID) {
+			return false, nil
+		}
 	}
 
 	return false, nil
 }
 
-func (r *UserRepoDB) IsPhoneNumberExist(ctx context.Context, phoneNumber string) (bool, error) {
-	var count int64 = 0
+func (r *UserRepoDB) IsPhoneNumberExist(ctx context.Context, phoneNumber string, userID int) (bool, error) {
+	var id int64 = 0
 
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Where("phone_number LIKE ?", phoneNumber).Count(&count).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Select("id").Where("phone_number LIKE ?", phoneNumber).Scan(&id).Error; err != nil {
 		return false, errors.New("Lỗi khi kiểm tra số điện thoại đã tồn tại: " + err.Error())
 	}
 
-	if count > 0 {
-		return true, nil
+	if id > 0 {
+		if userID == 0 {
+			return true, nil
+		} else if id == int64(userID) {
+			return false, nil
+		}
 	}
 
 	return false, nil

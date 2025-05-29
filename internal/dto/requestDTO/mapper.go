@@ -13,6 +13,7 @@ func ToDomainRequest(dto CreateRequestSendOldItem) request.SendRequest {
 		Description:         dto.Description,
 		AppointmentTime:     dto.AppointmentTime,
 		AppointmentLocation: dto.AppointmentLocation,
+		IsAnonymous:         dto.IsAnonymous,
 	}
 }
 
@@ -25,5 +26,6 @@ func DomainToDTORequest(domain request.SendRequest) RequestSendOldItem {
 		Description:         domain.Description,
 		AppointmentTime:     domain.AppointmentTime,
 		AppointmentLocation: domain.AppointmentLocation,
+		IsAnonymous:         domain.IsAnonymous,
 	}
 }

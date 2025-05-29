@@ -28,13 +28,13 @@ func (uc *UseCase) CreateRequest(ctx context.Context, req *request.SendRequest, 
 	//Nếu không truyền userID sẽ kiểm tra để tạo tài khoản cho người dùng
 	if req.UserID == 0 {
 		//Kiểm tra email đã tồn tại trong hệ thống chưa
-		userEmailExist, err := uc.userRepo.IsEmailExist(ctx, user.Email)
+		userEmailExist, err := uc.userRepo.IsEmailExist(ctx, user.Email, 0)
 		if err != nil {
 			return err
 		}
 
 		//Kiểm tra sđt đã tồn tại trong hệ thống chưa
-		userPhoneNumberExist, err := uc.userRepo.IsPhoneNumberExist(ctx, user.PhoneNumber)
+		userPhoneNumberExist, err := uc.userRepo.IsPhoneNumberExist(ctx, user.PhoneNumber, 0)
 		if err != nil {
 			return err
 		}

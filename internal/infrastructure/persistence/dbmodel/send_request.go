@@ -17,9 +17,10 @@ type SendRequest struct {
 	ReplyMessage        string         `gorm:"type:text"`                // reply_message text
 	AppointmentTime     time.Time      `gorm:"type:datetime"`            // appointment_time datetime
 	AppointmentLocation string         `gorm:"type:varchar(255)"`        // appointment_location varchar(255)
-	CreatedAt           time.Time      `gorm:"autoCreateTime"`           // created_at timestamp
-	UpdatedAt           time.Time      `gorm:"autoUpdateTime"`           // updated_at timestamp
-	DeletedAt           gorm.DeletedAt `gorm:"index"`                    // deleted_at timestamp
+	IsAnonymous         bool           `gorm:"not null"`
+	CreatedAt           time.Time      `gorm:"autoCreateTime"` // created_at timestamp
+	UpdatedAt           time.Time      `gorm:"autoUpdateTime"` // updated_at timestamp
+	DeletedAt           gorm.DeletedAt `gorm:"index"`          // deleted_at timestamp
 	// Relations
 	User User `gorm:"foreignKey:UserID"` // Quan hệ với bảng user
 }
@@ -35,6 +36,7 @@ func RequestDomainToDB(a request.SendRequest) SendRequest {
 		ReplyMessage:        a.ReplyMessage,
 		AppointmentTime:     a.AppointmentTime,
 		AppointmentLocation: a.AppointmentLocation,
+		IsAnonymous:         a.IsAnonymous,
 	}
 }
 
@@ -49,5 +51,6 @@ func SendRequestToDomain(a SendRequest) request.SendRequest {
 		ReplyMessage:        a.ReplyMessage,
 		AppointmentTime:     a.AppointmentTime,
 		AppointmentLocation: a.AppointmentLocation,
+		IsAnonymous:         a.IsAnonymous,
 	}
 }

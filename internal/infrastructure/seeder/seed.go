@@ -46,9 +46,9 @@ func (s *Seeder) Seed() error {
 		return err
 	}
 
-	// if err := s.seedItems(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedItems(); err != nil {
+		return err
+	}
 
 	if err := s.seedUsers(); err != nil {
 		return err
@@ -294,12 +294,36 @@ func (s *Seeder) seedItems() error {
 	}
 
 	items := []item.Item{
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
-		{Name: "Giáo trình chính trị 1", Description: "Giáo trình dạy về ...", Image: ""},
+		{Name: "Giáo trình Chính trị 1", Description: "Giáo trình học phần chính trị cơ bản cho sinh viên năm nhất.", Image: ""},
+		{Name: "Giáo trình Thiết kế Web", Description: "Giáo trình dạy về HTML, CSS, và JavaScript cơ bản.", Image: ""},
+		{Name: "Sách Toán Cao Cấp", Description: "Tài liệu học Toán cao cấp cho khối kỹ thuật.", Image: ""},
+		{Name: "Giáo trình Cấu trúc Dữ liệu và Giải thuật", Description: "Tài liệu học thuật về các thuật toán và cấu trúc dữ liệu cơ bản.", Image: ""},
+		{Name: "Máy tính Casio fx-570VN Plus", Description: "Máy tính cầm tay cần thiết cho các môn học tự nhiên và kỹ thuật.", Image: ""},
+		{Name: "Balo Laptop Chống Sốc", Description: "Balo chống sốc bảo vệ laptop và tài liệu học tập.", Image: ""},
+		{Name: "Giáo trình Kinh tế Vi mô", Description: "Tài liệu học môn Kinh tế Vi mô cho sinh viên Kinh tế.", Image: ""},
+		{Name: "Bút dạ quang", Description: "Bộ 5 cây bút dạ quang nhiều màu để ghi chú nội dung quan trọng.", Image: ""},
+		{Name: "Giáo trình Nguyên lý Kế toán", Description: "Sách học phần cơ bản cho ngành kế toán.", Image: ""},
+		{Name: "Tập vở ô ly A4", Description: "Tập vở cũ còn dư dùng để ghi chép bài giảng.", Image: ""},
+		{Name: "Sách Hóa học Đại cương", Description: "Tài liệu học Hóa học cơ bản dành cho sinh viên khoa tự nhiên.", Image: ""},
+		{Name: "Thước kẻ 30cm", Description: "Dụng cụ học tập thường dùng trong các bài toán vẽ hình hoặc kỹ thuật.", Image: ""},
+		{Name: "Giáo trình Lập trình C C++", Description: "Sách học về ngôn ngữ lập trình C/C++ từ cơ bản đến nâng cao.", Image: ""},
+		{Name: "Sách Giáo dục Quốc phòng", Description: "Tài liệu học quốc phòng an ninh cho sinh viên năm nhất.", Image: ""},
+		{Name: "Laptop cũ Dell Vostro", Description: "Máy tính cũ dành cho sinh viên học tập và làm bài tập nhóm.", Image: ""},
+		{Name: "Tai nghe chụp tai", Description: "Tai nghe phục vụ học online, nghe giảng, và làm việc nhóm.", Image: ""},
+		{Name: "Giáo trình Tâm lý học đại cương", Description: "Sách học phần Tâm lý học cho khối xã hội.", Image: ""},
+		{Name: "Chuột không dây Logitech", Description: "Thiết bị hỗ trợ học tập và làm việc với máy tính.", Image: ""},
+		{Name: "Giáo trình Xác suất Thống kê", Description: "Tài liệu dành cho các ngành kỹ thuật và kinh tế.", Image: ""},
+		{Name: "Sách Nhập môn Công nghệ Thông tin", Description: "Tài liệu học cơ sở ngành CNTT cho sinh viên năm nhất.", Image: ""},
+		{Name: "Đèn học LED để bàn", Description: "Đèn bàn dùng học bài, tiết kiệm điện và dịu mắt.", Image: ""},
+		{Name: "Ổ cứng di động 500GB", Description: "Dùng để lưu trữ tài liệu học tập, phần mềm, bài tập nhóm.", Image: ""},
+		{Name: "Giáo trình Pháp luật đại cương", Description: "Tài liệu học bắt buộc cho tất cả các ngành.", Image: ""},
+		{Name: "Thẻ nhớ SD 64GB", Description: "Thiết bị lưu trữ dành cho sinh viên học media, CNTT.", Image: ""},
+		{Name: "Giáo trình Xây dựng Đảng", Description: "Tài liệu học chính trị dành cho sinh viên năm cuối.", Image: ""},
+		{Name: "Bút bi Thiên Long", Description: "Bộ bút bi dư dùng để ghi chép bài vở.", Image: ""},
+		{Name: "Bìa hồ sơ và túi clear A4", Description: "Dùng để nộp bài, tài liệu, báo cáo môn học.", Image: ""},
+		{Name: "Máy in cũ Canon", Description: "Máy in cũ hỗ trợ in báo cáo, tài liệu học tập tại nhà.", Image: ""},
+		{Name: "Ghế gấp học bài", Description: "Ghế gấp gọn, dùng khi ngồi học trong phòng trọ nhỏ.", Image: ""},
+		{Name: "Bảng trắng mini", Description: "Bảng trắng dùng ghi chú, trình bày khi học nhóm.", Image: ""},
 	}
 
 	for i := range items {
