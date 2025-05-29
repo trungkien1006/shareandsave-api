@@ -96,7 +96,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.DELETE("/admins/:adminID", adminHandler.DeleteAdmin)
 
 		//request API
-		v1.POST("/requests/send-old-item", sendRequestHandler.CreateSendOldItemRequest)
+		v1.POST("/request-sends", sendRequestHandler.CreateSendOldItemRequest)
 	}
 
 	// r.Static("/public/images", "./public/images")

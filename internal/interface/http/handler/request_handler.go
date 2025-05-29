@@ -27,7 +27,7 @@ func NewSendRequestHandler(uc *requestapp.UseCase) *SendRequestHandler {
 // @Param request body requestdto.CreateRequestSendOldItem true "Create request send old item"
 // @Success 201 {object} requestdto.CreateSendOldItemRequestResponseWrapper "Created request successfully"
 // @Failure 400 {object} enums.AppError
-// @Router /requests/send-old-item [post]
+// @Router /request-sends [post]
 func (h *SendRequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 	var (
 		req       requestdto.CreateRequestSendOldItem

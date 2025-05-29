@@ -306,7 +306,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.GetItemResponseWrapper"
+                            "$ref": "#/definitions/itemdto.GetItemResponseWrapper"
                         }
                     },
                     "400": {
@@ -342,7 +342,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.UpdateItemRequest"
+                            "$ref": "#/definitions/itemdto.UpdateItemRequest"
                         }
                     }
                 ],
@@ -350,7 +350,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated item successfully",
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.UpdateItemResponseWrapper"
+                            "$ref": "#/definitions/itemdto.UpdateItemResponseWrapper"
                         }
                     },
                     "400": {
@@ -386,7 +386,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.CreateItemRequest"
+                            "$ref": "#/definitions/itemdto.CreateItemRequest"
                         }
                     }
                 ],
@@ -394,7 +394,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created item successfully",
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.CreateItemResponseWrapper"
+                            "$ref": "#/definitions/itemdto.CreateItemResponseWrapper"
                         }
                     },
                     "400": {
@@ -438,7 +438,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.GetItemByIDResponseWrapper"
+                            "$ref": "#/definitions/itemdto.GetItemByIDResponseWrapper"
                         }
                     },
                     "400": {
@@ -480,7 +480,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Deleted item successfully",
                         "schema": {
-                            "$ref": "#/definitions/itemDTO.DeleteItemResponseWrapper"
+                            "$ref": "#/definitions/itemdto.DeleteItemResponseWrapper"
                         }
                     },
                     "400": {
@@ -498,7 +498,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/requests/send-old-item": {
+        "/request-sends": {
             "post": {
                 "description": "API gửi yêu cầu gửi đồ cũ",
                 "consumes": [
@@ -910,9 +910,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "password": {
-                    "type": "string"
-                },
                 "roleId": {
                     "description": "Role ID must be provided, e.g., 1 for Admin, 2 for Moderator",
                     "type": "integer",
@@ -963,22 +960,49 @@ const docTemplate = `{
                 }
             }
         },
+        "enums.RequestStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "x-enum-comments": {
+                "RequestStatusApprove": "3 Người dùng đồng ý",
+                "RequestStatusFail": "4 Người dùng đã hủy",
+                "RequestStatusPending": "0 Người dùng đã gửi yêu cầu và đang chờ xử lý",
+                "RequestStatusReject": "2 Admin đã từ chối yêu cầu",
+                "RequestStatusWaitingUser": "1 Admin đã xác nhận và đang chờ người dùng xác nhận lần cuối"
+            },
+            "x-enum-varnames": [
+                "RequestStatusPending",
+                "RequestStatusWaitingUser",
+                "RequestStatusReject",
+                "RequestStatusApprove",
+                "RequestStatusFail"
+            ]
+        },
         "enums.RequestType": {
             "type": "integer",
             "enum": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "x-enum-comments": {
-                "RequestTypeReceiveOldItem": "1",
-                "RequestTypeSendLoseItem": "2",
+                "RequestTypeReceiveLoseItem": "3",
+                "RequestTypeReceiveOldItem": "2",
+                "RequestTypeSendLoseItem": "1",
                 "RequestTypeSendOldItem": "0"
             },
             "x-enum-varnames": [
                 "RequestTypeSendOldItem",
+                "RequestTypeSendLoseItem",
                 "RequestTypeReceiveOldItem",
-                "RequestTypeSendLoseItem"
+                "RequestTypeReceiveLoseItem"
             ]
         },
         "enums.UserStatus": {
@@ -999,7 +1023,7 @@ const docTemplate = `{
                 "UserStatusLocked"
             ]
         },
-        "itemDTO.CreateItemRequest": {
+        "itemdto.CreateItemRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -1016,29 +1040,29 @@ const docTemplate = `{
                 }
             }
         },
-        "itemDTO.CreateItemResponse": {
+        "itemdto.CreateItemResponse": {
             "type": "object",
             "properties": {
                 "item": {
-                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                    "$ref": "#/definitions/itemdto.ItemDTO"
                 }
             }
         },
-        "itemDTO.CreateItemResponseWrapper": {
+        "itemdto.CreateItemResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/itemDTO.CreateItemResponse"
+                    "$ref": "#/definitions/itemdto.CreateItemResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "itemDTO.DeleteItemResponseWrapper": {
+        "itemdto.DeleteItemResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1049,35 +1073,35 @@ const docTemplate = `{
                 }
             }
         },
-        "itemDTO.GetItemByIDResponse": {
+        "itemdto.GetItemByIDResponse": {
             "type": "object",
             "properties": {
                 "item": {
-                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                    "$ref": "#/definitions/itemdto.ItemDTO"
                 }
             }
         },
-        "itemDTO.GetItemByIDResponseWrapper": {
+        "itemdto.GetItemByIDResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/itemDTO.GetItemByIDResponse"
+                    "$ref": "#/definitions/itemdto.GetItemByIDResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "itemDTO.GetItemResponse": {
+        "itemdto.GetItemResponse": {
             "type": "object",
             "properties": {
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/itemDTO.ItemDTO"
+                        "$ref": "#/definitions/itemdto.ItemDTO"
                     }
                 },
                 "totalPage": {
@@ -1085,21 +1109,21 @@ const docTemplate = `{
                 }
             }
         },
-        "itemDTO.GetItemResponseWrapper": {
+        "itemdto.GetItemResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/itemDTO.GetItemResponse"
+                    "$ref": "#/definitions/itemdto.GetItemResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "itemDTO.ItemDTO": {
+        "itemdto.ItemDTO": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1116,7 +1140,7 @@ const docTemplate = `{
                 }
             }
         },
-        "itemDTO.UpdateItemRequest": {
+        "itemdto.UpdateItemRequest": {
             "type": "object",
             "required": [
                 "id"
@@ -1136,22 +1160,22 @@ const docTemplate = `{
                 }
             }
         },
-        "itemDTO.UpdateItemResponse": {
+        "itemdto.UpdateItemResponse": {
             "type": "object",
             "properties": {
                 "item": {
-                    "$ref": "#/definitions/itemDTO.ItemDTO"
+                    "$ref": "#/definitions/itemdto.ItemDTO"
                 }
             }
         },
-        "itemDTO.UpdateItemResponseWrapper": {
+        "itemdto.UpdateItemResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/itemDTO.UpdateItemResponse"
+                    "$ref": "#/definitions/itemdto.UpdateItemResponse"
                 },
                 "message": {
                     "type": "string"
@@ -1194,6 +1218,15 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string",
                     "example": "0123456789"
+                },
+                "type": {
+                    "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.RequestType"
+                        }
+                    ],
+                    "example": 0
                 },
                 "userId": {
                     "type": "integer"
@@ -1239,11 +1272,19 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "isAnonymous": {
-                    "description": "true: anonymous, false: not anonymous",
-                    "type": "boolean"
+                "replyMessage": {
+                    "description": "Optional, used for replies",
+                    "type": "string"
                 },
-                "requestType": {
+                "status": {
+                    "description": "0: Pending, 1: Accepted, 2: Rejected, 3: Completed",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.RequestStatus"
+                        }
+                    ]
+                },
+                "type": {
                     "description": "1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post",
                     "allOf": [
                         {

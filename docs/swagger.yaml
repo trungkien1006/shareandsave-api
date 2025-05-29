@@ -96,8 +96,6 @@ definitions:
         type: string
       id:
         type: integer
-      password:
-        type: string
       roleId:
         description: Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
         example: 1
@@ -134,20 +132,44 @@ definitions:
         example: Name is require
         type: string
     type: object
+  enums.RequestStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-comments:
+      RequestStatusApprove: 3 Người dùng đồng ý
+      RequestStatusFail: 4 Người dùng đã hủy
+      RequestStatusPending: 0 Người dùng đã gửi yêu cầu và đang chờ xử lý
+      RequestStatusReject: 2 Admin đã từ chối yêu cầu
+      RequestStatusWaitingUser: 1 Admin đã xác nhận và đang chờ người dùng xác nhận
+        lần cuối
+    x-enum-varnames:
+    - RequestStatusPending
+    - RequestStatusWaitingUser
+    - RequestStatusReject
+    - RequestStatusApprove
+    - RequestStatusFail
   enums.RequestType:
     enum:
     - 0
     - 1
     - 2
+    - 3
     type: integer
     x-enum-comments:
-      RequestTypeReceiveOldItem: "1"
-      RequestTypeSendLoseItem: "2"
+      RequestTypeReceiveLoseItem: "3"
+      RequestTypeReceiveOldItem: "2"
+      RequestTypeSendLoseItem: "1"
       RequestTypeSendOldItem: "0"
     x-enum-varnames:
     - RequestTypeSendOldItem
-    - RequestTypeReceiveOldItem
     - RequestTypeSendLoseItem
+    - RequestTypeReceiveOldItem
+    - RequestTypeReceiveLoseItem
   enums.UserStatus:
     enum:
     - 0
@@ -162,7 +184,7 @@ definitions:
     - UserStatusInactive
     - UserStatusActive
     - UserStatusLocked
-  itemDTO.CreateItemRequest:
+  itemdto.CreateItemRequest:
     properties:
       description:
         type: string
@@ -173,60 +195,60 @@ definitions:
     required:
     - name
     type: object
-  itemDTO.CreateItemResponse:
+  itemdto.CreateItemResponse:
     properties:
       item:
-        $ref: '#/definitions/itemDTO.ItemDTO'
+        $ref: '#/definitions/itemdto.ItemDTO'
     type: object
-  itemDTO.CreateItemResponseWrapper:
+  itemdto.CreateItemResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/itemDTO.CreateItemResponse'
+        $ref: '#/definitions/itemdto.CreateItemResponse'
       message:
         type: string
     type: object
-  itemDTO.DeleteItemResponseWrapper:
+  itemdto.DeleteItemResponseWrapper:
     properties:
       code:
         type: integer
       message:
         type: string
     type: object
-  itemDTO.GetItemByIDResponse:
+  itemdto.GetItemByIDResponse:
     properties:
       item:
-        $ref: '#/definitions/itemDTO.ItemDTO'
+        $ref: '#/definitions/itemdto.ItemDTO'
     type: object
-  itemDTO.GetItemByIDResponseWrapper:
+  itemdto.GetItemByIDResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/itemDTO.GetItemByIDResponse'
+        $ref: '#/definitions/itemdto.GetItemByIDResponse'
       message:
         type: string
     type: object
-  itemDTO.GetItemResponse:
+  itemdto.GetItemResponse:
     properties:
       items:
         items:
-          $ref: '#/definitions/itemDTO.ItemDTO'
+          $ref: '#/definitions/itemdto.ItemDTO'
         type: array
       totalPage:
         type: integer
     type: object
-  itemDTO.GetItemResponseWrapper:
+  itemdto.GetItemResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/itemDTO.GetItemResponse'
+        $ref: '#/definitions/itemdto.GetItemResponse'
       message:
         type: string
     type: object
-  itemDTO.ItemDTO:
+  itemdto.ItemDTO:
     properties:
       description:
         type: string
@@ -237,7 +259,7 @@ definitions:
       name:
         type: string
     type: object
-  itemDTO.UpdateItemRequest:
+  itemdto.UpdateItemRequest:
     properties:
       description:
         type: string
@@ -250,17 +272,17 @@ definitions:
     required:
     - id
     type: object
-  itemDTO.UpdateItemResponse:
+  itemdto.UpdateItemResponse:
     properties:
       item:
-        $ref: '#/definitions/itemDTO.ItemDTO'
+        $ref: '#/definitions/itemdto.ItemDTO'
     type: object
-  itemDTO.UpdateItemResponseWrapper:
+  itemdto.UpdateItemResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/itemDTO.UpdateItemResponse'
+        $ref: '#/definitions/itemdto.UpdateItemResponse'
       message:
         type: string
     type: object
@@ -289,6 +311,12 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/enums.RequestType'
+        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
+          Post'
+        example: 0
       userId:
         type: integer
     required:
@@ -321,10 +349,14 @@ definitions:
         type: string
       id:
         type: integer
-      isAnonymous:
-        description: 'true: anonymous, false: not anonymous'
-        type: boolean
-      requestType:
+      replyMessage:
+        description: Optional, used for replies
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.RequestStatus'
+        description: '0: Pending, 1: Accepted, 2: Rejected, 3: Completed'
+      type:
         allOf:
         - $ref: '#/definitions/enums.RequestType'
         description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
@@ -677,7 +709,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/itemDTO.GetItemResponseWrapper'
+            $ref: '#/definitions/itemdto.GetItemResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -699,14 +731,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/itemDTO.CreateItemRequest'
+          $ref: '#/definitions/itemdto.CreateItemRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Created item successfully
           schema:
-            $ref: '#/definitions/itemDTO.CreateItemResponseWrapper'
+            $ref: '#/definitions/itemdto.CreateItemResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -728,14 +760,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/itemDTO.UpdateItemRequest'
+          $ref: '#/definitions/itemdto.UpdateItemRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Updated item successfully
           schema:
-            $ref: '#/definitions/itemDTO.UpdateItemResponseWrapper'
+            $ref: '#/definitions/itemdto.UpdateItemResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -764,7 +796,7 @@ paths:
         "200":
           description: Deleted item successfully
           schema:
-            $ref: '#/definitions/itemDTO.DeleteItemResponseWrapper'
+            $ref: '#/definitions/itemdto.DeleteItemResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -792,7 +824,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/itemDTO.GetItemByIDResponseWrapper'
+            $ref: '#/definitions/itemdto.GetItemByIDResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -804,7 +836,7 @@ paths:
       summary: Get item by ID
       tags:
       - items
-  /requests/send-old-item:
+  /request-sends:
     post:
       consumes:
       - application/json
