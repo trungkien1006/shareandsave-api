@@ -30,21 +30,21 @@ func NewSeeder(rolePerRepo rolepermission.Repository, adminRepo admin.Repository
 }
 
 func (s *Seeder) Seed() error {
-	// if err := s.seedPermission(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedPermission(); err != nil {
+		return err
+	}
 
-	// if err := s.seedRole(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedRole(); err != nil {
+		return err
+	}
 
-	// if err := s.seedRolePer(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedRolePer(); err != nil {
+		return err
+	}
 
-	// if err := s.seedAdmin(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedAdmin(); err != nil {
+		return err
+	}
 
 	// if err := s.seedItems(); err != nil {
 	// 	return err
@@ -142,8 +142,8 @@ func (s *Seeder) seedRole() error {
 		{Name: "Super Admin"},
 		{Name: "Content Manager"},
 		{Name: "Warehouse Manager"},
-		{Name: "Human Resources Manager"},
-		{Name: "Client Manager"},
+		// {Name: "Human Resources Manager"},
+		// {Name: "Client Manager"},
 	}
 
 	if err := s.rolePerRepo.SaveRole(&roles); err != nil {
@@ -164,11 +164,11 @@ func (s *Seeder) seedRolePer() error {
 	}
 
 	var rolePermissionConfig = map[string][]string{
-		"Super Admin":             {"*"},
-		"Content Manager":         {"create_post", "read_post", "update_post", "delete_post", "read_notification"},
-		"Warehouse Manager":       {"read_warehouse", "read_item_warehouse", "read_import_invoice", "create_import_invoice", "update_import_invoice", "lock_import_invoice", "delete_import_invoice", "read_export_invoice", "create_export_invoice", "update_export_invoice", "lock_export_invoice", "delete_export_invoice", "read_notification"},
-		"Human Resources Manager": {"read_admin", "update_admin", "delete_admin", "create_admin", "read_notification"},
-		"Client Manager":          {"read_user", "update_user", "delete_user", "read_notification", "read_request", "reply_request", "delete_request"},
+		"Super Admin":       {"*"},
+		"Content Manager":   {"create_post", "read_post", "update_post", "delete_post", "read_notification"},
+		"Warehouse Manager": {"read_warehouse", "read_item_warehouse", "read_import_invoice", "create_import_invoice", "update_import_invoice", "lock_import_invoice", "delete_import_invoice", "read_export_invoice", "create_export_invoice", "update_export_invoice", "lock_export_invoice", "delete_export_invoice", "read_notification", "read_request", "reply_request", "delete_request"},
+		// "Human Resources Manager": {"read_admin", "update_admin", "delete_admin", "create_admin", "read_notification"},
+		// "Client Manager":          {"read_user", "update_user", "delete_user", "read_notification", "read_request", "reply_request", "delete_request"},
 	}
 
 	var roles []rolepermission.Role
@@ -247,8 +247,8 @@ func (s *Seeder) seedAdmin() error {
 		{Email: "superadmin@example.com", Password: "superadmin", FullName: "Super Admin", Status: 1, RoleID: roleMap["Super Admin"]},
 		{Email: "content@example.com", Password: "contentmanager", FullName: "Content Manager", Status: 1, RoleID: roleMap["Content Manager"]},
 		{Email: "warehouse@example.com", Password: "warehousemanager", FullName: "Warehouse Manager", Status: 1, RoleID: roleMap["Warehouse Manager"]},
-		{Email: "hr@example.com", Password: "hrmanager", FullName: "HR Manager", Status: 1, RoleID: roleMap["Human Resources Manager"]},
-		{Email: "client@example.com", Password: "clientmanager", FullName: "Client Manager", Status: 1, RoleID: roleMap["Client Manager"]},
+		// {Email: "hr@example.com", Password: "hrmanager", FullName: "HR Manager", Status: 1, RoleID: roleMap["Human Resources Manager"]},
+		// {Email: "client@example.com", Password: "clientmanager", FullName: "Client Manager", Status: 1, RoleID: roleMap["Client Manager"]},
 	}
 
 	for i := range admins {
