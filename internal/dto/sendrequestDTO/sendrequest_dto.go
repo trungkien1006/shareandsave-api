@@ -1,7 +1,7 @@
-package requestdto
+package sendrequestdto
 
 import (
-	"final_project/internal/domain/request"
+	sendrequest "final_project/internal/domain/send_request"
 	"final_project/internal/pkg/enums"
 	"time"
 )
@@ -9,20 +9,18 @@ import (
 type RequestSendOldItem struct {
 	ID                  uint              `json:"id"`
 	UserID              uint              `json:"userId"`
-	RequestType         enums.RequestType `json:"requestType"` // 1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post
+	Type                enums.RequestType `json:"type"` // 1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply Post
 	Description         string            `json:"description"`
-	IsAnonymous         bool              `json:"isAnonymous"`         // true: anonymous, false: not anonymous
 	AppointmentTime     time.Time         `json:"appointmentTime"`     // Time in RFC3339 format
 	AppointmentLocation string            `json:"appointmentLocation"` // Location of the appointment
 }
 
-func ToRequestDTO(u request.Request) RequestSendOldItem {
+func ToRequestDTO(u sendrequest.SendRequest) RequestSendOldItem {
 	return RequestSendOldItem{
 		ID:                  u.ID,
 		UserID:              u.UserID,
-		RequestType:         enums.RequestType(u.RequestType),
+		Type:                enums.RequestType(u.Type),
 		Description:         u.Description,
-		IsAnonymous:         u.IsAnonymous,
 		AppointmentTime:     u.AppointmentTime,
 		AppointmentLocation: u.AppointmentLocation,
 	}

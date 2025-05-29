@@ -1,4 +1,4 @@
-package itemDTO
+package itemdto
 
 // Response trả về một item
 type GetItemByIDResponse struct {

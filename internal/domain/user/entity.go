@@ -5,6 +5,7 @@ type User struct {
 	Email       string
 	Password    string
 	Avatar      string
+	Active      bool
 	FullName    string
 	PhoneNumber string
 	Address     string

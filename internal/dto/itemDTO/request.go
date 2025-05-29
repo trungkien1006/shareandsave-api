@@ -1,4 +1,4 @@
-package itemDTO
+package itemdto
 
 type GetAllItemRequest struct {
 	Page        int    `form:"page"`

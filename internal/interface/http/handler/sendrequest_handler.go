@@ -1,22 +1,22 @@
 package handler
 
 import (
-	"final_project/internal/application/requestapp"
-	"final_project/internal/domain/request"
+	"final_project/internal/application/sendrequestapp"
+	sendrequest "final_project/internal/domain/send_request"
 	"final_project/internal/domain/user"
-	requestdto "final_project/internal/dto/requestDTO"
+	sendrequestdto "final_project/internal/dto/sendrequestDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type RequestHandler struct {
-	uc *requestapp.UseCase
+type SendRequestHandler struct {
+	uc *sendrequestapp.UseCase
 }
 
-func NewRequestHandler(uc *requestapp.UseCase) *RequestHandler {
-	return &RequestHandler{uc: uc}
+func NewSendRequestHandler(uc *sendrequestapp.UseCase) *SendRequestHandler {
+	return &SendRequestHandler{uc: uc}
 }
 
 // @Summary Create request to send old item
@@ -28,11 +28,11 @@ func NewRequestHandler(uc *requestapp.UseCase) *RequestHandler {
 // @Success 201 {object} requestdto.CreateSendOldItemRequestResponseWrapper "Created request successfully"
 // @Failure 400 {object} enums.AppError
 // @Router /requests/send-old-item [post]
-func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
+func (h *SendRequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 	var (
-		req       requestdto.CreateRequestSendOldItem
+		req       sendrequestdto.CreateRequestSendOldItem
 		user      user.User
-		domainReq request.Request
+		domainReq sendrequest.SendRequest
 	)
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(
@@ -49,9 +49,7 @@ func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 	}
 
 	domainReq.UserID = req.UserID
-	domainReq.RequestType = int(enums.RequestTypeSendOldItem)
 	domainReq.Description = req.Description
-	domainReq.IsAnonymous = req.IsAnonymous
 	domainReq.AppointmentTime = req.AppointmentTime
 	domainReq.AppointmentLocation = req.AppointmentLocation
 
@@ -63,14 +61,14 @@ func (h *RequestHandler) CreateSendOldItemRequest(c *gin.Context) {
 		return
 	}
 
-	var requestDTO requestdto.RequestSendOldItem
+	var requestDTO sendrequestdto.RequestSendOldItem
 
-	requestDTO = requestdto.ToRequestDTO(domainReq)
+	requestDTO = sendrequestdto.ToRequestDTO(domainReq)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Create send old item request successfully",
-		"data": requestdto.CreateSendOldItemRequestResponse{
+		"data": sendrequestdto.CreateSendOldItemRequestResponse{
 			Request: requestDTO,
 		},
 	})

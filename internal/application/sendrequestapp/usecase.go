@@ -1,9 +1,9 @@
-package requestapp
+package sendrequestapp
 
 import (
 	"context"
 	"errors"
-	"final_project/internal/domain/request"
+	sendrequest "final_project/internal/domain/send_request"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
@@ -13,18 +13,18 @@ import (
 )
 
 type UseCase struct {
-	repo     request.Repository
+	repo     sendrequest.Repository
 	userRepo user.Repository
 }
 
-func NewUseCase(r request.Repository, userRepo user.Repository) *UseCase {
+func NewUseCase(r sendrequest.Repository, userRepo user.Repository) *UseCase {
 	return &UseCase{
 		repo:     r,
 		userRepo: userRepo,
 	}
 }
 
-func (uc *UseCase) CreateRequest(ctx context.Context, req *request.Request, user *user.User) error {
+func (uc *UseCase) CreateRequest(ctx context.Context, req *sendrequest.SendRequest, user *user.User) error {
 	//Nếu không truyền userID sẽ kiểm tra để tạo tài khoản cho người dùng
 	if req.UserID == 0 {
 		//Kiểm tra email đã tồn tại trong hệ thống chưa
@@ -78,8 +78,6 @@ func (uc *UseCase) CreateRequest(ctx context.Context, req *request.Request, user
 	}
 
 	req.Status = int8(enums.RequestStatusPending) // Mặc định trạng thái là Pending
-	req.ItemWarehouseID = nil                     // Mặc định ItemWarehouseID là 0
-	req.PostID = nil                              // Mặc định PostID là 0
 	req.ReplyMessage = ""                         // Mặc định ReplyMessage là rỗng
 
 	if err := uc.repo.Create(ctx, req); err != nil {

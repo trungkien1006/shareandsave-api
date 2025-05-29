@@ -1,16 +1,13 @@
-package request
+package sendrequest
 
 import "time"
 
-type Request struct {
+type SendRequest struct {
 	ID                  uint
 	UserID              uint
-	RequestType         int
+	Type                int
 	Description         string
-	IsAnonymous         bool
 	Status              int8
-	ItemWarehouseID     *uint
-	PostID              *uint
 	ReplyMessage        string
 	AppointmentTime     time.Time
 	AppointmentLocation string

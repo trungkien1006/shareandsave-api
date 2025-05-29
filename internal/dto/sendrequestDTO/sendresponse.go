@@ -1,4 +1,4 @@
-package requestdto
+package sendrequestdto
 
 type CreateSendOldItemRequestResponseWrapper struct {
 	Code    int                              `json:"code"`

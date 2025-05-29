@@ -2,20 +2,20 @@ package persistence
 
 import (
 	"context"
-	"final_project/internal/domain/request"
+	sendrequest "final_project/internal/domain/send_request"
 
 	"gorm.io/gorm"
 )
 
-type RequestRepoDB struct {
+type SendRequestRepoDB struct {
 	db *gorm.DB
 }
 
-func NewRequestRepoDB(db *gorm.DB) *RequestRepoDB {
-	return &RequestRepoDB{db: db}
+func NewSendRequestRepoDB(db *gorm.DB) *SendRequestRepoDB {
+	return &SendRequestRepoDB{db: db}
 }
 
-func (r *RequestRepoDB) Create(ctx context.Context, request *request.Request) error {
+func (r *SendRequestRepoDB) Create(ctx context.Context, request *sendrequest.SendRequest) error {
 	if err := r.db.Create(&request).Error; err != nil {
 		return err
 	}

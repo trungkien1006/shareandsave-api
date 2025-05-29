@@ -1,4 +1,4 @@
-package itemDTO
+package itemdto
 
 import "final_project/internal/domain/item"
 

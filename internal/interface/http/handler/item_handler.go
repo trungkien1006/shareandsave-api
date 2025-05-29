@@ -4,7 +4,7 @@ import (
 	"final_project/internal/application/itemapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
-	"final_project/internal/dto/itemDTO"
+	"final_project/internal/dto/itemdto"
 	"final_project/internal/pkg/enums"
 	"net/http"
 
@@ -30,12 +30,12 @@ func NewItemHandler(uc *itemapp.UseCase) *ItemHandler {
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, full_name)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
-// @Success 200 {object} itemDTO.GetItemResponseWrapper
+// @Success 200 {object} itemdto.GetItemResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
 // @Router /items [get]
 func (h *ItemHandler) GetAllItem(c *gin.Context) {
-	var req itemDTO.GetAllItemRequest
+	var req itemdto.GetAllItemRequest
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
@@ -53,20 +53,24 @@ func (h *ItemHandler) GetAllItem(c *gin.Context) {
 		SearchBy:    req.SearchBy,
 		SearchValue: req.SearchValue,
 	}
+
 	totalPage, err := h.uc.GetAllItem(c.Request.Context(), &items, domainReq)
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return
 	}
-	itemDTOs := make([]itemDTO.ItemDTO, 0)
+
+	itemdtos := make([]itemdto.ItemDTO, 0)
+
 	for _, i := range items {
-		itemDTOs = append(itemDTOs, itemDTO.ToItemDTO(i))
+		itemdtos = append(itemdtos, itemdto.ToItemDTO(i))
 	}
-	c.JSON(http.StatusOK, itemDTO.GetItemResponseWrapper{
+
+	c.JSON(http.StatusOK, itemdto.GetItemResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Fetched items successfully",
-		Data: itemDTO.GetItemResponse{
-			Items:     itemDTOs,
+		Data: itemdto.GetItemResponse{
+			Items:     itemdtos,
 			TotalPage: totalPage,
 		},
 	})
@@ -78,12 +82,12 @@ func (h *ItemHandler) GetAllItem(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param itemID path int true "ID item"
-// @Success 200 {object} itemDTO.GetItemByIDResponseWrapper
+// @Success 200 {object} itemdto.GetItemByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
 // @Router /items/{itemID} [get]
 func (h *ItemHandler) GetItemByID(c *gin.Context) {
-	var req itemDTO.GetItemByIDRequest
+	var req itemdto.GetItemByIDRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
@@ -93,11 +97,11 @@ func (h *ItemHandler) GetItemByID(c *gin.Context) {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return
 	}
-	c.JSON(http.StatusOK, itemDTO.GetItemByIDResponseWrapper{
+	c.JSON(http.StatusOK, itemdto.GetItemByIDResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Item fetched successfully",
-		Data: itemDTO.GetItemByIDResponse{
-			Item: itemDTO.ToItemDTO(itm),
+		Data: itemdto.GetItemByIDResponse{
+			Item: itemdto.ToItemDTO(itm),
 		},
 	})
 }
@@ -107,13 +111,13 @@ func (h *ItemHandler) GetItemByID(c *gin.Context) {
 // @Tags items
 // @Accept json
 // @Produce json
-// @Param request body itemDTO.CreateItemRequest true "Create item info"
-// @Success 200 {object} itemDTO.CreateItemResponseWrapper "Created item successfully"
+// @Param request body itemdto.CreateItemRequest true "Create item info"
+// @Success 200 {object} itemdto.CreateItemResponseWrapper "Created item successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError
 // @Router /items [post]
 func (h *ItemHandler) CreateItem(c *gin.Context) {
-	var req itemDTO.CreateItemRequest
+	var req itemdto.CreateItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
@@ -127,11 +131,11 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
 		return
 	}
-	c.JSON(http.StatusOK, itemDTO.CreateItemResponseWrapper{
+	c.JSON(http.StatusOK, itemdto.CreateItemResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Item created successfully",
-		Data: itemDTO.CreateItemResponse{
-			Item: itemDTO.ToItemDTO(itm),
+		Data: itemdto.CreateItemResponse{
+			Item: itemdto.ToItemDTO(itm),
 		},
 	})
 }
@@ -141,13 +145,13 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 // @Tags items
 // @Accept json
 // @Produce json
-// @Param request body itemDTO.UpdateItemRequest true "Update item info"
-// @Success 200 {object} itemDTO.UpdateItemResponseWrapper "Updated item successfully"
+// @Param request body itemdto.UpdateItemRequest true "Update item info"
+// @Success 200 {object} itemdto.UpdateItemResponseWrapper "Updated item successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError
 // @Router /items [put]
 func (h *ItemHandler) UpdateItem(c *gin.Context) {
-	var req itemDTO.UpdateItemRequest
+	var req itemdto.UpdateItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
@@ -162,11 +166,11 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
 		return
 	}
-	c.JSON(http.StatusOK, itemDTO.UpdateItemResponseWrapper{
+	c.JSON(http.StatusOK, itemdto.UpdateItemResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Item updated successfully",
-		Data: itemDTO.UpdateItemResponse{
-			Item: itemDTO.ToItemDTO(*itm),
+		Data: itemdto.UpdateItemResponse{
+			Item: itemdto.ToItemDTO(*itm),
 		},
 	})
 }
@@ -177,12 +181,12 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param itemID path int true "ID item"
-// @Success 200 {object} itemDTO.DeleteItemResponseWrapper "Deleted item successfully"
+// @Success 200 {object} itemdto.DeleteItemResponseWrapper "Deleted item successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError
 // @Router /items/{itemID} [delete]
 func (h *ItemHandler) DeleteItem(c *gin.Context) {
-	var req itemDTO.DeleteItemRequest
+	var req itemdto.DeleteItemRequest
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return

@@ -59,12 +59,25 @@ CREATE TABLE `item_warehouse` (
   `deleted_at` timestamp
 );
 
-CREATE TABLE `request` (
+CREATE TABLE `send_request` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
-  `request_type` int,
+  `type` int,
   `description` text,
-  `is_anonymous` boolean,
+  `status` tinyint,
+  `reply_message` text,
+  `appointment_time` datetime,
+  `appointment_location` varchar(255),
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `receive_request` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int,
+  `type` int,
+  `description` text,
   `status` tinyint,
   `item_warehouse_id` int DEFAULT null,
   `post_id` int DEFAULT null,
@@ -195,11 +208,13 @@ ALTER TABLE `item_warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`
 
 ALTER TABLE `item_warehouse` ADD FOREIGN KEY (`warehouse_id`) REFERENCES `warehouse` (`id`);
 
-ALTER TABLE `request` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+ALTER TABLE `send_request` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `request` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
+ALTER TABLE `receive_request` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `request` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
+ALTER TABLE `receive_request` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
+
+ALTER TABLE `receive_request` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
 
 ALTER TABLE `admin` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
