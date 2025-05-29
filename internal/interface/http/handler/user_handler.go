@@ -39,7 +39,7 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			enums.NewAppError(http.StatusBadRequest, err.Error(), "ERR_VALIDATION"),
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
 		)
 		return
 	}

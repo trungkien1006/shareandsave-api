@@ -16,6 +16,7 @@ func CToDomainAdmin(dto CreateAdminRequest) admin.Admin {
 // DTO → Domain
 func UToDomainAdmin(dto UpdateAdminRequest) admin.Admin {
 	return admin.Admin{
+		ID:       dto.ID,
 		FullName: dto.FullName,
 		Status:   int8(dto.Status),
 		RoleID:   dto.RoleID,

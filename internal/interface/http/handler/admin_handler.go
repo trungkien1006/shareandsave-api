@@ -6,6 +6,7 @@ import (
 	"final_project/internal/application/adminapp"
 	"final_project/internal/domain/filter"
 	admindto "final_project/internal/dto/adminDTO"
+	"final_project/internal/pkg/enums"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +37,7 @@ func NewAdminHandler(uc *adminapp.UseCase) *AdminHandler {
 func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 	var req admindto.GetAllAdminRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
 	req.SetDefault()
@@ -51,7 +52,10 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 
 	admins, totalPage, err := h.usecase.GetAllAdmin(c.Request.Context(), domainReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
 		return
 	}
 
@@ -86,7 +90,7 @@ func (h *AdminHandler) GetAllAdmins(c *gin.Context) {
 func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 	var req admindto.GetAdminByIDRequest
 	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
 
@@ -121,7 +125,7 @@ func (h *AdminHandler) GetAdminByID(c *gin.Context) {
 func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 	var req admindto.CreateAdminRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
 	// DTO → Domain
@@ -130,7 +134,10 @@ func (h *AdminHandler) CreateAdmin(c *gin.Context) {
 	// Gửi domain entity sang usecase
 	createdDomainAdmin, roleName, err := h.usecase.CreateAdmin(c.Request.Context(), domainAdmin)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
 		return
 	}
 	// Domain → DTO (response)
@@ -157,7 +164,7 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 	var req admindto.UpdateAdminRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
 
@@ -165,7 +172,10 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 	a := admindto.UToDomainAdmin(req)
 
 	if err := h.usecase.UpdateAdmin(c.Request.Context(), &a); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
 		return
 	}
 
@@ -189,12 +199,15 @@ func (h *AdminHandler) UpdateAdmin(c *gin.Context) {
 func (h *AdminHandler) DeleteAdmin(c *gin.Context) {
 	var req admindto.DeleteAdminRequest
 	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
 
 	if err := h.usecase.DeleteAdmin(c.Request.Context(), req.AdminID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
 		return
 	}
 
