@@ -276,6 +276,77 @@ const docTemplate = `{
             }
         },
         "/posts": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get posts",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "name",
+                        "description": "Sort column (vd: fullName, email)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (vd: email, fullName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.GetAdminPostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "API tạo mới một post và trả về thông tin post + user + JWT",
                 "consumes": [
@@ -303,7 +374,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/postdto.GetPostByIDResponseWrapper"
+                            "$ref": "#/definitions/postdto.CreatePostResponseWrapper"
                         }
                     },
                     "400": {
@@ -831,7 +902,7 @@ const docTemplate = `{
                 }
             }
         },
-        "postdto.GetPostByIDResponse": {
+        "postdto.CreatePostResponse": {
             "type": "object",
             "properties": {
                 "JWT": {
@@ -841,21 +912,87 @@ const docTemplate = `{
                     "$ref": "#/definitions/postdto.AdminPostDTO"
                 },
                 "user": {
-                    "$ref": "#/definitions/userdto.UserDTO"
+                    "$ref": "#/definitions/userdto.CommonUserDTO"
                 }
             }
         },
-        "postdto.GetPostByIDResponseWrapper": {
+        "postdto.CreatePostResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/postdto.GetPostByIDResponse"
+                    "$ref": "#/definitions/postdto.CreatePostResponse"
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "postdto.GetAdminPostResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.AdminPostDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "postdto.GetAdminPostResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/postdto.GetAdminPostResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.CommonUserDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
@@ -1072,12 +1209,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phoneNumber": {
-                    "type": "string"
-                },
-                "roleID": {
-                    "type": "integer"
-                },
-                "roleName": {
                     "type": "string"
                 },
                 "status": {

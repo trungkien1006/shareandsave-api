@@ -84,6 +84,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
 		//post API
+		v1.GET("/posts", postHandler.GetAllAdminPost)
 		v1.POST("/posts", postHandler.CreatePost)
 	}
 

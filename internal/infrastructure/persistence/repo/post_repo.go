@@ -3,9 +3,13 @@ package persistence
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/filter"
 	"final_project/internal/domain/post"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"fmt"
+	"math"
 
+	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +19,50 @@ type PostRepoDB struct {
 
 func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
+}
+
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
+	var (
+		query  *gorm.DB
+		dbPost []dbmodel.Post
+	)
+
+	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Preload("Author")
+
+	if filter.SearchBy != "" && filter.SearchValue != "" {
+		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"
+		query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), "%"+filter.SearchValue+"%")
+	}
+
+	var totalRecord int64 = 0
+
+	//lay ra tong so record
+	if err := query.Count(&totalRecord).Error; err != nil {
+		return 0, errors.New("Lỗi khi đếm tổng số record của bài viết: " + err.Error())
+	}
+
+	//phan trang
+	if filter.Limit != 0 && filter.Page != 0 {
+		query.Offset((filter.Page - 1) * filter.Limit).Limit(filter.Limit)
+	}
+
+	//sort du lieu
+	if filter.Sort != "" {
+		query.Order(strcase.ToSnake(filter.Sort) + " " + filter.Order)
+	}
+
+	if err := query.Find(&dbPost).Error; err != nil {
+		return 0, errors.New("Lỗi khi lọc bài viết: " + err.Error())
+	}
+
+	//tinh toan total page
+	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
+
+	for _, value := range dbPost {
+		*posts = append(*posts, dbmodel.PostDBToDomain(value))
+	}
+
+	return totalPage, nil
 }
 
 func (r *PostRepoDB) Save(ctx context.Context, post *post.Post) error {

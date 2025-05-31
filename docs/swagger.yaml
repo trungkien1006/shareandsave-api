@@ -193,23 +193,66 @@ definitions:
     required:
     - title
     type: object
-  postdto.GetPostByIDResponse:
+  postdto.CreatePostResponse:
     properties:
       JWT:
         type: string
       post:
         $ref: '#/definitions/postdto.AdminPostDTO'
       user:
-        $ref: '#/definitions/userdto.UserDTO'
+        $ref: '#/definitions/userdto.CommonUserDTO'
     type: object
-  postdto.GetPostByIDResponseWrapper:
+  postdto.CreatePostResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/postdto.GetPostByIDResponse'
+        $ref: '#/definitions/postdto.CreatePostResponse'
       message:
         type: string
+    type: object
+  postdto.GetAdminPostResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/postdto.AdminPostDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  postdto.GetAdminPostResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/postdto.GetAdminPostResponse'
+      message:
+        type: string
+    type: object
+  userdto.CommonUserDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      phoneNumber:
+        type: string
+      roleID:
+        type: integer
+      roleName:
+        type: string
+      status:
+        type: integer
     type: object
   userdto.CreateUserRequest:
     properties:
@@ -353,10 +396,6 @@ definitions:
       major:
         type: string
       phoneNumber:
-        type: string
-      roleID:
-        type: integer
-      roleName:
         type: string
       status:
         type: integer
@@ -542,6 +581,55 @@ paths:
       tags:
       - items
   /posts:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: 'Sort column (vd: fullName, email)'
+        example: name
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: 'Trường lọc (vd: email, fullName)'
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postdto.GetAdminPostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get posts
+      tags:
+      - posts
     post:
       consumes:
       - application/json
@@ -559,7 +647,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/postdto.GetPostByIDResponseWrapper'
+            $ref: '#/definitions/postdto.CreatePostResponseWrapper'
         "400":
           description: Bad Request
           schema:

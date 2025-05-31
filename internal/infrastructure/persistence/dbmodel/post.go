@@ -30,14 +30,15 @@ type Post struct {
 // DB → Domain
 func PostDBToDomain(dbPost Post) post.Post {
 	return post.Post{
-		ID:       dbPost.ID,
-		AuthorID: dbPost.AuthorID,
-		Type:     dbPost.Type,
-		Slug:     dbPost.Slug,
-		Title:    dbPost.Title,
-		Content:  dbPost.Content,
-		Info:     dbPost.Info,
-		Status:   dbPost.Status,
+		ID:         dbPost.ID,
+		AuthorID:   dbPost.AuthorID,
+		AuthorName: dbPost.Author.FullName,
+		Type:       dbPost.Type,
+		Slug:       dbPost.Slug,
+		Title:      dbPost.Title,
+		Content:    dbPost.Content,
+		Info:       dbPost.Info,
+		Status:     dbPost.Status,
 	}
 }
 

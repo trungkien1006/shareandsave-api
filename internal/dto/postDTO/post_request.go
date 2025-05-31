@@ -14,3 +14,27 @@ type CreatePostRequest struct {
 	Info        string         `json:"info"`
 	Images      []string       `json:"images" example:"strbase64, strbase64"`
 }
+
+type GetAdminPostRequest struct {
+	Page        int    `form:"page"`
+	Limit       int    `form:"limit"`
+	Sort        string `form:"sort"`
+	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
+	SearchBy    string `form:"searchBy"`
+	SearchValue string `form:"searchValue"`
+}
+
+func (r *GetAdminPostRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 8
+	}
+	if r.Sort == "" {
+		r.Sort = "id"
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
+}
