@@ -88,8 +88,13 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 		return "", errors.New("Không thể tạo bài viết mà không có người dùng")
 	}
 
+	postContent, err := uc.service.GenerateContent(post.Info)
+	if err != nil {
+		return "", err
+	}
+
 	post.Status = int8(enums.PostStatusPending) // Mặc định trạng thái là Pending
-	post.Content = uc.service.GenerateContent(post.Info)
+	post.Content = postContent
 	post.Slug = uc.service.GenerateSlug(post.Title)
 	post.AuthorName = user.FullName
 

@@ -2,6 +2,7 @@ package post
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/rand"
 	"regexp"
@@ -31,13 +32,13 @@ func (s *PostService) GenerateSlug(title string) string {
 }
 
 // GenerateContent tạo content từ info
-func (s *PostService) GenerateContent(info string) string {
+func (s *PostService) GenerateContent(info string) (string, error) {
 	input := []byte(info)
 
 	// Unmarshal vào map
 	var rawMap map[string]string
 	if err := json.Unmarshal(input, &rawMap); err != nil {
-		panic(err)
+		return "", errors.New("Lỗi khi mã hóa JSON: " + err.Error())
 	}
 
 	// Duyệt qua map và gom value
@@ -49,5 +50,5 @@ func (s *PostService) GenerateContent(info string) string {
 	// In ra kết quả
 	result, _ := json.Marshal(values)
 
-	return string(result)
+	return string(result), nil
 }
