@@ -63,7 +63,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	}
 
 	postDTORes := postdto.DomainToDTO(domainPost)
-	userDTORes := userdto.DomainToDTO(domainUser)
+	userDTORes := userdto.DomainCommonUserToDTO(domainUser)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,

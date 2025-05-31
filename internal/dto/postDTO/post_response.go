@@ -3,9 +3,9 @@ package postdto
 import userdto "final_project/internal/dto/userDTO"
 
 type GetPostByIDResponse struct {
-	Post AdminPostDTO    `json:"post"`
-	User userdto.UserDTO `json:"user"`
-	JWT  string          `json:"JWT"`
+	Post AdminPostDTO          `json:"post"`
+	User userdto.CommonUserDTO `json:"user"`
+	JWT  string                `json:"JWT"`
 }
 
 // Wrapper cho response lấy 1 Post (thêm code/message)
