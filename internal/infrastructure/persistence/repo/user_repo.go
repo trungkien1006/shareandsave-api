@@ -68,7 +68,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID int, roleID uint) error {
 	var dbUser dbmodel.User
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", roleID).First(&dbUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", roleID).Preload("Role").First(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
 
@@ -83,6 +83,7 @@ func (r *UserRepoDB) GetByEmailPhoneNumber(ctx context.Context, user *user.User,
 	// Truy vấn chỉ lấy trường "id" (không cần toàn bộ user)
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).
 		Where("email = ? AND phone_number = ?", email, phoneNumber).
+		Preload("Role").
 		Find(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng email và số điện thoại: " + err.Error())
 	}
@@ -99,13 +100,13 @@ func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())
 	}
 
-	*domainUser = dbmodel.ToDomainUser(dbUser)
-
 	return nil
 }
 
 func (r *UserRepoDB) Update(ctx context.Context, domainUser *user.User) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Where("id = ?", domainUser.ID).Save(&domainUser).Error; err != nil {
+	dbUser := dbmodel.ToDBUser(*domainUser)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", domainUser.ID).Save(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi cập nhật người dùng mới: " + err.Error())
 	}
 
