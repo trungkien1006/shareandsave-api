@@ -20,7 +20,7 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 func (r *PostRepoDB) Save(ctx context.Context, post *post.Post) error {
 	dbPost := dbmodel.PostDomainToDB(*post)
 
-	if err := r.db.Debug().WithContext(ctx).Create(&dbPost).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Create(&dbPost).Error; err != nil {
 		return errors.New("Lỗi khi tạo bài đăng: " + err.Error())
 	}
 
