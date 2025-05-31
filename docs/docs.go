@@ -790,7 +790,6 @@ const docTemplate = `{
         "postdto.CreatePostRequest": {
             "type": "object",
             "required": [
-                "info",
                 "title"
             ],
             "properties": {
@@ -816,8 +815,7 @@ const docTemplate = `{
                     ]
                 },
                 "info": {
-                    "type": "string",
-                    "example": "{'a': 'oke', 'b': 'hihi'}"
+                    "type": "string"
                 },
                 "phoneNumber": {
                     "description": "true: anonymous, false: not anonymous",

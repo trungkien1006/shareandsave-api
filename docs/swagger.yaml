@@ -180,7 +180,6 @@ definitions:
           type: string
         type: array
       info:
-        example: '{''a'': ''oke'', ''b'': ''hihi''}'
         type: string
       phoneNumber:
         description: 'true: anonymous, false: not anonymous'
@@ -192,7 +191,6 @@ definitions:
       type:
         $ref: '#/definitions/enums.PostType'
     required:
-    - info
     - title
     type: object
   postdto.GetPostByIDResponse:
