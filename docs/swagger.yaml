@@ -1,125 +1,5 @@
 basePath: /api/v1
 definitions:
-  admindto.AdminDTO:
-    properties:
-      email:
-        type: string
-      fullName:
-        type: string
-      id:
-        type: integer
-      roleName:
-        type: string
-      status:
-        type: integer
-    type: object
-  admindto.CreateAdminRequest:
-    properties:
-      email:
-        example: john@gmail.com
-        type: string
-      fullName:
-        example: John Doe
-        type: string
-      password:
-        minLength: 8
-        type: string
-      roleId:
-        description: Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
-        example: 1
-        type: integer
-      status:
-        allOf:
-        - $ref: '#/definitions/enums.UserStatus'
-        description: '0: Inactive, 1: Active, 2: Suspended'
-        enum:
-        - 0
-        - 1
-        - 2
-        example: 0
-    required:
-    - email
-    - fullName
-    - password
-    - roleId
-    type: object
-  admindto.CreateAdminResponse:
-    properties:
-      admin:
-        $ref: '#/definitions/admindto.AdminDTO'
-    type: object
-  admindto.CreateAdminResponseWrapper:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/admindto.CreateAdminResponse'
-      message:
-        type: string
-    type: object
-  admindto.GetAdminByIDResponse:
-    properties:
-      admin:
-        $ref: '#/definitions/admindto.AdminDTO'
-    type: object
-  admindto.GetAdminByIDResponseWrapper:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/admindto.GetAdminByIDResponse'
-      message:
-        type: string
-    type: object
-  admindto.GetAdminResponse:
-    properties:
-      admins:
-        items:
-          $ref: '#/definitions/admindto.AdminDTO'
-        type: array
-      totalPage:
-        type: integer
-    type: object
-  admindto.GetAdminResponseWrapper:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/admindto.GetAdminResponse'
-      message:
-        type: string
-    type: object
-  admindto.UpdateAdminRequest:
-    properties:
-      fullName:
-        example: John Doe
-        type: string
-      id:
-        type: integer
-      roleId:
-        description: Role ID must be provided, e.g., 1 for Admin, 2 for Moderator
-        example: 1
-        type: integer
-      status:
-        allOf:
-        - $ref: '#/definitions/enums.UserStatus'
-        description: '0: Inactive, 1: Active, 2: Suspended'
-        enum:
-        - 0
-        - 1
-        - 2
-        example: 0
-    required:
-    - id
-    type: object
-  admindto.UpdateAdminResponseWrapper:
-    properties:
-      code:
-        type: integer
-      data: {}
-      message:
-        type: string
-    type: object
   enums.AppError:
     properties:
       code:
@@ -132,28 +12,7 @@ definitions:
         example: Name is require
         type: string
     type: object
-  enums.RequestStatus:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    type: integer
-    x-enum-comments:
-      RequestStatusApprove: 3 Người dùng đồng ý
-      RequestStatusFail: 4 Người dùng đã hủy
-      RequestStatusPending: 0 Người dùng đã gửi yêu cầu và đang chờ xử lý
-      RequestStatusReject: 2 Admin đã từ chối yêu cầu
-      RequestStatusWaitingUser: 1 Admin đã xác nhận và đang chờ người dùng xác nhận
-        lần cuối
-    x-enum-varnames:
-    - RequestStatusPending
-    - RequestStatusWaitingUser
-    - RequestStatusReject
-    - RequestStatusApprove
-    - RequestStatusFail
-  enums.RequestType:
+  enums.PostType:
     enum:
     - 0
     - 1
@@ -161,15 +20,15 @@ definitions:
     - 3
     type: integer
     x-enum-comments:
-      RequestTypeReceiveLoseItem: "3"
-      RequestTypeReceiveOldItem: "2"
-      RequestTypeSendLoseItem: "1"
-      RequestTypeSendOldItem: "0"
+      PostTypeFoundItem: 1 nhặt được đồ
+      PostTypeGiveAwayOldItem: 0 tặng đồ cũ
+      PostTypeOther: 3 khác
+      PostTypeSeekLoseItem: 2 tìm kiếm đồ
     x-enum-varnames:
-    - RequestTypeSendOldItem
-    - RequestTypeSendLoseItem
-    - RequestTypeReceiveOldItem
-    - RequestTypeReceiveLoseItem
+    - PostTypeGiveAwayOldItem
+    - PostTypeFoundItem
+    - PostTypeSeekLoseItem
+    - PostTypeOther
   enums.UserStatus:
     enum:
     - 0
@@ -286,87 +145,74 @@ definitions:
       message:
         type: string
     type: object
-  requestdto.CreateRequestSendOldItem:
+  postdto.AdminPostDTO:
     properties:
-      appointmentLocation:
-        description: Location of the appointment
-        example: 123 Main St, City, Country
+      authorName:
         type: string
-      appointmentTime:
-        description: Time in RFC3339 format
-        example: "2025-05-28T07:23:45Z"
+      content:
         type: string
-      description:
-        example: I want to send this old item to the charity organization.
+      id:
+        type: integer
+      slug:
         type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: integer
+    type: object
+  postdto.CreatePostRequest:
+    properties:
+      authorID:
+        type: integer
       email:
         example: john@gmail.com
         type: string
       fullName:
         example: John Doe
         type: string
-      isAnonymous:
-        description: 'true: anonymous, false: not anonymous'
-        type: boolean
+      images:
+        example:
+        - '['
+        items:
+          type: string
+        type: array
+      info:
+        example: '{'
+        type: string
       phoneNumber:
+        description: 'true: anonymous, false: not anonymous'
         example: "0123456789"
         type: string
+      title:
+        example: Tôi muốn tìm đồ thất lạc
+        type: string
       type:
-        allOf:
-        - $ref: '#/definitions/enums.RequestType'
-        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
-          Post'
-        example: 0
-      userId:
-        type: integer
+        $ref: '#/definitions/enums.PostType'
     required:
-    - appointmentLocation
-    - appointmentTime
+    - info
+    - title
     type: object
-  requestdto.CreateSendOldItemRequestResponse:
+  postdto.GetPostByIDResponse:
     properties:
-      request:
-        $ref: '#/definitions/requestdto.RequestSendOldItem'
+      JWT:
+        type: string
+      post:
+        $ref: '#/definitions/postdto.AdminPostDTO'
+      user:
+        $ref: '#/definitions/userdto.UserDTO'
     type: object
-  requestdto.CreateSendOldItemRequestResponseWrapper:
+  postdto.GetPostByIDResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/requestdto.CreateSendOldItemRequestResponse'
+        $ref: '#/definitions/postdto.GetPostByIDResponse'
       message:
         type: string
     type: object
-  requestdto.RequestSendOldItem:
-    properties:
-      appointmentLocation:
-        description: Location of the appointment
-        type: string
-      appointmentTime:
-        description: Time in RFC3339 format
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      isAnonymous:
-        type: boolean
-      replyMessage:
-        description: Optional, used for replies
-        type: string
-      status:
-        allOf:
-        - $ref: '#/definitions/enums.RequestStatus'
-        description: '0: Pending, 1: Accepted, 2: Rejected, 3: Completed'
-      type:
-        allOf:
-        - $ref: '#/definitions/enums.RequestType'
-        description: '1: Send Old Item, 2: Request Item, 3: Request Post, 4: Reply
-          Post'
-      userId:
-        type: integer
-    type: object
-  userDTO.CreateUserRequest:
+  userdto.CreateUserRequest:
     properties:
       address:
         type: string
@@ -384,6 +230,8 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
+      roleID:
+        type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
@@ -397,22 +245,23 @@ definitions:
     - email
     - fullName
     - password
+    - roleID
     type: object
-  userDTO.CreateUserResponse:
+  userdto.CreateUserResponse:
     properties:
       user:
-        $ref: '#/definitions/userDTO.UserDTO'
+        $ref: '#/definitions/userdto.UserDTO'
     type: object
-  userDTO.CreateUserResponseWrapper:
+  userdto.CreateUserResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/userDTO.CreateUserResponse'
+        $ref: '#/definitions/userdto.CreateUserResponse'
       message:
         type: string
     type: object
-  userDTO.DeleteUserResponseWrapper:
+  userdto.DeleteUserResponseWrapper:
     properties:
       code:
         type: integer
@@ -420,39 +269,39 @@ definitions:
       message:
         type: string
     type: object
-  userDTO.GetUserByIDResponse:
+  userdto.GetUserByIDResponse:
     properties:
       user:
-        $ref: '#/definitions/userDTO.UserDTO'
+        $ref: '#/definitions/userdto.UserDTO'
     type: object
-  userDTO.GetUserByIDResponseWrapper:
+  userdto.GetUserByIDResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/userDTO.GetUserByIDResponse'
+        $ref: '#/definitions/userdto.GetUserByIDResponse'
       message:
         type: string
     type: object
-  userDTO.GetUserResponse:
+  userdto.GetUserResponse:
     properties:
       totalPage:
         type: integer
       users:
         items:
-          $ref: '#/definitions/userDTO.UserDTO'
+          $ref: '#/definitions/userdto.UserDTO'
         type: array
     type: object
-  userDTO.GetUserResponseWrapper:
+  userdto.GetUserResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/userDTO.GetUserResponse'
+        $ref: '#/definitions/userdto.GetUserResponse'
       message:
         type: string
     type: object
-  userDTO.UpdateUserRequest:
+  userdto.UpdateUserRequest:
     properties:
       address:
         type: string
@@ -471,6 +320,8 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
+      roleID:
+        type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
@@ -480,8 +331,10 @@ definitions:
         - 1
         - 2
         example: 1
+    required:
+    - roleID
     type: object
-  userDTO.UpdateUserResponseWrapper:
+  userdto.UpdateUserResponseWrapper:
     properties:
       code:
         type: integer
@@ -489,7 +342,7 @@ definitions:
       message:
         type: string
     type: object
-  userDTO.UserDTO:
+  userdto.UserDTO:
     properties:
       address:
         type: string
@@ -507,6 +360,10 @@ definitions:
         type: string
       phoneNumber:
         type: string
+      roleID:
+        type: integer
+      roleName:
+        type: string
       status:
         type: integer
     type: object
@@ -522,153 +379,6 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
-  /admins:
-    get:
-      consumes:
-      - application/json
-      description: Lấy danh sách admin với phân trang, lọc, sắp xếp
-      parameters:
-      - description: Trang
-        in: query
-        name: page
-        type: integer
-      - description: Số lượng/trang
-        in: query
-        name: limit
-        type: integer
-      - description: Trường sắp xếp
-        in: query
-        name: sort
-        type: string
-      - description: Thứ tự sắp xếp (ASC/DESC)
-        in: query
-        name: order
-        type: string
-      - description: 'Trường lọc (vd: email, full_name)'
-        in: query
-        name: searchBy
-        type: string
-      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
-        in: query
-        name: searchValue
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admindto.GetAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Get admin
-      tags:
-      - admin
-    post:
-      consumes:
-      - application/json
-      description: Tạo mới admin
-      parameters:
-      - description: Thông tin admin
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/admindto.CreateAdminRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/admindto.CreateAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Create admin
-      tags:
-      - admin
-    put:
-      consumes:
-      - application/json
-      description: Cập nhật thông tin admin
-      parameters:
-      - description: Thông tin cập nhật
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/admindto.UpdateAdminRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Update admin
-      tags:
-      - admin
-  /admins/{adminID}:
-    delete:
-      consumes:
-      - application/json
-      description: Xóa admin theo ID
-      parameters:
-      - description: Admin ID
-        in: path
-        name: adminID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admindto.UpdateAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Delete admin
-      tags:
-      - admin
-    get:
-      consumes:
-      - application/json
-      description: Lấy chi tiết admin theo ID
-      parameters:
-      - description: Admin ID
-        in: path
-        name: adminID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admindto.GetAdminByIDResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Get admin by ID
-      tags:
-      - admin
   /items:
     get:
       consumes:
@@ -838,32 +548,36 @@ paths:
       summary: Get item by ID
       tags:
       - items
-  /request-sends:
+  /posts:
     post:
       consumes:
       - application/json
-      description: API gửi yêu cầu gửi đồ cũ
+      description: API tạo mới một post và trả về thông tin post + user + JWT
       parameters:
-      - description: Create request send old item
+      - description: Post creation payload
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/requestdto.CreateRequestSendOldItem'
+          $ref: '#/definitions/postdto.CreatePostRequest'
       produces:
       - application/json
       responses:
         "201":
-          description: Created request successfully
+          description: Created
           schema:
-            $ref: '#/definitions/requestdto.CreateSendOldItemRequestResponseWrapper'
+            $ref: '#/definitions/postdto.GetPostByIDResponseWrapper'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Create request to send old item
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create a new post
       tags:
-      - requests
+      - posts
   /users:
     get:
       consumes:
@@ -906,7 +620,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userDTO.GetUserResponseWrapper'
+            $ref: '#/definitions/userdto.GetUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -924,14 +638,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/userDTO.CreateUserRequest'
+          $ref: '#/definitions/userdto.CreateUserRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created user successfully
           schema:
-            $ref: '#/definitions/userDTO.CreateUserResponseWrapper'
+            $ref: '#/definitions/userdto.CreateUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -949,14 +663,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/userDTO.UpdateUserRequest'
+          $ref: '#/definitions/userdto.UpdateUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Updated user successfully
           schema:
-            $ref: '#/definitions/userDTO.UpdateUserResponseWrapper'
+            $ref: '#/definitions/userdto.UpdateUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -981,7 +695,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userDTO.DeleteUserResponseWrapper'
+            $ref: '#/definitions/userdto.DeleteUserResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1005,7 +719,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userDTO.GetUserByIDResponseWrapper'
+            $ref: '#/definitions/userdto.GetUserByIDResponseWrapper'
         "400":
           description: Bad Request
           schema:
