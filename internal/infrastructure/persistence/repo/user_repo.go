@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
+	"final_project/internal/infrastructure/persistence/dbmodel"
 	"fmt"
 	"math"
 
@@ -80,9 +81,13 @@ func (r *UserRepoDB) GetIDByEmailPhoneNumber(ctx context.Context, email string, 
 }
 
 func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Create(&domainUser).Error; err != nil {
+	dbUser := dbmodel.ToDBUser(*domainUser)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Create(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())
 	}
+
+	*domainUser = dbmodel.ToDomainUser(dbUser)
 
 	return nil
 }

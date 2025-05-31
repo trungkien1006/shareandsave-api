@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/user"
 	"time"
 
 	"gorm.io/gorm"
@@ -36,4 +37,39 @@ type User struct {
 	Appointments      []Appointment  `gorm:"foreignKey:UserID"`
 	NotificationsSent []Notification `gorm:"foreignKey:SenderID"`
 	NotificationsRecv []Notification `gorm:"foreignKey:ReceiverID"`
+}
+
+func ToDomainUser(dbUser User) user.User {
+	return user.User{
+		ID:          dbUser.ID,
+		RoleID:      dbUser.RoleID,
+		RoleName:    dbUser.Role.Name, // map từ quan hệ Role
+		Email:       dbUser.Email,
+		Password:    dbUser.Password,
+		Avatar:      dbUser.Avatar,
+		Active:      dbUser.Active,
+		FullName:    dbUser.FullName,
+		PhoneNumber: dbUser.PhoneNumber,
+		Address:     dbUser.Address,
+		Status:      dbUser.Status,
+		GoodPoint:   dbUser.GoodPoint,
+		Major:       dbUser.Major,
+	}
+}
+
+func ToDBUser(u user.User) User {
+	return User{
+		ID:          u.ID,
+		RoleID:      u.RoleID,
+		Email:       u.Email,
+		Password:    u.Password,
+		Avatar:      u.Avatar,
+		Active:      u.Active,
+		FullName:    u.FullName,
+		PhoneNumber: u.PhoneNumber,
+		Address:     u.Address,
+		Status:      u.Status,
+		GoodPoint:   u.GoodPoint,
+		Major:       u.Major,
+	}
 }
