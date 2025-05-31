@@ -34,6 +34,7 @@ CREATE TABLE `post` (
   `title` varchar(255),
   `content` JSON DEFAULT null,
   `info` JSON DEFAULT null,
+  `image` JSON DEFAULT null,
   `status` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,

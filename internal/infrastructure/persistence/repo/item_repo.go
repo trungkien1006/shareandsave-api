@@ -66,7 +66,8 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 }
 
 func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {
-	return r.db.Debug().WithContext(ctx).Where("id = ?", i.ID).Save(i).Error
+	return r.db.Debug().WithContext(ctx).Omit("CreatedAt").
+		Omit("DeleteAt").Where("id = ?", i.ID).Updates(i).Error
 }
 
 func (r *ItemRepoDB) Delete(ctx context.Context, i *item.Item) error {

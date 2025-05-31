@@ -9,7 +9,7 @@ type CreatePostRequest struct {
 	FullName    string         `json:"fullName" example:"John Doe"`
 	PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
 	AuthorID    uint           `json:"authorID"`
-	Type        enums.PostType `json:"type" oneof:""`
+	Type        enums.PostType `json:"type" binding:"oneof=0 1 2 3"`
 	Title       string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
 	Info        string         `json:"info"`
 	Images      []string       `json:"images" example:"strbase64, strbase64"`
@@ -37,4 +37,11 @@ func (r *GetAdminPostRequest) SetDefault() {
 	if r.Order == "" {
 		r.Order = "ASC"
 	}
+}
+
+type UpdatePostRequest struct {
+	Title  string           `json:"title" binding:"omitempty" example:"Tôi muốn tìm đồ thất lạc"`
+	Info   string           `json:"info" binding:"omitempty"`
+	Status enums.PostStatus `json:"status" binding:"oneof=0 1 2"`
+	Images []string         `json:"images" binding:"omitempty" example:"strbase64, strbase64"`
 }

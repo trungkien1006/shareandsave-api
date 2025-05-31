@@ -42,7 +42,6 @@ type CreateUserRequest struct {
 }
 
 type UpdateUserRequest struct {
-	ID          uint             `json:"id"`
 	FullName    string           `json:"fullName" example:"John Doe"`
 	PhoneNumber string           `json:"phoneNumber" example:"0123456789"`
 	Avatar      string           `json:"avatar"`

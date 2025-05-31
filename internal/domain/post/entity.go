@@ -2,7 +2,7 @@ package post
 
 import "time"
 
-type Post struct {
+type CreatePost struct {
 	ID          uint
 	AuthorID    uint
 	AuthorName  string
@@ -18,11 +18,16 @@ type Post struct {
 	Images      []string
 }
 
-type AdminPost struct {
+type Post struct {
 	ID         uint
+	AuthorID   uint
 	AuthorName string
 	Type       int
+	Slug       string
 	Title      string
+	Content    string
+	Info       string
 	Status     int8
-	CreateAt   time.Time
+	Images     []string
+	CreatedAt  time.Time
 }

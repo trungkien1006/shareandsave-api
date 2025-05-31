@@ -12,11 +12,12 @@ type AdminPostDTO struct {
 }
 
 type PostDTO struct {
-	ID         uint   `json:"id"`
-	AuthorName string `json:"authorName"`
-	Content    string `json:"content"`
-	Slug       string `json:"slug"`
-	Type       int    `json:"type"`
-	Title      string `json:"title"`
-	Status     int8   `json:"status"`
+	ID         uint     `json:"id"`
+	AuthorName string   `json:"authorName"`
+	Content    string   `json:"content"`
+	Slug       string   `json:"slug"`
+	Type       int      `json:"type"`
+	Title      string   `json:"title"`
+	Status     int8     `json:"status"`
+	Images     []string `json:"images"`
 }

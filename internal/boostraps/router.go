@@ -73,19 +73,20 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.GET("/users", userHandler.GetAllUser)
 		v1.GET("/users/:userID", userHandler.GetUserByID)
 		v1.POST("/users", userHandler.CreateUser)
-		v1.PUT("/users", userHandler.UpdateUser)
+		v1.PATCH("/users/:userID", userHandler.UpdateUser)
 		v1.DELETE("/users/:userID", userHandler.DeleteUser)
 
 		//item CRUD API
 		v1.GET("/items", itemHandler.GetAllItem)
 		v1.GET("/items/:itemID", itemHandler.GetItemByID)
 		v1.POST("/items", itemHandler.CreateItem)
-		v1.PUT("/items", itemHandler.UpdateItem)
+		v1.PATCH("/items/:itemID", itemHandler.UpdateItem)
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
 		//post API
 		v1.GET("/posts", postHandler.GetAllAdminPost)
 		v1.POST("/posts", postHandler.CreatePost)
+		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
 	}
 
 	// r.Static("/public/images", "./public/images")

@@ -11,11 +11,12 @@ type Post struct {
 	ID        uint `gorm:"primaryKey;autoIncrement"`
 	AuthorID  uint `gorm:"index"`
 	Type      int
-	Slug      string `gorm:"unique;size:255"`
-	Title     string `gorm:"size:255"`
-	Content   string `gorm:"type:JSON"`
-	Info      string `gorm:"type:JSON"`
-	Status    int8   `gorm:"type:TINYINT"`
+	Slug      string   `gorm:"unique;size:255"`
+	Title     string   `gorm:"size:255"`
+	Content   string   `gorm:"type:JSON"`
+	Info      string   `gorm:"type:JSON"`
+	Status    int8     `gorm:"type:TINYINT"`
+	Image     []string `gorm:"type:JSON"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -28,14 +29,30 @@ type Post struct {
 }
 
 // DB → Domain
-func PostDBToAdminPostDomain(dbPost Post) post.AdminPost {
-	return post.AdminPost{
+func PostDBToPostDomain(dbPost Post) post.Post {
+	return post.Post{
 		ID:         dbPost.ID,
 		AuthorName: dbPost.Author.FullName,
 		Type:       dbPost.Type,
 		Title:      dbPost.Title,
 		Status:     dbPost.Status,
-		CreateAt:   dbPost.CreatedAt,
+		CreatedAt:  dbPost.CreatedAt,
+		Images:     dbPost.Image,
+	}
+}
+
+// Domain → DB
+func CreatePostDomainToDB(domainPost post.CreatePost) Post {
+	return Post{
+		ID:       domainPost.ID,
+		AuthorID: domainPost.AuthorID,
+		Type:     domainPost.Type,
+		Slug:     domainPost.Slug,
+		Title:    domainPost.Title,
+		Content:  domainPost.Content,
+		Info:     domainPost.Info,
+		Status:   domainPost.Status,
+		Image:    domainPost.Images,
 	}
 }
 
@@ -50,12 +67,13 @@ func PostDomainToDB(domainPost post.Post) Post {
 		Content:  domainPost.Content,
 		Info:     domainPost.Info,
 		Status:   domainPost.Status,
+		Image:    domainPost.Images,
 	}
 }
 
 // Db -> Domain
-func PostDBToDomain(db Post) post.Post {
-	return post.Post{
+func PostDBToCreatePostDomain(db Post) post.CreatePost {
+	return post.CreatePost{
 		ID:         db.ID,
 		AuthorID:   db.AuthorID,
 		AuthorName: db.Author.FullName,
@@ -65,5 +83,6 @@ func PostDBToDomain(db Post) post.Post {
 		Content:    db.Content,
 		Info:       db.Info,
 		Status:     db.Status,
+		Images:     db.Image,
 	}
 }

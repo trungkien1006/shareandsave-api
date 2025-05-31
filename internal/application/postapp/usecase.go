@@ -30,7 +30,7 @@ func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermis
 	}
 }
 
-func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.AdminPost, filter filter.FilterRequest) (int, error) {
+func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
 	totalPage, err := uc.repo.AdminGetAll(ctx, posts, filter)
 
 	if err != nil {
@@ -40,7 +40,7 @@ func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.AdminPost,
 	return totalPage, nil
 }
 
-func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.User) (string, error) {
+func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost, user *user.User) (string, error) {
 	//Nếu không truyền userID sẽ kiểm tra để tạo tài khoản cho người dùng
 	if post.AuthorID == 0 {
 		//Kiểm tra email đã tồn tại trong hệ thống chưa
@@ -108,7 +108,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 	if post.Info != "" {
 		postContent, err := uc.service.GenerateContent(post.Info)
 		if err != nil {
-			return "", err
+			return "", errors.New("Lỗi khi tạo content từ info:" + err.Error())
 		}
 
 		post.Content = postContent
@@ -145,4 +145,55 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 	JWT := helpers.GenerateToken(userJWTSub)
 
 	return JWT, nil
+}
+
+func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error {
+	var updatePost post.Post
+
+	if err := uc.repo.GetByID(ctx, &updatePost, domainPost.ID); err != nil {
+		return err
+	}
+
+	if updatePost.ID == 0 {
+		return errors.New("Không tìm thấy bài viết cần cập nhật với ID: " + string(domainPost.ID))
+	}
+
+	if domainPost.Title != "" {
+		updatePost.Title = domainPost.Title
+	}
+
+	if domainPost.Title != "" {
+		updatePost.Title = domainPost.Title
+		updatePost.Slug = uc.service.GenerateSlug(domainPost.Title)
+	}
+
+	if domainPost.Info != "" {
+		updatePost.Info = domainPost.Info
+		updateContent, err := uc.service.GenerateContent(domainPost.Info)
+		if err != nil {
+			return errors.New("Có lỗi khi tạo content cho bài viết từ info: " + err.Error())
+		}
+
+		updatePost.Content = updateContent
+	}
+
+	if domainPost.Images != nil {
+		//resize ảnh
+		for index, image := range domainPost.Images {
+			formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
+			if err != nil {
+				return errors.New("Không thể format ảnh:" + err.Error())
+			}
+
+			domainPost.Images[index] = formatedImage
+		}
+	}
+
+	updatePost.Status = domainPost.Status
+
+	if err := uc.repo.Update(ctx, &updatePost); err != nil {
+		return err
+	}
+
+	return nil
 }

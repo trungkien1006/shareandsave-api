@@ -7,6 +7,7 @@ import (
 	itemdto "final_project/internal/dto/itemDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -145,19 +146,30 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 // @Tags items
 // @Accept json
 // @Produce json
+// @Param itemID path int true "ID item"
 // @Param request body itemdto.UpdateItemRequest true "Update item info"
 // @Success 200 {object} itemdto.UpdateItemResponseWrapper "Updated item successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError
-// @Router /items [put]
+// @Router /items/{itemID} [patch]
 func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	var req itemdto.UpdateItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
+
+	itemID, err := strconv.Atoi(c.Param("itemID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
 	itm := &item.Item{
-		ID:          req.ID,
+		ID:          uint(itemID),
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,

@@ -7,6 +7,7 @@ import (
 	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -183,10 +184,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param userID path int true "ID user"
 // @Param request body userdto.UpdateUserRequest true "Update user info"
 // @Success 200 {object} userdto.UpdateUserResponseWrapper "Updated user successfully"
 // @Failure 400 {object} enums.AppError
-// @Router /users [put]
+// @Router /users/{userID} [patch]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	var req userdto.UpdateUserRequest
 
@@ -200,7 +202,16 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 	var user user.User
 
-	user.ID = req.ID
+	userID, err := strconv.Atoi(c.Param("userID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	user.ID = uint(userID)
 	user.Avatar = req.Avatar
 	user.FullName = req.FullName
 	user.PhoneNumber = req.PhoneNumber

@@ -148,7 +148,6 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 	}
 
 	updateUser.Status = domainUser.Status
-	updateUser.ID = domainUser.ID
 	updateUser.RoleID = uc.clientID
 
 	if domainUser.Password != "" {

@@ -100,50 +100,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
-                "description": "API cập nhật item",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "items"
-                ],
-                "summary": "Update item",
-                "parameters": [
-                    {
-                        "description": "Update item info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/itemdto.UpdateItemRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Updated item successfully",
-                        "schema": {
-                            "$ref": "#/definitions/itemdto.UpdateItemResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "API thêm item mới",
                 "consumes": [
@@ -258,6 +214,57 @@ const docTemplate = `{
                         "description": "Deleted item successfully",
                         "schema": {
                             "$ref": "#/definitions/itemdto.DeleteItemResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "API cập nhật item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Update item",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID item",
+                        "name": "itemID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update item info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/itemdto.UpdateItemRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated item successfully",
+                        "schema": {
+                            "$ref": "#/definitions/itemdto.UpdateItemResponseWrapper"
                         }
                     },
                     "400": {
@@ -392,6 +399,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/posts/{postID}": {
+            "patch": {
+                "description": "API cập nhật bài viết kết hợp với patch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update posts",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID post",
+                        "name": "postID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update post info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postdto.UpdatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated post successfully",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.UpdatePostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -454,44 +508,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/userdto.GetUserResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "API cập nhật người dùng",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Update user",
-                "parameters": [
-                    {
-                        "description": "Update user info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/userdto.UpdateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Updated user successfully",
-                        "schema": {
-                            "$ref": "#/definitions/userdto.UpdateUserResponseWrapper"
                         }
                     },
                     "400": {
@@ -613,6 +629,51 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "API cập nhật người dùng",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID user",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update user info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated user successfully",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateUserResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         }
     },
@@ -633,6 +694,24 @@ const docTemplate = `{
                     "example": "Name is require"
                 }
             }
+        },
+        "enums.PostStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "PostStatusApproved": "2 Admin duyệt",
+                "PostStatusPending": "0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
+                "PostStatusRejected": "1 Admin đã từ chối"
+            },
+            "x-enum-varnames": [
+                "PostStatusPending",
+                "PostStatusRejected",
+                "PostStatusApproved"
+            ]
         },
         "enums.PostType": {
             "type": "integer",
@@ -792,15 +871,9 @@ const docTemplate = `{
         },
         "itemdto.UpdateItemRequest": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
                 "description": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "image": {
                     "type": "string"
@@ -895,7 +968,17 @@ const docTemplate = `{
                     "example": "Tôi muốn tìm đồ thất lạc"
                 },
                 "type": {
-                    "$ref": "#/definitions/enums.PostType"
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostType"
+                        }
+                    ]
                 }
             }
         },
@@ -967,6 +1050,12 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "slug": {
                     "type": "string"
                 },
@@ -978,6 +1067,52 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "integer"
+                }
+            }
+        },
+        "postdto.UpdatePostRequest": {
+            "type": "object",
+            "properties": {
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "strbase64",
+                        " strbase64"
+                    ]
+                },
+                "info": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostStatus"
+                        }
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Tôi muốn tìm đồ thất lạc"
+                }
+            }
+        },
+        "postdto.UpdatePostResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -1166,9 +1301,6 @@ const docTemplate = `{
                     "example": "John Doe"
                 },
                 "goodPoint": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "major": {

@@ -9,6 +9,7 @@ import (
 	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,7 +39,7 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	var (
 		req       postdto.GetAdminPostRequest
-		posts     []post.AdminPost
+		posts     []post.Post
 		domainReq filter.FilterRequest
 	)
 
@@ -77,7 +78,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched user successfully",
+		"message": "Fetched posts successfully",
 		"data": postdto.GetAdminPostResponse{
 			Posts:     postsDTORes,
 			TotalPage: totalPage,
@@ -98,7 +99,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 func (h *PostHandler) CreatePost(c *gin.Context) {
 	var (
 		req        postdto.CreatePostRequest
-		domainPost post.Post
+		domainPost post.CreatePost
 		domainUser user.User
 	)
 
@@ -127,7 +128,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	postDTORes := postdto.DomainToDTO(domainPost)
+	postDTORes := postdto.CreatePostDomainToDTO(domainPost)
 	userDTORes := userdto.DomainCommonUserToDTO(domainUser)
 
 	c.JSON(http.StatusOK, gin.H{
@@ -138,5 +139,55 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 			User: userDTORes,
 			JWT:  JWT,
 		},
+	})
+}
+
+// @Summary Update posts
+// @Description API cập nhật bài viết kết hợp với patch
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param postID path int true "ID post"
+// @Param request body postdto.UpdatePostRequest true "Update post info"
+// @Success 200 {object} postdto.UpdatePostResponseWrapper "Updated post successfully"
+// @Failure 400 {object} enums.AppError
+// @Router /posts/{postID} [patch]
+func (h *PostHandler) UpdatePost(c *gin.Context) {
+	var req postdto.UpdatePostRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	var post post.Post
+
+	postID, err := strconv.Atoi(c.Param("postID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	post = postdto.UpdateDTOToDomain(req)
+
+	post.ID = uint(postID)
+
+	if err := h.uc.UpdatePost(c.Request.Context(), &post); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Updated post successfully",
 	})
 }

@@ -5,8 +5,8 @@ import (
 )
 
 // DTO → Domain
-func CreateDTOToDomain(createPostDTO CreatePostRequest) post.Post {
-	return post.Post{
+func CreateDTOToDomain(createPostDTO CreatePostRequest) post.CreatePost {
+	return post.CreatePost{
 		AuthorID:    createPostDTO.AuthorID,
 		FullName:    createPostDTO.FullName,
 		Email:       createPostDTO.Email,
@@ -18,19 +18,29 @@ func CreateDTOToDomain(createPostDTO CreatePostRequest) post.Post {
 	}
 }
 
+// DTO → Domain
+func UpdateDTOToDomain(updatePostDTO UpdatePostRequest) post.Post {
+	return post.Post{
+		Title:  updatePostDTO.Title,
+		Info:   updatePostDTO.Info,
+		Status: int8(updatePostDTO.Status),
+		Images: updatePostDTO.Images,
+	}
+}
+
 // Domain → DTO
-func DomainAdminPostToDTO(domainPost post.AdminPost) AdminPostDTO {
+func DomainAdminPostToDTO(domainPost post.Post) AdminPostDTO {
 	return AdminPostDTO{
 		ID:         domainPost.ID,
 		AuthorName: domainPost.AuthorName,
 		Type:       domainPost.Type,
 		Title:      domainPost.Title,
 		Status:     domainPost.Status,
-		CreatedAt:  domainPost.CreateAt,
+		CreatedAt:  domainPost.CreatedAt,
 	}
 }
 
-func DomainToDTO(domainPost post.Post) PostDTO {
+func CreatePostDomainToDTO(domainPost post.CreatePost) PostDTO {
 	return PostDTO{
 		ID:         domainPost.ID,
 		AuthorName: domainPost.AuthorName,
@@ -39,5 +49,6 @@ func DomainToDTO(domainPost post.Post) PostDTO {
 		Type:       domainPost.Type,
 		Title:      domainPost.Title,
 		Status:     domainPost.Status,
+		Images:     domainPost.Images,
 	}
 }

@@ -21,7 +21,7 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.AdminPost, filter filter.FilterRequest) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
 	var (
 		query  *gorm.DB
 		dbPost []dbmodel.Post
@@ -59,20 +59,53 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.AdminPost, f
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
 
 	for _, value := range dbPost {
-		*posts = append(*posts, dbmodel.PostDBToAdminPostDomain(value))
+		*posts = append(*posts, dbmodel.PostDBToPostDomain(value))
 	}
 
 	return totalPage, nil
 }
 
-func (r *PostRepoDB) Save(ctx context.Context, post *post.Post) error {
-	dbPost := dbmodel.PostDomainToDB(*post)
+func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) error {
+	var dbPost dbmodel.Post
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Where("id = ?", postID).
+		Preload("Author").
+		Find(&dbPost).Error; err != nil {
+		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
+	}
+
+	*post = dbmodel.PostDBToPostDomain(dbPost)
+
+	return nil
+}
+
+func (r *PostRepoDB) Save(ctx context.Context, post *post.CreatePost) error {
+	dbPost := dbmodel.CreatePostDomainToDB(*post)
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Create(&dbPost).Error; err != nil {
 		return errors.New("Lỗi khi tạo bài đăng: " + err.Error())
 	}
 
-	*post = dbmodel.PostDBToDomain(dbPost)
+	*post = dbmodel.PostDBToCreatePostDomain(dbPost)
+
+	return nil
+}
+
+func (r *PostRepoDB) Update(ctx context.Context, post *post.Post) error {
+	dbPost := dbmodel.PostDomainToDB(*post)
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Omit("CreatedAt").
+		Omit("DeleteAt").
+		Where("id = ?", post.ID).
+		Updates(&dbPost).Error; err != nil {
+		return errors.New("Lỗi khi cập nhật bài viết: " + err.Error())
+	}
 
 	return nil
 }

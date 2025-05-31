@@ -12,6 +12,20 @@ definitions:
         example: Name is require
         type: string
     type: object
+  enums.PostStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      PostStatusApproved: 2 Admin duyệt
+      PostStatusPending: 0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý
+      PostStatusRejected: 1 Admin đã từ chối
+    x-enum-varnames:
+    - PostStatusPending
+    - PostStatusRejected
+    - PostStatusApproved
   enums.PostType:
     enum:
     - 0
@@ -122,14 +136,10 @@ definitions:
     properties:
       description:
         type: string
-      id:
-        type: integer
       image:
         type: string
       name:
         type: string
-    required:
-    - id
     type: object
   itemdto.UpdateItemResponse:
     properties:
@@ -187,7 +197,13 @@ definitions:
         example: Tôi muốn tìm đồ thất lạc
         type: string
       type:
-        $ref: '#/definitions/enums.PostType'
+        allOf:
+        - $ref: '#/definitions/enums.PostType'
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
     required:
     - title
     type: object
@@ -235,6 +251,10 @@ definitions:
         type: string
       id:
         type: integer
+      images:
+        items:
+          type: string
+        type: array
       slug:
         type: string
       status:
@@ -243,6 +263,36 @@ definitions:
         type: string
       type:
         type: integer
+    type: object
+  postdto.UpdatePostRequest:
+    properties:
+      images:
+        example:
+        - strbase64
+        - ' strbase64'
+        items:
+          type: string
+        type: array
+      info:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.PostStatus'
+        enum:
+        - 0
+        - 1
+        - 2
+      title:
+        example: Tôi muốn tìm đồ thất lạc
+        type: string
+    type: object
+  postdto.UpdatePostResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
     type: object
   userdto.CommonUserDTO:
     properties:
@@ -367,8 +417,6 @@ definitions:
         example: John Doe
         type: string
       goodPoint:
-        type: integer
-      id:
         type: integer
       major:
         example: Information Technology
@@ -509,35 +557,6 @@ paths:
       summary: Create new item
       tags:
       - items
-    put:
-      consumes:
-      - application/json
-      description: API cập nhật item
-      parameters:
-      - description: Update item info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/itemdto.UpdateItemRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Updated item successfully
-          schema:
-            $ref: '#/definitions/itemdto.UpdateItemResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Update item
-      tags:
-      - items
   /items/{itemID}:
     delete:
       consumes:
@@ -593,6 +612,40 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Get item by ID
+      tags:
+      - items
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật item
+      parameters:
+      - description: ID item
+        in: path
+        name: itemID
+        required: true
+        type: integer
+      - description: Update item info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/itemdto.UpdateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated item successfully
+          schema:
+            $ref: '#/definitions/itemdto.UpdateItemResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update item
       tags:
       - items
   /posts:
@@ -674,6 +727,37 @@ paths:
       summary: Create a new post
       tags:
       - posts
+  /posts/{postID}:
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật bài viết kết hợp với patch
+      parameters:
+      - description: ID post
+        in: path
+        name: postID
+        required: true
+        type: integer
+      - description: Update post info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/postdto.UpdatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated post successfully
+          schema:
+            $ref: '#/definitions/postdto.UpdatePostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update posts
+      tags:
+      - posts
   /users:
     get:
       consumes:
@@ -749,31 +833,6 @@ paths:
       summary: Create user
       tags:
       - users
-    put:
-      consumes:
-      - application/json
-      description: API cập nhật người dùng
-      parameters:
-      - description: Update user info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/userdto.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Updated user successfully
-          schema:
-            $ref: '#/definitions/userdto.UpdateUserResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Update user
-      tags:
-      - users
   /users/{userID}:
     delete:
       consumes:
@@ -821,6 +880,36 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Get user by ID
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật người dùng
+      parameters:
+      - description: ID user
+        in: path
+        name: userID
+        required: true
+        type: integer
+      - description: Update user info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user successfully
+          schema:
+            $ref: '#/definitions/userdto.UpdateUserResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update user
       tags:
       - users
 swagger: "2.0"

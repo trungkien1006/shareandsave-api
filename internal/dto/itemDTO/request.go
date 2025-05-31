@@ -36,7 +36,6 @@ type CreateItemRequest struct {
 }
 
 type UpdateItemRequest struct {
-	ID          uint   `json:"id" binding:"required"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
