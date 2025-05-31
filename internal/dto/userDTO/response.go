@@ -1,4 +1,4 @@
-package userDTO
+package userdto
 
 type GetUserResponseWrapper struct {
 	Code    int             `json:"code"`

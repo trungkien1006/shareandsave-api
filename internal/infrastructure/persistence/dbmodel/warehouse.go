@@ -16,7 +16,7 @@ type Warehouse struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	// Relations
 
+	// 1-n: Một kho có nhiều item warehouse
 	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:WarehouseID"`
 }

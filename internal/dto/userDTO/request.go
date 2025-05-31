@@ -1,4 +1,4 @@
-package userDTO
+package userdto
 
 import "final_project/internal/pkg/enums"
 
@@ -31,6 +31,7 @@ type GetUserByIDRequest struct {
 }
 
 type CreateUserRequest struct {
+	RoleID      uint             `json:"roleID" binding:"required"`
 	FullName    string           `json:"fullName" binding:"required" example:"John Doe"`
 	Email       string           `json:"email" binding:"required" example:"john@gmail.com"`
 	PhoneNumber string           `json:"phoneNumber" example:"0123456789"`
@@ -42,6 +43,7 @@ type CreateUserRequest struct {
 
 type UpdateUserRequest struct {
 	ID          uint             `json:"id"`
+	RoleID      uint             `json:"roleID" binding:"required"`
 	FullName    string           `json:"fullName" example:"John Doe"`
 	PhoneNumber string           `json:"phoneNumber" example:"0123456789"`
 	Avatar      string           `json:"avatar"`

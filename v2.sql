@@ -1,11 +1,12 @@
 CREATE TABLE `user` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `role_id` int,
   `email` varchar(255) UNIQUE,
+  `phone_number` varchar(16) UNIQUE,
   `password` varchar(255),
   `avatar` longtext,
   `active` boolean,
   `full_name` varchar(64),
-  `phone_number` varchar(16) UNIQUE,
   `address` text,
   `status` tinyint,
   `good_point` int DEFAULT 0,
@@ -28,13 +29,67 @@ CREATE TABLE `item` (
 CREATE TABLE `post` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `author_id` int,
-  `item_id` int,
+  `type` int,
+  `slug` varchar(255) UNIQUE,
   `title` varchar(255),
-  `description` text,
+  `content` JSON,
+  `info` JSON,
   `status` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
+);
+
+CREATE TABLE `post_item_warehouse` (
+  `post_id` int,
+  `item_warehouse_id` int
+);
+
+CREATE TABLE `interest` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int,
+  `post_id` int,
+  `status` int,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `comment` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `interest_id` int,
+  `sender_id` int,
+  `receiver_id` int,
+  `content` text,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `transaction` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `interest_id` int,
+  `sender_id` int,
+  `receiver_id` int,
+  `status` int,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `appointment` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int,
+  `scheduled_time` datetime,
+  `status` int,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `appointment_item_warehouse` (
+  `appointment_id` int,
+  `item_warehouse_id` int
 );
 
 CREATE TABLE `warehouse` (
@@ -59,54 +114,12 @@ CREATE TABLE `item_warehouse` (
   `deleted_at` timestamp
 );
 
-CREATE TABLE `send_request` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int,
-  `type` int,
-  `description` text,
-  `status` tinyint,
-  `reply_message` text,
-  `appointment_time` datetime,
-  `appointment_location` varchar(255),
-  `created_at` timestamp,
-  `updated_at` timestamp,
-  `deleted_at` timestamp
-);
-
-CREATE TABLE `receive_request` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int,
-  `type` int,
-  `description` text,
-  `status` tinyint,
-  `item_warehouse_id` int DEFAULT null,
-  `post_id` int DEFAULT null,
-  `reply_message` text,
-  `appointment_time` datetime,
-  `appointment_location` varchar(255),
-  `created_at` timestamp,
-  `updated_at` timestamp,
-  `deleted_at` timestamp
-);
-
 CREATE TABLE `role` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(64) UNIQUE,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
-);
-
-CREATE TABLE `admin` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `email` varchar(255) UNIQUE,
-  `password` varchar(255),
-  `full_name` varchar(64),
-  `created_at` timestamp,
-  `updated_at` timestamp,
-  `deleted_at` timestamp,
-  `status` tinyint,
-  `role_id` int
 );
 
 CREATE TABLE `permission` (
@@ -141,8 +154,8 @@ CREATE TABLE `notification` (
 CREATE TABLE `import_invoice` (
   `id` varchar(255) PRIMARY KEY,
   `invoice_num` int UNIQUE,
-  `admin_id` int,
   `sender_id` int,
+  `receiver_id` int,
   `item_type` varchar(32),
   `send_date` datetime,
   `description` text,
@@ -156,7 +169,7 @@ CREATE TABLE `import_invoice` (
 CREATE TABLE `export_invoice` (
   `id` varchar(255) PRIMARY KEY,
   `invoice_num` int UNIQUE,
-  `admin_id` int,
+  `sender_id` int,
   `receiver_id` int,
   `item_type` varchar(32),
   `receive_date` datetime,
@@ -200,23 +213,48 @@ CREATE TABLE `image` (
   `deleted_at` timestamp
 );
 
+CREATE TABLE `setting` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `key` varchar(255),
+  `value` mediumtext,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
+ALTER TABLE `user` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
+
 ALTER TABLE `post` ADD FOREIGN KEY (`author_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `post` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
+ALTER TABLE `post_item_warehouse` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
+
+ALTER TABLE `post_item_warehouse` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
+
+ALTER TABLE `interest` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `interest` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
+
+ALTER TABLE `comment` ADD FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`);
+
+ALTER TABLE `comment` ADD FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `comment` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `transaction` ADD FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`);
+
+ALTER TABLE `transaction` ADD FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `transaction` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `appointment` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `appointment_item_warehouse` ADD FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`);
+
+ALTER TABLE `appointment_item_warehouse` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
 
 ALTER TABLE `item_warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 
 ALTER TABLE `item_warehouse` ADD FOREIGN KEY (`warehouse_id`) REFERENCES `warehouse` (`id`);
-
-ALTER TABLE `send_request` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `receive_request` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `receive_request` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
-
-ALTER TABLE `receive_request` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
-
-ALTER TABLE `admin` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
 ALTER TABLE `role_permission` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
@@ -225,10 +263,6 @@ ALTER TABLE `role_permission` ADD FOREIGN KEY (`permission_id`) REFERENCES `perm
 ALTER TABLE `notification` ADD FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `notification` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `import_invoice` ADD FOREIGN KEY (`admin_id`) REFERENCES `admin` (`id`);
-
-ALTER TABLE `export_invoice` ADD FOREIGN KEY (`admin_id`) REFERENCES `admin` (`id`);
 
 ALTER TABLE `export_invoice` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`);
 

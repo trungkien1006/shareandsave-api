@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"final_project/internal/domain/filter"
+	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
@@ -12,11 +13,15 @@ import (
 )
 
 type UseCase struct {
-	repo user.Repository
+	repo     user.Repository
+	roleRepo rolepermission.Repository
 }
 
-func NewUseCase(r user.Repository) *UseCase {
-	return &UseCase{repo: r}
+func NewUseCase(r user.Repository, roleRepo rolepermission.Repository) *UseCase {
+	return &UseCase{
+		repo:     r,
+		roleRepo: roleRepo,
+	}
 }
 
 func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, domainReq filter.FilterRequest) (int, error) {
@@ -38,6 +43,16 @@ func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, userID int
 }
 
 func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
+	roleExisted, err := uc.roleRepo.IsRoleExisted(ctx, user.RoleID)
+
+	if err != nil {
+		return err
+	}
+
+	if !roleExisted {
+		return errors.New(enums.ErrRoleNotExist)
+	}
+
 	emailExisted, err := uc.repo.IsEmailExist(ctx, user.Email, 0)
 
 	if err != nil {

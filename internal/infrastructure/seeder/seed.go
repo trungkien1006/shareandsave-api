@@ -2,28 +2,21 @@ package seeder
 
 import (
 	"context"
-	"final_project/internal/domain/admin"
 	"final_project/internal/domain/item"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
-	"final_project/internal/pkg/enums"
-	"final_project/internal/pkg/hash"
-	"final_project/internal/pkg/helpers"
 	"fmt"
-	"os"
 )
 
 type Seeder struct {
 	rolePerRepo rolepermission.Repository
-	adminRepo   admin.Repository
 	itemRepo    item.Repository
 	userRepo    user.Repository
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, adminRepo admin.Repository, itemRepo item.Repository, userRepo user.Repository) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository) *Seeder {
 	return &Seeder{
 		rolePerRepo: rolePerRepo,
-		adminRepo:   adminRepo,
 		itemRepo:    itemRepo,
 		userRepo:    userRepo,
 	}
@@ -39,10 +32,6 @@ func (s *Seeder) Seed() error {
 	}
 
 	if err := s.seedRolePer(); err != nil {
-		return err
-	}
-
-	if err := s.seedAdmin(); err != nil {
 		return err
 	}
 
@@ -95,11 +84,6 @@ func (s *Seeder) seedPermission() error {
 		{Name: "Update Admin", Code: "update_admin"},
 		{Name: "Delete Admin", Code: "delete_admin"},
 
-		//request management permissions
-		{Name: "Read Request", Code: "read_request"},
-		{Name: "Reply Request", Code: "reply_request"},
-		{Name: "Delete Request", Code: "delete_request"},
-
 		//notification management permissions
 		{Name: "Create Notification", Code: "create_notification"},
 
@@ -147,6 +131,7 @@ func (s *Seeder) seedRole() error {
 	}
 
 	var roles = []rolepermission.Role{
+		{Name: "Client"},
 		{Name: "Super Admin"},
 		{Name: "Content Manager"},
 		{Name: "Warehouse Manager"},
@@ -177,9 +162,10 @@ func (s *Seeder) seedRolePer() error {
 	}
 
 	var rolePermissionConfig = map[string][]string{
+		"Client":            {""},
 		"Super Admin":       {"*"},
 		"Content Manager":   {"create_post", "read_post", "update_post", "delete_post", "read_notification"},
-		"Warehouse Manager": {"read_warehouse", "read_item_warehouse", "read_import_invoice", "create_import_invoice", "update_import_invoice", "lock_import_invoice", "delete_import_invoice", "read_export_invoice", "create_export_invoice", "update_export_invoice", "lock_export_invoice", "delete_export_invoice", "read_notification", "read_request", "reply_request", "delete_request"},
+		"Warehouse Manager": {"read_warehouse", "read_item_warehouse", "read_import_invoice", "create_import_invoice", "update_import_invoice", "lock_import_invoice", "delete_import_invoice", "read_export_invoice", "create_export_invoice", "update_export_invoice", "lock_export_invoice", "delete_export_invoice", "read_notification"},
 		// "Human Resources Manager": {"read_admin", "update_admin", "delete_admin", "create_admin", "read_notification"},
 		// "Client Manager":          {"read_user", "update_user", "delete_user", "read_notification", "read_request", "reply_request", "delete_request"},
 	}
@@ -233,49 +219,6 @@ func (s *Seeder) seedRolePer() error {
 	}
 
 	fmt.Println("Finish seed role permission...")
-
-	return nil
-}
-
-func (s *Seeder) seedAdmin() error {
-	ctx := context.Background()
-
-	fmt.Println("Start seed admin...")
-
-	isEmpty, err := s.adminRepo.IsTableEmpty(ctx)
-	if err != nil {
-		return err
-	}
-	if !isEmpty {
-		return nil
-	}
-
-	var roles []rolepermission.Role
-
-	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
-		return err
-	}
-
-	roleMap := make(map[string]uint)
-	for _, r := range roles {
-		roleMap[r.Name] = r.ID
-	}
-
-	admins := []admin.Admin{
-		{Email: "superadmin@example.com", Password: "superadmin", FullName: "Super Admin", Status: 1, RoleID: roleMap["Super Admin"]},
-		{Email: "content@example.com", Password: "contentmanager", FullName: "Content Manager", Status: 1, RoleID: roleMap["Content Manager"]},
-		{Email: "warehouse@example.com", Password: "warehousemanager", FullName: "Warehouse Manager", Status: 1, RoleID: roleMap["Warehouse Manager"]},
-		// {Email: "hr@example.com", Password: "hrmanager", FullName: "HR Manager", Status: 1, RoleID: roleMap["Human Resources Manager"]},
-		// {Email: "client@example.com", Password: "clientmanager", FullName: "Client Manager", Status: 1, RoleID: roleMap["Client Manager"]},
-	}
-
-	for i := range admins {
-		if _, err := s.adminRepo.Save(ctx, admins[i]); err != nil {
-			return err
-		}
-	}
-
-	fmt.Println("Finish seed admin...")
 
 	return nil
 }
@@ -340,339 +283,98 @@ func (s *Seeder) seedItems() error {
 func (s *Seeder) seedUsers() error {
 	ctx := context.Background()
 
-	fmt.Println("Check user table...")
+	fmt.Println("Start seed users...")
 
+	// Kiểm tra bảng user có rỗng không
 	isEmpty, err := s.userRepo.IsTableEmpty(ctx)
-
 	if err != nil {
 		return err
 	}
-
 	if !isEmpty {
+		fmt.Println("Users table not empty, skipping seed users.")
 		return nil
 	}
 
-	fmt.Println("Seeding users...")
+	// Lấy tất cả role từ DB
+	var roles []rolepermission.Role
+	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
+		return err
+	}
 
-	users := []user.User{
+	// Map role name -> ID để dễ gán
+	roleMap := make(map[string]uint)
+	for _, r := range roles {
+		roleMap[r.Name] = r.ID
+	}
+
+	// 3 admin user với 3 role admin khác nhau
+	adminUsers := []user.User{
 		{
-			Email:       "kien@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Văn Kiên",
-			PhoneNumber: "0123456789",
-			Address:     "Hồ Chí Minh",
+			Email:       "superadmin@example.com",
+			Password:    "superadmin",
+			FullName:    "Super Admin",
 			Status:      1,
-			GoodPoint:   0,
-			Major:       "Công nghệ thông tin",
-		},
-		{
-			Email:       "vinh@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Văn Vinh",
-			PhoneNumber: "0123456790",
-			Address:     "Hồ Chí Minh",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Cơ khí",
-		},
-		{
-			Email:       "khoa@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Thị Khoa",
-			PhoneNumber: "0123456791",
-			Address:     "Hồ Chí Minh",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Kế toán doanh nghiệp",
-		},
-		{
-			Email:       "hoang@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Thị Hoàng",
-			PhoneNumber: "0123456792",
-			Address:     "Hồ Chí Minh",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Ô tô",
-		},
-		{
-			Email:       "hien.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Thị Hiền",
-			PhoneNumber: "0981234561",
+			RoleID:      roleMap["Super Admin"],
+			PhoneNumber: "0900000001",
 			Address:     "Hà Nội",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Sư phạm Toán",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
 		},
 		{
-			Email:       "minh.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Minh",
-			PhoneNumber: "0934567890",
+			Email:       "content@example.com",
+			Password:    "contentmanager",
+			FullName:    "Content Manager",
+			Status:      1,
+			RoleID:      roleMap["Content Manager"],
+			PhoneNumber: "0900000002",
+			Address:     "Hồ Chí Minh",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
+		},
+		{
+			Email:       "warehouse@example.com",
+			Password:    "warehousemanager",
+			FullName:    "Warehouse Manager",
+			Status:      1,
+			RoleID:      roleMap["Warehouse Manager"],
+			PhoneNumber: "0900000003",
 			Address:     "Đà Nẵng",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Thiết kế đồ họa",
-		},
-		{
-			Email:       "thu.ha@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Hà Thu",
-			PhoneNumber: "0912345678",
-			Address:     "Hải Phòng",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Ngôn ngữ Anh",
-		},
-		{
-			Email:       "bao.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Bảo",
-			PhoneNumber: "0901234567",
-			Address:     "Cần Thơ",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Công nghệ thực phẩm",
-		},
-		{
-			Email:       "yen.pham@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Phạm Thị Yến",
-			PhoneNumber: "0987654321",
-			Address:     "Hà Tĩnh",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Kỹ thuật phần mềm",
-		},
-		{
-			Email:       "quang.le@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Lê Văn Quang",
-			PhoneNumber: "0976543210",
-			Address:     "Nha Trang",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Điện - điện tử",
-		},
-		{
-			Email:       "anh.do@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Đỗ Thị Anh",
-			PhoneNumber: "0965432109",
-			Address:     "Huế",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Du lịch",
-		},
-		{
-			Email:       "long.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Văn Long",
-			PhoneNumber: "0954321098",
-			Address:     "Bình Dương",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Quản trị kinh doanh",
-		},
-		{
-			Email:       "tuan.pham@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Phạm Tuấn",
-			PhoneNumber: "0943210987",
-			Address:     "Hà Nam",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Marketing",
-		},
-		{
-			Email:       "nhung.vo@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Võ Thị Nhung",
-			PhoneNumber: "0932109876",
-			Address:     "Quảng Ngãi",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Tài chính ngân hàng",
-		},
-		{
-			Email:       "loc.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Hữu Lộc",
-			PhoneNumber: "0921098765",
-			Address:     "Vũng Tàu",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Xây dựng",
-		},
-		{
-			Email:       "my.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Mỹ",
-			PhoneNumber: "0910987654",
-			Address:     "Đồng Nai",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Thiết kế nội thất",
-		},
-		{
-			Email:       "dat.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Văn Đạt",
-			PhoneNumber: "0909876543",
-			Address:     "Gia Lai",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Công nghệ thông tin",
-		},
-		{
-			Email:       "linh.le@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Lê Ngọc Linh",
-			PhoneNumber: "0898765432",
-			Address:     "Lâm Đồng",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Thiết kế thời trang",
-		},
-		{
-			Email:       "dung.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Văn Dũng",
-			PhoneNumber: "0887654321",
-			Address:     "Phú Yên",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Kỹ thuật ô tô",
-		},
-		{
-			Email:       "hanh.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Thị Hạnh",
-			PhoneNumber: "0876543210",
-			Address:     "Bạc Liêu",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Sư phạm Ngữ Văn",
-		},
-		{
-			Email:       "bao.le@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Lê Văn Bảo",
-			PhoneNumber: "0865432109",
-			Address:     "Kiên Giang",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Lập trình web",
-		},
-		{
-			Email:       "trang.pham@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Phạm Thị Trang",
-			PhoneNumber: "0854321098",
-			Address:     "Tiền Giang",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Chăm sóc sức khỏe",
-		},
-		{
-			Email:       "duy.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Văn Duy",
-			PhoneNumber: "0843210987",
-			Address:     "Cà Mau",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Trí tuệ nhân tạo",
-		},
-		{
-			Email:       "thu.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Thị Thu",
-			PhoneNumber: "0832109876",
-			Address:     "Sóc Trăng",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Quản trị nhà hàng - khách sạn",
-		},
-		{
-			Email:       "khanh.vo@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Võ Minh Khánh",
-			PhoneNumber: "0821098765",
-			Address:     "Tây Ninh",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Thương mại điện tử",
-		},
-		{
-			Email:       "nhan.tran@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Trần Hữu Nhân",
-			PhoneNumber: "0810987654",
-			Address:     "An Giang",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Mạng máy tính",
-		},
-		{
-			Email:       "nga.nguyen@gmail.com",
-			Password:    "123456",
-			Avatar:      "",
-			FullName:    "Nguyễn Thị Nga",
-			PhoneNumber: "0809876543",
-			Address:     "Đắk Lắk",
-			Status:      1,
-			GoodPoint:   0,
-			Major:       "Điều dưỡng",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
 		},
 	}
 
-	for i := range users {
-		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
-		if err != nil {
-			return fmt.Errorf("error resizing image: %w", err)
+	// 27 client user
+	clientUsers := make([]user.User, 27)
+	for i := 0; i < 27; i++ {
+		clientUsers[i] = user.User{
+			Email:       fmt.Sprintf("client%02d@example.com", i+1),
+			Password:    "123456",
+			FullName:    fmt.Sprintf("Client User %02d", i+1),
+			Status:      1,
+			RoleID:      roleMap["Client"],
+			PhoneNumber: fmt.Sprintf("090000%04d", i+4),
+			Address:     "Khách hàng",
+			GoodPoint:   i % 10,
+			Major:       "Khách hàng",
+			Active:      true,
 		}
+	}
 
-		users[i].Avatar = strBase64Image
-		users[i].Password, err = hash.HashPassword(users[i].Password)
+	// Gộp admin và client lại
+	users := append(adminUsers, clientUsers...)
 
-		if err != nil {
-			return fmt.Errorf("error hash user password: %w", err)
-		}
-
-		if err := s.userRepo.Save(ctx, &users[i]); err != nil {
+	// Lưu tất cả user vào DB
+	for _, u := range users {
+		if err := s.userRepo.Save(ctx, &u); err != nil {
 			return err
 		}
 	}
 
-	fmt.Println("Seeding users success...")
+	fmt.Println("Finish seed users...")
 
 	return nil
 }

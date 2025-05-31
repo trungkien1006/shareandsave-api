@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"errors"
 	rolepermission "final_project/internal/domain/role_permission"
 
 	"gorm.io/gorm"
@@ -23,6 +24,16 @@ func (r *RolePerRepoDB) GetRoleNameByID(ctx context.Context, roleID uint) (strin
 	}
 
 	return roleName, nil
+}
+
+func (r *RolePerRepoDB) GetRoleIDByName(ctx context.Context, roleName string) (uint, error) {
+	var roleID uint
+
+	if err := r.db.Debug().WithContext(ctx).Model(&rolepermission.Role{}).Select("id").Where("name = ?", roleName).Scan(&roleID).Error; err != nil {
+		return 0, err
+	}
+
+	return roleID, nil
 }
 
 func (r *RolePerRepoDB) SavePermission(permissions *[]rolepermission.Permission) error {
@@ -63,6 +74,20 @@ func (r *RolePerRepoDB) SaveRolePermission(rolePermissions *[]rolepermission.Rol
 	}
 
 	return nil
+}
+
+func (r *RolePerRepoDB) IsRoleExisted(ctx context.Context, roleID uint) (bool, error) {
+	var count int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).Model(&rolepermission.Role{}).Where("id LIKE ?", roleID).Count(&count).Error; err != nil {
+		return false, errors.New("Lỗi khi kiểm tra chức vụ đã tồn tại: " + err.Error())
+	}
+
+	if count > 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func (r *RolePerRepoDB) IsRoleTableEmpty(ctx context.Context) (bool, error) {

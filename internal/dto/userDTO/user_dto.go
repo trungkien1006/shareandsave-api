@@ -1,9 +1,9 @@
-package userDTO
-
-import "final_project/internal/domain/user"
+package userdto
 
 type UserDTO struct {
 	ID          uint   `json:"id"`
+	RoleID      uint   `json:"roleID"`
+	RoleName    string `json:"roleName"`
 	Email       string `json:"email"`
 	Fullname    string `json:"fullName"`
 	Avatar      string `json:"avatar,omitempty"`
@@ -12,18 +12,4 @@ type UserDTO struct {
 	Status      int8   `json:"status"`
 	GoodPoint   int    `json:"goodPoint"`
 	Major       string `json:"major,omitempty"`
-}
-
-func ToUserDTO(u user.User) UserDTO {
-	return UserDTO{
-		ID:          u.ID,
-		Email:       u.Email,
-		Fullname:    u.FullName,
-		Avatar:      u.Avatar,
-		PhoneNumber: u.PhoneNumber,
-		Address:     u.Address,
-		Status:      u.Status,
-		GoodPoint:   u.GoodPoint,
-		Major:       u.Major,
-	}
 }

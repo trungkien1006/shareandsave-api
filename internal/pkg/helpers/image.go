@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
+	"github.com/nfnt/resize"
 )
 
 // ✅ Hàm resize ảnh từ file ảnh
@@ -146,4 +147,55 @@ func EncodeImageToBase64(imagePath string) (string, error) {
 
 	// Thêm prefix
 	return "data:" + mimeType + ";base64," + base64Str, nil
+}
+
+type ImageFormat string
+
+const (
+	FormatJPEG ImageFormat = "jpeg"
+	FormatPNG  ImageFormat = "png"
+)
+
+// ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
+func ProcessImageBase64(inputBase64 string, width, height uint, quality int, outputFormat ImageFormat) (string, error) {
+	// Loại bỏ tiền tố nếu có
+	if idx := strings.Index(inputBase64, ","); idx != -1 {
+		inputBase64 = inputBase64[idx+1:]
+	}
+
+	// Decode base64 -> []byte
+	imgData, err := base64.StdEncoding.DecodeString(inputBase64)
+	if err != nil {
+		return "", err
+	}
+
+	// Decode ảnh
+	img, _, err := image.Decode(bytes.NewReader(imgData))
+	if err != nil {
+		return "", err
+	}
+
+	// Resize ảnh
+	resizedImg := resize.Resize(width, height, img, resize.Lanczos3)
+
+	// Encode lại ảnh đã resize với format + quality
+	var buf bytes.Buffer
+	switch outputFormat {
+	case FormatJPEG:
+		err = jpeg.Encode(&buf, resizedImg, &jpeg.Options{Quality: quality})
+	case FormatPNG:
+		err = png.Encode(&buf, resizedImg)
+	default:
+		return "", errors.New("unsupported output format")
+	}
+	if err != nil {
+		return "", err
+	}
+
+	// Encode lại thành base64
+	outputBase64 := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	// Thêm tiền tố nếu muốn
+	prefix := "data:image/" + string(outputFormat) + ";base64,"
+	return prefix + outputBase64, nil
 }

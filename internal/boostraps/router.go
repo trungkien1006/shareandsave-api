@@ -1,9 +1,7 @@
 package boostraps
 
 import (
-	"final_project/internal/application/adminapp"
 	"final_project/internal/application/itemapp"
-	"final_project/internal/application/requestapp"
 	"final_project/internal/application/userapp"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	"final_project/internal/infrastructure/seeder"
@@ -26,7 +24,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
-	userUC := userapp.NewUseCase(userRepo)
+	userUC := userapp.NewUseCase(userRepo, rolePerRepo)
 	userHandler := handler.NewUserHandler(userUC)
 
 	//item dependency
@@ -34,19 +32,8 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	itemUC := itemapp.NewUseCase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
 
-	//admin dependency
-	adminRepo := persistence.NewAdminRepoDB(db)
-	adminUC := adminapp.NewUseCase(adminRepo, rolePerRepo)
-	adminHandler := handler.NewAdminHandler(adminUC)
-
-	//request dependency
-	sendRequestRepo := persistence.NewRequestRepoDB(db)
-	sendRequestUC := requestapp.NewUseCase(sendRequestRepo, userRepo)
-	sendRequestHandler := handler.NewSendRequestHandler(sendRequestUC)
-
 	seed := seeder.NewSeeder(
 		rolePerRepo,
-		adminRepo,
 		itemRepo,
 		userRepo,
 	)
@@ -88,15 +75,8 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.PUT("/items", itemHandler.UpdateItem)
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
-		//admin CRUD API
-		v1.GET("/admins", adminHandler.GetAllAdmins)
-		v1.GET("/admins/:adminID", adminHandler.GetAdminByID)
-		v1.POST("/admins", adminHandler.CreateAdmin)
-		v1.PUT("/admins", adminHandler.UpdateAdmin)
-		v1.DELETE("/admins/:adminID", adminHandler.DeleteAdmin)
+		//post API
 
-		//request API
-		v1.POST("/request-sends", sendRequestHandler.CreateSendOldItemRequest)
 	}
 
 	// r.Static("/public/images", "./public/images")

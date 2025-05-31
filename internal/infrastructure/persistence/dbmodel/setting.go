@@ -6,13 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Role struct {
+type Setting struct {
 	ID        uint   `gorm:"primaryKey;autoIncrement"`
-	Name      string `gorm:"unique;size:64"`
+	Key       string `gorm:"size:255"`
+	Value     string `gorm:"type:MEDIUMTEXT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-
-	Users           []User           `gorm:"foreignKey:RoleID"`
-	RolePermissions []RolePermission `gorm:"foreignKey:RoleID"`
 }

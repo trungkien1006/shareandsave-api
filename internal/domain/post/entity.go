@@ -3,8 +3,15 @@ package post
 type Post struct {
 	ID          uint
 	AuthorID    uint
-	ItemID      uint
+	AuthorName  string
+	FullName    string
+	Email       string
+	PhoneNumber string
+	Type        int
+	Slug        string
 	Title       string
-	Description string
+	Content     string
+	Info        string
 	Status      int8
+	Images      []string
 }

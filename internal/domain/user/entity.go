@@ -2,6 +2,8 @@ package user
 
 type User struct {
 	ID          uint
+	RoleID      uint
+	RoleName    string
 	Email       string
 	Password    string
 	Avatar      string

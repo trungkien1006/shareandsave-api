@@ -4,7 +4,7 @@ import (
 	"final_project/internal/application/userapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
-	"final_project/internal/dto/userDTO"
+	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
 
@@ -30,11 +30,11 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
-// @Success 200 {object} userDTO.GetUserResponseWrapper
+// @Success 200 {object} userdto.GetUserResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users [get]
 func (h *UserHandler) GetAllUser(c *gin.Context) {
-	var req userDTO.GetUserRequest
+	var req userdto.GetUserRequest
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(
@@ -67,16 +67,16 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 		return
 	}
 
-	usersDTORes := make([]userDTO.UserDTO, 0)
+	usersDTORes := make([]userdto.UserDTO, 0)
 
 	for _, user := range users {
-		usersDTORes = append(usersDTORes, userDTO.ToUserDTO(user))
+		usersDTORes = append(usersDTORes, userdto.DomainToDTO(user))
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Fetched user successfully",
-		"data": userDTO.GetUserResponse{
+		"data": userdto.GetUserResponse{
 			Users:     usersDTORes,
 			TotalPage: totalPage,
 		},
@@ -89,11 +89,11 @@ func (h *UserHandler) GetAllUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param userID path int true "ID user"
-// @Success 200 {object} userDTO.GetUserByIDResponseWrapper
+// @Success 200 {object} userdto.GetUserByIDResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users/{userID} [get]
 func (h *UserHandler) GetUserByID(c *gin.Context) {
-	var req userDTO.GetUserByIDRequest
+	var req userdto.GetUserByIDRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(
@@ -113,14 +113,14 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 		return
 	}
 
-	var userDTORes userDTO.UserDTO
+	var userDTORes userdto.UserDTO
 
-	userDTORes = userDTO.ToUserDTO(user)
+	userDTORes = userdto.DomainToDTO(user)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Fetched user successfully",
-		"data": userDTO.GetUserByIDResponse{
+		"data": userdto.GetUserByIDResponse{
 			User: userDTORes,
 		},
 	})
@@ -131,12 +131,12 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param request body userDTO.CreateUserRequest true "Create user info"
-// @Success 201 {object} userDTO.CreateUserResponseWrapper "Created user successfully"
+// @Param request body userdto.CreateUserRequest true "Create user info"
+// @Success 201 {object} userdto.CreateUserResponseWrapper "Created user successfully"
 // @Failure 400 {object} enums.AppError
 // @Router /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
-	var req userDTO.CreateUserRequest
+	var req userdto.CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(
@@ -165,14 +165,14 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	var userDTORes userDTO.UserDTO
+	var userDTORes userdto.UserDTO
 
-	userDTORes = userDTO.ToUserDTO(user)
+	userDTORes = userdto.DomainToDTO(user)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"code":    http.StatusCreated,
 		"message": "Created user successfully",
-		"data": userDTO.CreateUserResponse{
+		"data": userdto.CreateUserResponse{
 			User: userDTORes,
 		},
 	})
@@ -183,12 +183,12 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param request body userDTO.UpdateUserRequest true "Update user info"
-// @Success 200 {object} userDTO.UpdateUserResponseWrapper "Updated user successfully"
+// @Param request body userdto.UpdateUserRequest true "Update user info"
+// @Success 200 {object} userdto.UpdateUserResponseWrapper "Updated user successfully"
 // @Failure 400 {object} enums.AppError
 // @Router /users [put]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
-	var req userDTO.UpdateUserRequest
+	var req userdto.UpdateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(
@@ -229,11 +229,11 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param userID path int true "ID user"
-// @Success 200 {object} userDTO.DeleteUserResponseWrapper
+// @Success 200 {object} userdto.DeleteUserResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /users/{userID} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
-	var req userDTO.DeleteUserRequest
+	var req userdto.DeleteUserRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(
