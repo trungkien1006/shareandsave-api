@@ -9,23 +9,33 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
+	"fmt"
 	"os"
 )
 
 type UseCase struct {
 	repo     user.Repository
 	roleRepo rolepermission.Repository
+	clientID uint
 }
 
 func NewUseCase(r user.Repository, roleRepo rolepermission.Repository) *UseCase {
+	ctx := context.Background()
+
+	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
+	if err != nil {
+		fmt.Println("Có lỗi khi set roleID mặc định cho user usecase: " + err.Error())
+	}
+
 	return &UseCase{
 		repo:     r,
 		roleRepo: roleRepo,
+		clientID: uint(clientID),
 	}
 }
 
 func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, domainReq filter.FilterRequest) (int, error) {
-	totalPage, err := uc.repo.GetAll(ctx, users, domainReq)
+	totalPage, err := uc.repo.GetAll(ctx, users, domainReq, uc.clientID)
 
 	if err != nil {
 		return 0, err
@@ -35,7 +45,7 @@ func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, domainReq
 }
 
 func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, userID int) error {
-	if err := uc.repo.GetByID(ctx, users, userID); err != nil {
+	if err := uc.repo.GetByID(ctx, users, userID, uc.clientID); err != nil {
 		return err
 	}
 
@@ -43,7 +53,7 @@ func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, userID int
 }
 
 func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
-	roleExisted, err := uc.roleRepo.IsRoleExisted(ctx, user.RoleID)
+	roleExisted, err := uc.roleRepo.IsRoleExisted(ctx, uc.clientID)
 
 	if err != nil {
 		return err
@@ -87,6 +97,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 
 	user.Password = hashedPassword
 	user.Avatar = strBase64Image
+	user.RoleID = uc.clientID
 
 	if err := uc.repo.Save(ctx, user); err != nil {
 		return err
@@ -98,7 +109,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error {
 	var updateUser user.User
 
-	if err := uc.repo.GetByID(ctx, &updateUser, int(domainUser.ID)); err != nil {
+	if err := uc.repo.GetByID(ctx, &updateUser, int(domainUser.ID), uc.clientID); err != nil {
 		return err
 	}
 
@@ -138,6 +149,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 
 	updateUser.Status = domainUser.Status
 	updateUser.ID = domainUser.ID
+	updateUser.RoleID = uc.clientID
 
 	if domainUser.Password != "" {
 		hashedPassword, err := hash.HashPassword(domainUser.Password)
@@ -169,7 +181,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 func (uc *UseCase) DeleteUser(ctx context.Context, userID int) error {
 	var deleteUser user.User
 
-	if err := uc.repo.GetByID(ctx, &deleteUser, int(userID)); err != nil {
+	if err := uc.repo.GetByID(ctx, &deleteUser, int(userID), uc.clientID); err != nil {
 		return err
 	}
 

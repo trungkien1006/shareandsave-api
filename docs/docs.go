@@ -1081,12 +1081,6 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string"
                 },
-                "roleID": {
-                    "type": "integer"
-                },
-                "roleName": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "integer"
                 }

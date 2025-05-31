@@ -2,8 +2,6 @@ package userdto
 
 type UserDTO struct {
 	ID          uint   `json:"id"`
-	RoleID      uint   `json:"roleID"`
-	RoleName    string `json:"roleName"`
 	Email       string `json:"email"`
 	Fullname    string `json:"fullName"`
 	Avatar      string `json:"avatar,omitempty"`

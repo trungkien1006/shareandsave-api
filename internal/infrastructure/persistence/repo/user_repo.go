@@ -21,13 +21,13 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 	return &UserRepoDB{db: db}
 }
 
-func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest) (int, error) {
+func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest, roleID uint) (int, error) {
 	var (
 		query  *gorm.DB
 		dbUser []dbmodel.User
 	)
 
-	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Preload("Role")
+	query = r.db.Debug().WithContext(ctx).Where("role_id = ?", roleID).Model(&dbmodel.User{}).Preload("Role")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
@@ -65,10 +65,10 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 	return totalPage, nil
 }
 
-func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID int) error {
+func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID int, roleID uint) error {
 	var dbUser dbmodel.User
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).First(&dbUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", roleID).First(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
 
