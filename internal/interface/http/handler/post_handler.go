@@ -38,7 +38,7 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	var (
 		req       postdto.GetAdminPostRequest
-		posts     []post.Post
+		posts     []post.AdminPost
 		domainReq filter.FilterRequest
 	)
 
@@ -72,7 +72,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	postsDTORes := make([]postdto.AdminPostDTO, 0)
 
 	for _, post := range posts {
-		postsDTORes = append(postsDTORes, postdto.DomainToDTO(post))
+		postsDTORes = append(postsDTORes, postdto.DomainAdminPostToDTO(post))
 	}
 
 	c.JSON(http.StatusOK, gin.H{

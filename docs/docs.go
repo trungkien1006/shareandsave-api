@@ -838,14 +838,11 @@ const docTemplate = `{
                 "authorName": {
                     "type": "string"
                 },
-                "content": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
-                },
-                "slug": {
-                    "type": "string"
                 },
                 "status": {
                     "type": "integer"
@@ -909,7 +906,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "post": {
-                    "$ref": "#/definitions/postdto.AdminPostDTO"
+                    "$ref": "#/definitions/postdto.PostDTO"
                 },
                 "user": {
                     "$ref": "#/definitions/userdto.CommonUserDTO"
@@ -955,6 +952,32 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "postdto.PostDTO": {
+            "type": "object",
+            "properties": {
+                "authorName": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
                 }
             }
         },

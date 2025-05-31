@@ -3,7 +3,7 @@ package postdto
 import userdto "final_project/internal/dto/userDTO"
 
 type CreatePostResponse struct {
-	Post AdminPostDTO          `json:"post"`
+	Post PostDTO               `json:"post"`
 	User userdto.CommonUserDTO `json:"user"`
 	JWT  string                `json:"JWT"`
 }

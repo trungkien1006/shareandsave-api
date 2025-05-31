@@ -1,5 +1,7 @@
 package post
 
+import "time"
+
 type Post struct {
 	ID          uint
 	AuthorID    uint
@@ -14,4 +16,13 @@ type Post struct {
 	Info        string
 	Status      int8
 	Images      []string
+}
+
+type AdminPost struct {
+	ID         uint
+	AuthorName string
+	Type       int
+	Title      string
+	Status     int8
+	CreateAt   time.Time
 }

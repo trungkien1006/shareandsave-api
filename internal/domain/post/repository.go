@@ -6,6 +6,6 @@ import (
 )
 
 type Repository interface {
-	AdminGetAll(ctx context.Context, posts *[]Post, filter filter.FilterRequest) (int, error)
+	AdminGetAll(ctx context.Context, posts *[]AdminPost, filter filter.FilterRequest) (int, error)
 	Save(ctx context.Context, post *Post) error
 }

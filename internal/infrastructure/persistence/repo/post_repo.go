@@ -21,7 +21,7 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.AdminPost, filter filter.FilterRequest) (int, error) {
 	var (
 		query  *gorm.DB
 		dbPost []dbmodel.Post
@@ -59,7 +59,7 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
 
 	for _, value := range dbPost {
-		*posts = append(*posts, dbmodel.PostDBToDomain(value))
+		*posts = append(*posts, dbmodel.PostDBToAdminPostDomain(value))
 	}
 
 	return totalPage, nil

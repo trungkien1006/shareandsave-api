@@ -28,17 +28,14 @@ type Post struct {
 }
 
 // DB → Domain
-func PostDBToDomain(dbPost Post) post.Post {
-	return post.Post{
+func PostDBToAdminPostDomain(dbPost Post) post.AdminPost {
+	return post.AdminPost{
 		ID:         dbPost.ID,
-		AuthorID:   dbPost.AuthorID,
 		AuthorName: dbPost.Author.FullName,
 		Type:       dbPost.Type,
-		Slug:       dbPost.Slug,
 		Title:      dbPost.Title,
-		Content:    dbPost.Content,
-		Info:       dbPost.Info,
 		Status:     dbPost.Status,
+		CreateAt:   dbPost.CreatedAt,
 	}
 }
 
@@ -53,5 +50,20 @@ func PostDomainToDB(domainPost post.Post) Post {
 		Content:  domainPost.Content,
 		Info:     domainPost.Info,
 		Status:   domainPost.Status,
+	}
+}
+
+// Db -> Domain
+func PostDBToDomain(db Post) post.Post {
+	return post.Post{
+		ID:         db.ID,
+		AuthorID:   db.AuthorID,
+		AuthorName: db.Author.FullName,
+		Type:       db.Type,
+		Slug:       db.Slug,
+		Title:      db.Title,
+		Content:    db.Content,
+		Info:       db.Info,
+		Status:     db.Status,
 	}
 }

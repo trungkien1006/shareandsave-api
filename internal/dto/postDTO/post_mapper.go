@@ -19,14 +19,25 @@ func CreateDTOToDomain(createPostDTO CreatePostRequest) post.Post {
 }
 
 // Domain → DTO
-func DomainToDTO(domainPost post.Post) AdminPostDTO {
+func DomainAdminPostToDTO(domainPost post.AdminPost) AdminPostDTO {
 	return AdminPostDTO{
 		ID:         domainPost.ID,
 		AuthorName: domainPost.AuthorName,
 		Type:       domainPost.Type,
-		Slug:       domainPost.Slug,
 		Title:      domainPost.Title,
+		Status:     domainPost.Status,
+		CreatedAt:  domainPost.CreateAt,
+	}
+}
+
+func DomainToDTO(domainPost post.Post) PostDTO {
+	return PostDTO{
+		ID:         domainPost.ID,
+		AuthorName: domainPost.AuthorName,
 		Content:    domainPost.Content,
+		Slug:       domainPost.Slug,
+		Type:       domainPost.Type,
+		Title:      domainPost.Title,
 		Status:     domainPost.Status,
 	}
 }

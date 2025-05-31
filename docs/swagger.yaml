@@ -149,12 +149,10 @@ definitions:
     properties:
       authorName:
         type: string
-      content:
+      createdAt:
         type: string
       id:
         type: integer
-      slug:
-        type: string
       status:
         type: integer
       title:
@@ -198,7 +196,7 @@ definitions:
       JWT:
         type: string
       post:
-        $ref: '#/definitions/postdto.AdminPostDTO'
+        $ref: '#/definitions/postdto.PostDTO'
       user:
         $ref: '#/definitions/userdto.CommonUserDTO'
     type: object
@@ -228,6 +226,23 @@ definitions:
         $ref: '#/definitions/postdto.GetAdminPostResponse'
       message:
         type: string
+    type: object
+  postdto.PostDTO:
+    properties:
+      authorName:
+        type: string
+      content:
+        type: string
+      id:
+        type: integer
+      slug:
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: integer
     type: object
   userdto.CommonUserDTO:
     properties:
