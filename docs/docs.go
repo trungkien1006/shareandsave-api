@@ -811,8 +811,8 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "['strbase64'",
-                        " 'strbase64']"
+                        "strbase64",
+                        " strbase64"
                     ]
                 },
                 "info": {

@@ -174,8 +174,8 @@ definitions:
         type: string
       images:
         example:
-        - '[''strbase64'''
-        - ' ''strbase64'']'
+        - strbase64
+        - ' strbase64'
         items:
           type: string
         type: array
