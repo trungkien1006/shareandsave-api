@@ -82,6 +82,12 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 
 			post.AuthorID = user.ID
 		}
+	} else {
+		if err := uc.userRepo.GetCommonUserByID(ctx, user, int(post.AuthorID)); err != nil {
+			return "", err
+		}
+
+		post.AuthorID = user.ID
 	}
 
 	if post.AuthorID == 0 {

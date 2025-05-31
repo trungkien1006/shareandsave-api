@@ -45,7 +45,7 @@ func (uc *UseCase) GetAllUser(ctx context.Context, users *[]user.User, domainReq
 }
 
 func (uc *UseCase) GetUserByID(ctx context.Context, users *user.User, userID int) error {
-	if err := uc.repo.GetByID(ctx, users, userID, uc.clientID); err != nil {
+	if err := uc.repo.GetUserByID(ctx, users, userID, uc.clientID); err != nil {
 		return err
 	}
 
@@ -109,7 +109,7 @@ func (uc *UseCase) CreateUser(ctx context.Context, user *user.User) error {
 func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error {
 	var updateUser user.User
 
-	if err := uc.repo.GetByID(ctx, &updateUser, int(domainUser.ID), uc.clientID); err != nil {
+	if err := uc.repo.GetUserByID(ctx, &updateUser, int(domainUser.ID), uc.clientID); err != nil {
 		return err
 	}
 
@@ -181,7 +181,7 @@ func (uc *UseCase) UpdateUser(ctx context.Context, domainUser *user.User) error 
 func (uc *UseCase) DeleteUser(ctx context.Context, userID int) error {
 	var deleteUser user.User
 
-	if err := uc.repo.GetByID(ctx, &deleteUser, int(userID), uc.clientID); err != nil {
+	if err := uc.repo.GetUserByID(ctx, &deleteUser, int(userID), uc.clientID); err != nil {
 		return err
 	}
 

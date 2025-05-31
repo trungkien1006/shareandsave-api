@@ -65,10 +65,22 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 	return totalPage, nil
 }
 
-func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID int, roleID uint) error {
+func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
 	var dbUser dbmodel.User
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", roleID).Preload("Role").First(&dbUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", clientID).Preload("Role").First(&dbUser).Error; err != nil {
+		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+	}
+
+	*domainUser = dbmodel.ToDomainUser(dbUser)
+
+	return nil
+}
+
+func (r *UserRepoDB) GetCommonUserByID(ctx context.Context, domainUser *user.User, userID int) error {
+	var dbUser dbmodel.User
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Preload("Role").First(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
 
