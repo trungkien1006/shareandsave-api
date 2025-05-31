@@ -19,7 +19,6 @@ import (
 // @contact.name    Kin
 // @contact.email   trannguyentrungkien1006@gmail.com
 // @license.name    Apache 2.0
-// @host            34.142.168.171:8000
 // @BasePath        /api/v1
 func main() {
 	//Tải các biến môi trường
