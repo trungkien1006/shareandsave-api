@@ -4,6 +4,7 @@ import (
 	"context"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
+	"final_project/internal/infrastructure/persistence/dbmodel"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -18,7 +19,9 @@ func NewItemRepoDB(db *gorm.DB) *ItemRepoDB {
 }
 
 func (r *ItemRepoDB) Save(ctx context.Context, i *item.Item) error {
-	return r.db.Debug().WithContext(ctx).Create(i).Error
+	dbItem := dbmodel.ItemDomainToDB(*i)
+
+	return r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Create(&dbItem).Error
 }
 
 func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.FilterRequest) (int, error) {

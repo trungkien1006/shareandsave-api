@@ -5,7 +5,11 @@ import (
 	"final_project/internal/domain/item"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/hash"
+	"final_project/internal/pkg/helpers"
 	"fmt"
+	"os"
 )
 
 type Seeder struct {
@@ -369,6 +373,21 @@ func (s *Seeder) seedUsers() error {
 
 	// Lưu tất cả user vào DB
 	for _, u := range users {
+		hashedPassword, err := hash.HashPassword(u.Password)
+
+		if err != nil {
+			return err
+		}
+
+		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
+
+		if err != nil {
+			return err
+		}
+
+		u.Password = hashedPassword
+		u.Avatar = strBase64Image
+
 		if err := s.userRepo.Save(ctx, &u); err != nil {
 			return err
 		}

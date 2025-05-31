@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	rolepermission "final_project/internal/domain/role_permission"
+	"final_project/internal/infrastructure/persistence/dbmodel"
 
 	"gorm.io/gorm"
 )
@@ -37,7 +38,13 @@ func (r *RolePerRepoDB) GetRoleIDByName(ctx context.Context, roleName string) (u
 }
 
 func (r *RolePerRepoDB) SavePermission(permissions *[]rolepermission.Permission) error {
-	if err := r.db.Debug().Create(&permissions).Error; err != nil {
+	var dbPermission []dbmodel.Permission
+
+	for _, value := range *permissions {
+		dbPermission = append(dbPermission, dbmodel.PermissionDomainToDB(value))
+	}
+
+	if err := r.db.Debug().Model(&dbmodel.Permission{}).Create(&dbPermission).Error; err != nil {
 		return err
 	}
 
@@ -45,7 +52,13 @@ func (r *RolePerRepoDB) SavePermission(permissions *[]rolepermission.Permission)
 }
 
 func (r *RolePerRepoDB) SaveRole(roles *[]rolepermission.Role) error {
-	if err := r.db.Debug().Create(&roles).Error; err != nil {
+	var dbRole []dbmodel.Role
+
+	for _, value := range *roles {
+		dbRole = append(dbRole, dbmodel.RoleDomainToDB(value))
+	}
+
+	if err := r.db.Debug().Model(&dbmodel.Role{}).Create(&dbRole).Error; err != nil {
 		return err
 	}
 
@@ -69,7 +82,13 @@ func (r *RolePerRepoDB) GetAllPermission(permissions *[]rolepermission.Permissio
 }
 
 func (r *RolePerRepoDB) SaveRolePermission(rolePermissions *[]rolepermission.RolePermission) error {
-	if err := r.db.Debug().Create(&rolePermissions).Error; err != nil {
+	var dbRolePer []dbmodel.RolePermission
+
+	for _, value := range *rolePermissions {
+		dbRolePer = append(dbRolePer, dbmodel.RolePerDomainToDB(value))
+	}
+
+	if err := r.db.Debug().Model(&dbmodel.RolePermission{}).Create(&dbRolePer).Error; err != nil {
 		return err
 	}
 

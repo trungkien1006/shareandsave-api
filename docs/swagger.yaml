@@ -366,7 +366,6 @@ definitions:
       status:
         type: integer
     type: object
-host: 34.142.168.171:8000
 info:
   contact:
     email: trannguyentrungkien1006@gmail.com

@@ -13,7 +13,6 @@
         },
         "version": "1.0"
     },
-    "host": "34.142.168.171:8000",
     "basePath": "/api/v1",
     "paths": {
         "/items": {

@@ -22,9 +22,12 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 }
 
 func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest) (int, error) {
-	var query *gorm.DB
+	var (
+		query  *gorm.DB
+		dbUser []dbmodel.User
+	)
 
-	query = r.db.Debug().WithContext(ctx).Model(&user.User{})
+	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Preload("Role")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
@@ -48,20 +51,28 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 		query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
 	}
 
-	if err := query.Find(&users).Error; err != nil {
+	if err := query.Find(&dbUser).Error; err != nil {
 		return 0, errors.New("Lỗi khi lọc người dùng: " + err.Error())
 	}
 
 	//tinh toan total page
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(req.Limit)))
 
+	for _, value := range dbUser {
+		*users = append(*users, dbmodel.ToDomainUser(value))
+	}
+
 	return totalPage, nil
 }
 
 func (r *UserRepoDB) GetByID(ctx context.Context, domainUser *user.User, userID int) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Where("id = ?", userID).First(&domainUser).Error; err != nil {
+	var dbUser dbmodel.User
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).First(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
+
+	*domainUser = dbmodel.ToDomainUser(dbUser)
 
 	return nil
 }

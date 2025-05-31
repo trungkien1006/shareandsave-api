@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/item"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ type Item struct {
 }
 
 // Domain → DB
-func ItemDomainToDB(a Item) Item {
+func ItemDomainToDB(a item.Item) Item {
 	return Item{
 		ID:          a.ID,
 		Name:        a.Name,
@@ -32,8 +33,8 @@ func ItemDomainToDB(a Item) Item {
 }
 
 // DB → Domain
-func ItemDBToDomain(a Item) Item {
-	return Item{
+func ItemDBToDomain(a Item) item.Item {
+	return item.Item{
 		ID:          a.ID,
 		Name:        a.Name,
 		Description: a.Description,

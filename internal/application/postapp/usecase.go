@@ -74,7 +74,6 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 			user.Address = ""
 			user.Status = int8(enums.UserStatusInactive)
 			user.GoodPoint = 0
-			user.ID = 0 // Đặt ID về 0 để đảm bảo tạo mới
 
 			if err := uc.userRepo.Save(ctx, user); err != nil {
 				return "", err

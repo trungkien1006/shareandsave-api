@@ -67,7 +67,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched user successfully",
+		"message": "Created post successfully",
 		"data": postdto.GetPostByIDResponse{
 			Post: postDTORes,
 			User: userDTORes,
