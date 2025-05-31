@@ -15,14 +15,15 @@ import (
 
 type UseCase struct {
 	repo     post.Repository
-	service  post.PostService
+	service  *post.PostService
 	userRepo user.Repository
 	roleRepo rolepermission.Repository
 }
 
-func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository) *UseCase {
+func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService) *UseCase {
 	return &UseCase{
 		repo:     r,
+		service:  service,
 		userRepo: userRepo,
 		roleRepo: roleRepo,
 	}

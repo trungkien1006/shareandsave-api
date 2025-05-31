@@ -2,7 +2,9 @@ package boostraps
 
 import (
 	"final_project/internal/application/itemapp"
+	"final_project/internal/application/postapp"
 	"final_project/internal/application/userapp"
+	"final_project/internal/domain/post"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
@@ -31,6 +33,12 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	itemRepo := persistence.NewItemRepoDB(db)
 	itemUC := itemapp.NewUseCase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
+
+	//post dependency
+	postService := post.NewPostService()
+	postRepo := persistence.NewPostRepoDB(db)
+	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService)
+	postHandler := handler.NewPostHandler(postUC)
 
 	seed := seeder.NewSeeder(
 		rolePerRepo,
@@ -76,7 +84,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
 		//post API
-
+		v1.POST("/posts", postHandler.CreatePost)
 	}
 
 	// r.Static("/public/images", "./public/images")
