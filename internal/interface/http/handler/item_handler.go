@@ -4,7 +4,7 @@ import (
 	"final_project/internal/application/itemapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
-	"final_project/internal/dto/itemdto"
+	itemdto "final_project/internal/dto/itemDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
 
