@@ -88,7 +88,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 		return "", errors.New("Không thể tạo bài viết mà không có người dùng")
 	}
 
-	post.Content = ""
+	post.Content = "{}"
 
 	if post.Info != "" {
 		postContent, err := uc.service.GenerateContent(post.Info)
