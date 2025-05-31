@@ -215,6 +215,8 @@ definitions:
     properties:
       address:
         type: string
+      avatar:
+        type: string
       email:
         example: john@gmail.com
         type: string
@@ -229,8 +231,6 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
-      roleID:
-        type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
@@ -244,7 +244,6 @@ definitions:
     - email
     - fullName
     - password
-    - roleID
     type: object
   userdto.CreateUserResponse:
     properties:
@@ -319,8 +318,6 @@ definitions:
       phoneNumber:
         example: "0123456789"
         type: string
-      roleID:
-        type: integer
       status:
         allOf:
         - $ref: '#/definitions/enums.UserStatus'
@@ -330,8 +327,6 @@ definitions:
         - 1
         - 2
         example: 1
-    required:
-    - roleID
     type: object
   userdto.UpdateUserResponseWrapper:
     properties:
@@ -358,6 +353,10 @@ definitions:
       major:
         type: string
       phoneNumber:
+        type: string
+      roleID:
+        type: integer
+      roleName:
         type: string
       status:
         type: integer

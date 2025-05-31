@@ -864,11 +864,13 @@ const docTemplate = `{
             "required": [
                 "email",
                 "fullName",
-                "password",
-                "roleID"
+                "password"
             ],
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "avatar": {
                     "type": "string"
                 },
                 "email": {
@@ -889,9 +891,6 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string",
                     "example": "0123456789"
-                },
-                "roleID": {
-                    "type": "integer"
                 },
                 "status": {
                     "description": "0: inactive, 1: active, 2: banned",
@@ -995,9 +994,6 @@ const docTemplate = `{
         },
         "userdto.UpdateUserRequest": {
             "type": "object",
-            "required": [
-                "roleID"
-            ],
             "properties": {
                 "address": {
                     "type": "string"
@@ -1022,9 +1018,6 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string",
                     "example": "0123456789"
-                },
-                "roleID": {
-                    "type": "integer"
                 },
                 "status": {
                     "description": "0: inactive, 1: active, 2: banned",
@@ -1079,6 +1072,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phoneNumber": {
+                    "type": "string"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "roleName": {
                     "type": "string"
                 },
                 "status": {

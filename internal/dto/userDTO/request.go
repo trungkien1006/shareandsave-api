@@ -31,19 +31,18 @@ type GetUserByIDRequest struct {
 }
 
 type CreateUserRequest struct {
-	RoleID      uint             `json:"roleID" binding:"required"`
 	FullName    string           `json:"fullName" binding:"required" example:"John Doe"`
 	Email       string           `json:"email" binding:"required" example:"john@gmail.com"`
 	PhoneNumber string           `json:"phoneNumber" example:"0123456789"`
 	Password    string           `json:"password" binding:"required,min=8"`
 	Status      enums.UserStatus `json:"status" binding:"oneof=0 1 2" example:"1"` // 0: inactive, 1: active, 2: banned
 	Address     string           `json:"address" exapmple:"123 Main St, City, Country"`
+	Avatar      string           `json:"avatar"`
 	GoodPoint   int              `json:"goodPoint"`
 }
 
 type UpdateUserRequest struct {
 	ID          uint             `json:"id"`
-	RoleID      uint             `json:"roleID" binding:"required"`
 	FullName    string           `json:"fullName" example:"John Doe"`
 	PhoneNumber string           `json:"phoneNumber" example:"0123456789"`
 	Avatar      string           `json:"avatar"`

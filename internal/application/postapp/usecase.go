@@ -46,11 +46,11 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 
 		//Nếu đã tồn tại cả email và số điện thoại thì lấy ID của người dùng, không thì trả lỗi nếu 1 trong 2 tồn tại rồi
 		if userEmailExist && userPhoneNumberExist {
-			post.AuthorID, err = uc.userRepo.GetIDByEmailPhoneNumber(ctx, user.Email, user.PhoneNumber)
-
-			if err != nil {
+			if err := uc.userRepo.GetByEmailPhoneNumber(ctx, user, user.Email, user.PhoneNumber); err != nil {
 				return "", err
 			}
+
+			post.AuthorID = user.ID
 		} else if userEmailExist {
 			return "", errors.New("Đã có tài khoản sở hữu email này")
 		} else if userPhoneNumberExist {
@@ -69,6 +69,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 			}
 
 			user.RoleID = clientRoleID
+			user.RoleName = "Client"
 			user.Avatar = strBase64Image
 			user.Password = hash.HashEmailPhone(user.Email, user.PhoneNumber) // Mã hóa mật khẩu bằng email và số điện thoại
 			user.Address = ""
@@ -101,7 +102,6 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 
 	post.Status = int8(enums.PostStatusPending) // Mặc định trạng thái là Pending
 	post.Slug = uc.service.GenerateSlug(post.Title)
-	post.AuthorName = user.FullName
 
 	//resize ảnh
 	for index, image := range post.Images {
@@ -117,6 +117,8 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 	if err := uc.repo.Save(ctx, post); err != nil {
 		return "", err
 	}
+
+	post.AuthorName = user.FullName
 
 	userJWTSub := helpers.UserJWTSubject{
 		Id:   user.ID,
