@@ -91,7 +91,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 	}
 
 	if post.AuthorID == 0 {
-		return "", errors.New("Không thể tạo bài viết mà không có người dùng")
+		return "", errors.New("Email và số điện thoại thuộc sở hữu bởi 2 tài khoản khác nhau, bạn nên dùng cả email và số điện thoại mới")
 	}
 
 	if post.Info != "" {
