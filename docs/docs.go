@@ -811,12 +811,13 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "["
+                        "['strbase64'",
+                        " 'strbase64']"
                     ]
                 },
                 "info": {
                     "type": "string",
-                    "example": "{"
+                    "example": "{'a': 'oke', 'b': 'hihi'}"
                 },
                 "phoneNumber": {
                     "description": "true: anonymous, false: not anonymous",
