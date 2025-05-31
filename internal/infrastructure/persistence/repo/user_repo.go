@@ -83,7 +83,7 @@ func (r *UserRepoDB) GetIDByEmailPhoneNumber(ctx context.Context, email string, 
 func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 	dbUser := dbmodel.ToDBUser(*domainUser)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Create(&dbUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Create(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())
 	}
 
