@@ -112,6 +112,8 @@ func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 		return errors.New("Lỗi khi thêm người dùng mới: " + err.Error())
 	}
 
+	*domainUser = dbmodel.ToDomainUser(dbUser)
+
 	return nil
 }
 

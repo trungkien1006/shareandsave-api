@@ -8,7 +8,7 @@ import (
 func CreateDTOToDomain(createPostDTO CreatePostRequest) post.Post {
 	return post.Post{
 		AuthorID:    createPostDTO.AuthorID,
-		FullName:    createPostDTO.Email,
+		FullName:    createPostDTO.FullName,
 		Email:       createPostDTO.Email,
 		PhoneNumber: createPostDTO.PhoneNumber,
 		Type:        int(createPostDTO.Type),

@@ -57,7 +57,6 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 			return "", errors.New("Đã có tài khoản sở hữu số điện thoại này")
 		} else {
 			//Nếu chưa tồn tại cả email và số điện thoại thì tạo mới người dùng
-
 			strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
 			if err != nil {
 				return "", fmt.Errorf("Lỗi khi resize ảnh: %w", err)
@@ -75,6 +74,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.Post, user *user.U
 			user.Address = ""
 			user.Status = int8(enums.UserStatusInactive)
 			user.GoodPoint = 0
+			user.ID = 0
 
 			if err := uc.userRepo.Save(ctx, user); err != nil {
 				return "", err
