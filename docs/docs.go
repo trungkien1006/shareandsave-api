@@ -924,6 +924,9 @@ const docTemplate = `{
         "itemdto.ItemDTO": {
             "type": "object",
             "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },

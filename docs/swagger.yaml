@@ -135,6 +135,8 @@ definitions:
     type: object
   itemdto.ItemDTO:
     properties:
+      categoryID:
+        type: integer
       description:
         type: string
       id:
