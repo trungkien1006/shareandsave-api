@@ -9,6 +9,7 @@ import (
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
+	"os"
 )
 
 type UseCase struct {
@@ -97,6 +98,13 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 			CategoryID: newItem.CategoryID,
 			Name:       newItem.Name,
 		}
+
+		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/item.png", enums.ItemImageWidth, enums.ItemImageHeight)
+		if err != nil {
+			return err
+		}
+
+		item.Image = strBase64Image
 
 		if err := uc.itemRepo.Save(ctx, &item); err != nil {
 			return err
