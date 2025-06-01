@@ -77,6 +77,12 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 	return nil
 }
 
+// func (r *ItemRepoDB) GetCategoryNameByItemID(ctx context.Context, itemID uint) (string, error) {
+// 	var item
+
+// 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("id = ?", itemID).Preload("Category").Find
+// }
+
 func (r *ItemRepoDB) IsExisted(ctx context.Context, itemID uint) (bool, error) {
 	var count int64
 

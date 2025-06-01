@@ -66,7 +66,13 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 
 	//sort du lieu
 	if filter.Sort != "" {
-		query.Order(strcase.ToSnake(filter.Sort) + " " + filter.Order)
+		if filter.Sort == "authorName" {
+			filter.Sort = "author.full_name"
+		} else {
+			filter.Sort = strcase.ToSnake(filter.Sort)
+		}
+
+		query.Order(filter.Sort + " " + filter.Order)
 	}
 
 	if err := query.Find(&dbPost).Error; err != nil {
