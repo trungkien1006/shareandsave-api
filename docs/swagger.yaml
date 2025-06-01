@@ -252,7 +252,7 @@ definitions:
         type: array
       info:
         type: string
-      interest:
+      interests:
         items:
           $ref: '#/definitions/postdto.InterestDTO'
         type: array
@@ -264,7 +264,7 @@ definitions:
         type: string
       status:
         type: integer
-      tag:
+      tags:
         items:
           type: string
         type: array

@@ -25,35 +25,35 @@ type PostDTO struct {
 }
 
 type DetailPostItemDTO struct {
-	ItemID     uint
-	CategoryID uint
-	Image      string
-	Name       string
-	Quantity   int
+	ItemID     uint   `json:"itemID"`
+	CategoryID uint   `json:"categoryID"`
+	Image      string `json:"image"`
+	Name       string `json:"name"`
+	Quantity   int    `json:"quantity"`
 }
 
 type InterestDTO struct {
-	ID         uint
-	UserID     uint
-	UserName   string
-	UserAvatar string
-	PostID     uint
-	Status     int
+	ID         uint   `json:"id"`
+	UserID     uint   `json:"userID"`
+	UserName   string `json:"userName"`
+	UserAvatar string `json:"userAvatar"`
+	PostID     uint   `json:"postID"`
+	Status     int    `json:"status"`
 }
 
 type DetailPostDTO struct {
-	ID         uint
-	AuthorID   uint
-	AuthorName string
-	Type       int
-	Slug       string
-	Title      string
-	Content    string
-	Info       string
-	Status     int8
-	Images     []string
-	CreatedAt  time.Time
-	Tag        []string
-	Interest   []InterestDTO
-	Items      []DetailPostItemDTO
+	ID         uint                `json:"id"`
+	AuthorID   uint                `json:"authorID"`
+	AuthorName string              `json:"authorName"`
+	Type       int                 `json:"type"`
+	Slug       string              `json:"slug"`
+	Title      string              `json:"title"`
+	Content    string              `json:"content"`
+	Info       string              `json:"info"`
+	Status     int8                `json:"status"`
+	Images     []string            `json:"images"`
+	CreatedAt  time.Time           `json:"createdAt"`
+	Tag        []string            `json:"tags"`
+	Interest   []InterestDTO       `json:"interests"`
+	Items      []DetailPostItemDTO `json:"items"`
 }

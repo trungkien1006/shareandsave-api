@@ -1097,7 +1097,7 @@ const docTemplate = `{
                 "info": {
                     "type": "string"
                 },
-                "interest": {
+                "interests": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/postdto.InterestDTO"
@@ -1115,7 +1115,7 @@ const docTemplate = `{
                 "status": {
                     "type": "integer"
                 },
-                "tag": {
+                "tags": {
                     "type": "array",
                     "items": {
                         "type": "string"
