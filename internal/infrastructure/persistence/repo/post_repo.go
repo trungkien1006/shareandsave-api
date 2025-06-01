@@ -44,7 +44,13 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 
 	}
 
-	query.Where("post.status = ?", filter.Status).Where("post.type = ?", filter.Type)
+	if filter.Type != 0 {
+		query.Where("post.type = ?", filter.Type)
+	}
+
+	if filter.Status != 0 {
+		query.Where("post.status = ?", filter.Status)
+	}
 
 	var totalRecord int64 = 0
 

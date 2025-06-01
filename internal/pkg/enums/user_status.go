@@ -3,11 +3,12 @@ package enums
 type UserStatus int
 
 const (
-	UserStatusInactive UserStatus = iota // 0
-	UserStatusActive                     // 1
-	UserStatusLocked                     // 2
+	UserStatusAll      UserStatus = iota // 1
+	UserStatusInactive                   // 2
+	UserStatusActive                     // 3
+	UserStatusLocked                     // 4
 )
 
 func (s UserStatus) String() string {
-	return [...]string{"INACTIVE", "ACTIVE", "LOCKED"}[s]
+	return [...]string{"ALL", "INACTIVE", "ACTIVE", "LOCKED"}[s]
 }

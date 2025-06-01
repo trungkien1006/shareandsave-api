@@ -328,15 +328,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "0, 1, 2",
-                        "description": "Pending:0, Rejected:1, Approved:2",
+                        "example": "1, 2, 3",
+                        "description": "Pending:1, Rejected:2, Approved:3",
                         "name": "status",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "example": "0, 1, 2, 3",
-                        "description": "GiveAwayOldItem:0, FoundItem:1, SeekLoseItem:2, Other:3",
+                        "example": "1, 2, 3, 4",
+                        "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
                         "in": "query"
                     },
@@ -714,14 +714,17 @@ const docTemplate = `{
             "enum": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "x-enum-comments": {
-                "PostStatusApproved": "2 Admin duyệt",
-                "PostStatusPending": "0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
-                "PostStatusRejected": "1 Admin đã từ chối"
+                "PostStatusAll": "0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
+                "PostStatusApproved": "3 Admin duyệt",
+                "PostStatusPending": "1 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
+                "PostStatusRejected": "2 Admin đã từ chối"
             },
             "x-enum-varnames": [
+                "PostStatusAll",
                 "PostStatusPending",
                 "PostStatusRejected",
                 "PostStatusApproved"
@@ -733,15 +736,18 @@ const docTemplate = `{
                 0,
                 1,
                 2,
-                3
+                3,
+                4
             ],
             "x-enum-comments": {
-                "PostTypeFoundItem": "1 nhặt được đồ",
-                "PostTypeGiveAwayOldItem": "0 tặng đồ cũ",
-                "PostTypeOther": "3 khác",
-                "PostTypeSeekLoseItem": "2 tìm kiếm đồ"
+                "PostTypeAll": "0 all",
+                "PostTypeFoundItem": "2 nhặt được đồ",
+                "PostTypeGiveAwayOldItem": "1 tặng đồ cũ",
+                "PostTypeOther": "4 khác",
+                "PostTypeSeekLoseItem": "3 tìm kiếm đồ"
             },
             "x-enum-varnames": [
+                "PostTypeAll",
                 "PostTypeGiveAwayOldItem",
                 "PostTypeFoundItem",
                 "PostTypeSeekLoseItem",
@@ -753,14 +759,17 @@ const docTemplate = `{
             "enum": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "x-enum-comments": {
-                "UserStatusActive": "1",
-                "UserStatusInactive": "0",
-                "UserStatusLocked": "2"
+                "UserStatusActive": "3",
+                "UserStatusAll": "1",
+                "UserStatusInactive": "2",
+                "UserStatusLocked": "4"
             },
             "x-enum-varnames": [
+                "UserStatusAll",
                 "UserStatusInactive",
                 "UserStatusActive",
                 "UserStatusLocked"
@@ -769,9 +778,13 @@ const docTemplate = `{
         "itemdto.CreateItemRequest": {
             "type": "object",
             "required": [
+                "categoryID",
                 "name"
             ],
             "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -886,6 +899,9 @@ const docTemplate = `{
         "itemdto.UpdateItemRequest": {
             "type": "object",
             "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -983,16 +999,17 @@ const docTemplate = `{
                 },
                 "type": {
                     "enum": [
-                        0,
                         1,
                         2,
-                        3
+                        3,
+                        4
                     ],
                     "allOf": [
                         {
                             "$ref": "#/definitions/enums.PostType"
                         }
-                    ]
+                    ],
+                    "example": 1
                 }
             }
         },
@@ -1102,9 +1119,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "enum": [
-                        0,
                         1,
-                        2
+                        2,
+                        3
                     ],
                     "allOf": [
                         {

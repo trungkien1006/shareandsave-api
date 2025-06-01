@@ -30,8 +30,8 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column (vd: fullName, email)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param status query string false "Pending:0, Rejected:1, Approved:2" example(0, 1, 2)
-// @Param type query string false "GiveAwayOldItem:0, FoundItem:1, SeekLoseItem:2, Other:3" example(0, 1, 2, 3)
+// @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
+// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} postdto.GetAdminPostResponseWrapper
