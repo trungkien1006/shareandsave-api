@@ -733,13 +733,13 @@ paths:
         minimum: 1
         name: limit
         type: integer
-      - description: 'Sort column (vd: fullName, email)'
-        example: name
+      - description: Sort column
+        example: authorName, title, createdAt
         in: query
         name: sort
         type: string
-      - description: 'Sort type: ASC hoặc DESC'
-        example: ASC
+      - description: Sort type
+        example: ASC, DESC
         in: query
         name: order
         type: string

@@ -307,15 +307,15 @@
                     },
                     {
                         "type": "string",
-                        "example": "name",
-                        "description": "Sort column (vd: fullName, email)",
+                        "example": "authorName, title, createdAt",
+                        "description": "Sort column",
                         "name": "sort",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "example": "ASC",
-                        "description": "Sort type: ASC hoặc DESC",
+                        "example": "ASC, DESC",
+                        "description": "Sort type",
                         "name": "order",
                         "in": "query"
                     },

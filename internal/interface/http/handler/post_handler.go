@@ -26,8 +26,8 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Produce json
 // @Param page query int false "Current page" minimum(1) example(1)
 // @Param limit query int false "Number record of page" minimum(1) example(10)
-// @Param sort query string false "Sort column (vd: fullName, email)" example(name)
-// @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param sort query string false "Sort column" example(authorName, title, createdAt)
+// @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
 // @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
 // @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
