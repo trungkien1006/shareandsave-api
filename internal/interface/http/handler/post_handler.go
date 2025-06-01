@@ -2,7 +2,6 @@ package handler
 
 import (
 	"final_project/internal/application/postapp"
-	"final_project/internal/domain/filter"
 	"final_project/internal/domain/post"
 	"final_project/internal/domain/user"
 	postdto "final_project/internal/dto/postDTO"
@@ -31,6 +30,8 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column (vd: fullName, email)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param status query string false "Pending:0, Rejected:1, Approved:2" example(0, 1, 2)
+// @Param type query string false "GiveAwayOldItem:0, FoundItem:1, SeekLoseItem:2, Other:3" example(0, 1, 2, 3)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} postdto.GetAdminPostResponseWrapper
@@ -40,7 +41,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	var (
 		req       postdto.GetAdminPostRequest
 		posts     []post.Post
-		domainReq filter.FilterRequest
+		domainReq post.PostFilterRequest
 	)
 
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -57,6 +58,8 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	domainReq.Limit = req.Limit
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
+	domainReq.Status = int(req.Status)
+	domainReq.Type = int(req.Type)
 	domainReq.SearchBy = req.SearchBy
 	domainReq.SearchValue = req.SearchValue
 

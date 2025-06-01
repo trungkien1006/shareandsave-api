@@ -3,10 +3,8 @@ package persistence
 import (
 	"context"
 	"errors"
-	"final_project/internal/domain/filter"
 	"final_project/internal/domain/post"
 	"final_project/internal/infrastructure/persistence/dbmodel"
-	"fmt"
 	"math"
 
 	"github.com/iancoleman/strcase"
@@ -21,18 +19,32 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.PostFilterRequest) (int, error) {
 	var (
 		query  *gorm.DB
 		dbPost []dbmodel.Post
 	)
 
-	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Preload("Author")
+	query = r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Table("post as post").
+		Joins("JOIN user AS author ON author.id = post.author_id").
+		Preload("Author")
 
 	if filter.SearchBy != "" && filter.SearchValue != "" {
 		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"
-		query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), "%"+filter.SearchValue+"%")
+
+		if column == "author_name" {
+			column = "author.full_name"
+		} else {
+			column = "post." + column
+		}
+
+		query.Where(column+" LIKE ? ", "%"+filter.SearchValue+"%")
+
 	}
+
+	query.Where("post.status = ?", filter.Status).Where("post.type = ?", filter.Type)
 
 	var totalRecord int64 = 0
 

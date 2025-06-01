@@ -16,6 +16,7 @@ type CreatePost struct {
 	Info        string
 	Status      int8
 	Images      []string
+	Tag         []string
 }
 
 type Post struct {
@@ -30,4 +31,15 @@ type Post struct {
 	Status     int8
 	Images     []string
 	CreatedAt  time.Time
+}
+
+type PostFilterRequest struct {
+	Page        int
+	Limit       int
+	Sort        string
+	Order       string
+	Status      int
+	Type        int
+	SearchBy    string
+	SearchValue string
 }

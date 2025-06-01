@@ -20,7 +20,6 @@ type ItemWarehouse struct {
 	Warehouse Warehouse `gorm:"foreignKey:WarehouseID"`
 
 	// 1-n: Một item warehouse có thể thuộc nhiều post_item_warehouse, appointment_item_warehouse, item_export_invoice
-	PostItemWarehouses        []PostItemWarehouse        `gorm:"foreignKey:ItemWarehouseID"`
 	AppointmentItemWarehouses []AppointmentItemWarehouse `gorm:"foreignKey:ItemWarehouseID"`
 	ItemExportInvoices        []ItemExportInvoice        `gorm:"foreignKey:ItemWarehouseID"`
 }

@@ -17,5 +17,5 @@ type Appointment struct {
 
 	User User `gorm:"foreignKey:UserID"`
 
-	AppointmentItemWarehouses []AppointmentItemWarehouse `gorm:"foreignKey:AppointmentID"`
+	AppointmentItem []AppointmentItemWarehouse `gorm:"foreignKey:AppointmentID"`
 }

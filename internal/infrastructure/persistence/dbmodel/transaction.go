@@ -19,4 +19,6 @@ type Transaction struct {
 	Interest Interest `gorm:"foreignKey:InterestID"`
 	Sender   User     `gorm:"foreignKey:SenderID"`
 	Receiver User     `gorm:"foreignKey:ReceiverID"`
+
+	TransactionItems []TransactionItem `gorm:"foreignKey:TransactionID"`
 }

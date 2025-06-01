@@ -16,8 +16,17 @@ CREATE TABLE `user` (
   `deleted_at` timestamp
 );
 
+CREATE TABLE `category` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(255),
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
 CREATE TABLE `item` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `category_id` int,
   `name` varchar(255) UNIQUE,
   `description` text,
   `image` longtext,
@@ -32,18 +41,19 @@ CREATE TABLE `post` (
   `type` int,
   `slug` varchar(255) UNIQUE,
   `title` varchar(255),
-  `content` JSON DEFAULT null,
-  `info` JSON DEFAULT null,
-  `image` JSON DEFAULT null,
+  `content` json DEFAULT null,
+  `info` json DEFAULT null,
+  `image` json DEFAULT null,
+  `tag` json DEFAULT null,
   `status` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
 );
 
-CREATE TABLE `post_item_warehouse` (
+CREATE TABLE `post_item` (
   `post_id` int,
-  `item_warehouse_id` int
+  `item_id` int
 );
 
 CREATE TABLE `interest` (
@@ -76,6 +86,11 @@ CREATE TABLE `transaction` (
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
+);
+
+CREATE TABLE `transaction_item` (
+  `transaction_id` int,
+  `item_id` int
 );
 
 CREATE TABLE `appointment` (
@@ -225,11 +240,13 @@ CREATE TABLE `setting` (
 
 ALTER TABLE `user` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
+ALTER TABLE `item` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
+
 ALTER TABLE `post` ADD FOREIGN KEY (`author_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `post_item_warehouse` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
+ALTER TABLE `post_item` ADD FOREIGN KEY (`post_id`) REFERENCES `post` (`id`);
 
-ALTER TABLE `post_item_warehouse` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
+ALTER TABLE `post_item` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 
 ALTER TABLE `interest` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
@@ -246,6 +263,10 @@ ALTER TABLE `transaction` ADD FOREIGN KEY (`interest_id`) REFERENCES `interest` 
 ALTER TABLE `transaction` ADD FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`);
 
 ALTER TABLE `transaction` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `transaction_item` ADD FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`);
+
+ALTER TABLE `transaction_item` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 
 ALTER TABLE `appointment` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 

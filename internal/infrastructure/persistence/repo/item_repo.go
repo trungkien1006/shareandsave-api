@@ -28,9 +28,10 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 	var (
 		query        *gorm.DB
 		totalRecords int64
+		dbItems      []dbmodel.Item
 	)
 
-	query = r.db.Debug().WithContext(ctx).Model(&item.Item{})
+	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{})
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		query = query.Where(strcase.ToSnake(req.SearchBy)+" LIKE ?", "%"+req.SearchValue+"%")
@@ -48,11 +49,15 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
 	}
 
-	if err := query.Find(items).Error; err != nil {
+	if err := query.Find(&dbItems).Error; err != nil {
 		return 0, err
 	}
 
 	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
+
+	for _, value := range dbItems {
+		*items = append(*items, dbmodel.ItemDBToDomain(value))
+	}
 
 	return totalPages, nil
 }

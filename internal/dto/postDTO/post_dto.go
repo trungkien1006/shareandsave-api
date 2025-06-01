@@ -1,6 +1,8 @@
 package postdto
 
-import "time"
+import (
+	"time"
+)
 
 type AdminPostDTO struct {
 	ID         uint      `json:"id"`

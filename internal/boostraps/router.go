@@ -23,6 +23,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
+	categoryRepo := persistence.NewCategoryRepoDB(db)
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
@@ -44,6 +45,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		rolePerRepo,
 		itemRepo,
 		userRepo,
+		categoryRepo,
 	)
 
 	seed.Seed()

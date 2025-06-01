@@ -16,12 +16,14 @@ type CreatePostRequest struct {
 }
 
 type GetAdminPostRequest struct {
-	Page        int    `form:"page"`
-	Limit       int    `form:"limit"`
-	Sort        string `form:"sort"`
-	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	SearchBy    string `form:"searchBy"`
-	SearchValue string `form:"searchValue"`
+	Page        int              `form:"page"`
+	Limit       int              `form:"limit"`
+	Sort        string           `form:"sort"`
+	Order       string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
+	Status      enums.PostStatus `form:"status" binding:"oneof=0 1 2"`
+	Type        enums.PostType   `form:"type" binding:"oneof=0 1 2 3"`
+	SearchBy    string           `form:"searchBy" binding:"oneof=fullName email"`
+	SearchValue string           `form:"searchValue"`
 }
 
 func (r *GetAdminPostRequest) SetDefault() {

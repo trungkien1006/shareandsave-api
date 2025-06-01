@@ -676,6 +676,16 @@ paths:
         in: query
         name: order
         type: string
+      - description: Pending:0, Rejected:1, Approved:2
+        example: 0, 1, 2
+        in: query
+        name: status
+        type: string
+      - description: GiveAwayOldItem:0, FoundItem:1, SeekLoseItem:2, Other:3
+        example: 0, 1, 2, 3
+        in: query
+        name: type
+        type: string
       - description: 'Trường lọc (vd: email, fullName)'
         in: query
         name: searchBy

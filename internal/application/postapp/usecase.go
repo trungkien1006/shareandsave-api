@@ -3,7 +3,6 @@ package postapp
 import (
 	"context"
 	"errors"
-	"final_project/internal/domain/filter"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
@@ -30,7 +29,7 @@ func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermis
 	}
 }
 
-func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter filter.FilterRequest) (int, error) {
+func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter post.PostFilterRequest) (int, error) {
 	totalPage, err := uc.repo.AdminGetAll(ctx, posts, filter)
 
 	if err != nil {
