@@ -20,9 +20,9 @@ type GetAdminPostRequest struct {
 	Limit       int              `form:"limit"`
 	Sort        string           `form:"sort"`
 	Order       string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	Status      enums.PostStatus `form:"status" binding:"oneof=0 1 2"`
-	Type        enums.PostType   `form:"type" binding:"oneof=0 1 2 3"`
-	SearchBy    string           `form:"searchBy" binding:"oneof=fullName email"`
+	Status      enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2"`
+	Type        enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3"`
+	SearchBy    string           `form:"searchBy" binding:"omitempty,oneof=fullName email"`
 	SearchValue string           `form:"searchValue"`
 }
 
