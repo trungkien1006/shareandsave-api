@@ -7,15 +7,17 @@ import (
 )
 
 type OldItemsInPost struct {
-	ItemID   uint
-	Quantity int
+	ItemID       uint
+	CategoryName string
+	Quantity     int
 }
 
 type NewItemsInPost struct {
-	ItemID     uint
-	CategoryID uint
-	Name       string
-	Quantity   int
+	ItemID       uint
+	CategoryID   uint
+	CategoryName string
+	Name         string
+	Quantity     int
 }
 
 type CreatePost struct {
@@ -50,11 +52,12 @@ type Post struct {
 }
 
 type DetailPostItem struct {
-	ItemID     uint
-	CategoryID uint
-	Image      string
-	Name       string
-	Quantity   int
+	ItemID       uint
+	CategoryID   uint
+	CategoryName string
+	Image        string
+	Name         string
+	Quantity     int
 }
 
 type DetailPost struct {

@@ -277,6 +277,8 @@ definitions:
     properties:
       categoryID:
         type: integer
+      categoryName:
+        type: string
       image:
         type: string
       itemID:
@@ -337,6 +339,8 @@ definitions:
     properties:
       categoryID:
         type: integer
+      categoryName:
+        type: string
       name:
         type: string
       quantity:
@@ -344,16 +348,20 @@ definitions:
         type: integer
     required:
     - categoryID
+    - categoryName
     - name
     type: object
   postdto.OldItemsPost:
     properties:
+      categoryName:
+        type: string
       itemID:
         type: integer
       quantity:
         minimum: 1
         type: integer
     required:
+    - categoryName
     - itemID
     type: object
   postdto.UpdatePostRequest:

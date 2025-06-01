@@ -5,14 +5,16 @@ import (
 )
 
 type OldItemsPost struct {
-	ItemID   uint `json:"itemID" binding:"required"`
-	Quantity int  `json:"quantity" binding:"min=1"`
+	ItemID       uint   `json:"itemID" binding:"required"`
+	CategoryName string `json:"categoryName" binding:"required"`
+	Quantity     int    `json:"quantity" binding:"min=1"`
 }
 
 type NewItemsPost struct {
-	CategoryID uint   `json:"categoryID" binding:"required"`
-	Name       string `json:"name" binding:"required"`
-	Quantity   int    `json:"quantity" binding:"min=1"`
+	CategoryID   uint   `json:"categoryID" binding:"required"`
+	CategoryName string `json:"categoryName" binding:"required"`
+	Name         string `json:"name" binding:"required"`
+	Quantity     int    `json:"quantity" binding:"min=1"`
 }
 
 type CreatePostRequest struct {

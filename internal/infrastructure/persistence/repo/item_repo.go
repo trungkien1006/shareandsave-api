@@ -38,10 +38,17 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 		dbItems      []dbmodel.Item
 	)
 
-	query = r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{})
+	query = r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Item{})
+		// Table("item as item").
+		// Joins("JOIN category AS author ON category.id = item.author_id")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
-		query = query.Where(strcase.ToSnake(req.SearchBy)+" LIKE ?", "%"+req.SearchValue+"%")
+		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+
+		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {

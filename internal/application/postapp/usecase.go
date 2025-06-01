@@ -83,6 +83,8 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 	}
 
 	for _, oldItem := range post.OldItems {
+		post.Tag = append(post.Tag, oldItem.CategoryName)
+
 		isExisted, err := uc.itemRepo.IsExisted(ctx, oldItem.ItemID)
 		if err != nil {
 			return err
@@ -94,6 +96,8 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 	}
 
 	for key, newItem := range post.NewItems {
+		post.Tag = append(post.Tag, newItem.CategoryName)
+
 		item := item.Item{
 			CategoryID: newItem.CategoryID,
 			Name:       newItem.Name,

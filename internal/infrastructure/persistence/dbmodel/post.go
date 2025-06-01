@@ -12,13 +12,13 @@ type Post struct {
 	ID        uint `gorm:"primaryKey;autoIncrement"`
 	AuthorID  uint `gorm:"index"`
 	Type      int
-	Slug      string   `gorm:"unique;size:255"`
-	Title     string   `gorm:"size:255"`
-	Content   string   `gorm:"type:JSON"`
-	Info      string   `gorm:"type:JSON"`
-	Status    int8     `gorm:"type:TINYINT"`
-	Image     []string `gorm:"type:JSON"`
-	Tag       []string `gorm:"type:JSON"`
+	Slug      string      `gorm:"unique;size:255"`
+	Title     string      `gorm:"size:255"`
+	Content   string      `gorm:"type:JSON"`
+	Info      string      `gorm:"type:JSON"`
+	Status    int8        `gorm:"type:TINYINT"`
+	Image     StringArray `gorm:"type:JSON"`
+	Tag       StringArray `gorm:"type:JSON"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -32,6 +32,7 @@ type Post struct {
 
 // DB → Domain
 func AdminPostDBToDomain(dbPost Post) post.Post {
+
 	return post.Post{
 		ID:         dbPost.ID,
 		AuthorName: dbPost.Author.FullName,

@@ -1135,6 +1135,9 @@ const docTemplate = `{
                 "categoryID": {
                     "type": "integer"
                 },
+                "categoryName": {
+                    "type": "string"
+                },
                 "image": {
                     "type": "string"
                 },
@@ -1226,11 +1229,15 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "categoryID",
+                "categoryName",
                 "name"
             ],
             "properties": {
                 "categoryID": {
                     "type": "integer"
+                },
+                "categoryName": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1244,9 +1251,13 @@ const docTemplate = `{
         "postdto.OldItemsPost": {
             "type": "object",
             "required": [
+                "categoryName",
                 "itemID"
             ],
             "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
                 "itemID": {
                     "type": "integer"
                 },

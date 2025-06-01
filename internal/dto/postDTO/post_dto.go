@@ -25,11 +25,12 @@ type PostDTO struct {
 }
 
 type DetailPostItemDTO struct {
-	ItemID     uint   `json:"itemID"`
-	CategoryID uint   `json:"categoryID"`
-	Image      string `json:"image"`
-	Name       string `json:"name"`
-	Quantity   int    `json:"quantity"`
+	ItemID       uint   `json:"itemID"`
+	CategoryID   uint   `json:"categoryID"`
+	CategoryName string `json:"categoryName"`
+	Image        string `json:"image"`
+	Name         string `json:"name"`
+	Quantity     int    `json:"quantity"`
 }
 
 type InterestDTO struct {
