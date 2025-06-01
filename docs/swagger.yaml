@@ -1,5 +1,28 @@
 basePath: /api/v1
 definitions:
+  categorydto.CategoryDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  categorydto.GetCategoryResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/categorydto.CategoryDTO'
+        type: array
+    type: object
+  categorydto.GetCategoryResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/categorydto.GetCategoryResponse'
+      message:
+        type: string
+    type: object
   enums.AppError:
     properties:
       code:
@@ -57,10 +80,10 @@ definitions:
     - 3
     type: integer
     x-enum-comments:
-      UserStatusActive: "3"
-      UserStatusAll: "1"
-      UserStatusInactive: "2"
-      UserStatusLocked: "4"
+      UserStatusActive: "2"
+      UserStatusAll: "0"
+      UserStatusInactive: "1"
+      UserStatusLocked: "3"
     x-enum-varnames:
     - UserStatusAll
     - UserStatusInactive
@@ -549,6 +572,29 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra tất cả danh mục đồ đạc
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categorydto.GetCategoryResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get categories
+      tags:
+      - categories
   /items:
     get:
       consumes:

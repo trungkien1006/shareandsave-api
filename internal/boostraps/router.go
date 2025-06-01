@@ -1,6 +1,7 @@
 package boostraps
 
 import (
+	"final_project/internal/application/categoryapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
 	"final_project/internal/application/userapp"
@@ -23,7 +24,11 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
+
+	//category dependency
 	categoryRepo := persistence.NewCategoryRepoDB(db)
+	categoryUC := categoryapp.NewUseCase(categoryRepo)
+	categoryHandler := handler.NewCategoryHandler(categoryUC)
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
@@ -90,6 +95,9 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 		v1.GET("/posts/:postID", postHandler.GetPostByID)
 		v1.POST("/posts", postHandler.CreatePost)
 		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
+
+		//category API
+		v1.GET("/categories", categoryHandler.GetAll)
 	}
 
 	// r.Static("/public/images", "./public/images")

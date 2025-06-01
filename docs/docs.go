@@ -22,6 +22,41 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/categories": {
+            "get": {
+                "description": "API lấy ra tất cả danh mục đồ đạc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/categorydto.GetCategoryResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -734,6 +769,42 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "categorydto.CategoryDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "categorydto.GetCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/categorydto.CategoryDTO"
+                    }
+                }
+            }
+        },
+        "categorydto.GetCategoryResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/categorydto.GetCategoryResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "enums.AppError": {
             "type": "object",
             "properties": {
@@ -805,10 +876,10 @@ const docTemplate = `{
                 3
             ],
             "x-enum-comments": {
-                "UserStatusActive": "3",
-                "UserStatusAll": "1",
-                "UserStatusInactive": "2",
-                "UserStatusLocked": "4"
+                "UserStatusActive": "2",
+                "UserStatusAll": "0",
+                "UserStatusInactive": "1",
+                "UserStatusLocked": "3"
             },
             "x-enum-varnames": [
                 "UserStatusAll",
