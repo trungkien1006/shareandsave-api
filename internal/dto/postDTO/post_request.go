@@ -4,15 +4,28 @@ import (
 	"final_project/internal/pkg/enums"
 )
 
+type OldItemsPost struct {
+	ItemID   uint `json:"itemID" binding:"required"`
+	Quantity int  `json:"quantity" binding:"min=1"`
+}
+
+type NewItemsPost struct {
+	CategoryID uint   `json:"categoryID" binding:"required"`
+	Name       string `json:"name" binding:"required"`
+	Quantity   int    `json:"quantity" binding:"min=1"`
+}
+
 type CreatePostRequest struct {
-	Email       string         `json:"email" example:"john@gmail.com"`
-	FullName    string         `json:"fullName" example:"John Doe"`
-	PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
-	AuthorID    uint           `json:"authorID"`
-	Type        enums.PostType `json:"type" binding:"oneof=1 2 3 4" example:"1"`
-	Title       string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
-	Info        string         `json:"info"`
-	Images      []string       `json:"images" example:"strbase64, strbase64"`
+	// Email       string         `json:"email" example:"john@gmail.com"`
+	// FullName    string         `json:"fullName" example:"John Doe"`
+	// PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
+	AuthorID uint           `json:"authorID"`
+	Type     enums.PostType `json:"type" binding:"oneof=1 2 3 4" example:"1"`
+	Title    string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
+	Info     string         `json:"info"`
+	Images   []string       `json:"images" example:"strbase64, strbase64"`
+	OldItems []OldItemsPost `json:"oldItems"`
+	NewItems []NewItemsPost `json:"newItems"`
 }
 
 type GetAdminPostRequest struct {

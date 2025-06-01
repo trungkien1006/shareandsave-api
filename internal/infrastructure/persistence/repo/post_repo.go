@@ -77,10 +77,31 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
 
 	for _, value := range dbPost {
-		*posts = append(*posts, dbmodel.PostDBToPostDomain(value))
+		*posts = append(*posts, dbmodel.AdminPostDBToDomain(value))
 	}
 
 	return totalPage, nil
+}
+
+func (r *PostRepoDB) GetDetailByID(ctx context.Context, post *post.DetailPost, postID uint) error {
+	var dbPost dbmodel.Post
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Where("id = ?", postID).
+		Preload("Author").
+		Preload("Interests").
+		Preload("Interests.User").
+		Preload("PostItem").
+		Preload("PostItem.Item").
+		Find(&dbPost).Error; err != nil {
+		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
+	}
+
+	*post = dbmodel.DetailPostDBToDomain(dbPost)
+
+	return nil
 }
 
 func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) error {
@@ -95,25 +116,29 @@ func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) 
 		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
 	}
 
-	*post = dbmodel.PostDBToPostDomain(dbPost)
+	*post = dbmodel.AdminPostDBToDomain(dbPost)
 
 	return nil
 }
 
 func (r *PostRepoDB) Save(ctx context.Context, post *post.CreatePost) error {
+	tx := r.db.Begin()
+
 	dbPost := dbmodel.CreatePostDomainToDB(*post)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Create(&dbPost).Error; err != nil {
+	if err := tx.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Create(&dbPost).Error; err != nil {
 		return errors.New("Lỗi khi tạo bài đăng: " + err.Error())
 	}
 
-	*post = dbmodel.PostDBToCreatePostDomain(dbPost)
+	if err := tx.Commit().Error; err != nil {
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
 
 	return nil
 }
 
 func (r *PostRepoDB) Update(ctx context.Context, post *post.Post) error {
-	dbPost := dbmodel.PostDomainToDB(*post)
+	dbPost := dbmodel.AdminPostDomainToDB(*post)
 
 	if err := r.db.Debug().
 		WithContext(ctx).

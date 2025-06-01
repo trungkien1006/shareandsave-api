@@ -23,3 +23,37 @@ type PostDTO struct {
 	Status     int8     `json:"status"`
 	Images     []string `json:"images"`
 }
+
+type DetailPostItemDTO struct {
+	ItemID     uint
+	CategoryID uint
+	Image      string
+	Name       string
+	Quantity   int
+}
+
+type InterestDTO struct {
+	ID         uint
+	UserID     uint
+	UserName   string
+	UserAvatar string
+	PostID     uint
+	Status     int
+}
+
+type DetailPostDTO struct {
+	ID         uint
+	AuthorID   uint
+	AuthorName string
+	Type       int
+	Slug       string
+	Title      string
+	Content    string
+	Info       string
+	Status     int8
+	Images     []string
+	CreatedAt  time.Time
+	Tag        []string
+	Interest   []InterestDTO
+	Items      []DetailPostItemDTO
+}

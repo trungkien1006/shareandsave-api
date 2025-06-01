@@ -187,13 +187,11 @@ definitions:
   postdto.CreatePostRequest:
     properties:
       authorID:
+        description: |-
+          Email       string         `json:"email" example:"john@gmail.com"`
+          FullName    string         `json:"fullName" example:"John Doe"`
+          PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
         type: integer
-      email:
-        example: john@gmail.com
-        type: string
-      fullName:
-        example: John Doe
-        type: string
       images:
         example:
         - strbase64
@@ -203,10 +201,14 @@ definitions:
         type: array
       info:
         type: string
-      phoneNumber:
-        description: 'true: anonymous, false: not anonymous'
-        example: "0123456789"
-        type: string
+      newItems:
+        items:
+          $ref: '#/definitions/postdto.NewItemsPost'
+        type: array
+      oldItems:
+        items:
+          $ref: '#/definitions/postdto.OldItemsPost'
+        type: array
       title:
         example: Tôi muốn tìm đồ thất lạc
         type: string
@@ -222,23 +224,65 @@ definitions:
     required:
     - title
     type: object
-  postdto.CreatePostResponse:
-    properties:
-      JWT:
-        type: string
-      post:
-        $ref: '#/definitions/postdto.PostDTO'
-      user:
-        $ref: '#/definitions/userdto.CommonUserDTO'
-    type: object
   postdto.CreatePostResponseWrapper:
     properties:
       code:
         type: integer
-      data:
-        $ref: '#/definitions/postdto.CreatePostResponse'
+      data: {}
       message:
         type: string
+    type: object
+  postdto.DetailPostDTO:
+    properties:
+      authorID:
+        type: integer
+      authorName:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      info:
+        type: string
+      interest:
+        items:
+          $ref: '#/definitions/postdto.InterestDTO'
+        type: array
+      items:
+        items:
+          $ref: '#/definitions/postdto.DetailPostItemDTO'
+        type: array
+      slug:
+        type: string
+      status:
+        type: integer
+      tag:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: integer
+    type: object
+  postdto.DetailPostItemDTO:
+    properties:
+      categoryID:
+        type: integer
+      image:
+        type: string
+      itemID:
+        type: integer
+      name:
+        type: string
+      quantity:
+        type: integer
     type: object
   postdto.GetAdminPostResponse:
     properties:
@@ -258,26 +302,57 @@ definitions:
       message:
         type: string
     type: object
-  postdto.PostDTO:
+  postdto.GetDetailPostResponse:
     properties:
-      authorName:
+      post:
+        $ref: '#/definitions/postdto.DetailPostDTO'
+    type: object
+  postdto.GetDetailPostResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/postdto.GetDetailPostResponse'
+      message:
         type: string
-      content:
-        type: string
+    type: object
+  postdto.InterestDTO:
+    properties:
       id:
         type: integer
-      images:
-        items:
-          type: string
-        type: array
-      slug:
-        type: string
+      postID:
+        type: integer
       status:
         type: integer
-      title:
+      userAvatar:
         type: string
-      type:
+      userID:
         type: integer
+      userName:
+        type: string
+    type: object
+  postdto.NewItemsPost:
+    properties:
+      categoryID:
+        type: integer
+      name:
+        type: string
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - categoryID
+    - name
+    type: object
+  postdto.OldItemsPost:
+    properties:
+      itemID:
+        type: integer
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - itemID
     type: object
   postdto.UpdatePostRequest:
     properties:
@@ -308,31 +383,6 @@ definitions:
       data: {}
       message:
         type: string
-    type: object
-  userdto.CommonUserDTO:
-    properties:
-      address:
-        type: string
-      avatar:
-        type: string
-      email:
-        type: string
-      fullName:
-        type: string
-      goodPoint:
-        type: integer
-      id:
-        type: integer
-      major:
-        type: string
-      phoneNumber:
-        type: string
-      roleID:
-        type: integer
-      roleName:
-        type: string
-      status:
-        type: integer
     type: object
   userdto.CreateUserRequest:
     properties:
@@ -753,6 +803,34 @@ paths:
       tags:
       - posts
   /posts/{postID}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy bài viết theo id
+      parameters:
+      - description: ID post
+        in: path
+        name: postID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postdto.GetDetailPostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get detail post
+      tags:
+      - posts
     patch:
       consumes:
       - application/json

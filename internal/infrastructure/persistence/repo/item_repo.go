@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
 	"final_project/internal/infrastructure/persistence/dbmodel"
@@ -21,7 +22,13 @@ func NewItemRepoDB(db *gorm.DB) *ItemRepoDB {
 func (r *ItemRepoDB) Save(ctx context.Context, i *item.Item) error {
 	dbItem := dbmodel.ItemDomainToDB(*i)
 
-	return r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Create(&dbItem).Error
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Create(&dbItem).Error; err != nil {
+		return errors.New("Có lỗi khi thêm item mới: " + err.Error())
+	}
+
+	*i = dbmodel.ItemDBToDomain(dbItem)
+
+	return nil
 }
 
 func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.FilterRequest) (int, error) {
@@ -68,6 +75,16 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 	}
 
 	return nil
+}
+
+func (r *ItemRepoDB) IsExisted(ctx context.Context, itemID uint) (bool, error) {
+	var count int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("id = ?", itemID).Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra item tồn tại: " + err.Error())
+	}
+
+	return count > 0, nil
 }
 
 func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {

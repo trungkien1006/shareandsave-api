@@ -414,6 +414,48 @@ const docTemplate = `{
             }
         },
         "/posts/{postID}": {
+            "get": {
+                "description": "API lấy bài viết theo id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get detail post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID post",
+                        "name": "postID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.GetDetailPostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "API cập nhật bài viết kết hợp với patch",
                 "consumes": [
@@ -965,15 +1007,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "authorID": {
+                    "description": "Email       string         ` + "`" + `json:\"email\" example:\"john@gmail.com\"` + "`" + `\nFullName    string         ` + "`" + `json:\"fullName\" example:\"John Doe\"` + "`" + `\nPhoneNumber string         ` + "`" + `json:\"phoneNumber\" example:\"0123456789\"` + "`" + ` // true: anonymous, false: not anonymous",
                     "type": "integer"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "john@gmail.com"
-                },
-                "fullName": {
-                    "type": "string",
-                    "example": "John Doe"
                 },
                 "images": {
                     "type": "array",
@@ -988,10 +1023,17 @@ const docTemplate = `{
                 "info": {
                     "type": "string"
                 },
-                "phoneNumber": {
-                    "description": "true: anonymous, false: not anonymous",
-                    "type": "string",
-                    "example": "0123456789"
+                "newItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.NewItemsPost"
+                    }
+                },
+                "oldItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.OldItemsPost"
+                    }
                 },
                 "title": {
                     "type": "string",
@@ -1013,31 +1055,94 @@ const docTemplate = `{
                 }
             }
         },
-        "postdto.CreatePostResponse": {
-            "type": "object",
-            "properties": {
-                "JWT": {
-                    "type": "string"
-                },
-                "post": {
-                    "$ref": "#/definitions/postdto.PostDTO"
-                },
-                "user": {
-                    "$ref": "#/definitions/userdto.CommonUserDTO"
-                }
-            }
-        },
         "postdto.CreatePostResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "data": {
-                    "$ref": "#/definitions/postdto.CreatePostResponse"
-                },
+                "data": {},
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "postdto.DetailPostDTO": {
+            "type": "object",
+            "properties": {
+                "authorID": {
+                    "type": "integer"
+                },
+                "authorName": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "info": {
+                    "type": "string"
+                },
+                "interest": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.InterestDTO"
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.DetailPostItemDTO"
+                    }
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "postdto.DetailPostItemDTO": {
+            "type": "object",
+            "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },
@@ -1069,35 +1174,82 @@ const docTemplate = `{
                 }
             }
         },
-        "postdto.PostDTO": {
+        "postdto.GetDetailPostResponse": {
             "type": "object",
             "properties": {
-                "authorName": {
-                    "type": "string"
+                "post": {
+                    "$ref": "#/definitions/postdto.DetailPostDTO"
+                }
+            }
+        },
+        "postdto.GetDetailPostResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
                 },
-                "content": {
-                    "type": "string"
+                "data": {
+                    "$ref": "#/definitions/postdto.GetDetailPostResponse"
                 },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "postdto.InterestDTO": {
+            "type": "object",
+            "properties": {
                 "id": {
                     "type": "integer"
                 },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "slug": {
-                    "type": "string"
+                "postID": {
+                    "type": "integer"
                 },
                 "status": {
                     "type": "integer"
                 },
-                "title": {
+                "userAvatar": {
                     "type": "string"
                 },
-                "type": {
+                "userID": {
                     "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "postdto.NewItemsPost": {
+            "type": "object",
+            "required": [
+                "categoryID",
+                "name"
+            ],
+            "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "postdto.OldItemsPost": {
+            "type": "object",
+            "required": [
+                "itemID"
+            ],
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },
@@ -1144,44 +1296,6 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
-                }
-            }
-        },
-        "userdto.CommonUserDTO": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "fullName": {
-                    "type": "string"
-                },
-                "goodPoint": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "major": {
-                    "type": "string"
-                },
-                "phoneNumber": {
-                    "type": "string"
-                },
-                "roleID": {
-                    "type": "integer"
-                },
-                "roleName": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
                 }
             }
         },

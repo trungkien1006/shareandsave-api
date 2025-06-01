@@ -1,22 +1,38 @@
 package post
 
-import "time"
+import (
+	"final_project/internal/domain/interest"
+	"final_project/internal/domain/item"
+	"time"
+)
+
+type OldItemsInPost struct {
+	ItemID   uint
+	Quantity int
+}
+
+type NewItemsInPost struct {
+	ItemID     uint
+	CategoryID uint
+	Name       string
+	Quantity   int
+}
 
 type CreatePost struct {
-	ID          uint
-	AuthorID    uint
-	AuthorName  string
-	FullName    string
-	Email       string
-	PhoneNumber string
-	Type        int
-	Slug        string
-	Title       string
-	Content     string
-	Info        string
-	Status      int8
-	Images      []string
-	Tag         []string
+	ID         uint
+	AuthorID   uint
+	AuthorName string
+	Type       int
+	Slug       string
+	Title      string
+	Content    string
+	Info       string
+	Status     int8
+	Images     []string
+	Tag        []string
+	Items      []item.Item
+	OldItems   []OldItemsInPost
+	NewItems   []NewItemsInPost
 }
 
 type Post struct {
@@ -31,6 +47,31 @@ type Post struct {
 	Status     int8
 	Images     []string
 	CreatedAt  time.Time
+}
+
+type DetailPostItem struct {
+	ItemID     uint
+	CategoryID uint
+	Image      string
+	Name       string
+	Quantity   int
+}
+
+type DetailPost struct {
+	ID         uint
+	AuthorID   uint
+	AuthorName string
+	Type       int
+	Slug       string
+	Title      string
+	Content    string
+	Info       string
+	Status     int8
+	Images     []string
+	CreatedAt  time.Time
+	Tag        []string
+	Interest   []interest.Interest
+	Items      []DetailPostItem
 }
 
 type PostFilterRequest struct {

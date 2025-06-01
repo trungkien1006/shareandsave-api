@@ -38,7 +38,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	//post dependency
 	postService := post.NewPostService()
 	postRepo := persistence.NewPostRepoDB(db)
-	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService)
+	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo)
 	postHandler := handler.NewPostHandler(postUC)
 
 	seed := seeder.NewSeeder(
@@ -87,6 +87,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 		//post API
 		v1.GET("/posts", postHandler.GetAllAdminPost)
+		v1.GET("/posts/:postID", postHandler.GetPostByID)
 		v1.POST("/posts", postHandler.CreatePost)
 		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
 	}

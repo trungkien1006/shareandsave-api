@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/interest"
 	"final_project/internal/domain/post"
 	"time"
 
@@ -30,7 +31,7 @@ type Post struct {
 }
 
 // DB → Domain
-func PostDBToPostDomain(dbPost Post) post.Post {
+func AdminPostDBToDomain(dbPost Post) post.Post {
 	return post.Post{
 		ID:         dbPost.ID,
 		AuthorName: dbPost.Author.FullName,
@@ -43,7 +44,61 @@ func PostDBToPostDomain(dbPost Post) post.Post {
 }
 
 // Domain → DB
-func PostDomainToDB(domainPost post.Post) Post {
+func DetailPostDBToDomain(db Post) post.DetailPost {
+	domainInterest := make([]interest.Interest, 0)
+	domainPostItem := make([]post.DetailPostItem, 0)
+	domainTag := make([]string, 0)
+	domainImage := make([]string, 0)
+
+	for _, value := range db.Interests {
+		domainInterest = append(domainInterest, interest.Interest{
+			ID:         value.ID,
+			UserID:     value.UserID,
+			UserName:   value.User.FullName,
+			UserAvatar: value.User.Avatar,
+			PostID:     value.PostID,
+			Status:     value.Status,
+		})
+	}
+
+	for _, value := range db.PostItem {
+		domainPostItem = append(domainPostItem, post.DetailPostItem{
+			ItemID:     value.ItemID,
+			CategoryID: value.Item.CategoryID,
+			Image:      value.Item.Image,
+			Name:       value.Item.Name,
+			Quantity:   value.Quantity,
+		})
+	}
+
+	for _, value := range db.Tag {
+		domainTag = append(domainTag, value)
+	}
+
+	for _, value := range db.Image {
+		domainImage = append(domainImage, value)
+	}
+
+	return post.DetailPost{
+		ID:         db.ID,
+		AuthorID:   db.AuthorID,
+		AuthorName: db.Author.FullName,
+		Type:       db.Type,
+		Slug:       db.Slug,
+		Title:      db.Title,
+		Content:    db.Content,
+		Info:       db.Info,
+		Status:     db.Status,
+		Images:     domainImage,
+		CreatedAt:  db.CreatedAt,
+		Tag:        domainTag,
+		Interest:   domainInterest,
+		Items:      domainPostItem,
+	}
+}
+
+// Domain → DB
+func AdminPostDomainToDB(domainPost post.Post) Post {
 	return Post{
 		ID:       domainPost.ID,
 		AuthorID: domainPost.AuthorID,
@@ -59,6 +114,22 @@ func PostDomainToDB(domainPost post.Post) Post {
 
 // Domain → DB
 func CreatePostDomainToDB(domainPost post.CreatePost) Post {
+	var postItems []PostItem
+
+	for _, value := range domainPost.OldItems {
+		postItems = append(postItems, PostItem{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
+	for _, value := range domainPost.NewItems {
+		postItems = append(postItems, PostItem{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
 	return Post{
 		ID:       domainPost.ID,
 		AuthorID: domainPost.AuthorID,
@@ -70,6 +141,7 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 		Status:   domainPost.Status,
 		Image:    domainPost.Images,
 		Tag:      domainPost.Tag,
+		PostItem: postItems,
 	}
 }
 

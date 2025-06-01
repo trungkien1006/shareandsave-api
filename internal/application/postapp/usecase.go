@@ -3,14 +3,12 @@ package postapp
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/item"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
-	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
-	"fmt"
-	"os"
 )
 
 type UseCase struct {
@@ -18,14 +16,16 @@ type UseCase struct {
 	service  *post.PostService
 	userRepo user.Repository
 	roleRepo rolepermission.Repository
+	itemRepo item.Repository
 }
 
-func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService) *UseCase {
+func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository) *UseCase {
 	return &UseCase{
 		repo:     r,
 		service:  service,
 		userRepo: userRepo,
 		roleRepo: roleRepo,
+		itemRepo: itemRepo,
 	}
 }
 
@@ -39,75 +39,25 @@ func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filt
 	return totalPage, nil
 }
 
-func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost, user *user.User) (string, error) {
-	//Nếu không truyền userID sẽ kiểm tra để tạo tài khoản cho người dùng
-	if post.AuthorID == 0 {
-		//Kiểm tra email đã tồn tại trong hệ thống chưa
-		userEmailExist, err := uc.userRepo.IsEmailExist(ctx, user.Email, 0)
-		if err != nil {
-			return "", err
-		}
-
-		//Kiểm tra sđt đã tồn tại trong hệ thống chưa
-		userPhoneNumberExist, err := uc.userRepo.IsPhoneNumberExist(ctx, user.PhoneNumber, 0)
-		if err != nil {
-			return "", err
-		}
-
-		//Nếu đã tồn tại cả email và số điện thoại thì lấy ID của người dùng, không thì trả lỗi nếu 1 trong 2 tồn tại rồi
-		if userEmailExist && userPhoneNumberExist {
-			if err := uc.userRepo.GetByEmailPhoneNumber(ctx, user, user.Email, user.PhoneNumber); err != nil {
-				return "", err
-			}
-
-			post.AuthorID = user.ID
-		} else if userEmailExist {
-			return "", errors.New("Đã có tài khoản sở hữu email này")
-		} else if userPhoneNumberExist {
-			return "", errors.New("Đã có tài khoản sở hữu số điện thoại này")
-		} else {
-			//Nếu chưa tồn tại cả email và số điện thoại thì tạo mới người dùng
-			strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
-			if err != nil {
-				return "", fmt.Errorf("Lỗi khi resize ảnh: %w", err)
-			}
-
-			clientRoleID, err := uc.roleRepo.GetRoleIDByName(ctx, "Client")
-			if err != nil {
-				return "", errors.New("Lỗi khi lấy ID chức vụ của client:" + err.Error())
-			}
-
-			user.RoleID = clientRoleID
-			user.RoleName = "Client"
-			user.Avatar = strBase64Image
-			user.Password = hash.HashEmailPhone(user.Email, user.PhoneNumber) // Mã hóa mật khẩu bằng email và số điện thoại
-			user.Address = ""
-			user.Status = int8(enums.UserStatusInactive)
-			user.GoodPoint = 0
-			user.ID = 0
-
-			if err := uc.userRepo.Save(ctx, user); err != nil {
-				return "", err
-			}
-
-			post.AuthorID = user.ID
-		}
-	} else {
-		if err := uc.userRepo.GetCommonUserByID(ctx, user, int(post.AuthorID)); err != nil {
-			return "", err
-		}
-
-		post.AuthorID = user.ID
+func (uc *UseCase) GetPostByID(ctx context.Context, post *post.DetailPost, postID uint) error {
+	if err := uc.repo.GetDetailByID(ctx, post, postID); err != nil {
+		return err
 	}
 
-	if post.AuthorID == 0 {
-		return "", errors.New("Email và số điện thoại thuộc sở hữu bởi 2 tài khoản khác nhau, bạn nên dùng cả email và số điện thoại mới")
+	return nil
+}
+
+func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error {
+	var author user.User
+
+	if err := uc.userRepo.GetCommonUserByID(ctx, &author, int(post.AuthorID)); err != nil {
+		return err
 	}
 
 	if post.Info != "" {
 		postContent, err := uc.service.GenerateContent(post.Info)
 		if err != nil {
-			return "", errors.New("Lỗi khi tạo content từ info:" + err.Error())
+			return errors.New("Lỗi khi tạo content từ info:" + err.Error())
 		}
 
 		post.Content = postContent
@@ -116,34 +66,51 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost, user *
 		post.Info = "{}"
 	}
 
+	post.AuthorID = author.ID
 	post.Status = int8(enums.PostStatusPending) // Mặc định trạng thái là Pending
 	post.Slug = uc.service.GenerateSlug(post.Title)
+	post.AuthorName = author.FullName
 
 	//resize ảnh
 	for index, image := range post.Images {
 		formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
 		if err != nil {
-			return "", errors.New("Không thể format ảnh:" + err.Error())
+			return errors.New("Không thể format ảnh:" + err.Error())
 		}
 
 		post.Images[index] = formatedImage
 	}
 
+	for _, oldItem := range post.OldItems {
+		isExisted, err := uc.itemRepo.IsExisted(ctx, oldItem.ItemID)
+		if err != nil {
+			return err
+		}
+
+		if !isExisted {
+			return err
+		}
+	}
+
+	for key, newItem := range post.NewItems {
+		item := item.Item{
+			CategoryID: newItem.CategoryID,
+			Name:       newItem.Name,
+		}
+
+		if err := uc.itemRepo.Save(ctx, &item); err != nil {
+			return err
+		}
+
+		post.NewItems[key].ItemID = item.ID
+	}
+
 	//create post
 	if err := uc.repo.Save(ctx, post); err != nil {
-		return "", err
+		return err
 	}
 
-	post.AuthorName = user.FullName
-
-	userJWTSub := helpers.UserJWTSubject{
-		Id:   user.ID,
-		Name: user.FullName,
-	}
-
-	JWT := helpers.GenerateToken(userJWTSub)
-
-	return JWT, nil
+	return nil
 }
 
 func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error {

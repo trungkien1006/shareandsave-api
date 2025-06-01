@@ -3,9 +3,7 @@ package handler
 import (
 	"final_project/internal/application/postapp"
 	"final_project/internal/domain/post"
-	"final_project/internal/domain/user"
 	postdto "final_project/internal/dto/postDTO"
-	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
 	"strconv"
@@ -89,6 +87,50 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	})
 }
 
+// @Summary Get detail post
+// @Description API lấy bài viết theo id
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param postID path int true "ID post"
+// @Success 200 {object} postdto.GetDetailPostResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 409 {object} enums.AppError
+// @Router /posts/{postID} [get]
+func (h *PostHandler) GetPostByID(c *gin.Context) {
+	id := c.Param("postID")
+
+	if id == "0" {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, "postID phải khác 0", enums.ErrValidate),
+		)
+		return
+	}
+
+	var postDetail post.DetailPost
+
+	postID, _ := strconv.Atoi(id)
+
+	if err := h.uc.GetPostByID(c.Request.Context(), &postDetail, uint(postID)); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_POST_NOT_FOUND"),
+		)
+		return
+	}
+
+	detailPostDTO := postdto.DetailPostDomainToDTO(postDetail)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get detail post successfully",
+		"data": postdto.GetDetailPostResponse{
+			Post: detailPostDTO,
+		},
+	})
+}
+
 // @Summary Create a new post
 // @Description API tạo mới một post và trả về thông tin post + user + JWT
 // @Tags posts
@@ -103,7 +145,6 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	var (
 		req        postdto.CreatePostRequest
 		domainPost post.CreatePost
-		domainUser user.User
 	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -116,11 +157,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	domainPost = postdto.CreateDTOToDomain(req)
 
-	domainUser.FullName = domainPost.FullName
-	domainUser.Email = domainPost.Email
-	domainUser.PhoneNumber = domainPost.PhoneNumber
-
-	JWT, err := h.uc.CreatePost(c.Request.Context(), &domainPost, &domainUser)
+	err := h.uc.CreatePost(c.Request.Context(), &domainPost)
 
 	if err != nil {
 		c.JSON(
@@ -131,17 +168,10 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	postDTORes := postdto.CreatePostDomainToDTO(domainPost)
-	userDTORes := userdto.DomainCommonUserToDTO(domainUser)
-
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Created post successfully",
-		"data": postdto.CreatePostResponse{
-			Post: postDTORes,
-			User: userDTORes,
-			JWT:  JWT,
-		},
+		"data":    gin.H{},
 	})
 }
 
