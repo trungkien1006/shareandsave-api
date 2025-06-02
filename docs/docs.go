@@ -799,10 +799,19 @@ const docTemplate = `{
         "authdto.LoginRequest": {
             "type": "object",
             "required": [
+                "device",
                 "email",
                 "password"
             ],
             "properties": {
+                "device": {
+                    "type": "string",
+                    "enum": [
+                        "mobile",
+                        "web"
+                    ],
+                    "example": "web"
+                },
                 "email": {
                     "type": "string",
                     "example": "user@example.com"
@@ -1124,10 +1133,6 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
-                "authorID": {
-                    "description": "Email       string         ` + "`" + `json:\"email\" example:\"john@gmail.com\"` + "`" + `\nFullName    string         ` + "`" + `json:\"fullName\" example:\"John Doe\"` + "`" + `\nPhoneNumber string         ` + "`" + `json:\"phoneNumber\" example:\"0123456789\"` + "`" + ` // true: anonymous, false: not anonymous",
-                    "type": "integer"
-                },
                 "images": {
                     "type": "array",
                     "items": {
@@ -1158,6 +1163,7 @@ const docTemplate = `{
                     "example": "Tôi muốn tìm đồ thất lạc"
                 },
                 "type": {
+                    "description": "Email       string         ` + "`" + `json:\"email\" example:\"john@gmail.com\"` + "`" + `\nFullName    string         ` + "`" + `json:\"fullName\" example:\"John Doe\"` + "`" + `\nPhoneNumber string         ` + "`" + `json:\"phoneNumber\" example:\"0123456789\"` + "`" + ` // true: anonymous, false: not anonymous",
                     "enum": [
                         1,
                         2,

@@ -156,6 +156,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	}
 
 	domainPost = postdto.CreateDTOToDomain(req)
+	domainPost.AuthorID = 1
 
 	err := h.uc.CreatePost(c.Request.Context(), &domainPost)
 

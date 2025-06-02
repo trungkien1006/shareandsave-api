@@ -2,6 +2,12 @@ basePath: /api/v1
 definitions:
   authdto.LoginRequest:
     properties:
+      device:
+        enum:
+        - mobile
+        - web
+        example: web
+        type: string
       email:
         example: user@example.com
         type: string
@@ -9,6 +15,7 @@ definitions:
         example: Abc12345
         type: string
     required:
+    - device
     - email
     - password
     type: object
@@ -223,12 +230,6 @@ definitions:
     type: object
   postdto.CreatePostRequest:
     properties:
-      authorID:
-        description: |-
-          Email       string         `json:"email" example:"john@gmail.com"`
-          FullName    string         `json:"fullName" example:"John Doe"`
-          PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
-        type: integer
       images:
         example:
         - strbase64
@@ -252,6 +253,10 @@ definitions:
       type:
         allOf:
         - $ref: '#/definitions/enums.PostType'
+        description: |-
+          Email       string         `json:"email" example:"john@gmail.com"`
+          FullName    string         `json:"fullName" example:"John Doe"`
+          PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
         enum:
         - 1
         - 2

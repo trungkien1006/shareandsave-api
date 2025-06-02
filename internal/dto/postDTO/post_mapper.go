@@ -75,7 +75,6 @@ func CreateDTOToDomain(createPostDTO CreatePostRequest) post.CreatePost {
 	}
 
 	return post.CreatePost{
-		AuthorID: createPostDTO.AuthorID,
 		// FullName:    createPostDTO.FullName,
 		// Email:       createPostDTO.Email,
 		// PhoneNumber: createPostDTO.PhoneNumber,
@@ -103,7 +102,6 @@ func CreateDomainToDTO(domain post.CreatePost) CreatePostRequest {
 	}
 
 	return CreatePostRequest{
-		AuthorID: domain.AuthorID,
 		// FullName:    domain.FullName,
 		// Email:       domain.Email,
 		// PhoneNumber: domain.PhoneNumber,
