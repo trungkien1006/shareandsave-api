@@ -12,6 +12,7 @@ import (
 	"final_project/internal/infrastructure/redisrepo"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
+	middlewares "final_project/internal/interface/http/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -84,9 +85,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		c.Next()
 	})
 
-	url := ginSwagger.URL("/swagger/doc.json")
+	// url := ginSwagger.URL("/swagger/doc.json")
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.Group("/api/v1")
 	{
@@ -111,7 +112,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
 
 		//category API
-		v1.GET("/categories", categoryHandler.GetAll)
+		v1.GET("/categories", middlewares.AuthGuard, categoryHandler.GetAll)
 
 		//auth API
 		v1.POST("/login", authHandler.Login)

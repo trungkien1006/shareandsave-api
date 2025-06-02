@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -90,7 +92,7 @@ func GenerateToken(user UserJWTSubject) string {
 	return token
 }
 
-func CheckJWT(jwt string) error {
+func CheckJWT(ctx context.Context, jwt string) error {
 	var secretKey = os.Getenv("SECRET_KEY")
 
 	var jwtElement = strings.Split(strings.Replace(jwt, "Bearer", "", -1), ".")
@@ -134,9 +136,21 @@ func CheckJWT(jwt string) error {
 	currentTime := GetCurrentTimeVN()
 
 	if checkTime := currentTime.Before(exp); !checkTime {
-		return errors.New("token expired")
+		return errors.New("Phiên đăng nhập hết hạn")
 	}
 	// End check exp token
+
+	// Kiểm tra Token đúng version
+	currentVersionStr, err := Redis.Get(ctx, "user:"+strconv.Itoa(int(payload.Sub.Id))+":"+payload.Sub.Device).Result()
+	if err != nil {
+		return errors.New("Có lỗi khi kiểm tra version JWT: " + err.Error())
+	}
+
+	currentVersion, _ := strconv.Atoi(currentVersionStr)
+
+	if uint(currentVersion) != payload.Sub.Version {
+		return errors.New("Có ai đó đã đăng nhập trên cùng loại thiết bị, hoặc đổi mật khẩu")
+	}
 
 	return nil
 }

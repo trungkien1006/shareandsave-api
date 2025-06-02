@@ -27,6 +27,9 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 // @Accept json
 // @Produce json
 // @Param login body authdto.LoginRequest true "Dữ liệu đăng nhập"
+// @Success 200 {object} authdto.LoginResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
 // @Router /login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var (

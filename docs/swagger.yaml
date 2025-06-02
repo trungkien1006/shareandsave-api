@@ -39,6 +39,29 @@ definitions:
       message:
         type: string
     type: object
+  categorydto.CategoryDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  categorydto.GetCategoryResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/categorydto.CategoryDTO'
+        type: array
+    type: object
+  categorydto.GetCategoryResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/categorydto.GetCategoryResponse'
+      message:
+        type: string
+    type: object
   enums.AppError:
     properties:
       code:
@@ -611,6 +634,31 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra tất cả danh mục đồ đạc
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categorydto.GetCategoryResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get categories
+      tags:
+      - categories
   /items:
     get:
       consumes:
@@ -812,9 +860,9 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Đăng nhập
+      summary: Login
       tags:
-      - Auth
+      - auth
   /posts:
     get:
       consumes:
@@ -1117,4 +1165,9 @@ paths:
       summary: Update user
       tags:
       - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

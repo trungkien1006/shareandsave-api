@@ -32,16 +32,30 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 	}
 
 	JWTSubject := auth.JWTSubject{
-		Id:      domainUser.ID,
-		Device:  domainAuthLogin.Device,
-		Version: 1,
+		Id:     domainUser.ID,
+		Device: domainAuthLogin.Device,
+	}
+
+	currentVersionStr, err := uc.redisRepo.GetFromRedis(ctx, "user:"+strconv.Itoa(int(domainUser.ID))+":"+domainAuthLogin.Device)
+
+	if err == nil && currentVersionStr != "" {
+		currentVersion, err := strconv.Atoi(currentVersionStr)
+		if err != nil {
+			return errors.New("Có lỗi khi chuyển kiểu string sang int: " + err.Error())
+		}
+
+		JWTSubject.Version = uint(currentVersion + 1)
+	} else if err != nil {
+		return err
+	} else {
+		JWTSubject.Version = 1
 	}
 
 	*JWT = uc.service.GenerateToken(JWTSubject)
 	*refreshToken = uc.service.GenerateRefreshToken(JWTSubject)
 
 	// Lưu dữ liệu vào redis dưới dạng key = user:{userID}:{device} value = "1"
-	if err := uc.redisRepo.InsertToRedis(ctx, "user:"+strconv.Itoa(int(domainUser.ID))+":"+domainAuthLogin.Device, "1", 30*24*time.Hour); err != nil {
+	if err := uc.redisRepo.InsertToRedis(ctx, "user:"+strconv.Itoa(int(domainUser.ID))+":"+domainAuthLogin.Device, strconv.Itoa(int(JWTSubject.Version)), 30*24*time.Hour); err != nil {
 		return err
 	}
 

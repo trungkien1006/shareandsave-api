@@ -18,17 +18,16 @@ func NewCategoryHandler(uc *categoryapp.UseCase) *CategoryHandler {
 	return &CategoryHandler{uc: uc}
 }
 
-// Login godoc
-// @Summary Đăng nhập
-// @Description Đăng nhập người dùng với email và mật khẩu mạnh
-// @Tags Auth
+// @Summary Get categories
+// @Description API lấy ra tất cả danh mục đồ đạc
+// @Security BearerAuth
+// @Tags categories
 // @Accept json
 // @Produce json
-// @Param login body authdto.LoginRequest true "Dữ liệu đăng nhập"
-// @Success 200 {object} authdto.LoginResponseWrapper
+// @Success 200 {object} categorydto.GetCategoryResponseWrapper
 // @Failure 400 {object} enums.AppError
-// @Failure 401 {object} enums.AppError
-// @Router /login [post]
+// @Failure 404 {object} enums.AppError
+// @Router /categories [get]
 func (h *CategoryHandler) GetAll(c *gin.Context) {
 	var (
 		categories    []category.Category

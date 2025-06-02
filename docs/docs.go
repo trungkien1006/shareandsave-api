@@ -22,6 +22,46 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/categories": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy ra tất cả danh mục đồ đạc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/categorydto.GetCategoryResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -292,9 +332,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "auth"
                 ],
-                "summary": "Đăng nhập",
+                "summary": "Login",
                 "parameters": [
                     {
                         "description": "Dữ liệu đăng nhập",
@@ -829,6 +869,42 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/authdto.LoginResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "categorydto.CategoryDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "categorydto.GetCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/categorydto.CategoryDTO"
+                    }
+                }
+            }
+        },
+        "categorydto.GetCategoryResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/categorydto.GetCategoryResponse"
                 },
                 "message": {
                     "type": "string"
@@ -1666,6 +1742,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

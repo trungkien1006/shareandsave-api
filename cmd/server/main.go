@@ -2,6 +2,7 @@ package main
 
 import (
 	"final_project/internal/boostraps"
+	"final_project/internal/pkg/helpers"
 	"final_project/internal/shared/validator"
 	"fmt"
 	"net"
@@ -13,6 +14,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @BasePath        /api/v1
 // @title           API DATN 2025
 // @version         1.0
 // @description     Đây là tài liệu Swagger cho hệ thống.
@@ -20,7 +22,9 @@ import (
 // @contact.name    Kin
 // @contact.email   trannguyentrungkien1006@gmail.com
 // @license.name    Apache 2.0
-// @BasePath        /api/v1
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	//Tải các biến môi trường
 	err := godotenv.Load("../../.env")
@@ -33,6 +37,8 @@ func main() {
 	validator.InitValidator()
 
 	redisClient := boostraps.InitRedis()
+
+	helpers.Redis = redisClient
 
 	db := boostraps.GormConnection()
 

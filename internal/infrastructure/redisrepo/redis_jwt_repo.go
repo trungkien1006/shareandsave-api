@@ -23,3 +23,16 @@ func (r *RedisRepo) InsertToRedis(ctx context.Context, key string, value string,
 	}
 	return nil
 }
+
+// GetFromRedis lấy giá trị từ Redis theo key
+func (r *RedisRepo) GetFromRedis(ctx context.Context, key string) (string, error) {
+	val, err := r.client.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			// key không tồn tại trong Redis
+			return "", nil
+		}
+		return "", errors.New("Có lỗi khi lấy dữ liệu từ redis: " + err.Error())
+	}
+	return val, nil
+}
