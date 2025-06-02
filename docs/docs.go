@@ -1356,6 +1356,9 @@ const docTemplate = `{
                 "categoryID": {
                     "type": "integer"
                 },
+                "image": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
