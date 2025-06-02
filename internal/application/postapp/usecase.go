@@ -3,6 +3,7 @@ package postapp
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/category"
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
@@ -13,20 +14,22 @@ import (
 )
 
 type UseCase struct {
-	repo     post.Repository
-	service  *post.PostService
-	userRepo user.Repository
-	roleRepo rolepermission.Repository
-	itemRepo item.Repository
+	repo         post.Repository
+	service      *post.PostService
+	userRepo     user.Repository
+	roleRepo     rolepermission.Repository
+	itemRepo     item.Repository
+	categoryRepo category.Repository
 }
 
-func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository) *UseCase {
+func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository, categoryRepo category.Repository) *UseCase {
 	return &UseCase{
-		repo:     r,
-		service:  service,
-		userRepo: userRepo,
-		roleRepo: roleRepo,
-		itemRepo: itemRepo,
+		repo:         r,
+		service:      service,
+		userRepo:     userRepo,
+		roleRepo:     roleRepo,
+		itemRepo:     itemRepo,
+		categoryRepo: categoryRepo,
 	}
 }
 
@@ -49,7 +52,12 @@ func (uc *UseCase) GetPostByID(ctx context.Context, post *post.DetailPost, postI
 }
 
 func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error {
-	var author user.User
+	var (
+		author user.User
+		tags   []string
+	)
+
+	itemIDs := make(map[uint]uint, 0)
 
 	if err := uc.userRepo.GetCommonUserByID(ctx, &author, int(post.AuthorID)); err != nil {
 		return err
@@ -83,8 +91,6 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 	}
 
 	for _, oldItem := range post.OldItems {
-		post.Tag = append(post.Tag, oldItem.CategoryName)
-
 		isExisted, err := uc.itemRepo.IsExisted(ctx, oldItem.ItemID)
 		if err != nil {
 			return err
@@ -93,11 +99,11 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		if !isExisted {
 			return err
 		}
+
+		itemIDs[oldItem.ItemID] = oldItem.ItemID
 	}
 
 	for key, newItem := range post.NewItems {
-		post.Tag = append(post.Tag, newItem.CategoryName)
-
 		item := item.Item{
 			CategoryID: newItem.CategoryID,
 			Name:       newItem.Name,
@@ -115,7 +121,15 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		}
 
 		post.NewItems[key].ItemID = item.ID
+
+		itemIDs[item.ID] = item.ID
 	}
+
+	if err := uc.categoryRepo.GetCategoryNameByItemIDs(ctx, itemIDs, &tags); err != nil {
+		return err
+	}
+
+	post.Tag = tags
 
 	//create post
 	if err := uc.repo.Save(ctx, post); err != nil {

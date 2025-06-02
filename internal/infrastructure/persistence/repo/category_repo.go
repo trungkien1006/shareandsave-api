@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"final_project/internal/domain/category"
+	"final_project/internal/domain/item"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 
 	"gorm.io/gorm"
@@ -36,6 +37,29 @@ func (r *CategoryRepoDB) GetAllCategories(ctx context.Context, categories *[]cat
 
 	for _, value := range dbCategories {
 		*categories = append(*categories, dbmodel.DBToDomain(value))
+	}
+
+	return nil
+}
+
+func (r *CategoryRepoDB) GetCategoryNameByItemIDs(ctx context.Context, itemIDsMap map[uint]uint, categoryName *[]string) error {
+	var (
+		categoryNames []string
+		itemIDs       []uint
+	)
+
+	for _, value := range itemIDsMap {
+		itemIDs = append(itemIDs, value)
+	}
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&item.Item{}).
+		Table("item as item").
+		Joins("JOIN category ON category.id = item.category_id").
+		Where("item.id IN ?", itemIDs).
+		Distinct("category.name").
+		Pluck("category.name", &categoryNames).Error; err != nil {
+		return errors.New("Lỗi khi truy vấn tên category theo danh sách item ID: " + err.Error())
 	}
 
 	return nil

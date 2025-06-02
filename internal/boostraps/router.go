@@ -44,7 +44,7 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	//post dependency
 	postService := post.NewPostService()
 	postRepo := persistence.NewPostRepoDB(db)
-	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo)
+	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo, categoryRepo)
 	postHandler := handler.NewPostHandler(postUC)
 
 	//auth dependency

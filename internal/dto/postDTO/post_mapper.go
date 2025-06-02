@@ -25,12 +25,11 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 
 	for _, value := range domain.Items {
 		DTOPostItem = append(DTOPostItem, DetailPostItemDTO{
-			ItemID:       value.ItemID,
-			CategoryID:   value.CategoryID,
-			CategoryName: value.CategoryName,
-			Image:        value.Image,
-			Name:         value.Name,
-			Quantity:     value.Quantity,
+			ItemID:     value.ItemID,
+			CategoryID: value.CategoryID,
+			Image:      value.Image,
+			Name:       value.Name,
+			Quantity:   value.Quantity,
 		})
 	}
 
@@ -117,38 +116,34 @@ func CreateDomainToDTO(domain post.CreatePost) CreatePostRequest {
 // OldItems DTO -> Domain
 func OldItemsDTOToDomain(item OldItemsPost) post.OldItemsInPost {
 	return post.OldItemsInPost{
-		ItemID:       item.ItemID,
-		CategoryName: item.CategoryName,
-		Quantity:     item.Quantity,
+		ItemID:   item.ItemID,
+		Quantity: item.Quantity,
 	}
 }
 
 // Domain -> OldItems DTO
 func OldItemsDomainToDTO(item post.OldItemsInPost) OldItemsPost {
 	return OldItemsPost{
-		ItemID:       item.ItemID,
-		CategoryName: item.CategoryName,
-		Quantity:     item.Quantity,
+		ItemID:   item.ItemID,
+		Quantity: item.Quantity,
 	}
 }
 
 // NewItems DTO -> Domain
 func NewItemsDTOToDomain(item NewItemsPost) post.NewItemsInPost {
 	return post.NewItemsInPost{
-		CategoryID:   item.CategoryID,
-		CategoryName: item.CategoryName,
-		Name:         item.Name,
-		Quantity:     item.Quantity,
+		CategoryID: item.CategoryID,
+		Name:       item.Name,
+		Quantity:   item.Quantity,
 	}
 }
 
 // Domain -> NewItems DTO
 func NewItemsDomainToDTO(item post.NewItemsInPost) NewItemsPost {
 	return NewItemsPost{
-		CategoryID:   item.CategoryID,
-		CategoryName: item.CategoryName,
-		Name:         item.Name,
-		Quantity:     item.Quantity,
+		CategoryID: item.CategoryID,
+		Name:       item.Name,
+		Quantity:   item.Quantity,
 	}
 }
 
