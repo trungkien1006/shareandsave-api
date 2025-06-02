@@ -3,7 +3,6 @@ package handler
 import (
 	"final_project/internal/application/authapp"
 	"final_project/internal/domain/auth"
-	"final_project/internal/domain/user"
 	authdto "final_project/internal/dto/authDTO"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/shared/validator"
@@ -31,7 +30,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	var (
 		req             authdto.LoginRequest
 		domainAuthLogin auth.AuthLogin
-		loginUser       user.User
+		JWT             string
+		refreshToken    string
 	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -46,7 +46,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	domainAuthLogin = authdto.AuthDTOToDomain(req)
 
-	if err := h.uc.Login(c.Request.Context(), &domainAuthLogin, &loginUser); err != nil {
+	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken); err != nil {
 		c.JSON(http.StatusUnauthorized, enums.NewAppError(http.StatusUnauthorized, err.Error(), enums.ErrUnauthorized))
 		return
 	}

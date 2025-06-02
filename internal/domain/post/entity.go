@@ -14,6 +14,7 @@ type OldItemsInPost struct {
 type NewItemsInPost struct {
 	ItemID     uint
 	CategoryID uint
+	Image      string
 	Name       string
 	Quantity   int
 }

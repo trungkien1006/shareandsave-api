@@ -109,12 +109,16 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 			Name:       newItem.Name,
 		}
 
-		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/item.png", enums.ItemImageWidth, enums.ItemImageHeight)
-		if err != nil {
-			return err
-		}
+		if newItem.Image == "" {
+			strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/item.png", enums.ItemImageWidth, enums.ItemImageHeight)
+			if err != nil {
+				return err
+			}
 
-		item.Image = strBase64Image
+			item.Image = strBase64Image
+		} else {
+			item.Image = newItem.Image
+		}
 
 		if err := uc.itemRepo.Save(ctx, &item); err != nil {
 			return err

@@ -133,6 +133,7 @@ func OldItemsDomainToDTO(item post.OldItemsInPost) OldItemsPost {
 func NewItemsDTOToDomain(item NewItemsPost) post.NewItemsInPost {
 	return post.NewItemsInPost{
 		CategoryID: item.CategoryID,
+		Image:      item.Image,
 		Name:       item.Name,
 		Quantity:   item.Quantity,
 	}
@@ -142,6 +143,7 @@ func NewItemsDTOToDomain(item NewItemsPost) post.NewItemsInPost {
 func NewItemsDomainToDTO(item post.NewItemsInPost) NewItemsPost {
 	return NewItemsPost{
 		CategoryID: item.CategoryID,
+		Image:      item.Image,
 		Name:       item.Name,
 		Quantity:   item.Quantity,
 	}

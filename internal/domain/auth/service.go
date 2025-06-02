@@ -74,6 +74,48 @@ func GenerateToken(user JWTSubject) string {
 	return token
 }
 
+func GenerateRefreshToken(user JWTSubject) string {
+	var secretKey = os.Getenv("SECRET_KEY")
+
+	var header Header = Header{
+		Alg: "sha256",
+		Typ: "jwt",
+	}
+
+	headerJson, _ := json.Marshal(header)
+	headerEncode := base64.RawURLEncoding.EncodeToString(headerJson)
+
+	currentTime := GetCurrentTimeVN()
+
+	// ⚠️ Expiry time for refresh token: 7 days
+	tokenExp := currentTime.Add(7 * 24 * time.Hour).Format("02-01-2006 15:04:05")
+
+	var payload Payload = Payload{
+		Sub: user,
+		Exp: tokenExp,
+	}
+
+	payloadJson, _ := json.Marshal(payload)
+	payloadEncode := base64.RawURLEncoding.EncodeToString(payloadJson)
+
+	signature := Signature{
+		HeaderEncode:  headerEncode,
+		PayloadEncode: payloadEncode,
+	}
+
+	signatureJson, _ := json.Marshal(signature)
+
+	h := hmac.New(sha256.New, []byte(secretKey))
+	h.Write(signatureJson)
+
+	signatureHmac := h.Sum(nil)
+	signatureEncode := base64.RawURLEncoding.EncodeToString(signatureHmac)
+
+	token := fmt.Sprintf("%s.%s.%s", headerEncode, payloadEncode, signatureEncode)
+
+	return token
+}
+
 func GetCurrentTimeVN() time.Time {
 	location, err := time.LoadLocation("Asia/Ho_Chi_Minh")
 	if err != nil {

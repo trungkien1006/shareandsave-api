@@ -11,6 +11,7 @@ type OldItemsPost struct {
 
 type NewItemsPost struct {
 	CategoryID uint   `json:"categoryID" binding:"required"`
+	Image      string `json:"image"`
 	Name       string `json:"name" binding:"required"`
 	Quantity   int    `json:"quantity" binding:"min=1"`
 }
