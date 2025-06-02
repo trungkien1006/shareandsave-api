@@ -117,7 +117,13 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 
 			item.Image = strBase64Image
 		} else {
-			item.Image = newItem.Image
+			strBase64Image, err := helpers.ResizeImageFromBase64(newItem.Image, enums.ItemImageWidth, enums.ItemImageHeight)
+
+			if err != nil {
+				return err
+			}
+
+			item.Image = strBase64Image
 		}
 
 		if err := uc.itemRepo.Save(ctx, &item); err != nil {
