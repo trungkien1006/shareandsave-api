@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -55,53 +56,40 @@ func ResizeImageFromFileToBase64(inputPath string, width int, height int) (strin
 
 // ✅ Hàm resize ảnh từ base64
 func ResizeImageFromBase64(base64Str string, width int, height int) (string, error) {
-	// Loại bỏ prefix nếu có (data:image/png;base64,...)
-	commaIdx := strings.Index(base64Str, ",")
-	if commaIdx != -1 {
+	// Loại bỏ prefix
+	if commaIdx := strings.Index(base64Str, ","); commaIdx != -1 {
 		base64Str = base64Str[commaIdx+1:]
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(base64Str)
+	decoded, err := base64.RawStdEncoding.DecodeString(base64Str)
 	if err != nil {
-		return "", errors.New("Không thể giải mã base64: " + err.Error())
+		return "", fmt.Errorf("Không thể giải mã base64: %w", err)
 	}
 
-	reader := bytes.NewReader(decoded)
-
-	img, format, err := image.Decode(reader)
+	img, format, err := image.Decode(bytes.NewReader(decoded))
 	if err != nil {
-		return "", errors.New("Không thể giải mã hình: " + err.Error())
+		return "", fmt.Errorf("Không thể giải mã hình: %w", err)
 	}
 
 	resized := imaging.Resize(img, width, height, imaging.Lanczos)
 
 	buf := new(bytes.Buffer)
 	switch format {
-	case "jpeg":
+	case "jpeg", "jpg":
 		err = jpeg.Encode(buf, resized, nil)
 	case "png":
 		err = png.Encode(buf, resized)
 	default:
-		return "", errors.New("Format ảnh không hỗ trợ: " + format)
+		return "", fmt.Errorf("Format ảnh không hỗ trợ: %s", format)
 	}
 
 	if err != nil {
-		return "", errors.New("Không thể mã hóa ảnh đã resize: " + err.Error())
+		return "", fmt.Errorf("Không thể mã hóa ảnh đã resize: %w", err)
 	}
 
-	// Encode lại sang base64
-	base64Encoded := base64.StdEncoding.EncodeToString(buf.Bytes())
+	encoded := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-	// Thêm prefix cho base64 result
-	var mimeType string
-	if format == "jpeg" {
-		mimeType = "image/jpeg"
-	} else if format == "png" {
-		mimeType = "image/png"
-	}
-	finalResult := "data:" + mimeType + ";base64," + base64Encoded
-
-	return finalResult, nil
+	return fmt.Sprintf("data:image/%s;base64,%s", format, encoded), nil
 }
 
 func EncodeImageToBase64(imagePath string) (string, error) {
