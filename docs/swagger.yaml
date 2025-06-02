@@ -12,6 +12,8 @@ definitions:
         example: user@example.com
         type: string
       password:
+        description: Password string `json:"password" validate:"required,password_strong"
+          example:"Abc12345"`
         example: Abc12345
         type: string
     required:
@@ -19,26 +21,21 @@ definitions:
     - email
     - password
     type: object
-  categorydto.CategoryDTO:
+  authdto.LoginResponse:
     properties:
-      id:
-        type: integer
-      name:
+      jwt:
         type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/userdto.CommonUserDTO'
     type: object
-  categorydto.GetCategoryResponse:
-    properties:
-      categories:
-        items:
-          $ref: '#/definitions/categorydto.CategoryDTO'
-        type: array
-    type: object
-  categorydto.GetCategoryResponseWrapper:
+  authdto.LoginResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/categorydto.GetCategoryResponse'
+        $ref: '#/definitions/authdto.LoginResponse'
       message:
         type: string
     type: object
@@ -230,6 +227,8 @@ definitions:
     type: object
   postdto.CreatePostRequest:
     properties:
+      description:
+        type: string
       images:
         example:
         - strbase64
@@ -283,6 +282,8 @@ definitions:
       content:
         type: string
       createdAt:
+        type: string
+      description:
         type: string
       id:
         type: integer
@@ -429,6 +430,31 @@ definitions:
       data: {}
       message:
         type: string
+    type: object
+  userdto.CommonUserDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      phoneNumber:
+        type: string
+      roleID:
+        type: integer
+      roleName:
+        type: string
+      status:
+        type: integer
     type: object
   userdto.CreateUserRequest:
     properties:
@@ -585,29 +611,6 @@ info:
   title: API DATN 2025
   version: "1.0"
 paths:
-  /categories:
-    get:
-      consumes:
-      - application/json
-      description: API lấy ra tất cả danh mục đồ đạc
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/categorydto.GetCategoryResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Get categories
-      tags:
-      - categories
   /items:
     get:
       consumes:
@@ -796,10 +799,22 @@ paths:
           $ref: '#/definitions/authdto.LoginRequest'
       produces:
       - application/json
-      responses: {}
-      summary: Login
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.LoginResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Đăng nhập
       tags:
-      - auth
+      - Auth
   /posts:
     get:
       consumes:

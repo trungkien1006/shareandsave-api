@@ -22,41 +22,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/categories": {
-            "get": {
-                "description": "API lấy ra tất cả danh mục đồ đạc",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "categories"
-                ],
-                "summary": "Get categories",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/categorydto.GetCategoryResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            }
-        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -327,9 +292,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
-                "summary": "Login",
+                "summary": "Đăng nhập",
                 "parameters": [
                     {
                         "description": "Dữ liệu đăng nhập",
@@ -341,7 +306,26 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.LoginResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         },
         "/posts": {
@@ -817,41 +801,34 @@ const docTemplate = `{
                     "example": "user@example.com"
                 },
                 "password": {
+                    "description": "Password string ` + "`" + `json:\"password\" validate:\"required,password_strong\" example:\"Abc12345\"` + "`" + `",
                     "type": "string",
                     "example": "Abc12345"
                 }
             }
         },
-        "categorydto.CategoryDTO": {
+        "authdto.LoginResponse": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
+                "jwt": {
                     "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/userdto.CommonUserDTO"
                 }
             }
         },
-        "categorydto.GetCategoryResponse": {
-            "type": "object",
-            "properties": {
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/categorydto.CategoryDTO"
-                    }
-                }
-            }
-        },
-        "categorydto.GetCategoryResponseWrapper": {
+        "authdto.LoginResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/categorydto.GetCategoryResponse"
+                    "$ref": "#/definitions/authdto.LoginResponse"
                 },
                 "message": {
                     "type": "string"
@@ -1133,6 +1110,9 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "images": {
                     "type": "array",
                     "items": {
@@ -1204,6 +1184,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "createdAt": {
+                    "type": "string"
+                },
+                "description": {
                     "type": "string"
                 },
                 "id": {
@@ -1426,6 +1409,44 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "userdto.CommonUserDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },

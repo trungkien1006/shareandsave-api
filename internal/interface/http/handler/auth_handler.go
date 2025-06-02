@@ -5,6 +5,7 @@ import (
 	"final_project/internal/domain/auth"
 	"final_project/internal/domain/user"
 	authdto "final_project/internal/dto/authDTO"
+	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/shared/validator"
 	"net/http"
@@ -53,4 +54,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	userDTO := userdto.DomainCommonUserToDTO(domainUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get detail post successfully",
+		"data": authdto.LoginResponse{
+			JWT:          JWT,
+			RefreshToken: refreshToken,
+			User:         userDTO,
+		},
+	})
 }

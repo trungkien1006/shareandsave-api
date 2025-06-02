@@ -17,7 +17,7 @@ func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
-func GetTokenSubject(jwt string) JWTSubject {
+func (s *AuthService) GetTokenSubject(jwt string) JWTSubject {
 	var jwtElement = strings.Split(strings.Trim(jwt, "Bearer "), ".")
 
 	var payload Payload
@@ -29,7 +29,7 @@ func GetTokenSubject(jwt string) JWTSubject {
 	return payload.Sub
 }
 
-func GenerateToken(user JWTSubject) string {
+func (s *AuthService) GenerateToken(user JWTSubject) string {
 	var secretKey = os.Getenv("SECRET_KEY")
 
 	var header Header = Header{
@@ -74,7 +74,7 @@ func GenerateToken(user JWTSubject) string {
 	return token
 }
 
-func GenerateRefreshToken(user JWTSubject) string {
+func (s *AuthService) GenerateRefreshToken(user JWTSubject) string {
 	var secretKey = os.Getenv("SECRET_KEY")
 
 	var header Header = Header{
@@ -87,8 +87,8 @@ func GenerateRefreshToken(user JWTSubject) string {
 
 	currentTime := GetCurrentTimeVN()
 
-	// ⚠️ Expiry time for refresh token: 7 days
-	tokenExp := currentTime.Add(7 * 24 * time.Hour).Format("02-01-2006 15:04:05")
+	// ⚠️ Expiry time for refresh token: 30 days
+	tokenExp := currentTime.Add(30 * 24 * time.Hour).Format("02-01-2006 15:04:05")
 
 	var payload Payload = Payload{
 		Sub: user,

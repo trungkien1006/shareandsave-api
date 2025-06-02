@@ -6,13 +6,16 @@ import (
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
 	"final_project/internal/application/userapp"
+	"final_project/internal/domain/auth"
 	"final_project/internal/domain/post"
 	persistence "final_project/internal/infrastructure/persistence/repo"
+	"final_project/internal/infrastructure/redisrepo"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	_ "final_project/docs"
@@ -21,9 +24,13 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func InitRoute(db *gorm.DB) *gin.Engine {
+func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	r := gin.Default()
 
+	//redis
+	redisRepo := redisrepo.NewRedisRepo(redisClient)
+
+	//role permission dependency
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
 
 	//category dependency
@@ -48,8 +55,9 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	postHandler := handler.NewPostHandler(postUC)
 
 	//auth dependency
+	authService := auth.NewAuthService()
 	authRepo := persistence.NewAuthRepoDB(db)
-	authUC := authapp.NewUseCase(authRepo)
+	authUC := authapp.NewUseCase(authRepo, authService, redisRepo)
 	authHandler := handler.NewAuthHandler(authUC)
 
 	seed := seeder.NewSeeder(

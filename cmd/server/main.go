@@ -2,7 +2,6 @@ package main
 
 import (
 	"final_project/internal/boostraps"
-	"final_project/internal/pkg/helpers"
 	"final_project/internal/shared/validator"
 	"fmt"
 	"net"
@@ -33,11 +32,11 @@ func main() {
 
 	validator.InitValidator()
 
-	helpers.Redis = boostraps.InitRedis()
+	redisClient := boostraps.InitRedis()
 
 	db := boostraps.GormConnection()
 
-	route := boostraps.InitRoute(db)
+	route := boostraps.InitRoute(db, redisClient)
 
 	port := os.Getenv("PORT")
 

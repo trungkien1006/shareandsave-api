@@ -19,25 +19,40 @@ func NewAuthRepoDB(db *gorm.DB) *AuthRepoDB {
 	return &AuthRepoDB{db: db}
 }
 
-func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string) error {
-	var dbUser dbmodel.User
+func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string) ([]string, error) {
+	var (
+		dbUser      dbmodel.User
+		permisisons []string
+	)
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.User{}).
 		Where("email = ?", email).
-		First(&dbUser).Error; err != nil {
-		return errors.New("Email không tồn tại: " + err.Error())
+		Preload("Role").First(&dbUser).Error; err != nil {
+		return nil, errors.New("Email không tồn tại: " + err.Error())
 	}
 
 	if !hash.CheckPasswordHash(password, dbUser.Password) {
-		return errors.New("Mật khẩu không đúng")
+		return nil, errors.New("Mật khẩu không đúng")
 	}
 
 	if dbUser.Status == int8(enums.UserStatusLocked) {
-		return errors.New("Tài khoản đã bị khóa")
+		return nil, errors.New("Tài khoản đã bị khóa")
+	}
+
+	if dbUser.Role.Name != "Client" {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.Permission{}).
+			Table("permission as permission").
+			Select("permission.code").
+			Joins("join role_permission on role_permission.permission_id = permission.id").
+			Where("role_permission.role_id = ?", dbUser.Role.ID).
+			Scan(&permisisons).Error; err != nil {
+			return nil, errors.New("Lỗi khi truy suất danh sách quyền: " + err.Error())
+		}
 	}
 
 	*user = dbmodel.ToDomainUser(dbUser)
 
-	return nil
+	return permisisons, nil
 }
