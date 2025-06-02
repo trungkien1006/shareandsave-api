@@ -110,14 +110,19 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		}
 
 		if newItem.Image == "" {
-			strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/item.png", enums.ItemImageWidth, enums.ItemImageHeight)
+			base64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
+			if err != nil {
+				return err
+			}
+
+			strBase64Image, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 			if err != nil {
 				return err
 			}
 
 			item.Image = strBase64Image
 		} else {
-			strBase64Image, err := helpers.ResizeImageFromBase64(newItem.Image, enums.ItemImageWidth, enums.ItemImageHeight)
+			strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 
 			if err != nil {
 				return err

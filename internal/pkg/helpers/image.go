@@ -8,6 +8,8 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io/ioutil"
+	"mime"
 	"os"
 	"path/filepath"
 	"strings"
@@ -143,6 +145,29 @@ const (
 	FormatJPEG ImageFormat = "jpeg"
 	FormatPNG  ImageFormat = "png"
 )
+
+func ImageToBase64(imagePath string) (string, error) {
+	// Đọc toàn bộ file ảnh
+	data, err := ioutil.ReadFile(imagePath)
+	if err != nil {
+		return "", fmt.Errorf("không thể đọc file ảnh: %w", err)
+	}
+
+	// Xác định loại MIME (vd: image/png, image/jpeg)
+	ext := filepath.Ext(imagePath)
+	mimeType := mime.TypeByExtension(ext)
+	if mimeType == "" {
+		mimeType = "application/octet-stream" // fallback
+	}
+
+	// Encode thành base64
+	base64Str := base64.StdEncoding.EncodeToString(data)
+
+	// Trả về dạng chuẩn `data:<mime>;base64,...`
+	result := fmt.Sprintf("data:%s;base64,%s", mimeType, base64Str)
+
+	return result, nil
+}
 
 // ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
 func ProcessImageBase64(inputBase64 string, width, height uint, quality int, outputFormat ImageFormat) (string, error) {
