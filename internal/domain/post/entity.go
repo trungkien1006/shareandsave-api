@@ -52,11 +52,12 @@ type Post struct {
 }
 
 type DetailPostItem struct {
-	ItemID     uint
-	CategoryID uint
-	Image      string
-	Name       string
-	Quantity   int
+	ItemID       uint
+	CategoryID   uint
+	CategoryName string
+	Image        string
+	Name         string
+	Quantity     int
 }
 
 type DetailPost struct {

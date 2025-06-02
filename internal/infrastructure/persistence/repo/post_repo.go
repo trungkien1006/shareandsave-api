@@ -101,6 +101,7 @@ func (r *PostRepoDB) GetDetailByID(ctx context.Context, post *post.DetailPost, p
 		Preload("Interests.User").
 		Preload("PostItem").
 		Preload("PostItem.Item").
+		Preload("PostItem.Item.Category").
 		Find(&dbPost).Error; err != nil {
 		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
 	}
