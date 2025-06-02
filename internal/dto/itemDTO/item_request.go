@@ -5,7 +5,7 @@ type GetAllItemRequest struct {
 	Limit       int    `form:"limit"`
 	Sort        string `form:"sort"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=categoryID"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=categoryID name"`
 	SearchValue string `form:"searchValue"`
 }
 
