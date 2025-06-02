@@ -2,6 +2,8 @@ package main
 
 import (
 	"final_project/internal/boostraps"
+	"final_project/internal/pkg/helpers"
+	"final_project/internal/shared/validator"
 	"fmt"
 	"net"
 	"net/http"
@@ -28,6 +30,10 @@ func main() {
 	}
 
 	gin.SetMode(os.Getenv("GIN_MODE"))
+
+	validator.InitValidator()
+
+	helpers.Redis = boostraps.InitRedis()
 
 	db := boostraps.GormConnection()
 

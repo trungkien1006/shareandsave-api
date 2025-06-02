@@ -13,8 +13,9 @@ import (
 )
 
 type UserJWTSubject struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
+	Id      uint
+	Device  string
+	Version uint
 }
 
 type Header struct {

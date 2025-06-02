@@ -124,6 +124,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		return
 	}
 	itm := item.Item{
+		CategoryID:  req.CategoryID,
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,

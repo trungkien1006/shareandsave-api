@@ -1,6 +1,7 @@
 package boostraps
 
 import (
+	"final_project/internal/application/authapp"
 	"final_project/internal/application/categoryapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
@@ -45,6 +46,11 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 	postRepo := persistence.NewPostRepoDB(db)
 	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo)
 	postHandler := handler.NewPostHandler(postUC)
+
+	//auth dependency
+	authRepo := persistence.NewAuthRepoDB(db)
+	authUC := authapp.NewUseCase(authRepo)
+	authHandler := handler.NewAuthHandler(authUC)
 
 	seed := seeder.NewSeeder(
 		rolePerRepo,
@@ -98,6 +104,9 @@ func InitRoute(db *gorm.DB) *gin.Engine {
 
 		//category API
 		v1.GET("/categories", categoryHandler.GetAll)
+
+		//auth API
+		v1.POST("/login", authHandler.Login)
 	}
 
 	// r.Static("/public/images", "./public/images")

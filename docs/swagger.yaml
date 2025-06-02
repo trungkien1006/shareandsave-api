@@ -1,5 +1,17 @@
 basePath: /api/v1
 definitions:
+  authdto.LoginRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: Abc12345
+        type: string
+    required:
+    - email
+    - password
+    type: object
   categorydto.CategoryDTO:
     properties:
       id:
@@ -769,6 +781,24 @@ paths:
       summary: Update item
       tags:
       - items
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Đăng nhập người dùng với email và mật khẩu mạnh
+      parameters:
+      - description: Dữ liệu đăng nhập
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.LoginRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login
+      tags:
+      - auth
   /posts:
     get:
       consumes:

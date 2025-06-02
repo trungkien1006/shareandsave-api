@@ -317,6 +317,33 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "Đăng nhập người dùng với email và mật khẩu mạnh",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Dữ liệu đăng nhập",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/posts": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -769,6 +796,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authdto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "Abc12345"
+                }
+            }
+        },
         "categorydto.CategoryDTO": {
             "type": "object",
             "properties": {
