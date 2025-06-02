@@ -20,12 +20,13 @@ type CreatePostRequest struct {
 	// Email       string         `json:"email" example:"john@gmail.com"`
 	// FullName    string         `json:"fullName" example:"John Doe"`
 	// PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
-	Type     enums.PostType `json:"type" binding:"oneof=1 2 3 4" example:"1"`
-	Title    string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
-	Info     string         `json:"info"`
-	Images   []string       `json:"images" example:"strbase64, strbase64"`
-	OldItems []OldItemsPost `json:"oldItems"`
-	NewItems []NewItemsPost `json:"newItems"`
+	Type        enums.PostType `json:"type" binding:"oneof=1 2 3 4" example:"1"`
+	Title       string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
+	Info        string         `json:"info"`
+	Description string         `json:"description"`
+	Images      []string       `json:"images" example:"strbase64, strbase64"`
+	OldItems    []OldItemsPost `json:"oldItems"`
+	NewItems    []NewItemsPost `json:"newItems"`
 }
 
 type GetAdminPostRequest struct {

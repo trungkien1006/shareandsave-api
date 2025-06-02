@@ -9,19 +9,20 @@ import (
 )
 
 type Post struct {
-	ID        uint `gorm:"primaryKey;autoIncrement"`
-	AuthorID  uint `gorm:"index"`
-	Type      int
-	Slug      string      `gorm:"unique;size:255"`
-	Title     string      `gorm:"size:255"`
-	Content   string      `gorm:"type:JSON"`
-	Info      string      `gorm:"type:JSON"`
-	Status    int8        `gorm:"type:TINYINT"`
-	Image     StringArray `gorm:"type:JSON"`
-	Tag       StringArray `gorm:"type:JSON"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID          uint `gorm:"primaryKey;autoIncrement"`
+	AuthorID    uint `gorm:"index"`
+	Type        int
+	Slug        string      `gorm:"unique;size:255"`
+	Title       string      `gorm:"size:255"`
+	Description string      `gorm:type:MEDIUMTEXT`
+	Content     string      `gorm:"type:JSON"`
+	Info        string      `gorm:"type:JSON"`
+	Status      int8        `gorm:"type:TINYINT"`
+	Image       StringArray `gorm:"type:JSON"`
+	Tag         StringArray `gorm:"type:JSON"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
 
 	Author User `gorm:"foreignKey:AuthorID"`
 
@@ -81,20 +82,21 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 	}
 
 	return post.DetailPost{
-		ID:         db.ID,
-		AuthorID:   db.AuthorID,
-		AuthorName: db.Author.FullName,
-		Type:       db.Type,
-		Slug:       db.Slug,
-		Title:      db.Title,
-		Content:    db.Content,
-		Info:       db.Info,
-		Status:     db.Status,
-		Images:     domainImage,
-		CreatedAt:  db.CreatedAt,
-		Tag:        domainTag,
-		Interest:   domainInterest,
-		Items:      domainPostItem,
+		ID:          db.ID,
+		AuthorID:    db.AuthorID,
+		AuthorName:  db.Author.FullName,
+		Type:        db.Type,
+		Slug:        db.Slug,
+		Title:       db.Title,
+		Description: db.Description,
+		Content:     db.Content,
+		Info:        db.Info,
+		Status:      db.Status,
+		Images:      domainImage,
+		CreatedAt:   db.CreatedAt,
+		Tag:         domainTag,
+		Interest:    domainInterest,
+		Items:       domainPostItem,
 	}
 }
 
@@ -132,17 +134,18 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 	}
 
 	return Post{
-		ID:       domainPost.ID,
-		AuthorID: domainPost.AuthorID,
-		Type:     domainPost.Type,
-		Slug:     domainPost.Slug,
-		Title:    domainPost.Title,
-		Content:  domainPost.Content,
-		Info:     domainPost.Info,
-		Status:   domainPost.Status,
-		Image:    domainPost.Images,
-		Tag:      domainPost.Tag,
-		PostItem: postItems,
+		ID:          domainPost.ID,
+		AuthorID:    domainPost.AuthorID,
+		Type:        domainPost.Type,
+		Slug:        domainPost.Slug,
+		Title:       domainPost.Title,
+		Description: domainPost.Description,
+		Content:     domainPost.Content,
+		Info:        domainPost.Info,
+		Status:      domainPost.Status,
+		Image:       domainPost.Images,
+		Tag:         domainPost.Tag,
+		PostItem:    postItems,
 	}
 }
 

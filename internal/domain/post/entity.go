@@ -20,20 +20,21 @@ type NewItemsInPost struct {
 }
 
 type CreatePost struct {
-	ID         uint
-	AuthorID   uint
-	AuthorName string
-	Type       int
-	Slug       string
-	Title      string
-	Content    string
-	Info       string
-	Status     int8
-	Images     []string
-	Tag        []string
-	Items      []item.Item
-	OldItems   []OldItemsInPost
-	NewItems   []NewItemsInPost
+	ID          uint
+	AuthorID    uint
+	AuthorName  string
+	Type        int
+	Slug        string
+	Title       string
+	Content     string
+	Info        string
+	Description string
+	Status      int8
+	Images      []string
+	Tag         []string
+	Items       []item.Item
+	OldItems    []OldItemsInPost
+	NewItems    []NewItemsInPost
 }
 
 type Post struct {
@@ -59,20 +60,21 @@ type DetailPostItem struct {
 }
 
 type DetailPost struct {
-	ID         uint
-	AuthorID   uint
-	AuthorName string
-	Type       int
-	Slug       string
-	Title      string
-	Content    string
-	Info       string
-	Status     int8
-	Images     []string
-	CreatedAt  time.Time
-	Tag        []string
-	Interest   []interest.Interest
-	Items      []DetailPostItem
+	ID          uint
+	AuthorID    uint
+	AuthorName  string
+	Type        int
+	Slug        string
+	Title       string
+	Description string
+	Content     string
+	Info        string
+	Status      int8
+	Images      []string
+	CreatedAt   time.Time
+	Tag         []string
+	Interest    []interest.Interest
+	Items       []DetailPostItem
 }
 
 type PostFilterRequest struct {

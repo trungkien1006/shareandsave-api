@@ -43,6 +43,7 @@ CREATE TABLE `post` (
   `title` varchar(255),
   `content` json DEFAULT null,
   `info` json DEFAULT null,
+  `description` mediumtext DEFAULT null,
   `image` json DEFAULT null,
   `tag` json DEFAULT null,
   `status` tinyint,
@@ -53,7 +54,8 @@ CREATE TABLE `post` (
 
 CREATE TABLE `post_item` (
   `post_id` int,
-  `item_id` int
+  `item_id` int,
+  `quantity` int
 );
 
 CREATE TABLE `interest` (

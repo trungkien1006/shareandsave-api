@@ -42,20 +42,21 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 	}
 
 	return DetailPostDTO{
-		ID:         domain.ID,
-		AuthorID:   domain.AuthorID,
-		AuthorName: domain.AuthorName,
-		Type:       domain.Type,
-		Slug:       domain.Slug,
-		Title:      domain.Title,
-		Content:    domain.Content,
-		Info:       domain.Info,
-		Status:     domain.Status,
-		Images:     DTOImage,
-		CreatedAt:  domain.CreatedAt,
-		Tag:        DTOTag,
-		Interest:   DTOInterest,
-		Items:      DTOPostItem,
+		ID:          domain.ID,
+		AuthorID:    domain.AuthorID,
+		AuthorName:  domain.AuthorName,
+		Type:        domain.Type,
+		Slug:        domain.Slug,
+		Title:       domain.Title,
+		Description: domain.Description,
+		Content:     domain.Content,
+		Info:        domain.Info,
+		Status:      domain.Status,
+		Images:      DTOImage,
+		CreatedAt:   domain.CreatedAt,
+		Tag:         DTOTag,
+		Interest:    DTOInterest,
+		Items:       DTOPostItem,
 	}
 }
 
@@ -77,12 +78,13 @@ func CreateDTOToDomain(createPostDTO CreatePostRequest) post.CreatePost {
 		// FullName:    createPostDTO.FullName,
 		// Email:       createPostDTO.Email,
 		// PhoneNumber: createPostDTO.PhoneNumber,
-		Type:     int(createPostDTO.Type),
-		Title:    createPostDTO.Title,
-		Info:     createPostDTO.Info,
-		Images:   createPostDTO.Images,
-		OldItems: domainOldItems,
-		NewItems: domainNewItems,
+		Type:        int(createPostDTO.Type),
+		Title:       createPostDTO.Title,
+		Info:        createPostDTO.Info,
+		Description: createPostDTO.Description,
+		Images:      createPostDTO.Images,
+		OldItems:    domainOldItems,
+		NewItems:    domainNewItems,
 	}
 }
 
