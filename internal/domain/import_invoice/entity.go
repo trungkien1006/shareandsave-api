@@ -11,5 +11,4 @@ type ImportInvoice struct {
 	SendDate    time.Time
 	Description string
 	IsLock      bool
-	IsAnonymous bool
 }

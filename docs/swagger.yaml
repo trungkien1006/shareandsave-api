@@ -39,6 +39,14 @@ definitions:
       message:
         type: string
     type: object
+  authdto.LogoutResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   categorydto.CategoryDTO:
     properties:
       id:
@@ -861,6 +869,29 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Login
+      tags:
+      - auth
+  /logout:
+    post:
+      consumes:
+      - application/json
+      description: Đăng đăng xuất
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.LogoutResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Logout
       tags:
       - auth
   /posts:

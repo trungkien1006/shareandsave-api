@@ -36,3 +36,12 @@ func (r *RedisRepo) GetFromRedis(ctx context.Context, key string) (string, error
 	}
 	return val, nil
 }
+
+// DeleteFromRedis xóa một key khỏi Redis
+func (r *RedisRepo) DeleteFromRedis(ctx context.Context, key string) error {
+	err := r.client.Del(ctx, key).Err()
+	if err != nil {
+		return errors.New("Có lỗi khi xóa key khỏi redis: " + err.Error())
+	}
+	return nil
+}

@@ -7,6 +7,7 @@ import (
 	authdto "final_project/internal/dto/authDTO"
 	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
 	"final_project/internal/shared/validator"
 	"net/http"
 
@@ -61,11 +62,44 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Get detail post successfully",
+		"message": "Login successfully",
 		"data": authdto.LoginResponse{
 			JWT:          JWT,
 			RefreshToken: refreshToken,
 			User:         userDTO,
 		},
+	})
+}
+
+// @Summary Logout
+// @Description Đăng đăng xuất
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} authdto.LogoutResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /logout [post]
+func (h *AuthHandler) Logout(c *gin.Context) {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	device, err := helpers.GetStringFromContext(c, "device")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.Logout(c.Request.Context(), userID, device); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Logout successfully",
 	})
 }

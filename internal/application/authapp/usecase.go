@@ -73,3 +73,17 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 
 	return nil
 }
+
+func (uc *UseCase) Logout(ctx context.Context, userID uint, device string) error {
+	// Xóa key user:{userID}:{device}
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "user:"+strconv.Itoa(int(userID))+":"+device); err != nil {
+		return err
+	}
+
+	// Xóa key permission:user:{userID}
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "permission:user:"+strconv.Itoa(int(userID))); err != nil {
+		return err
+	}
+
+	return nil
+}

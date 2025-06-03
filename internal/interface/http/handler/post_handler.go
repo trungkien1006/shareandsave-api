@@ -5,6 +5,7 @@ import (
 	"final_project/internal/domain/post"
 	postdto "final_project/internal/dto/postDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
 	"net/http"
 	"strconv"
 
@@ -156,40 +157,16 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	userID, isExist := c.Get("userID")
-	if !isExist {
-		c.JSON(
-			http.StatusUnauthorized,
-			enums.NewAppError(http.StatusUnauthorized, "Bạn chưa truyền JWT", enums.ErrUnauthorized),
-		)
-		return
-	}
-
-	var authorID uint
-
-	switch v := userID.(type) {
-	case uint:
-		authorID = v
-	case int:
-		authorID = uint(v)
-	case float64:
-		authorID = uint(v)
-	case string:
-		parsedID, err := strconv.ParseUint(v, 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, "userID không hợp lệ", enums.ErrBadRequest))
-			return
-		}
-		authorID = uint(parsedID)
-	default:
-		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, "Không thể xác định kiểu userID", enums.ErrBadRequest))
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
 		return
 	}
 
 	domainPost = postdto.CreateDTOToDomain(req)
-	domainPost.AuthorID = uint(authorID)
+	domainPost.AuthorID = uint(userID)
 
-	err := h.uc.CreatePost(c.Request.Context(), &domainPost)
+	err = h.uc.CreatePost(c.Request.Context(), &domainPost)
 
 	if err != nil {
 		c.JSON(
