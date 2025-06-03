@@ -11,10 +11,10 @@ type CreateImportInvoiceRequest struct {
 	Classify          enums.ItemClassify               `json:"classify" validate:"required,oneof=1 2" example:"1"`
 	SendDate          time.Time                        `json:"sendDate" validate:"required"`
 	Description       string                           `json:"description"`
-	ImportInvoiceItem []CreateImportInvoiceItemRequest `json:"importInvoiceItem" validate:"required"`
+	ItemImportInvoice []CreateItemImportInvoiceRequest `json:"itemImportInvoice" validate:"required"`
 }
 
-type CreateImportInvoiceItemRequest struct {
+type CreateItemImportInvoiceRequest struct {
 	ItemID      uint   `json:"itemID" validate:"required"`
 	Quantity    int8   `json:"quantity" validate:"required"`
 	Description string `json:"description"`

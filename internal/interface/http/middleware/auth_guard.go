@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"net/http"
 
@@ -12,7 +13,9 @@ func AuthGuard(c *gin.Context) {
 
 	if err := helpers.CheckJWT(c.Request.Context(), jwt); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
+			"code":    http.StatusUnauthorized,
+			"error":   enums.ErrUnauthorized,
+			"message": err.Error(),
 		})
 
 		c.Abort()

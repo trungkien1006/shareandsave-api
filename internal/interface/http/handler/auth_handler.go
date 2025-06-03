@@ -24,6 +24,7 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 
 // @Summary Login
 // @Description Đăng nhập người dùng với email và mật khẩu mạnh
+// @Security BearerAuth
 // @Tags auth
 // @Accept json
 // @Produce json

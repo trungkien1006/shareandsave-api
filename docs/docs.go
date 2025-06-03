@@ -319,6 +319,11 @@ const docTemplate = `{
         },
         "/login": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Đăng nhập người dùng với email và mật khẩu mạnh",
                 "consumes": [
                     "application/json"

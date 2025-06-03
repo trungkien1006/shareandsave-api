@@ -1,4 +1,7 @@
 package importinvoice
 
-type Repository struct {
+import "context"
+
+type Repository interface {
+	GetImportInvoiceNum(ctx context.Context) (string, error)
 }

@@ -868,6 +868,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Login
       tags:
       - auth
