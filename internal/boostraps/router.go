@@ -3,10 +3,12 @@ package boostraps
 import (
 	"final_project/internal/application/authapp"
 	"final_project/internal/application/categoryapp"
+	"final_project/internal/application/importinvoiceapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/domain/auth"
+	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	"final_project/internal/infrastructure/redisrepo"
@@ -54,6 +56,12 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	postRepo := persistence.NewPostRepoDB(db)
 	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo, categoryRepo)
 	postHandler := handler.NewPostHandler(postUC)
+
+	//import invoice dependency
+	importInvoiceService := importinvoice.NewImportInvoiceService()
+	importInvoiceRepo := persistence.NewImportInvoiceRepoDB(db)
+	importInvoiceUC := importinvoiceapp.NewUseCase(importInvoiceRepo, userRepo, itemRepo, importInvoiceService)
+	importInvoiceHandler := handler.NewImportInvoiceHandler(importInvoiceUC)
 
 	//auth dependency
 	authService := auth.NewAuthService()
@@ -114,6 +122,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//category API
 		v1.GET("/categories", categoryHandler.GetAll)
+
+		//import invoice API
+		v1.POST("/import-invoice", importInvoiceHandler.CreateImportInvoice)
 
 		//auth API
 		v1.POST("/login", authHandler.Login)
