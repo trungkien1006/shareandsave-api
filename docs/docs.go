@@ -57,6 +57,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/import-invoice": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API tạo phiếu nhập kho kèm lưu kho",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import invoice"
+                ],
+                "summary": "Create import invoice",
+                "parameters": [
+                    {
+                        "description": "Import invoice creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/importinvoicedto.CreateImportInvoiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/importinvoicedto.CreateImportInvoiceResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -980,6 +1031,24 @@ const docTemplate = `{
                 }
             }
         },
+        "enums.ItemClassify": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "ItemClassifyAll": "0 all",
+                "ItemClassifyLoseItem": "2 đồ thất lạc",
+                "ItemClassifyOlItem": "1 đồ cũ"
+            },
+            "x-enum-varnames": [
+                "ItemClassifyAll",
+                "ItemClassifyOlItem",
+                "ItemClassifyLoseItem"
+            ]
+        },
         "enums.PostStatus": {
             "type": "integer",
             "enum": [
@@ -1045,6 +1114,84 @@ const docTemplate = `{
                 "UserStatusActive",
                 "UserStatusLocked"
             ]
+        },
+        "importinvoicedto.CreateImportInvoiceRequest": {
+            "type": "object",
+            "required": [
+                "classify",
+                "itemImportInvoice",
+                "senderID"
+            ],
+            "properties": {
+                "classify": {
+                    "enum": [
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.ItemClassify"
+                        }
+                    ],
+                    "example": 1
+                },
+                "description": {
+                    "type": "string"
+                },
+                "itemImportInvoice": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/importinvoicedto.CreateItemImportInvoiceRequest"
+                    }
+                },
+                "senderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "importinvoicedto.CreateImportInvoiceResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.ItemWarehouse"
+                    }
+                }
+            }
+        },
+        "importinvoicedto.CreateImportInvoiceResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/importinvoicedto.CreateImportInvoiceResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "importinvoicedto.CreateItemImportInvoiceRequest": {
+            "type": "object",
+            "required": [
+                "itemID",
+                "quantity"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
         },
         "itemdto.CreateItemRequest": {
             "type": "object",
@@ -1795,6 +1942,23 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "warehousedto.ItemWarehouse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
                 }
             }
         }
