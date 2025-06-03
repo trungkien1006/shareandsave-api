@@ -949,6 +949,8 @@ paths:
           description: Conflict
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Create a new post
       tags:
       - posts

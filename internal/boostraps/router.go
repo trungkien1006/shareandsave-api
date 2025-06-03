@@ -108,7 +108,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//post API
 		v1.GET("/posts", postHandler.GetAllAdminPost)
 		v1.GET("/posts/:postID", postHandler.GetPostByID)
-		v1.POST("/posts", postHandler.CreatePost)
+		v1.POST("/posts", middlewares.AuthGuard, postHandler.CreatePost)
 		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
 
 		//category API

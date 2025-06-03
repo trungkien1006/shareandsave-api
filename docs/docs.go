@@ -455,6 +455,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API tạo mới một post và trả về thông tin post + user + JWT",
                 "consumes": [
                     "application/json"

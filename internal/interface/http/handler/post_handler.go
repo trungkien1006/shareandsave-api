@@ -133,6 +133,7 @@ func (h *PostHandler) GetPostByID(c *gin.Context) {
 
 // @Summary Create a new post
 // @Description API tạo mới một post và trả về thông tin post + user + JWT
+// @Security BearerAuth
 // @Tags posts
 // @Accept json
 // @Produce json
