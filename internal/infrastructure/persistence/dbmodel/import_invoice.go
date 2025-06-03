@@ -8,7 +8,7 @@ import (
 )
 
 type ImportInvoice struct {
-	ID          string `gorm:"primaryKey;size:255"`
+	ID          uint   `gorm:"primaryKey;size:255"`
 	InvoiceNum  int    `gorm:"unique"`
 	SenderID    uint   `gorm:"index"`
 	ReceiverID  uint   `gorm:"index"`
@@ -30,7 +30,7 @@ func ImportInvoiceDomainToDB(domain importinvoice.ImportInvoice) ImportInvoice {
 
 	for _, value := range domain.ItemImportInvoice {
 		items = append(items, ItemImportInvoice{
-			ItemID:      value.ID,
+			ItemID:      value.ItemID,
 			Quantity:    value.Quantity,
 			Description: value.Description,
 		})

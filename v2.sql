@@ -174,7 +174,7 @@ CREATE TABLE `notification` (
 );
 
 CREATE TABLE `import_invoice` (
-  `id` varchar(255) PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_num` int UNIQUE,
   `sender_id` int,
   `receiver_id` int,
@@ -187,7 +187,7 @@ CREATE TABLE `import_invoice` (
 );
 
 CREATE TABLE `export_invoice` (
-  `id` varchar(255) PRIMARY KEY,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_num` int UNIQUE,
   `sender_id` int,
   `receiver_id` int,

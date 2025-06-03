@@ -72,7 +72,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 		} else {
 			wh := warehouses[value.ID]
 
-			wh.ItemID = value.ID
+			wh.ItemID = value.ItemID
 			wh.ItemName = value.ItemName
 			wh.SKU = uc.service.GenerateSKU(int(value.ID), int64(key))
 			wh.Classify = importInvoice.Classify
@@ -92,7 +92,8 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 			}
 
 			itemWHs = append(itemWHs, warehouse.ItemWareHouse{
-				ItemID:      value.ID,
+				ItemID:      value.ItemID,
+				ItemName:    value.ItemName,
 				Description: value.Description,
 				Code:        itemCode,
 			})
