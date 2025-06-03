@@ -201,7 +201,7 @@ CREATE TABLE `export_invoice` (
 
 CREATE TABLE `item_import_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `invoice_id` varchar(255),
+  `invoice_id` int,
   `item_id` int,
   `quantity` tinyint,
   `description` text,
@@ -212,7 +212,7 @@ CREATE TABLE `item_import_invoice` (
 
 CREATE TABLE `item_export_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `invoice_id` varchar(255),
+  `invoice_id` int,
   `item_warehouse_id` int,
   `quantity` tinyint,
   `created_at` timestamp,
