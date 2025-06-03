@@ -80,7 +80,7 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 	var DBItem dbmodel.Item
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).First(&DBItem, id).Error; err != nil {
-		return err
+		return errors.New("Có lỗi khi truy suất đồ đạc theo id: " + err.Error())
 	}
 
 	*item = dbmodel.ItemDBToDomain(DBItem)
