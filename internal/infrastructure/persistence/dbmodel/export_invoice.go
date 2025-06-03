@@ -12,7 +12,6 @@ type ExportInvoice struct {
 	SenderID    uint   `gorm:"index"`
 	ReceiverID  uint   `gorm:"index"`
 	Classify    string `gorm:"size:32"`
-	ReceiveDate time.Time
 	Description string `gorm:"type:TEXT"`
 	IsLock      bool
 	CreatedAt   time.Time

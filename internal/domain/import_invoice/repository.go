@@ -1,7 +1,11 @@
 package importinvoice
 
-import "context"
+import (
+	"context"
+	"final_project/internal/domain/warehouse"
+)
 
 type Repository interface {
-	GetImportInvoiceNum(ctx context.Context) (string, error)
+	GetImportInvoiceNum(ctx context.Context) (int, error)
+	CreateImportInvoice(ctx context.Context, importInvoice ImportInvoice, warehouse *[]warehouse.Warehouse) error
 }

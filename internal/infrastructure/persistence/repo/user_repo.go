@@ -65,6 +65,16 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 	return totalPage, nil
 }
 
+func (r *UserRepoDB) IsExist(ctx context.Context, userID uint) (bool, error) {
+	var count int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra user: " + err.Error())
+	}
+
+	return count > 0, nil
+}
+
 func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
 	var dbUser dbmodel.User
 

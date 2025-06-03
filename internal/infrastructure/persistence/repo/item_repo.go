@@ -77,9 +77,13 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 }
 
 func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) error {
-	if err := r.db.Debug().WithContext(ctx).First(item, id).Error; err != nil {
+	var DBItem dbmodel.Item
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).First(&DBItem, id).Error; err != nil {
 		return err
 	}
+
+	*item = dbmodel.ItemDBToDomain(DBItem)
 
 	return nil
 }
@@ -90,7 +94,7 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 // 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("id = ?", itemID).Preload("Category").Find
 // }
 
-func (r *ItemRepoDB) IsExisted(ctx context.Context, itemID uint) (bool, error) {
+func (r *ItemRepoDB) IsExist(ctx context.Context, itemID uint) (bool, error) {
 	var count int64
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("id = ?", itemID).Count(&count).Error; err != nil {

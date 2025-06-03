@@ -19,9 +19,7 @@ func CreateDTOToDomain(dto CreateImportInvoiceRequest) importinvoice.ImportInvoi
 
 	return importinvoice.ImportInvoice{
 		SenderID:          dto.SenderID,
-		ReceiverID:        dto.ReceiverID,
 		Classify:          enums.ItemClassify.String(dto.Classify),
-		SendDate:          dto.SendDate,
 		Description:       dto.Description,
 		ItemImportInvoice: items,
 	}
