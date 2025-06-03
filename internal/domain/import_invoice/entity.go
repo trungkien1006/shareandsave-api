@@ -5,10 +5,11 @@ import "time"
 type ImportInvoice struct {
 	ID          string
 	InvoiceNum  int
-	AdminID     uint
 	SenderID    uint
-	ItemType    string
+	ReceiverID  uint
+	Classify    string
 	SendDate    time.Time
 	Description string
 	IsLock      bool
+	IsAnonymous bool
 }

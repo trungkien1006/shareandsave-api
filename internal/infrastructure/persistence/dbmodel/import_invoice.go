@@ -15,7 +15,6 @@ type ImportInvoice struct {
 	SendDate    time.Time
 	Description string `gorm:"type:TEXT"`
 	IsLock      bool
-	IsAnonymous bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

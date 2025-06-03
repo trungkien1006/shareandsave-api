@@ -182,7 +182,6 @@ CREATE TABLE `import_invoice` (
   `send_date` datetime,
   `description` text,
   `is_lock` boolean,
-  `is_anonymous` boolean,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
@@ -193,11 +192,10 @@ CREATE TABLE `export_invoice` (
   `invoice_num` int UNIQUE,
   `sender_id` int,
   `receiver_id` int,
-  `item_type` varchar(32),
+  `classify` varchar(32),
   `receive_date` datetime,
   `description` text,
   `is_lock` boolean,
-  `is_anonymous` boolean,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
