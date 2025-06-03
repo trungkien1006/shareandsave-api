@@ -1,1 +1,4 @@
-package import_invoice
+package importinvoice
+
+type Repository struct {
+}

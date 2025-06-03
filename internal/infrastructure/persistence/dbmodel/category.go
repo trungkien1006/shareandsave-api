@@ -9,10 +9,12 @@ import (
 
 type Category struct {
 	ID        uint   `gorm:"primaryKey;autoIncrement"`
-	Name      string `gorm:"unique;size:255"`
+	Name      string `gorm:"size:255"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+
+	Items []Item `gorm:"foreignKey:CategoryID"`
 }
 
 // DB -> Domain

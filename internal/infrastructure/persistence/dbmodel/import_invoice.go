@@ -11,7 +11,7 @@ type ImportInvoice struct {
 	InvoiceNum  int    `gorm:"unique"`
 	SenderID    uint   `gorm:"index"`
 	ReceiverID  uint   `gorm:"index"`
-	ItemType    string `gorm:"size:32"`
+	Classify    string `gorm:"size:32"` // đổi từ ItemType sang Classify
 	SendDate    time.Time
 	Description string `gorm:"type:TEXT"`
 	IsLock      bool

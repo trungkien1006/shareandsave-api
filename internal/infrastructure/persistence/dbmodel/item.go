@@ -9,7 +9,7 @@ import (
 
 type Item struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	CategoryID  uint   `gorm:"index"`
+	CategoryID  uint   `gorm:"index"` // mới thêm
 	Name        string `gorm:"unique;size:255"`
 	Description string `gorm:"type:TEXT"`
 	Image       string `gorm:"type:LONGTEXT"`
@@ -17,14 +17,10 @@ type Item struct {
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 
-	Category Category `gorm:"foreignKey:CategoryID"`
-
-	// 1-n: Một item có nhiều item warehouse
-	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:ItemID"`
-	// 1-n: Một item có nhiều item_import_invoice
+	Category           Category            `gorm:"foreignKey:CategoryID"`
+	ItemWarehouses     []ItemWarehouse     `gorm:"foreignKey:ItemID"`
 	ItemImportInvoices []ItemImportInvoice `gorm:"foreignKey:ItemID"`
-
-	TransactionItems []TransactionItem `gorm:"foreignKey:ItemID"`
+	TransactionItems   []TransactionItem   `gorm:"foreignKey:ItemID"`
 }
 
 // Domain → DB

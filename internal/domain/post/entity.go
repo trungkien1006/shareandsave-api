@@ -8,6 +8,7 @@ import (
 
 type OldItemsInPost struct {
 	ItemID   uint
+	Image    string
 	Quantity int
 }
 

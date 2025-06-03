@@ -14,7 +14,7 @@ type Post struct {
 	Type        int
 	Slug        string      `gorm:"unique;size:255"`
 	Title       string      `gorm:"size:255"`
-	Description string      `gorm:type:MEDIUMTEXT`
+	Description string      `gorm:"type:MEDIUMTEXT"`
 	Content     string      `gorm:"type:JSON"`
 	Info        string      `gorm:"type:JSON"`
 	Status      int8        `gorm:"type:TINYINT"`
@@ -123,6 +123,7 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 	for _, value := range domainPost.OldItems {
 		postItems = append(postItems, PostItem{
 			ItemID:   value.ItemID,
+			Image:    value.Image,
 			Quantity: value.Quantity,
 		})
 	}
@@ -130,6 +131,7 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 	for _, value := range domainPost.NewItems {
 		postItems = append(postItems, PostItem{
 			ItemID:   value.ItemID,
+			Image:    value.Image,
 			Quantity: value.Quantity,
 		})
 	}

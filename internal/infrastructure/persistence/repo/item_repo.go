@@ -77,7 +77,7 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 }
 
 func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) error {
-	if err := r.db.Debug().WithContext(ctx).First(&item, id).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).First(item, id).Error; err != nil {
 		return err
 	}
 

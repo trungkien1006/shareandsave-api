@@ -5,8 +5,9 @@ import (
 )
 
 type OldItemsPost struct {
-	ItemID   uint `json:"itemID" binding:"required"`
-	Quantity int  `json:"quantity" binding:"min=1"`
+	ItemID   uint   `json:"itemID" binding:"required"`
+	Image    string `json:"image"`
+	Quantity int    `json:"quantity" binding:"min=1"`
 }
 
 type NewItemsPost struct {

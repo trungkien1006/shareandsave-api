@@ -90,14 +90,24 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		post.Images[index] = formatedImage
 	}
 
-	for _, oldItem := range post.OldItems {
-		isExisted, err := uc.itemRepo.IsExisted(ctx, oldItem.ItemID)
+	for key, oldItem := range post.OldItems {
+		var item item.Item
+
+		err := uc.itemRepo.GetByID(ctx, &item, oldItem.ItemID)
 		if err != nil {
 			return err
 		}
 
-		if !isExisted {
-			return err
+		if oldItem.Image == "" {
+			post.OldItems[key].Image = item.Image
+		} else {
+			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+
+			if err != nil {
+				return err
+			}
+
+			post.OldItems[key].Image = strBase64Image
 		}
 
 		itemIDs[oldItem.ItemID] = oldItem.ItemID

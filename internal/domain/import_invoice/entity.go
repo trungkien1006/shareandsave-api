@@ -1,4 +1,4 @@
-package import_invoice
+package importinvoice
 
 import "time"
 

@@ -1438,6 +1438,9 @@ const docTemplate = `{
                 "itemID"
             ],
             "properties": {
+                "image": {
+                    "type": "string"
+                },
                 "itemID": {
                     "type": "integer"
                 },

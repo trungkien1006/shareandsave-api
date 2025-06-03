@@ -55,7 +55,8 @@ CREATE TABLE `post` (
 CREATE TABLE `post_item` (
   `post_id` int,
   `item_id` int,
-  `quantity` int
+  `quantity` int,
+  `image` longtext
 );
 
 CREATE TABLE `interest` (
@@ -92,7 +93,8 @@ CREATE TABLE `transaction` (
 
 CREATE TABLE `transaction_item` (
   `transaction_id` int,
-  `item_id` int
+  `item_id` int,
+  `quantity` int
 );
 
 CREATE TABLE `appointment` (
@@ -112,6 +114,7 @@ CREATE TABLE `appointment_item_warehouse` (
 
 CREATE TABLE `warehouse` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `item_id` int,
   `sku` varchar(255) UNIQUE,
   `quantity` int,
   `description` text,
@@ -127,6 +130,7 @@ CREATE TABLE `item_warehouse` (
   `item_id` int,
   `warehouse_id` int,
   `code` varchar(255) UNIQUE,
+  `description` text,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
@@ -174,7 +178,7 @@ CREATE TABLE `import_invoice` (
   `invoice_num` int UNIQUE,
   `sender_id` int,
   `receiver_id` int,
-  `item_type` varchar(32),
+  `classify` varchar(32),
   `send_date` datetime,
   `description` text,
   `is_lock` boolean,
@@ -203,8 +207,8 @@ CREATE TABLE `item_import_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_id` varchar(255),
   `item_id` int,
-  `sku` varchar(255) UNIQUE,
   `quantity` tinyint,
+  `description` text,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
@@ -214,7 +218,6 @@ CREATE TABLE `item_export_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_id` varchar(255),
   `item_warehouse_id` int,
-  `sku` varchar(255) UNIQUE,
   `quantity` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,
@@ -239,6 +242,8 @@ CREATE TABLE `setting` (
   `updated_at` timestamp,
   `deleted_at` timestamp
 );
+
+ALTER TABLE `warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 
 ALTER TABLE `user` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 

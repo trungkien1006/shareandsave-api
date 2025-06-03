@@ -8,6 +8,7 @@ import (
 
 type Warehouse struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	ItemID      uint   `gorm:"index"` // mới thêm
 	SKU         string `gorm:"unique;size:255"`
 	Quantity    int
 	Description string `gorm:"type:TEXT"`
@@ -17,6 +18,6 @@ type Warehouse struct {
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 
-	// 1-n: Một kho có nhiều item warehouse
+	Item           Item            `gorm:"foreignKey:ItemID"`
 	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:WarehouseID"`
 }
