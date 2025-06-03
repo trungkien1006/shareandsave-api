@@ -112,7 +112,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
 
 		//category API
-		v1.GET("/categories", middlewares.AuthGuard, categoryHandler.GetAll)
+		v1.GET("/categories", categoryHandler.GetAll)
 
 		//auth API
 		v1.POST("/login", authHandler.Login)

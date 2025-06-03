@@ -24,11 +24,6 @@ const docTemplate = `{
     "paths": {
         "/categories": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "API lấy ra tất cả danh mục đồ đạc",
                 "consumes": [
                     "application/json"

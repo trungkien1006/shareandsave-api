@@ -656,8 +656,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
       summary: Get categories
       tags:
       - categories

@@ -20,7 +20,6 @@ func NewCategoryHandler(uc *categoryapp.UseCase) *CategoryHandler {
 
 // @Summary Get categories
 // @Description API lấy ra tất cả danh mục đồ đạc
-// @Security BearerAuth
 // @Tags categories
 // @Accept json
 // @Produce json
