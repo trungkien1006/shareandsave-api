@@ -49,7 +49,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 	for key, value := range importInvoice.ItemImportInvoice {
 		var item item.Item
 
-		err := uc.itemRepo.GetByID(ctx, &item, value.ID)
+		err := uc.itemRepo.GetByID(ctx, &item, value.ItemID)
 		if err != nil {
 			return err
 		}
