@@ -138,6 +138,77 @@
             }
         },
         "/import-invoice": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import invoice"
+                ],
+                "summary": "Get import invoice",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "authorName, title, createdAt",
+                        "description": "Sort column",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC, DESC",
+                        "description": "Sort type",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (vd: email, fullName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/importinvoicedto.GetmportInvoiceResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1270,6 +1341,57 @@
                 "quantity": {
                     "type": "integer",
                     "minimum": 1
+                }
+            }
+        },
+        "importinvoicedto.GetmportInvoiceResponse": {
+            "type": "object",
+            "properties": {
+                "import_invoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/importinvoicedto.ImportInvoiceListDTO"
+                    }
+                },
+                "total_page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "importinvoicedto.GetmportInvoiceResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/importinvoicedto.GetmportInvoiceResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "importinvoicedto.ImportInvoiceListDTO": {
+            "type": "object",
+            "properties": {
+                "classify": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "item_count": {
+                    "type": "integer"
+                },
+                "receiver_name": {
+                    "type": "string"
+                },
+                "sender_name": {
+                    "type": "string"
                 }
             }
         },

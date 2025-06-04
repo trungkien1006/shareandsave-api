@@ -24,3 +24,15 @@ func CreateDTOToDomain(dto CreateImportInvoiceRequest) importinvoice.ImportInvoi
 		ItemImportInvoice: items,
 	}
 }
+
+// Domain -> DTO
+func DomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceListDTO {
+	return ImportInvoiceListDTO{
+		ID:           domain.ID,
+		SenderName:   domain.SenderName,
+		ReceiverName: domain.ReceiverName,
+		Classify:     domain.Classify,
+		CreatedAt:    domain.CreatedAt,
+		ItemCount:    domain.ItemCount,
+	}
+}

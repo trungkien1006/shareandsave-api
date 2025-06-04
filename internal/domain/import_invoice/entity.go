@@ -1,14 +1,20 @@
 package importinvoice
 
+import "time"
+
 type ImportInvoice struct {
-	ID                string
+	ID                uint
 	InvoiceNum        int
 	SenderID          uint
+	SenderName        string
 	ReceiverID        uint
+	ReceiverName      string
 	Classify          string
 	Description       string
 	IsLock            bool
 	ItemImportInvoice []ItemImportInvoice
+	ItemCount         int
+	CreatedAt         time.Time
 }
 
 type ItemImportInvoice struct {

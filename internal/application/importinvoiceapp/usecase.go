@@ -3,6 +3,7 @@ package importinvoiceapp
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/filter"
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/user"
@@ -23,6 +24,16 @@ func NewUseCase(r importinvoice.Repository, userRepo user.Repository, itemRepo i
 		itemRepo: itemRepo,
 		service:  service,
 	}
+}
+
+func (uc *UseCase) GetAllImportInvoice(ctx context.Context, importInvoice *[]importinvoice.ImportInvoice, filter filter.FilterRequest) (int, error) {
+	totalPage, err := uc.repo.GetAll(ctx, importInvoice, filter)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return totalPage, nil
 }
 
 func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice importinvoice.ImportInvoice, handlerWarehouse *[]warehouse.Warehouse) error {

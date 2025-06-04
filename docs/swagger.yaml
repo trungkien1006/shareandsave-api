@@ -201,6 +201,39 @@ definitions:
     - itemID
     - quantity
     type: object
+  importinvoicedto.GetmportInvoiceResponse:
+    properties:
+      import_invoices:
+        items:
+          $ref: '#/definitions/importinvoicedto.ImportInvoiceListDTO'
+        type: array
+      total_page:
+        type: integer
+    type: object
+  importinvoicedto.GetmportInvoiceResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/importinvoicedto.GetmportInvoiceResponse'
+      message:
+        type: string
+    type: object
+  importinvoicedto.ImportInvoiceListDTO:
+    properties:
+      classify:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      item_count:
+        type: integer
+      receiver_name:
+        type: string
+      sender_name:
+        type: string
+    type: object
   itemdto.CreateItemRequest:
     properties:
       categoryID:
@@ -859,6 +892,55 @@ paths:
       tags:
       - posts
   /import-invoice:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column
+        example: authorName, title, createdAt
+        in: query
+        name: sort
+        type: string
+      - description: Sort type
+        example: ASC, DESC
+        in: query
+        name: order
+        type: string
+      - description: 'Trường lọc (vd: email, fullName)'
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/importinvoicedto.GetmportInvoiceResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get import invoice
+      tags:
+      - import invoice
     post:
       consumes:
       - application/json
