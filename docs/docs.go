@@ -57,6 +57,93 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/posts": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get posts client",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "authorName, title, createdAt",
+                        "description": "Sort column",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC, DESC",
+                        "description": "Sort type",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "1, 2, 3",
+                        "description": "Pending:1, Rejected:2, Approved:3",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "1, 2, 3, 4",
+                        "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (vd: email, fullName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.GetPostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/import-invoice": {
             "post": {
                 "security": [
@@ -1575,6 +1662,34 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/postdto.GetDetailPostResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "postdto.GetPostResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/postdto.DetailPostDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "postdto.GetPostResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/postdto.GetPostResponse"
                 },
                 "message": {
                     "type": "string"

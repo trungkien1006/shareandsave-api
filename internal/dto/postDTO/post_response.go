@@ -13,6 +13,18 @@ type GetAdminPostResponse struct {
 }
 
 // Wrapper cho response lấy 1 Post (thêm code/message)
+type GetPostResponseWrapper struct {
+	Code    int             `json:"code"`
+	Message string          `json:"message"`
+	Data    GetPostResponse `json:"data"`
+}
+
+type GetPostResponse struct {
+	Posts     []DetailPostDTO `json:"posts"`
+	TotalPage int             `json:"totalPage"`
+}
+
+// Wrapper cho response lấy 1 Post (thêm code/message)
 type GetAdminPostResponseWrapper struct {
 	Code    int                  `json:"code"`
 	Message string               `json:"message"`

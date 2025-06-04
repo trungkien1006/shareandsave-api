@@ -88,6 +88,74 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	})
 }
 
+// @Summary Get posts client
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record of page" minimum(1) example(10)
+// @Param sort query string false "Sort column" example(authorName, title, createdAt)
+// @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
+// @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
+// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
+// @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
+// @Success 200 {object} postdto.GetPostResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /client/posts [get]
+func (h *PostHandler) GetAllPost(c *gin.Context) {
+	var (
+		req       postdto.GetAdminPostRequest
+		posts     []post.DetailPost
+		domainReq post.PostFilterRequest
+	)
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	req.SetDefault()
+
+	domainReq.Page = req.Page
+	domainReq.Limit = req.Limit
+	domainReq.Sort = req.Sort
+	domainReq.Order = req.Order
+	domainReq.Status = int(req.Status)
+	domainReq.Type = int(req.Type)
+	domainReq.SearchBy = req.SearchBy
+	domainReq.SearchValue = req.SearchValue
+
+	totalPage, err := h.uc.GetAllPost(c.Request.Context(), &posts, domainReq)
+
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_POST_NOT_FOUND"),
+		)
+		return
+	}
+
+	postsDTORes := make([]postdto.DetailPostDTO, 0)
+
+	for _, post := range posts {
+		postsDTORes = append(postsDTORes, postdto.DetailPostDomainToDTO(post))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Fetched posts successfully",
+		"data": postdto.GetPostResponse{
+			Posts:     postsDTORes,
+			TotalPage: totalPage,
+		},
+	})
+}
+
 // @Summary Get detail post
 // @Description API lấy bài viết theo id
 // @Tags posts

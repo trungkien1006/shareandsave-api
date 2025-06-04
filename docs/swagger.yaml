@@ -457,6 +457,24 @@ definitions:
       message:
         type: string
     type: object
+  postdto.GetPostResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/postdto.DetailPostDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  postdto.GetPostResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/postdto.GetPostResponse'
+      message:
+        type: string
+    type: object
   postdto.InterestDTO:
     properties:
       id:
@@ -743,6 +761,66 @@ paths:
       summary: Get categories
       tags:
       - categories
+  /client/posts:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column
+        example: authorName, title, createdAt
+        in: query
+        name: sort
+        type: string
+      - description: Sort type
+        example: ASC, DESC
+        in: query
+        name: order
+        type: string
+      - description: Pending:1, Rejected:2, Approved:3
+        example: 1, 2, 3
+        in: query
+        name: status
+        type: string
+      - description: GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4
+        example: 1, 2, 3, 4
+        in: query
+        name: type
+        type: string
+      - description: 'Trường lọc (vd: email, fullName)'
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postdto.GetPostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get posts client
+      tags:
+      - posts
   /import-invoice:
     post:
       consumes:
