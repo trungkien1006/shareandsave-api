@@ -77,6 +77,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
+// @Param request body authdto.GetAccessTokenRequest true "Refresh Token"
 // @Success 200 {object} authdto.GetAccessTokenResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
