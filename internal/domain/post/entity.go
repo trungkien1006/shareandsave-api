@@ -39,17 +39,18 @@ type CreatePost struct {
 }
 
 type Post struct {
-	ID         uint
-	AuthorID   uint
-	AuthorName string
-	Type       int
-	Slug       string
-	Title      string
-	Content    string
-	Info       string
-	Status     int8
-	Images     []string
-	CreatedAt  time.Time
+	ID          uint
+	AuthorID    uint
+	AuthorName  string
+	Type        int
+	Slug        string
+	Title       string
+	Content     string
+	Description string
+	Info        string
+	Status      int8
+	Images      []string
+	CreatedAt   time.Time
 }
 
 type DetailPostItem struct {

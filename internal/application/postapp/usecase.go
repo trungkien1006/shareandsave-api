@@ -194,14 +194,8 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error 
 		updatePost.Slug = uc.service.GenerateSlug(domainPost.Title)
 	}
 
-	if domainPost.Info != "" {
-		updatePost.Info = domainPost.Info
-		updateContent, err := uc.service.GenerateContent(domainPost.Info)
-		if err != nil {
-			return errors.New("Có lỗi khi tạo content cho bài viết từ info: " + err.Error())
-		}
-
-		updatePost.Content = updateContent
+	if domainPost.Description != "" {
+		updatePost.Description = domainPost.Description
 	}
 
 	if domainPost.Images != nil {

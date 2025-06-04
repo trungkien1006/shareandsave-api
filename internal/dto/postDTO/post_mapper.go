@@ -187,10 +187,10 @@ func NewItemsDomainToDTO(item post.NewItemsInPost) NewItemsPost {
 // DTO → Domain
 func UpdateDTOToDomain(updatePostDTO UpdatePostRequest) post.Post {
 	return post.Post{
-		Title:  updatePostDTO.Title,
-		Info:   updatePostDTO.Info,
-		Status: int8(updatePostDTO.Status),
-		Images: updatePostDTO.Images,
+		Title:       updatePostDTO.Title,
+		Description: updatePostDTO.Description,
+		Status:      int8(updatePostDTO.Status),
+		Images:      updatePostDTO.Images,
 	}
 }
 

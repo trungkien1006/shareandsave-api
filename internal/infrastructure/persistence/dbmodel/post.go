@@ -143,15 +143,16 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 // Domain → DB
 func AdminPostDomainToDB(domainPost post.Post) Post {
 	return Post{
-		ID:       domainPost.ID,
-		AuthorID: domainPost.AuthorID,
-		Type:     domainPost.Type,
-		Slug:     domainPost.Slug,
-		Title:    domainPost.Title,
-		Content:  domainPost.Content,
-		Info:     domainPost.Info,
-		Status:   domainPost.Status,
-		Image:    domainPost.Images,
+		ID:          domainPost.ID,
+		AuthorID:    domainPost.AuthorID,
+		Type:        domainPost.Type,
+		Slug:        domainPost.Slug,
+		Title:       domainPost.Title,
+		Content:     domainPost.Content,
+		Description: domainPost.Description,
+		Info:        domainPost.Info,
+		Status:      domainPost.Status,
+		Image:       domainPost.Images,
 	}
 }
 
