@@ -15,7 +15,7 @@ type CreateImportInvoiceResponseWrapper struct {
 }
 
 type GetmportInvoiceResponse struct {
-	ImInvoices []ImportInvoiceListDTO `json:"import_invoices"`
+	ImInvoices []ImportInvoiceListDTO `json:"importInvoices"`
 	TotalPage  int                    `json:"total_page"`
 }
 
