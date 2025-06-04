@@ -17,6 +17,15 @@ type ImportInvoice struct {
 	CreatedAt         time.Time
 }
 
+type GetImportInvoice struct {
+	ID           uint
+	SenderName   string
+	ReceiverName string
+	Classify     string
+	ItemCount    int
+	CreatedAt    time.Time
+}
+
 type ItemImportInvoice struct {
 	ID          uint
 	InvoiceID   string

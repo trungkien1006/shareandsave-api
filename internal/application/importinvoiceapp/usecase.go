@@ -26,7 +26,7 @@ func NewUseCase(r importinvoice.Repository, userRepo user.Repository, itemRepo i
 	}
 }
 
-func (uc *UseCase) GetAllImportInvoice(ctx context.Context, importInvoice *[]importinvoice.ImportInvoice, filter filter.FilterRequest) (int, error) {
+func (uc *UseCase) GetAllImportInvoice(ctx context.Context, importInvoice *[]importinvoice.GetImportInvoice, filter filter.FilterRequest) (int, error) {
 	totalPage, err := uc.repo.GetAll(ctx, importInvoice, filter)
 
 	if err != nil {

@@ -26,7 +26,7 @@ func CreateDTOToDomain(dto CreateImportInvoiceRequest) importinvoice.ImportInvoi
 }
 
 // Domain -> DTO
-func DomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceListDTO {
+func GetDomainToDTO(domain importinvoice.GetImportInvoice) ImportInvoiceListDTO {
 	return ImportInvoiceListDTO{
 		ID:           domain.ID,
 		SenderName:   domain.SenderName,

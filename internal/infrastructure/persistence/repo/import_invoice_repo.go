@@ -21,7 +21,7 @@ func NewImportInvoiceRepoDB(db *gorm.DB) *ImportInvoiceRepoDB {
 	return &ImportInvoiceRepoDB{db: db}
 }
 
-func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]importinvoice.ImportInvoice, filter filter.FilterRequest) (int, error) {
+func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]importinvoice.GetImportInvoice, filter filter.FilterRequest) (int, error) {
 	var (
 		query *gorm.DB
 	)

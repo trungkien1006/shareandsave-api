@@ -41,7 +41,7 @@ func NewImportInvoiceHandler(uc *importinvoiceapp.UseCase) *ImportInvoiceHandler
 func (h *ImportInvoiceHandler) GetAllImportInvoice(c *gin.Context) {
 	var (
 		req            importinvoicedto.GetImportInvoiceRequest
-		importInvoices []importinvoice.ImportInvoice
+		importInvoices []importinvoice.GetImportInvoice
 		domainReq      filter.FilterRequest
 	)
 
@@ -75,7 +75,7 @@ func (h *ImportInvoiceHandler) GetAllImportInvoice(c *gin.Context) {
 	imInvoiceDTOs := make([]importinvoicedto.ImportInvoiceListDTO, 0)
 
 	for _, value := range importInvoices {
-		imInvoiceDTOs = append(imInvoiceDTOs, importinvoicedto.DomainToDTO(value))
+		imInvoiceDTOs = append(imInvoiceDTOs, importinvoicedto.GetDomainToDTO(value))
 	}
 
 	c.JSON(http.StatusOK, gin.H{
