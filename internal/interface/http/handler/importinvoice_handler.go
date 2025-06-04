@@ -25,6 +25,7 @@ func NewImportInvoiceHandler(uc *importinvoiceapp.UseCase) *ImportInvoiceHandler
 
 // @Summary Get import invoice
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
 // @Tags import invoice
 // @Accept json
 // @Produce json

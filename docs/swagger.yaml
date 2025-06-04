@@ -938,6 +938,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get import invoice
       tags:
       - import invoice

@@ -146,6 +146,11 @@ const docTemplate = `{
         },
         "/import-invoice": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"

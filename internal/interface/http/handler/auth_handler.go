@@ -72,6 +72,10 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	})
 }
 
+func (h *AuthHandler) GetAccessToken(c *gin.Context) {
+
+}
+
 // @Summary Logout
 // @Description Đăng đăng xuất
 // @Tags auth
