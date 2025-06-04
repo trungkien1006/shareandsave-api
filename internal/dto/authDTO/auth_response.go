@@ -19,3 +19,13 @@ type LogoutResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type GetAccessTokenResponseWrapper struct {
+	Code    int                    `json:"code"`
+	Message string                 `json:"message"`
+	Data    GetAccessTokenResponse `json:"data"`
+}
+
+type GetAccessTokenResponse struct {
+	JWT string `json:"jwt"`
+}

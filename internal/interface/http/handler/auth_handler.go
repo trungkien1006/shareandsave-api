@@ -72,8 +72,49 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	})
 }
 
+// @Summary Refresh Token
+// @Description Lấy access token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} authdto.GetAccessTokenResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /refresh-token [post]
 func (h *AuthHandler) GetAccessToken(c *gin.Context) {
+	var (
+		req authdto.GetAccessTokenRequest
+	)
 
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := helpers.CheckJWT(c.Request.Context(), req.RefreshToken); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"code":    http.StatusUnauthorized,
+			"error":   enums.ErrUnauthorized,
+			"message": err.Error(),
+		})
+
+		return
+	}
+
+	JWTSub := helpers.GetTokenSubject(req.RefreshToken)
+
+	jwt := helpers.GenerateToken(JWTSub)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get access token successfully",
+		"data": authdto.GetAccessTokenResponse{
+			JWT: jwt,
+		},
+	})
 }
 
 // @Summary Logout

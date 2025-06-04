@@ -1,5 +1,19 @@
 basePath: /api/v1
 definitions:
+  authdto.GetAccessTokenResponse:
+    properties:
+      jwt:
+        type: string
+    type: object
+  authdto.GetAccessTokenResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.GetAccessTokenResponse'
+      message:
+        type: string
+    type: object
   authdto.LoginRequest:
     properties:
       device:
@@ -1353,6 +1367,29 @@ paths:
       summary: Update posts
       tags:
       - posts
+  /refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Lấy access token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.GetAccessTokenResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Refresh Token
+      tags:
+      - auth
   /users:
     get:
       consumes:

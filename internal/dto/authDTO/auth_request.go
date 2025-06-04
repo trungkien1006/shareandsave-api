@@ -7,3 +7,7 @@ type LoginRequest struct {
 
 	Device string `json:"device" validate:"required,oneof=mobile web" example:"web"`
 }
+
+type GetAccessTokenRequest struct {
+	RefreshToken string `json:"refreshToken"`
+}

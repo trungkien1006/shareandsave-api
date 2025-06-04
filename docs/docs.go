@@ -842,6 +842,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/refresh-token": {
+            "post": {
+                "description": "Lấy access token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh Token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.GetAccessTokenResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -1074,6 +1109,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authdto.GetAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "jwt": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.GetAccessTokenResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.GetAccessTokenResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "authdto.LoginRequest": {
             "type": "object",
             "required": [
