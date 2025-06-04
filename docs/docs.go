@@ -855,6 +855,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Refresh Token",
+                "parameters": [
+                    {
+                        "description": "Refresh Token",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.GetAccessTokenRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1109,6 +1120,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authdto.GetAccessTokenRequest": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
         "authdto.GetAccessTokenResponse": {
             "type": "object",
             "properties": {

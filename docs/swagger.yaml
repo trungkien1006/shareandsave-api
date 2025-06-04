@@ -1,5 +1,10 @@
 basePath: /api/v1
 definitions:
+  authdto.GetAccessTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    type: object
   authdto.GetAccessTokenResponse:
     properties:
       jwt:
@@ -1372,6 +1377,13 @@ paths:
       consumes:
       - application/json
       description: Lấy access token
+      parameters:
+      - description: Refresh Token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.GetAccessTokenRequest'
       produces:
       - application/json
       responses:
