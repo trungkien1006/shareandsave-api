@@ -6,7 +6,7 @@ import (
 
 type Repository interface {
 	AdminGetAll(ctx context.Context, posts *[]Post, filter PostFilterRequest) (int, error)
-	GetAll(ctx context.Context, posts *[]DetailPost, filter PostFilterRequest) (int, error)
+	GetAll(ctx context.Context, posts *[]PostWithCount, filter PostFilterRequest) (int, error)
 	GetDetailByID(ctx context.Context, post *DetailPost, postID uint) error
 	GetByID(ctx context.Context, post *Post, postID uint) error
 	Save(ctx context.Context, post *CreatePost) error

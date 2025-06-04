@@ -59,3 +59,21 @@ type DetailPostDTO struct {
 	Interest    []InterestDTO       `json:"interests"`
 	Items       []DetailPostItemDTO `json:"items"`
 }
+
+type PostWithCountDTO struct {
+	ID            uint      `json:"id"`
+	AuthorID      uint      `json:"authorID"`
+	AuthorName    string    `json:"authorName"`
+	Type          int       `json:"type"`
+	Slug          string    `json:"slug"`
+	Title         string    `json:"title"`
+	Description   string    `json:"description"`
+	Content       string    `json:"content"`
+	Info          string    `json:"info"`
+	Status        int8      `json:"status"`
+	Images        []string  `json:"images"`
+	CreatedAt     time.Time `json:"createdAt"`
+	Tag           []string  `json:"tags"`
+	InterestCount uint      `json:"interestCount"`
+	ItemCount     uint      `json:"itemCount"`
+}

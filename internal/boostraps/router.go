@@ -114,8 +114,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.PATCH("/items/:itemID", itemHandler.UpdateItem)
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
-		//post API
+		//client post API
 		v1.GET("/client/posts", postHandler.GetAllPost)
+		v1.GET("/client/posts/:postID", postHandler.GetPostByID)
+
+		//post API
 		v1.GET("/posts", postHandler.GetAllAdminPost)
 		v1.GET("/posts/:postID", postHandler.GetPostByID)
 		v1.POST("/posts", middlewares.AuthGuard, postHandler.CreatePost)

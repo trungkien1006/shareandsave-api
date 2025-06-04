@@ -6,6 +6,38 @@ import (
 )
 
 // Domain -> DTO
+func PostWithCountDomainToDTO(domain post.PostWithCount) PostWithCountDTO {
+	DTOTag := make([]string, 0)
+	DTOImage := make([]string, 0)
+
+	for _, value := range domain.Tag {
+		DTOTag = append(DTOTag, value)
+	}
+
+	for _, value := range domain.Images {
+		DTOImage = append(DTOImage, value)
+	}
+
+	return PostWithCountDTO{
+		ID:            domain.ID,
+		AuthorID:      domain.AuthorID,
+		AuthorName:    domain.AuthorName,
+		Type:          domain.Type,
+		Slug:          domain.Slug,
+		Title:         domain.Title,
+		Description:   domain.Description,
+		Content:       domain.Content,
+		Info:          domain.Info,
+		Status:        domain.Status,
+		Images:        DTOImage,
+		CreatedAt:     domain.CreatedAt,
+		Tag:           DTOTag,
+		InterestCount: domain.InterestCount,
+		ItemCount:     domain.ItemCount,
+	}
+}
+
+// Domain -> DTO
 func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 	DTOInterest := make([]InterestDTO, 0)
 	DTOPostItem := make([]DetailPostItemDTO, 0)

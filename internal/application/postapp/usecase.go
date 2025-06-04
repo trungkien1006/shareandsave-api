@@ -43,7 +43,7 @@ func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filt
 	return totalPage, nil
 }
 
-func (uc *UseCase) GetAllPost(ctx context.Context, posts *[]post.DetailPost, filter post.PostFilterRequest) (int, error) {
+func (uc *UseCase) GetAllPost(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest) (int, error) {
 	totalPage, err := uc.repo.GetAll(ctx, posts, filter)
 
 	if err != nil {

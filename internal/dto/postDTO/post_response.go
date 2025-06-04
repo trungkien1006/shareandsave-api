@@ -20,8 +20,8 @@ type GetPostResponseWrapper struct {
 }
 
 type GetPostResponse struct {
-	Posts     []DetailPostDTO `json:"posts"`
-	TotalPage int             `json:"totalPage"`
+	Posts     []PostWithCountDTO `json:"posts"`
+	TotalPage int                `json:"totalPage"`
 }
 
 // Wrapper cho response lấy 1 Post (thêm code/message)

@@ -89,22 +89,29 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 	return totalPage, nil
 }
 
-func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.DetailPost, filter post.PostFilterRequest) (int, error) {
+func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest) (int, error) {
 	var (
-		query  *gorm.DB
-		dbPost []dbmodel.Post
+		query   *gorm.DB
+		results []dbmodel.PostWithCounts
 	)
 
 	query = r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.Post{}).
-		Table("post as post").
-		Joins("JOIN user AS author ON author.id = post.author_id").
-		Preload("Author").
-		Preload("Interests").
-		Preload("Interests.User").
-		Preload("PostItem").
-		Preload("PostItem.Item").
-		Preload("PostItem.Item.Category")
+		Table("post").
+		Select(`
+			post.*,
+			author.full_name AS author_name,
+			COUNT(DISTINCT interest.id) AS interest_count,
+			COUNT(DISTINCT post_item.id) AS item_count
+		`).
+		Joins("LEFT JOIN user AS author ON author.id = post.author_id").
+		Joins("LEFT JOIN interest ON interest.post_id = post.id").
+		Joins("LEFT JOIN post_item ON post_item.post_id = post.id").
+		Group(`
+			post.id, post.author_id, post.type, post.slug, post.title, post.description,
+			post.content, post.info, post.status, post.image, post.tag,
+			post.created_at, post.updated_at, post.deleted_at,
+			author.full_name
+		`)
 
 	if filter.SearchBy != "" && filter.SearchValue != "" {
 		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"
@@ -150,15 +157,15 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.DetailPost, filte
 		query.Order(filter.Sort + " " + filter.Order)
 	}
 
-	if err := query.Find(&dbPost).Error; err != nil {
+	if err := query.Find(&results).Error; err != nil {
 		return 0, errors.New("Lỗi khi lọc bài viết: " + err.Error())
 	}
 
 	//tinh toan total page
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
 
-	for _, value := range dbPost {
-		*posts = append(*posts, dbmodel.DetailPostDBToDomain(value))
+	for _, value := range results {
+		*posts = append(*posts, dbmodel.PostWithCountDBToDomain(value))
 	}
 
 	return totalPage, nil

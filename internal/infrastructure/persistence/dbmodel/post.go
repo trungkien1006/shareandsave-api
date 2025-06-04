@@ -31,6 +31,13 @@ type Post struct {
 	PostItem  []PostItem `gorm:"foreignKey:PostID"`
 }
 
+type PostWithCounts struct {
+	Post                 // Lấy toàn bộ trường từ bảng post
+	AuthorName    string `gorm:"column:author_name"`
+	InterestCount int64  `gorm:"column:interest_count"`
+	ItemCount     int64  `gorm:"column:item_count"`
+}
+
 // DB → Domain
 func AdminPostDBToDomain(dbPost Post) post.Post {
 
@@ -42,6 +49,38 @@ func AdminPostDBToDomain(dbPost Post) post.Post {
 		Status:     dbPost.Status,
 		CreatedAt:  dbPost.CreatedAt,
 		Images:     dbPost.Image,
+	}
+}
+
+// DB -> Domain
+func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
+	domainTag := make([]string, 0)
+	domainImage := make([]string, 0)
+
+	for _, value := range db.Tag {
+		domainTag = append(domainTag, value)
+	}
+
+	for _, value := range db.Image {
+		domainImage = append(domainImage, value)
+	}
+
+	return post.PostWithCount{
+		ID:            db.ID,
+		AuthorID:      db.AuthorID,
+		AuthorName:    db.Author.FullName,
+		Type:          db.Type,
+		Slug:          db.Slug,
+		Title:         db.Title,
+		Description:   db.Description,
+		Content:       db.Content,
+		Info:          db.Info,
+		Status:        db.Status,
+		Images:        domainImage,
+		CreatedAt:     db.CreatedAt,
+		Tag:           domainTag,
+		InterestCount: uint(db.InterestCount),
+		ItemCount:     uint(db.ItemCount),
 	}
 }
 

@@ -79,6 +79,24 @@ type DetailPost struct {
 	Items       []DetailPostItem
 }
 
+type PostWithCount struct {
+	ID            uint
+	AuthorID      uint
+	AuthorName    string
+	Type          int
+	Slug          string
+	Title         string
+	Description   string
+	Content       string
+	Info          string
+	Status        int8
+	Images        []string
+	CreatedAt     time.Time
+	Tag           []string
+	InterestCount uint
+	ItemCount     uint
+}
+
 type PostFilterRequest struct {
 	Page        int
 	Limit       int
