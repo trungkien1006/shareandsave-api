@@ -68,7 +68,7 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 	return post.PostWithCount{
 		ID:            db.ID,
 		AuthorID:      db.AuthorID,
-		AuthorName:    db.Author.FullName,
+		AuthorName:    db.AuthorName,
 		Type:          db.Type,
 		Slug:          db.Slug,
 		Title:         db.Title,
