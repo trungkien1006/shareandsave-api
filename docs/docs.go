@@ -1435,13 +1435,13 @@ const docTemplate = `{
         "importinvoicedto.GetmportInvoiceResponse": {
             "type": "object",
             "properties": {
-                "import_invoices": {
+                "importInvoices": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/importinvoicedto.ImportInvoiceListDTO"
                     }
                 },
-                "total_page": {
+                "totalPage": {
                     "type": "integer"
                 }
             }
@@ -1466,19 +1466,19 @@ const docTemplate = `{
                 "classify": {
                     "type": "string"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "item_count": {
+                "itemCount": {
                     "type": "integer"
                 },
-                "receiver_name": {
+                "receiverName": {
                     "type": "string"
                 },
-                "sender_name": {
+                "senderName": {
                     "type": "string"
                 }
             }
@@ -2021,6 +2021,9 @@ const docTemplate = `{
         "postdto.UpdatePostRequest": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "images": {
                     "type": "array",
                     "items": {
@@ -2030,9 +2033,6 @@ const docTemplate = `{
                         "strbase64",
                         " strbase64"
                     ]
-                },
-                "info": {
-                    "type": "string"
                 },
                 "status": {
                     "enum": [
