@@ -101,7 +101,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			post.*,
 			author.full_name AS author_name,
 			COUNT(DISTINCT interest.id) AS interest_count,
-			COUNT(DISTINCT post_item.id) AS item_count
+			SUM(DISTINCT post_item.quantity) AS item_count
 		`).
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id").

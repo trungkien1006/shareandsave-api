@@ -461,7 +461,7 @@ definitions:
     properties:
       posts:
         items:
-          $ref: '#/definitions/postdto.DetailPostDTO'
+          $ref: '#/definitions/postdto.PostWithCountDTO'
         type: array
       totalPage:
         type: integer
@@ -516,6 +516,43 @@ definitions:
         type: integer
     required:
     - itemID
+    type: object
+  postdto.PostWithCountDTO:
+    properties:
+      authorID:
+        type: integer
+      authorName:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      info:
+        type: string
+      interestCount:
+        type: integer
+      itemCount:
+        type: integer
+      slug:
+        type: string
+      status:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: integer
     type: object
   postdto.UpdatePostRequest:
     properties:
