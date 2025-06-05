@@ -57,6 +57,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/login": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Đăng nhập client với email và mật khẩu mạnh",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client Login",
+                "parameters": [
+                    {
+                        "description": "Dữ liệu đăng nhập",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.LoginResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/posts": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -525,7 +576,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Đăng nhập người dùng với email và mật khẩu mạnh",
+                "description": "Đăng nhập admin với email và mật khẩu mạnh",
                 "consumes": [
                     "application/json"
                 ],
@@ -535,7 +586,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Login",
+                "summary": "Admin Login",
                 "parameters": [
                     {
                         "description": "Dữ liệu đăng nhập",
@@ -571,7 +622,7 @@ const docTemplate = `{
         },
         "/logout": {
             "post": {
-                "description": "Đăng đăng xuất",
+                "description": "Đăng xuất dành cho client",
                 "consumes": [
                     "application/json"
                 ],
@@ -581,7 +632,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Logout",
+                "summary": "Client Logout",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1202,7 +1253,6 @@ const docTemplate = `{
                     "example": "user@example.com"
                 },
                 "password": {
-                    "description": "Password string ` + "`" + `json:\"password\" validate:\"required,password_strong\" example:\"Abc12345\"` + "`" + `",
                     "type": "string",
                     "example": "Abc12345"
                 }
