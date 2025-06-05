@@ -209,7 +209,7 @@ func (h *AuthHandler) AdminLogout(c *gin.Context) {
 // @Success 200 {object} authdto.LogoutResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
-// @Router /logout [post]
+// @Router /client/logout [post]
 func (h *AuthHandler) ClientLogout(c *gin.Context) {
 	userID, err := helpers.GetUintFromContext(c, "userID")
 	if err != nil {

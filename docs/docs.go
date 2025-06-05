@@ -108,6 +108,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/logout": {
+            "post": {
+                "description": "Đăng xuất dành cho client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client Logout",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.LogoutResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/posts": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -622,7 +657,7 @@ const docTemplate = `{
         },
         "/logout": {
             "post": {
-                "description": "Đăng xuất dành cho client",
+                "description": "Đăng xuất dành cho admin",
                 "consumes": [
                     "application/json"
                 ],
@@ -632,7 +667,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Client Logout",
+                "summary": "Admin Logout",
                 "responses": {
                     "200": {
                         "description": "OK",

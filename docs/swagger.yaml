@@ -880,6 +880,29 @@ paths:
       summary: Client Login
       tags:
       - auth
+  /client/logout:
+    post:
+      consumes:
+      - application/json
+      description: Đăng xuất dành cho client
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.LogoutResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Client Logout
+      tags:
+      - auth
   /client/posts:
     get:
       consumes:
@@ -1224,7 +1247,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Đăng xuất dành cho client
+      description: Đăng xuất dành cho admin
       produces:
       - application/json
       responses:
@@ -1240,7 +1263,7 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Client Logout
+      summary: Admin Logout
       tags:
       - auth
   /posts:
