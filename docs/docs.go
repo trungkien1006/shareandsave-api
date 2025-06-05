@@ -753,7 +753,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/posts/slug/{slug}": {
+        "/posts/slug/{postSlug}": {
             "get": {
                 "description": "API lấy bài viết theo slug",
                 "consumes": [
