@@ -124,6 +124,7 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
 	domainReq.Type = int(req.Type)
+	domainReq.Search = req.Search
 
 	totalPage, err := h.uc.GetAllPost(c.Request.Context(), &posts, domainReq)
 
