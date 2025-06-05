@@ -1372,7 +1372,7 @@ paths:
       summary: Update posts
       tags:
       - posts
-  /posts/{slug}:
+  /posts/slug/{slug}:
     get:
       consumes:
       - application/json

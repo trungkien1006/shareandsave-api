@@ -488,6 +488,8 @@ func (s *Seeder) seedPosts() error {
 		return nil
 	}
 
+	// posts := post.Post
+
 	fmt.Println("Finish seed post...")
 
 	return nil

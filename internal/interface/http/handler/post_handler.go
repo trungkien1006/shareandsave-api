@@ -209,7 +209,7 @@ func (h *PostHandler) GetPostByID(c *gin.Context) {
 // @Success 200 {object} postdto.GetDetailPostResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 409 {object} enums.AppError
-// @Router /posts/{slug} [get]
+// @Router /posts/slug/{slug} [get]
 func (h *PostHandler) GetPostBySlug(c *gin.Context) {
 	slug := c.Param("slug")
 
