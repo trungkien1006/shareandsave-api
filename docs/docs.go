@@ -103,13 +103,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "1, 2, 3",
-                        "description": "Pending:1, Rejected:2, Approved:3",
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "example": "1, 2, 3, 4",
                         "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
@@ -117,14 +110,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (vd: email, fullName)",
-                        "name": "searchBy",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
-                        "name": "searchValue",
+                        "description": "Giá trị lọc (author_name, title, tag, content)",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
