@@ -19,17 +19,28 @@ func NewAuthRepoDB(db *gorm.DB) *AuthRepoDB {
 	return &AuthRepoDB{db: db}
 }
 
-func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string) ([]string, error) {
+func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string, isAdmin bool, clientRoleID uint) ([]string, error) {
 	var (
 		dbUser      dbmodel.User
 		permisisons []string
 	)
 
-	if err := r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.User{}).
-		Where("email = ?", email).
-		Preload("Role").First(&dbUser).Error; err != nil {
-		return nil, errors.New("Email không tồn tại: " + err.Error())
+	if isAdmin {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).
+			Where("email = ?", email).
+			Where("role_id != ?", clientRoleID).
+			Preload("Role").First(&dbUser).Error; err != nil {
+			return nil, errors.New("Email không tồn tại: " + err.Error())
+		}
+	} else {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).
+			Where("email = ?", email).
+			Where("role_id = ?", clientRoleID).
+			Preload("Role").First(&dbUser).Error; err != nil {
+			return nil, errors.New("Email không tồn tại: " + err.Error())
+		}
 	}
 
 	if !hash.CheckPasswordHash(password, dbUser.Password) {
@@ -40,7 +51,7 @@ func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password
 		return nil, errors.New("Tài khoản đã bị khóa")
 	}
 
-	if dbUser.Role.Name != "Client" {
+	if isAdmin {
 		if err := r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Permission{}).
 			Table("permission as permission").

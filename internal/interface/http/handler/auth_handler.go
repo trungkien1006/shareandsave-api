@@ -22,8 +22,8 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
-// @Summary Login
-// @Description Đăng nhập người dùng với email và mật khẩu mạnh
+// @Summary Admin Login
+// @Description Đăng nhập admin với email và mật khẩu mạnh
 // @Security BearerAuth
 // @Tags auth
 // @Accept json
@@ -33,7 +33,7 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
 // @Router /login [post]
-func (h *AuthHandler) Login(c *gin.Context) {
+func (h *AuthHandler) AdminLogin(c *gin.Context) {
 	var (
 		req             authdto.LoginRequest
 		domainAuthLogin auth.AuthLogin
@@ -54,7 +54,57 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	domainAuthLogin = authdto.AuthDTOToDomain(req)
 
-	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken, &domainUser); err != nil {
+	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken, &domainUser, true); err != nil {
+		c.JSON(http.StatusUnauthorized, enums.NewAppError(http.StatusUnauthorized, err.Error(), enums.ErrUnauthorized))
+		return
+	}
+
+	userDTO := userdto.DomainCommonUserToDTO(domainUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Login successfully",
+		"data": authdto.LoginResponse{
+			JWT:          JWT,
+			RefreshToken: refreshToken,
+			User:         userDTO,
+		},
+	})
+}
+
+// @Summary Client Login
+// @Description Đăng nhập client với email và mật khẩu mạnh
+// @Security BearerAuth
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param login body authdto.LoginRequest true "Dữ liệu đăng nhập"
+// @Success 200 {object} authdto.LoginResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/login [post]
+func (h *AuthHandler) UserLogin(c *gin.Context) {
+	var (
+		req             authdto.LoginRequest
+		domainAuthLogin auth.AuthLogin
+		JWT             string
+		refreshToken    string
+		domainUser      user.User
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	domainAuthLogin = authdto.AuthDTOToDomain(req)
+
+	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken, &domainUser, false); err != nil {
 		c.JSON(http.StatusUnauthorized, enums.NewAppError(http.StatusUnauthorized, err.Error(), enums.ErrUnauthorized))
 		return
 	}

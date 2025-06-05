@@ -6,5 +6,5 @@ import (
 )
 
 type Repository interface {
-	Login(ctx context.Context, user *user.User, email, password string) ([]string, error)
+	Login(ctx context.Context, user *user.User, email, password string, isAdmin bool, clientRoleID uint) ([]string, error)
 }

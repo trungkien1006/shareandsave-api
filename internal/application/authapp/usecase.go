@@ -6,7 +6,9 @@ import (
 	"errors"
 	"final_project/internal/domain/auth"
 	"final_project/internal/domain/redis"
+	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -15,18 +17,29 @@ type UseCase struct {
 	repo      auth.Repository
 	service   *auth.AuthService
 	redisRepo redis.Reposity
+	roleRepo  rolepermission.Repository
+	clientID  uint
 }
 
-func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity) *UseCase {
+func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity, roleRepo rolepermission.Repository) *UseCase {
+	ctx := context.Background()
+
+	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
+	if err != nil {
+		fmt.Println("Có lỗi khi set roleID mặc định cho user usecase: " + err.Error())
+	}
+
 	return &UseCase{
 		repo:      r,
 		service:   s,
 		redisRepo: redisRepo,
+		roleRepo:  roleRepo,
+		clientID:  clientID,
 	}
 }
 
-func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JWT *string, refreshToken *string, domainUser *user.User) error {
-	permissionCodes, err := uc.repo.Login(ctx, domainUser, domainAuthLogin.Email, domainAuthLogin.Password)
+func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JWT *string, refreshToken *string, domainUser *user.User, isAdmin bool) error {
+	permissionCodes, err := uc.repo.Login(ctx, domainUser, domainAuthLogin.Email, domainAuthLogin.Password, isAdmin, uc.clientID)
 	if err != nil {
 		return err
 	}
@@ -59,7 +72,7 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 		return err
 	}
 
-	if permissionCodes != nil {
+	if isAdmin {
 		permissionCodesJSON, err := json.Marshal(permissionCodes)
 		if err != nil {
 			return errors.New("Lỗi khi mã hóa danh sách quyền của user: " + err.Error())
