@@ -22,12 +22,13 @@ type Seeder struct {
 	postRepo     post.Repository
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, post post.Repository) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository) *Seeder {
 	return &Seeder{
 		rolePerRepo:  rolePerRepo,
 		itemRepo:     itemRepo,
 		userRepo:     userRepo,
 		categoryRepo: categoryRepo,
+		postRepo:     postRepo,
 	}
 }
 
@@ -389,6 +390,120 @@ func (s *Seeder) seedUsers() error {
 	adminUsers := []user.User{
 		{
 			Email:       "superadmin@example.com",
+			Password:    "admin1234",
+			FullName:    "Super Admin",
+			Status:      1,
+			RoleID:      roleMap["Super Admin"],
+			PhoneNumber: "0900000001",
+			Address:     "Hà Nội",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
+		},
+		{
+			Email:       "content@example.com",
+			Password:    "admin1234",
+			FullName:    "Content Manager",
+			Status:      1,
+			RoleID:      roleMap["Content Manager"],
+			PhoneNumber: "0900000002",
+			Address:     "Hồ Chí Minh",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
+		},
+		{
+			Email:       "warehouse@example.com",
+			Password:    "admin1234",
+			FullName:    "Warehouse Manager",
+			Status:      1,
+			RoleID:      roleMap["Warehouse Manager"],
+			PhoneNumber: "0900000003",
+			Address:     "Đà Nẵng",
+			GoodPoint:   100,
+			Major:       "Quản trị",
+			Active:      true,
+		},
+	}
+
+	// 27 client user
+	clientUsers := make([]user.User, 27)
+	for i := 0; i < 27; i++ {
+		clientUsers[i] = user.User{
+			Email:       fmt.Sprintf("client%02d@example.com", i+1),
+			Password:    "user1234",
+			FullName:    fmt.Sprintf("Client User %02d", i+1),
+			Status:      1,
+			RoleID:      roleMap["Client"],
+			PhoneNumber: fmt.Sprintf("090000%04d", i+4),
+			Address:     "Khách hàng",
+			GoodPoint:   i % 10,
+			Major:       "Khách hàng",
+			Active:      true,
+		}
+	}
+
+	// Gộp admin và client lại
+	users := append(adminUsers, clientUsers...)
+
+	// Lưu tất cả user vào DB
+	for _, u := range users {
+		hashedPassword, err := hash.HashPassword(u.Password)
+
+		if err != nil {
+			return err
+		}
+
+		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
+
+		if err != nil {
+			return err
+		}
+
+		u.Password = hashedPassword
+		u.Avatar = strBase64Image
+
+		if err := s.userRepo.Save(ctx, &u); err != nil {
+			return err
+		}
+	}
+
+	fmt.Println("Finish seed users...")
+
+	return nil
+}
+
+func (s *Seeder) seedPosts() error {
+	ctx := context.Background()
+
+	fmt.Println("Start seed posts...")
+
+	// Kiểm tra bảng user có rỗng không
+	isEmpty, err := s.userRepo.IsTableEmpty(ctx)
+	if err != nil {
+		return err
+	}
+	if !isEmpty {
+		fmt.Println("Post had data...")
+		return nil
+	}
+
+	// Lấy tất cả role từ DB
+	var roles []rolepermission.Role
+	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
+		return err
+	}
+
+	// Map role name -> ID để dễ gán
+	roleMap := make(map[string]uint)
+	for _, r := range roles {
+		roleMap[r.Name] = r.ID
+	}
+
+	// 3 admin user với 3 role admin khác nhau
+	adminUsers := []user.User{
+		{
+			Email:       "superadmin@example.com",
 			Password:    "superadmin",
 			FullName:    "Super Admin",
 			Status:      1,
@@ -471,117 +586,3 @@ func (s *Seeder) seedUsers() error {
 
 	return nil
 }
-
-// func (s *Seeder) seedPosts() error {
-// 	ctx := context.Background()
-
-// 	fmt.Println("Start seed users...")
-
-// 	// Kiểm tra bảng user có rỗng không
-// 	isEmpty, err := s.userRepo.IsTableEmpty(ctx)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	if !isEmpty {
-// 		fmt.Println("User had data...")
-// 		return nil
-// 	}
-
-// 	// Lấy tất cả role từ DB
-// 	var roles []rolepermission.Role
-// 	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
-// 		return err
-// 	}
-
-// 	// Map role name -> ID để dễ gán
-// 	roleMap := make(map[string]uint)
-// 	for _, r := range roles {
-// 		roleMap[r.Name] = r.ID
-// 	}
-
-// 	// 3 admin user với 3 role admin khác nhau
-// 	adminUsers := []user.User{
-// 		{
-// 			Email:       "superadmin@example.com",
-// 			Password:    "superadmin",
-// 			FullName:    "Super Admin",
-// 			Status:      1,
-// 			RoleID:      roleMap["Super Admin"],
-// 			PhoneNumber: "0900000001",
-// 			Address:     "Hà Nội",
-// 			GoodPoint:   100,
-// 			Major:       "Quản trị",
-// 			Active:      true,
-// 		},
-// 		{
-// 			Email:       "content@example.com",
-// 			Password:    "contentmanager",
-// 			FullName:    "Content Manager",
-// 			Status:      1,
-// 			RoleID:      roleMap["Content Manager"],
-// 			PhoneNumber: "0900000002",
-// 			Address:     "Hồ Chí Minh",
-// 			GoodPoint:   100,
-// 			Major:       "Quản trị",
-// 			Active:      true,
-// 		},
-// 		{
-// 			Email:       "warehouse@example.com",
-// 			Password:    "warehousemanager",
-// 			FullName:    "Warehouse Manager",
-// 			Status:      1,
-// 			RoleID:      roleMap["Warehouse Manager"],
-// 			PhoneNumber: "0900000003",
-// 			Address:     "Đà Nẵng",
-// 			GoodPoint:   100,
-// 			Major:       "Quản trị",
-// 			Active:      true,
-// 		},
-// 	}
-
-// 	// 27 client user
-// 	clientUsers := make([]user.User, 27)
-// 	for i := 0; i < 27; i++ {
-// 		clientUsers[i] = user.User{
-// 			Email:       fmt.Sprintf("client%02d@example.com", i+1),
-// 			Password:    "123456",
-// 			FullName:    fmt.Sprintf("Client User %02d", i+1),
-// 			Status:      1,
-// 			RoleID:      roleMap["Client"],
-// 			PhoneNumber: fmt.Sprintf("090000%04d", i+4),
-// 			Address:     "Khách hàng",
-// 			GoodPoint:   i % 10,
-// 			Major:       "Khách hàng",
-// 			Active:      true,
-// 		}
-// 	}
-
-// 	// Gộp admin và client lại
-// 	users := append(adminUsers, clientUsers...)
-
-// 	// Lưu tất cả user vào DB
-// 	for _, u := range users {
-// 		hashedPassword, err := hash.HashPassword(u.Password)
-
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
-
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		u.Password = hashedPassword
-// 		u.Avatar = strBase64Image
-
-// 		if err := s.userRepo.Save(ctx, &u); err != nil {
-// 			return err
-// 		}
-// 	}
-
-// 	fmt.Println("Finish seed users...")
-
-// 	return nil
-// }

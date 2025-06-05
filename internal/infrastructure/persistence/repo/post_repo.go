@@ -188,7 +188,11 @@ func (r *PostRepoDB) GetDetailByID(ctx context.Context, post *post.DetailPost, p
 		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
 	}
 
+	var slug = post.Slug
+
 	*post = dbmodel.DetailPostDBToDomain(dbPost)
+
+	post.Slug = slug
 
 	return nil
 }
