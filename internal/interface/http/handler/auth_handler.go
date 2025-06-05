@@ -168,8 +168,8 @@ func (h *AuthHandler) GetAccessToken(c *gin.Context) {
 	})
 }
 
-// @Summary Logout
-// @Description Đăng đăng xuất
+// @Summary Admin Logout
+// @Description Đăng xuất dành cho admin
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -177,7 +177,7 @@ func (h *AuthHandler) GetAccessToken(c *gin.Context) {
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
 // @Router /logout [post]
-func (h *AuthHandler) Logout(c *gin.Context) {
+func (h *AuthHandler) AdminLogout(c *gin.Context) {
 	userID, err := helpers.GetUintFromContext(c, "userID")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
@@ -190,7 +190,40 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		return
 	}
 
-	if err := h.uc.Logout(c.Request.Context(), userID, device); err != nil {
+	if err := h.uc.Logout(c.Request.Context(), userID, device, true); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Logout successfully",
+	})
+}
+
+// @Summary Client Logout
+// @Description Đăng xuất dành cho client
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} authdto.LogoutResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /logout [post]
+func (h *AuthHandler) ClientLogout(c *gin.Context) {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	device, err := helpers.GetStringFromContext(c, "device")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.Logout(c.Request.Context(), userID, device, false); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
 		return
 	}
