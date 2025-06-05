@@ -137,7 +137,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.POST("/client/login", authHandler.UserLogin)
 		v1.POST("/login", authHandler.AdminLogin)
 		v1.POST("/refresh-token", authHandler.GetAccessToken)
-		v1.POST("/logout", middlewares.AuthGuard, authHandler.Logout)
+		v1.POST("/logout", middlewares.AuthGuard, authHandler.AdminLogout)
+		v1.POST("/client/logout", middlewares.AuthGuard, authHandler.ClientLogout)
 	}
 
 	// r.Static("/public/images", "./public/images")
