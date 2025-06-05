@@ -197,6 +197,32 @@ func (r *PostRepoDB) GetDetailByID(ctx context.Context, post *post.DetailPost, p
 	return nil
 }
 
+func (r PostRepoDB) GetDetailBySlug(ctx context.Context, post *post.DetailPost, postSlug string) error {
+	var dbPost dbmodel.Post
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Where("slug = ?", postSlug).
+		Preload("Author").
+		Preload("Interests").
+		Preload("Interests.User").
+		Preload("PostItem").
+		Preload("PostItem.Item").
+		Preload("PostItem.Item.Category").
+		Find(&dbPost).Error; err != nil {
+		return errors.New("Có lỗi khi tìm kiếm bài viết theo Slug: " + err.Error())
+	}
+
+	var slug = post.Slug
+
+	*post = dbmodel.DetailPostDBToDomain(dbPost)
+
+	post.Slug = slug
+
+	return nil
+}
+
 func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) error {
 	var dbPost dbmodel.Post
 

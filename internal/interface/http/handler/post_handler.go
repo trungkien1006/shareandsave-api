@@ -156,7 +156,7 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 	})
 }
 
-// @Summary Get detail post
+// @Summary Get detail post by id
 // @Description API lấy bài viết theo id
 // @Tags posts
 // @Accept json
@@ -182,6 +182,48 @@ func (h *PostHandler) GetPostByID(c *gin.Context) {
 	postID, _ := strconv.Atoi(id)
 
 	if err := h.uc.GetPostByID(c.Request.Context(), &postDetail, uint(postID)); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_POST_NOT_FOUND"),
+		)
+		return
+	}
+
+	detailPostDTO := postdto.DetailPostDomainToDTO(postDetail)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get detail post successfully",
+		"data": postdto.GetDetailPostResponse{
+			Post: detailPostDTO,
+		},
+	})
+}
+
+// @Summary Get detail post by slug
+// @Description API lấy bài viết theo slug
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param postSlug path string true "Slug post"
+// @Success 200 {object} postdto.GetDetailPostResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 409 {object} enums.AppError
+// @Router /posts/{slug} [get]
+func (h *PostHandler) GetPostBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+
+	if slug == "" {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, "Slug rỗng", enums.ErrValidate),
+		)
+		return
+	}
+
+	var postDetail post.DetailPost
+
+	if err := h.uc.GetPostBySlug(c.Request.Context(), &postDetail, slug); err != nil {
 		c.JSON(
 			http.StatusNotFound,
 			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_POST_NOT_FOUND"),

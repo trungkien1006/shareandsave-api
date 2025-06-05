@@ -61,6 +61,14 @@ func (uc *UseCase) GetPostByID(ctx context.Context, post *post.DetailPost, postI
 	return nil
 }
 
+func (uc *UseCase) GetPostBySlug(ctx context.Context, post *post.DetailPost, postSlug string) error {
+	if err := uc.repo.GetDetailBySlug(ctx, post, postSlug); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error {
 	var (
 		author user.User

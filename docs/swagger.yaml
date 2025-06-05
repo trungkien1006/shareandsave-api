@@ -1339,7 +1339,7 @@ paths:
           description: Conflict
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Get detail post
+      summary: Get detail post by id
       tags:
       - posts
     patch:
@@ -1370,6 +1370,35 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Update posts
+      tags:
+      - posts
+  /posts/{slug}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy bài viết theo slug
+      parameters:
+      - description: Slug post
+        in: path
+        name: postSlug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postdto.GetDetailPostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get detail post by slug
       tags:
       - posts
   /refresh-token:

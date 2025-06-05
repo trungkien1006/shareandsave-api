@@ -765,7 +765,7 @@ const docTemplate = `{
                 "tags": [
                     "posts"
                 ],
-                "summary": "Get detail post",
+                "summary": "Get detail post by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -835,6 +835,50 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{slug}": {
+            "get": {
+                "description": "API lấy bài viết theo slug",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get detail post by slug",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Slug post",
+                        "name": "postSlug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.GetDetailPostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
