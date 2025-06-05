@@ -41,6 +41,30 @@ type GetAdminPostRequest struct {
 	SearchValue string           `form:"searchValue"`
 }
 
+type GetPostRequest struct {
+	Page   int            `form:"page"`
+	Limit  int            `form:"limit"`
+	Sort   string         `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
+	Order  string         `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
+	Type   enums.PostType `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
+	Search string         `form:"search"`
+}
+
+func (r *GetPostRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 8
+	}
+	if r.Sort == "" {
+		r.Sort = "id"
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
+}
+
 func (r *GetAdminPostRequest) SetDefault() {
 	if r.Page == 0 {
 		r.Page = 1

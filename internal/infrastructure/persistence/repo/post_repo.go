@@ -19,7 +19,7 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.PostFilterRequest) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest) (int, error) {
 	var (
 		query  *gorm.DB
 		dbPost []dbmodel.Post
@@ -113,25 +113,15 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			author.full_name
 		`)
 
-	if filter.SearchBy != "" && filter.SearchValue != "" {
-		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"
-
-		if column == "author_name" {
-			column = "author.full_name"
-		} else {
-			column = "post." + column
-		}
-
-		query.Where(column+" LIKE ? ", "%"+filter.SearchValue+"%")
-
+	if filter.Search != "" {
+		query.Where("post.title LIKE ? ", "%"+filter.Search+"%").
+			Or("post.content LIKE ?", "%"+filter.Search+"%").
+			Or("JSON_CONTAINS(tag, ?)", `"`+filter.Search+`"`).
+			Or("author.full_name LIKE ?", "%"+filter.Search+"%")
 	}
 
 	if filter.Type != 0 {
 		query.Where("post.type = ?", filter.Type)
-	}
-
-	if filter.Status != 0 {
-		query.Where("post.status = ?", filter.Status)
 	}
 
 	var totalRecord int64 = 0

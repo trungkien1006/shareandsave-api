@@ -40,7 +40,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	var (
 		req       postdto.GetAdminPostRequest
 		posts     []post.Post
-		domainReq post.PostFilterRequest
+		domainReq post.AdminPostFilterRequest
 	)
 
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -106,7 +106,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 // @Router /client/posts [get]
 func (h *PostHandler) GetAllPost(c *gin.Context) {
 	var (
-		req       postdto.GetAdminPostRequest
+		req       postdto.GetPostRequest
 		posts     []post.PostWithCount
 		domainReq post.PostFilterRequest
 	)
@@ -125,10 +125,7 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 	domainReq.Limit = req.Limit
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
-	domainReq.Status = int(req.Status)
 	domainReq.Type = int(req.Type)
-	domainReq.SearchBy = req.SearchBy
-	domainReq.SearchValue = req.SearchValue
 
 	totalPage, err := h.uc.GetAllPost(c.Request.Context(), &posts, domainReq)
 

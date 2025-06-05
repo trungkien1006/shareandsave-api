@@ -33,7 +33,7 @@ func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermis
 	}
 }
 
-func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter post.PostFilterRequest) (int, error) {
+func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest) (int, error) {
 	totalPage, err := uc.repo.AdminGetAll(ctx, posts, filter)
 
 	if err != nil {

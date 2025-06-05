@@ -98,7 +98,7 @@ type PostWithCount struct {
 	ItemCount     uint
 }
 
-type PostFilterRequest struct {
+type AdminPostFilterRequest struct {
 	Page        int
 	Limit       int
 	Sort        string
@@ -107,4 +107,13 @@ type PostFilterRequest struct {
 	Type        int
 	SearchBy    string
 	SearchValue string
+}
+
+type PostFilterRequest struct {
+	Page   int
+	Limit  int
+	Sort   string
+	Order  string
+	Type   int
+	Search string
 }
