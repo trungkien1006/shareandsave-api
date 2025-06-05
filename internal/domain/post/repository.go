@@ -12,4 +12,5 @@ type Repository interface {
 	GetByID(ctx context.Context, post *Post, postID uint) error
 	Save(ctx context.Context, post *CreatePost) error
 	Update(ctx context.Context, post *Post) error
+	IsTableEmpty(ctx context.Context) (bool, error)
 }

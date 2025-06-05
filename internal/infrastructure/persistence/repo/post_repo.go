@@ -263,3 +263,11 @@ func (r *PostRepoDB) Update(ctx context.Context, post *post.Post) error {
 
 	return nil
 }
+
+func (r *PostRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&dbmodel.Post{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}

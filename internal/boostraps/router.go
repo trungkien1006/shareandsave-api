@@ -75,6 +75,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		userRepo,
 		categoryRepo,
 		postRepo,
+		postService,
 	)
 
 	seed.Seed()

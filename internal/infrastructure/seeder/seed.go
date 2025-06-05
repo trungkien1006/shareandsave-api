@@ -20,15 +20,17 @@ type Seeder struct {
 	userRepo     user.Repository
 	categoryRepo category.Repository
 	postRepo     post.Repository
+	postService  *post.PostService
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService) *Seeder {
 	return &Seeder{
 		rolePerRepo:  rolePerRepo,
 		itemRepo:     itemRepo,
 		userRepo:     userRepo,
 		categoryRepo: categoryRepo,
 		postRepo:     postRepo,
+		postService:  postService,
 	}
 }
 
@@ -54,6 +56,10 @@ func (s *Seeder) Seed() error {
 	}
 
 	if err := s.seedUsers(); err != nil {
+		return err
+	}
+
+	if err := s.seedPosts(); err != nil {
 		return err
 	}
 
@@ -478,8 +484,8 @@ func (s *Seeder) seedPosts() error {
 
 	fmt.Println("Start seed posts...")
 
-	// Kiểm tra bảng user có rỗng không
-	isEmpty, err := s.userRepo.IsTableEmpty(ctx)
+	// Kiểm tra bảng post có rỗng không
+	isEmpty, err := s.postRepo.IsTableEmpty(ctx)
 	if err != nil {
 		return err
 	}
@@ -488,7 +494,682 @@ func (s *Seeder) seedPosts() error {
 		return nil
 	}
 
-	// posts := post.Post
+	// Generate post default base64 image
+	base64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/post.png")
+	if err != nil {
+		return err
+	}
+
+	postDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+	if err != nil {
+		return err
+	}
+
+	// Generate item default base64 image
+	base64, err = helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
+	if err != nil {
+		return err
+	}
+
+	itemDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+	if err != nil {
+		return err
+	}
+
+	authorMap := map[string]uint{
+		"superadmin": 1,
+		"client1":    4,
+		"client2":    5,
+		"client3":    6,
+	}
+
+	oldItemInPost := map[int][]post.OldItemsInPost{
+		0: {
+			{
+				ItemID:   1,
+				Image:    itemDefaultImage,
+				Quantity: 1,
+			},
+		},
+		1: {
+			{
+				ItemID:   4,
+				Image:    itemDefaultImage,
+				Quantity: 2,
+			},
+			{
+				ItemID:   5,
+				Image:    itemDefaultImage,
+				Quantity: 1,
+			},
+			{
+				ItemID:   6,
+				Image:    itemDefaultImage,
+				Quantity: 3,
+			},
+		},
+		2: {
+			{
+				ItemID:   7,
+				Image:    itemDefaultImage,
+				Quantity: 2,
+			},
+			{
+				ItemID:   8,
+				Image:    itemDefaultImage,
+				Quantity: 1,
+			},
+			{
+				ItemID:   9,
+				Image:    itemDefaultImage,
+				Quantity: 3,
+			},
+		},
+	}
+
+	posts := []post.CreatePost{
+
+		{
+			AuthorID:    authorMap["superadmin"],
+			AuthorName:  "Superadmin",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 1"),
+			Title:       "Bài viết số 1",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Vật dụng cá nhân",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client3"],
+			AuthorName:  "Client3",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 2"),
+			Title:       "Bài viết số 2",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 3"),
+			Title:      "Bài viết số 3",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055600",
+				"lostLocation": "Địa điểm 3",
+				"reward": "100",
+				"category": "Ví"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Ví",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 4"),
+			Title:      "Bài viết số 4",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055636",
+				"lostLocation": "Địa điểm 4",
+				"reward": "100",
+				"category": "Sách"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Sách",
+				"Tài liệu học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client3"],
+			AuthorName:  "Client3",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 5"),
+			Title:       "Bài viết số 5",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client2"],
+			AuthorName: "Client2",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 6"),
+			Title:      "Bài viết số 6",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055672",
+				"lostLocation": "Địa điểm 6",
+				"reward": "100",
+				"category": "Thất lạc"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Thất lạc",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client2"],
+			AuthorName: "Client2",
+			Type:       int(enums.PostTypeFoundItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 7"),
+			Title:      "Bài viết số 7",
+			Content:    "",
+			Info: `{
+				"foundDate": "2025-06-05 12:21:09.055690",
+				"foundLocation": "Địa điểm 7"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Balo",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["superadmin"],
+			AuthorName:  "Superadmin",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 8"),
+			Title:       "Bài viết số 8",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Balo",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 9"),
+			Title:      "Bài viết số 9",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055731",
+				"lostLocation": "Địa điểm 9",
+				"reward": "100",
+				"category": "Sách"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Sách",
+				"Tài liệu học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeFoundItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 10"),
+			Title:      "Bài viết số 10",
+			Content:    "",
+			Info: `{
+				"foundDate": "2025-06-05 12:21:09.055756",
+				"foundLocation": "Địa điểm 10"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client1"],
+			AuthorName: "Client1",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 11"),
+			Title:      "Bài viết số 11",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055776",
+				"lostLocation": "Địa điểm 11",
+				"reward": "100",
+				"category": "Túi xách"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Túi xách",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client2"],
+			AuthorName: "Client2",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 12"),
+			Title:      "Bài viết số 12",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055800",
+				"lostLocation": "Địa điểm 12",
+				"reward": "100",
+				"category": "Điện thoại"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Điện thoại",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client2"],
+			AuthorName:  "Client2",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 13"),
+			Title:       "Bài viết số 13",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Áo khoác",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["superadmin"],
+			AuthorName:  "Superadmin",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 14"),
+			Title:       "Bài viết số 14",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Vật dụng cá nhân",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client2"],
+			AuthorName: "Client2",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 15"),
+			Title:      "Bài viết số 15",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055857",
+				"lostLocation": "Địa điểm 15",
+				"reward": "100",
+				"category": "Tai nghe"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Tai nghe",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client1"],
+			AuthorName:  "Client1",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 16"),
+			Title:       "Bài viết số 16",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Tai nghe",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client3"],
+			AuthorName:  "Client3",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 17"),
+			Title:       "Bài viết số 17",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Balo",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client1"],
+			AuthorName: "Client1",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 18"),
+			Title:      "Bài viết số 18",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055914",
+				"lostLocation": "Địa điểm 18",
+				"reward": "100",
+				"category": "Đồ dùng học tập"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 19"),
+			Title:      "Bài viết số 19",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.055939",
+				"lostLocation": "Địa điểm 19",
+				"reward": "100",
+				"category": "Ví"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Ví",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client2"],
+			AuthorName: "Client2",
+			Type:       int(enums.PostTypeFoundItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 20"),
+			Title:      "Bài viết số 20",
+			Content:    "",
+			Info: `{
+				"foundDate": "2025-06-05 12:21:09.055963",
+				"foundLocation": "Địa điểm 20"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Vật dụng cá nhân",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[1],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client1"],
+			AuthorName: "Client1",
+			Type:       int(enums.PostTypeFoundItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 21"),
+			Title:      "Bài viết số 21",
+			Content:    "",
+			Info: `{
+				"foundDate": "2025-06-05 12:21:09.055986",
+				"foundLocation": "Địa điểm 21"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Ví",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[2],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client2"],
+			AuthorName:  "Client2",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 22"),
+			Title:       "Bài viết số 22",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Áo khoác",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client3"],
+			AuthorName: "Client3",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 23"),
+			Title:      "Bài viết số 23",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.056026",
+				"lostLocation": "Địa điểm 23",
+				"reward": "100",
+				"category": "Đồ dùng học tập"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client3"],
+			AuthorName: "Client3",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 24"),
+			Title:      "Bài viết số 24",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.056052",
+				"lostLocation": "Địa điểm 24",
+				"reward": "100",
+				"category": "Đồ dùng học tập"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Đồ dùng học tập",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:    authorMap["client1"],
+			AuthorName:  "Client1",
+			Type:        int(enums.PostTypeGiveAwayOldItem),
+			Slug:        s.postService.GenerateSlug("Bài viết số 25"),
+			Title:       "Bài viết số 25",
+			Content:     "[]",
+			Info:        `{}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Áo khoác",
+			},
+			Items:    []item.Item{},
+			OldItems: oldItemInPost[0],
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["superadmin"],
+			AuthorName: "Superadmin",
+			Type:       int(enums.PostTypeSeekLoseItem),
+			Slug:       s.postService.GenerateSlug("Bài viết số 26"),
+			Title:      "Bài viết số 26",
+			Content:    "",
+			Info: `{
+				"lostDate": "2025-06-05 12:21:09.056096",
+				"lostLocation": "Địa điểm 26",
+				"reward": "100",
+				"category": "Vật dụng cá nhân"
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag: []string{
+				"Vật dụng cá nhân",
+			},
+			Items:    []item.Item{},
+			OldItems: []post.OldItemsInPost{},
+			NewItems: []post.NewItemsInPost{},
+		},
+
+		{
+			AuthorID:   authorMap["client1"],
+			AuthorName: "Client 1",
+			Type:       int(enums.PostTypeOther),
+			Slug:       s.postService.GenerateSlug("Bài viết khác"),
+			Title:      "Bài viết khác",
+			Content:    "",
+			Info: `{
+			}`,
+			Description: "Mô tả về bài đăng plaplaploplo...",
+			Status:      int8(enums.PostStatusPending),
+			Images:      []string{postDefaultImage},
+			Tag:         []string{},
+			Items:       []item.Item{},
+			OldItems:    []post.OldItemsInPost{},
+			NewItems:    []post.NewItemsInPost{},
+		},
+	}
+
+	for key, value := range posts {
+		if value.Info != "{}" {
+			content, _ := s.postService.GenerateContent(value.Info)
+
+			posts[key].Content = content
+		} else {
+			posts[key].Content = "[]"
+		}
+
+		err := s.postRepo.Save(ctx, &posts[key])
+		if err != nil {
+			fmt.Println("Seed post error...")
+		}
+	}
 
 	fmt.Println("Finish seed post...")
 
