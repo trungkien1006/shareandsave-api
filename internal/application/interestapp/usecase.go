@@ -56,7 +56,7 @@ func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interes
 		return err
 	}
 
-	if isPostExist {
+	if !isPostExist {
 		return errors.New("Bài viết không tồn tại")
 	}
 
