@@ -16,3 +16,9 @@ type CreateInterestResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type DeleteInterestResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

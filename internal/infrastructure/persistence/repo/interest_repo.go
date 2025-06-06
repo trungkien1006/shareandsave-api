@@ -107,3 +107,31 @@ func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest)
 
 	return nil
 }
+
+func (r *InterestRepoDB) Delete(ctx context.Context, interestID uint) error {
+	var count int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Transaction{}).Where("interest_id = ?", interestID).Count(&count).Error; err != nil {
+		return errors.New("Lỗi khi kiểm tra giao dịch trong quan tâm: " + err.Error())
+	}
+
+	if count > 0 {
+		return errors.New("Không thể hủy quan tâm do đã phát sinh giao dịch")
+	}
+
+	count = 0
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("interest_id = ?", interestID).Count(&count).Error; err != nil {
+		return errors.New("Lỗi khi kiểm tra tin nhắn trong quan tâm: " + err.Error())
+	}
+
+	if count > 0 {
+		return errors.New("Không thể hủy quan tâm do đã có tin nhắn")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Delete(&dbmodel.Interest{}, interestID).Error; err != nil {
+		return errors.New("Lỗi khi xóa quan tâm: " + err.Error())
+	}
+
+	return nil
+}

@@ -132,3 +132,39 @@ func (h *InterestHandler) Create(c *gin.Context) {
 		"data":    gin.H{},
 	})
 }
+
+// @Summary Delete Interest
+// @Description API xóa interest theo ID
+// @Security BearerAuth
+// @Tags interests
+// @Accept json
+// @Produce json
+// @Param interestID path int true "ID interest"
+// @Success 200 {object} interestdto.DeleteInterestResponseWrapper "Deleted interest successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /interests/{interestID} [delete]
+func (h *InterestHandler) Delete(c *gin.Context) {
+	var (
+		req interestdto.DeleteInterest
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := h.uc.DeleteInterest(c.Request.Context(), req.InterestID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Interest deleted successfully",
+		"data":    gin.H{},
+	})
+}

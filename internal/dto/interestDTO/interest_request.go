@@ -29,3 +29,7 @@ func (r *GetInterest) SetDefault() {
 type CreateInterest struct {
 	PostID uint `json:"postID" validate:"required"`
 }
+
+type DeleteInterest struct {
+	InterestID uint `uri:"interestID" binding:"required"`
+}
