@@ -31,5 +31,5 @@ type CreateInterest struct {
 }
 
 type DeleteInterest struct {
-	InterestID uint `uri:"interestID" binding:"required"`
+	PostID uint `uri:"postID" binding:"required"`
 }

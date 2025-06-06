@@ -60,8 +60,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//interest dependency
 	interestRepo := persistence.NewInterestRepoDB(db)
-	InterestUC := interestapp.NewUseCase(interestRepo, userRepo, postRepo)
-	InterestHandler := handler.NewInterestHandler(InterestUC)
+	interestUC := interestapp.NewUseCase(interestRepo, userRepo, postRepo)
+	interestHandler := handler.NewInterestHandler(interestUC)
 
 	//import invoice dependency
 	importInvoiceService := importinvoice.NewImportInvoiceService()
@@ -138,9 +138,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/categories", categoryHandler.GetAll)
 
 		//interest API
-		v1.GET("/interests", middlewares.AuthGuard, InterestHandler.GetAll)
-		v1.POST("/interests", middlewares.AuthGuard, InterestHandler.Create)
-		v1.DELETE("/interests/:interestID", middlewares.AuthGuard, InterestHandler.Delete)
+		v1.GET("/interests", middlewares.AuthGuard, interestHandler.GetAll)
+		v1.POST("/interests", middlewares.AuthGuard, interestHandler.Create)
+		v1.DELETE("/interests/:postID", middlewares.AuthGuard, interestHandler.Delete)
 
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)

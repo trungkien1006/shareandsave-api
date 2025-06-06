@@ -108,10 +108,17 @@ func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest)
 	return nil
 }
 
-func (r *InterestRepoDB) Delete(ctx context.Context, interestID uint) error {
-	var count int64
+func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) error {
+	var (
+		count      int64
+		dbInterest dbmodel.Interest
+	)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Transaction{}).Where("interest_id = ?", interestID).Count(&count).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("user_id = ? AND post_id = ?", userID, postID).Find(&dbInterest).Error; err != nil {
+		return errors.New("Có lỗi khi tìm kiếm quan tâm: " + err.Error())
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Transaction{}).Where("interest_id = ?", dbInterest.ID).Count(&count).Error; err != nil {
 		return errors.New("Lỗi khi kiểm tra giao dịch trong quan tâm: " + err.Error())
 	}
 
@@ -121,7 +128,7 @@ func (r *InterestRepoDB) Delete(ctx context.Context, interestID uint) error {
 
 	count = 0
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("interest_id = ?", interestID).Count(&count).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("interest_id = ?", dbInterest.ID).Count(&count).Error; err != nil {
 		return errors.New("Lỗi khi kiểm tra tin nhắn trong quan tâm: " + err.Error())
 	}
 
@@ -129,7 +136,7 @@ func (r *InterestRepoDB) Delete(ctx context.Context, interestID uint) error {
 		return errors.New("Không thể hủy quan tâm do đã có tin nhắn")
 	}
 
-	if err := r.db.Debug().WithContext(ctx).Delete(&dbmodel.Interest{}, interestID).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Delete(&dbInterest).Error; err != nil {
 		return errors.New("Lỗi khi xóa quan tâm: " + err.Error())
 	}
 

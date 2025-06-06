@@ -143,7 +143,7 @@ func (h *InterestHandler) Create(c *gin.Context) {
 // @Success 200 {object} interestdto.DeleteInterestResponseWrapper "Deleted interest successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError
-// @Router /interests/{interestID} [delete]
+// @Router /interests/{postID} [delete]
 func (h *InterestHandler) Delete(c *gin.Context) {
 	var (
 		req interestdto.DeleteInterest
@@ -160,7 +160,7 @@ func (h *InterestHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := h.uc.DeleteInterest(c.Request.Context(), req.InterestID, userID); err != nil {
+	if err := h.uc.DeleteInterest(c.Request.Context(), req.PostID, userID); err != nil {
 		c.JSON(
 			http.StatusConflict,
 			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
