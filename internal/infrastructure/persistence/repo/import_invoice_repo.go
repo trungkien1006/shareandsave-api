@@ -70,7 +70,11 @@ func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]impor
 
 	//sort du lieu
 	if filter.Sort != "" {
-		filter.Sort = "ii." + strcase.ToSnake(filter.Sort)
+		if filter.Sort == "itemCount" {
+			filter.Sort = "item_count"
+		} else {
+			filter.Sort = "ii." + strcase.ToSnake(filter.Sort)
+		}
 
 		query.Order(filter.Sort + " " + filter.Order)
 	}
