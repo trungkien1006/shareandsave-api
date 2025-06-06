@@ -12,9 +12,13 @@ type GetInterestResponse struct {
 }
 
 type CreateInterestResponseWrapper struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int                    `json:"code"`
+	Message string                 `json:"message"`
+	Data    CreateInterestResponse `json:"data"`
+}
+
+type CreateInterestResponse struct {
+	InterestID uint `json:"interestID"`
 }
 
 type DeleteInterestResponseWrapper struct {

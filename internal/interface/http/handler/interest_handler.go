@@ -163,7 +163,8 @@ func (h *InterestHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := h.uc.DeleteInterest(c.Request.Context(), req.PostID, userID); err != nil {
+	interestID, err := h.uc.DeleteInterest(c.Request.Context(), req.PostID, userID)
+	if err != nil {
 		c.JSON(
 			http.StatusConflict,
 			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
@@ -174,6 +175,8 @@ func (h *InterestHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Interest deleted successfully",
-		"data":    gin.H{},
+		"data": interestdto.DeleteInterestResponse{
+			InterestID: interestID,
+		},
 	})
 }

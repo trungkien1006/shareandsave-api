@@ -318,11 +318,17 @@ definitions:
     required:
     - postID
     type: object
+  interestdto.CreateInterestResponse:
+    properties:
+      interestID:
+        type: integer
+    type: object
   interestdto.CreateInterestResponseWrapper:
     properties:
       code:
         type: integer
-      data: {}
+      data:
+        $ref: '#/definitions/interestdto.CreateInterestResponse'
       message:
         type: string
     type: object

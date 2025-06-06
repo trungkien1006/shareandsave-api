@@ -108,39 +108,39 @@ func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest)
 	return dbInterest.ID, nil
 }
 
-func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) error {
+func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) (uint, error) {
 	var (
 		count      int64
 		dbInterest dbmodel.Interest
 	)
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Where("user_id = ? AND post_id = ?", userID, postID).Find(&dbInterest).Error; err != nil {
-		return errors.New("Có lỗi khi tìm kiếm quan tâm: " + err.Error())
+		return 0, errors.New("Có lỗi khi tìm kiếm quan tâm: " + err.Error())
 	}
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Transaction{}).Where("interest_id = ?", dbInterest.ID).Count(&count).Error; err != nil {
-		return errors.New("Lỗi khi kiểm tra giao dịch trong quan tâm: " + err.Error())
+		return 0, errors.New("Lỗi khi kiểm tra giao dịch trong quan tâm: " + err.Error())
 	}
 
 	if count > 0 {
-		return errors.New("Không thể hủy quan tâm do đã phát sinh giao dịch")
+		return 0, errors.New("Không thể hủy quan tâm do đã phát sinh giao dịch")
 	}
 
 	count = 0
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("interest_id = ?", dbInterest.ID).Count(&count).Error; err != nil {
-		return errors.New("Lỗi khi kiểm tra tin nhắn trong quan tâm: " + err.Error())
+		return 0, errors.New("Lỗi khi kiểm tra tin nhắn trong quan tâm: " + err.Error())
 	}
 
 	if count > 0 {
-		return errors.New("Không thể hủy quan tâm do đã có tin nhắn")
+		return 0, errors.New("Không thể hủy quan tâm do đã có tin nhắn")
 	}
 
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Delete(&dbInterest).Error; err != nil {
-		return errors.New("Lỗi khi xóa quan tâm: " + err.Error())
+		return 0, errors.New("Lỗi khi xóa quan tâm: " + err.Error())
 	}
 
-	return nil
+	return dbInterest.ID, nil
 }
 
 func (r *InterestRepoDB) IsExist(ctx context.Context, userID uint, postID uint) (bool, error) {

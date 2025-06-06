@@ -1955,13 +1955,23 @@ const docTemplate = `{
                 }
             }
         },
+        "interestdto.CreateInterestResponse": {
+            "type": "object",
+            "properties": {
+                "interestID": {
+                    "type": "integer"
+                }
+            }
+        },
         "interestdto.CreateInterestResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "data": {},
+                "data": {
+                    "$ref": "#/definitions/interestdto.CreateInterestResponse"
+                },
                 "message": {
                     "type": "string"
                 }
