@@ -9,7 +9,7 @@ type GetImportInvoiceRequest struct {
 	Limit       int    `form:"limit"`
 	Sort        string `form:"sort" binding:"omitempty,oneof=authorName title createdAT"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=title authorName"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=title authorName receiverName"`
 	SearchValue string `form:"searchValue"`
 }
 
