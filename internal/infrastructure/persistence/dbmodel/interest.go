@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/interest"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,4 +21,41 @@ type Interest struct {
 
 	Comments     []Comment     `gorm:"foreignKey:InterestID"`
 	Transactions []Transaction `gorm:"foreignKey:InterestID"`
+}
+
+// DB to Domain
+func GetDTOToDomain(db Post) interest.PostInterest {
+	var (
+		domainItems    []interest.PostInterestItem
+		domainInterest []interest.Interest
+	)
+
+	for _, value := range db.PostItem {
+		domainItems = append(domainItems, interest.PostInterestItem{
+			ID:           value.ItemID,
+			Name:         value.Item.Name,
+			CategoryName: value.Item.Category.Name,
+			Quantity:     value.Quantity,
+			Image:        value.Image,
+		})
+	}
+
+	for _, value := range db.Interests {
+		domainInterest = append(domainInterest, interest.Interest{
+			ID:         value.ID,
+			UserID:     value.UserID,
+			UserName:   value.User.FullName,
+			UserAvatar: value.User.Avatar,
+			PostID:     value.PostID,
+			Status:     value.Status,
+		})
+	}
+
+	return interest.PostInterest{
+		ID:        db.ID,
+		Title:     db.Title,
+		Type:      db.Type,
+		Items:     domainItems,
+		Interests: domainInterest,
+	}
 }

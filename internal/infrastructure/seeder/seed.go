@@ -396,7 +396,7 @@ func (s *Seeder) seedUsers() error {
 	adminUsers := []user.User{
 		{
 			Email:       "superadmin@example.com",
-			Password:    "admin1234",
+			Password:    "Admin1234",
 			FullName:    "Super Admin",
 			Status:      1,
 			RoleID:      roleMap["Super Admin"],
@@ -408,7 +408,7 @@ func (s *Seeder) seedUsers() error {
 		},
 		{
 			Email:       "content@example.com",
-			Password:    "admin1234",
+			Password:    "Admin1234",
 			FullName:    "Content Manager",
 			Status:      1,
 			RoleID:      roleMap["Content Manager"],
@@ -420,7 +420,7 @@ func (s *Seeder) seedUsers() error {
 		},
 		{
 			Email:       "warehouse@example.com",
-			Password:    "admin1234",
+			Password:    "Admin1234",
 			FullName:    "Warehouse Manager",
 			Status:      1,
 			RoleID:      roleMap["Warehouse Manager"],
@@ -437,7 +437,7 @@ func (s *Seeder) seedUsers() error {
 	for i := 0; i < 27; i++ {
 		clientUsers[i] = user.User{
 			Email:       fmt.Sprintf("client%02d@example.com", i+1),
-			Password:    "user1234",
+			Password:    "User1234",
 			FullName:    fmt.Sprintf("Client User %02d", i+1),
 			Status:      1,
 			RoleID:      roleMap["Client"],

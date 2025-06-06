@@ -344,6 +344,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/interests": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "interest"
+                ],
+                "summary": "Get interest",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "createdAt",
+                        "description": "Sort column",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC, DESC",
+                        "description": "Sort type",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Interested: 1, Following: 2",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search value",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.GetInterestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -1285,11 +1363,11 @@ const docTemplate = `{
                 },
                 "email": {
                     "type": "string",
-                    "example": "user@example.com"
+                    "example": "superadmin@example.com"
                 },
                 "password": {
                     "type": "string",
-                    "example": "Abc12345"
+                    "example": "Admin1234"
                 }
             }
         },
@@ -1385,6 +1463,24 @@ const docTemplate = `{
                     "example": "Name is require"
                 }
             }
+        },
+        "enums.InterestType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "InterestTypeAll": "0",
+                "InterestTypeFollowing": "2 Đang quan tâm",
+                "InterestTypeInterested": "1 Đã quan tâm"
+            },
+            "x-enum-varnames": [
+                "InterestTypeAll",
+                "InterestTypeInterested",
+                "InterestTypeFollowing"
+            ]
         },
         "enums.ItemClassify": {
             "type": "integer",
@@ -1596,6 +1692,103 @@ const docTemplate = `{
                 },
                 "senderName": {
                     "type": "string"
+                }
+            }
+        },
+        "interestdto.GetInterestResponse": {
+            "type": "object",
+            "properties": {
+                "interests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interestdto.PostInterest"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "interestdto.GetInterestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/interestdto.GetInterestResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "interestdto.Interest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "postID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "userAvatar": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "interestdto.PostInterest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "interests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interestdto.Interest"
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/interestdto.PostInterestItem"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/enums.InterestType"
+                }
+            }
+        },
+        "interestdto.PostInterestItem": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },

@@ -4,6 +4,7 @@ import (
 	"final_project/internal/application/authapp"
 	"final_project/internal/application/categoryapp"
 	"final_project/internal/application/importinvoiceapp"
+	"final_project/internal/application/interestapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
 	"final_project/internal/application/userapp"
@@ -50,6 +51,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	itemRepo := persistence.NewItemRepoDB(db)
 	itemUC := itemapp.NewUseCase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
+
+	//interest dependency
+	interestRepo := persistence.NewInterestRepoDB(db)
+	InterestUC := interestapp.NewUseCase(interestRepo)
+	InterestHandler := handler.NewInterestHandler(InterestUC)
 
 	//post dependency
 	postService := post.NewPostService()
@@ -128,6 +134,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//category API
 		v1.GET("/categories", categoryHandler.GetAll)
+
+		//interest API
+		v1.GET("/interests", middlewares.AuthGuard, InterestHandler.GetAll)
 
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)

@@ -1,1 +1,55 @@
 package interestdto
+
+import (
+	"final_project/internal/domain/interest"
+	"final_project/internal/pkg/enums"
+)
+
+// DTO to Domain
+func GetDTOToDomain(dto GetInterest) interest.GetInterest {
+	return interest.GetInterest{
+		Page:   dto.Page,
+		Limit:  dto.Limit,
+		Type:   int(dto.Type),
+		Sort:   dto.Sort,
+		Order:  dto.Order,
+		Search: dto.Search,
+	}
+}
+
+// Domain to DTO
+func GetDomainToDTO(domain interest.PostInterest) PostInterest {
+	var (
+		domainItems    []PostInterestItem
+		domainInterest []Interest
+	)
+
+	for _, value := range domain.Items {
+		domainItems = append(domainItems, PostInterestItem{
+			ID:           value.ID,
+			Name:         value.Name,
+			CategoryName: value.CategoryName,
+			Quantity:     value.Quantity,
+			Image:        value.Image,
+		})
+	}
+
+	for _, value := range domain.Interests {
+		domainInterest = append(domainInterest, Interest{
+			ID:         value.ID,
+			UserID:     value.UserID,
+			UserName:   value.UserName,
+			UserAvatar: value.UserAvatar,
+			PostID:     value.PostID,
+			Status:     value.Status,
+		})
+	}
+
+	return PostInterest{
+		ID:        domain.ID,
+		Title:     domain.Title,
+		Type:      enums.InterestType(domain.Type),
+		Items:     domainItems,
+		Interests: domainInterest,
+	}
+}
