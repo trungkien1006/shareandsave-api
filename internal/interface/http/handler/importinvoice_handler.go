@@ -33,7 +33,7 @@ func NewImportInvoiceHandler(uc *importinvoiceapp.UseCase) *ImportInvoiceHandler
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column" example(authorName, title, createdAt)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
+// @Param   searchBy   query    string  false  "Trường lọc (vd: senderName, receiverName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} importinvoicedto.GetmportInvoiceResponseWrapper
 // @Failure 400 {object} enums.AppError

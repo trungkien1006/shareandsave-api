@@ -1218,7 +1218,7 @@ paths:
         in: query
         name: order
         type: string
-      - description: 'Trường lọc (vd: email, fullName)'
+      - description: 'Trường lọc (vd: senderName, receiverName)'
         in: query
         name: searchBy
         type: string
@@ -1355,7 +1355,7 @@ paths:
       summary: Create interest
       tags:
       - interests
-  /interests/{interestID}:
+  /interests/{postID}:
     delete:
       consumes:
       - application/json

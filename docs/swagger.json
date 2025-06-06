@@ -341,7 +341,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (vd: email, fullName)",
+                        "description": "Trường lọc (vd: senderName, receiverName)",
                         "name": "searchBy",
                         "in": "query"
                     },
@@ -543,7 +543,7 @@
                 }
             }
         },
-        "/interests/{interestID}": {
+        "/interests/{postID}": {
             "delete": {
                 "security": [
                     {

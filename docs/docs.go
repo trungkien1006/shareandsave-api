@@ -348,7 +348,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (vd: email, fullName)",
+                        "description": "Trường lọc (vd: senderName, receiverName)",
                         "name": "searchBy",
                         "in": "query"
                     },
@@ -550,7 +550,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/interests/{interestID}": {
+        "/interests/{postID}": {
             "delete": {
                 "security": [
                     {
