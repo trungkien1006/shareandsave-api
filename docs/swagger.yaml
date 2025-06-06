@@ -280,6 +280,14 @@ definitions:
       message:
         type: string
     type: object
+  interestdto.DeleteInterestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   interestdto.GetInterestResponse:
     properties:
       interests:
@@ -1215,6 +1223,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Create interest
+      tags:
+      - interests
+  /interests/{interestID}:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa interest theo ID
+      parameters:
+      - description: ID interest
+        in: path
+        name: interestID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted interest successfully
+          schema:
+            $ref: '#/definitions/interestdto.DeleteInterestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Delete Interest
       tags:
       - interests
   /items:

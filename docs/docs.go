@@ -470,6 +470,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/interests/{interestID}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API xóa interest theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "interests"
+                ],
+                "summary": "Delete Interest",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID interest",
+                        "name": "interestID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted interest successfully",
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.DeleteInterestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -1755,6 +1804,18 @@ const docTemplate = `{
             }
         },
         "interestdto.CreateInterestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "interestdto.DeleteInterestResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
