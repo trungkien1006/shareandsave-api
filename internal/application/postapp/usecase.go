@@ -208,13 +208,13 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error 
 
 	if domainPost.Images != nil {
 		//resize ảnh
-		for index, image := range domainPost.Images {
+		for _, image := range domainPost.Images {
 			formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
 			if err != nil {
 				return errors.New("Không thể format ảnh:" + err.Error())
 			}
 
-			updatePost.Images[index] = formatedImage
+			updatePost.Images = append(updatePost.Images, formatedImage)
 		}
 	}
 
