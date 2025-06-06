@@ -54,7 +54,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//interest dependency
 	interestRepo := persistence.NewInterestRepoDB(db)
-	InterestUC := interestapp.NewUseCase(interestRepo)
+	InterestUC := interestapp.NewUseCase(interestRepo, userRepo)
 	InterestHandler := handler.NewInterestHandler(InterestUC)
 
 	//post dependency
