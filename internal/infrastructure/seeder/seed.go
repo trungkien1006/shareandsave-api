@@ -3,6 +3,7 @@ package seeder
 import (
 	"context"
 	"final_project/internal/domain/category"
+	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
@@ -15,22 +16,24 @@ import (
 )
 
 type Seeder struct {
-	rolePerRepo  rolepermission.Repository
-	itemRepo     item.Repository
-	userRepo     user.Repository
-	categoryRepo category.Repository
-	postRepo     post.Repository
-	postService  *post.PostService
+	rolePerRepo   rolepermission.Repository
+	itemRepo      item.Repository
+	userRepo      user.Repository
+	categoryRepo  category.Repository
+	postRepo      post.Repository
+	postService   *post.PostService
+	imInvoiceRepo importinvoice.Repository
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService, imInvoiceRepo importinvoice.Repository) *Seeder {
 	return &Seeder{
-		rolePerRepo:  rolePerRepo,
-		itemRepo:     itemRepo,
-		userRepo:     userRepo,
-		categoryRepo: categoryRepo,
-		postRepo:     postRepo,
-		postService:  postService,
+		rolePerRepo:   rolePerRepo,
+		itemRepo:      itemRepo,
+		userRepo:      userRepo,
+		categoryRepo:  categoryRepo,
+		postRepo:      postRepo,
+		postService:   postService,
+		imInvoiceRepo: imInvoiceRepo,
 	}
 }
 
@@ -1175,3 +1178,7 @@ func (s *Seeder) seedPosts() error {
 
 	return nil
 }
+
+// func (s *Seeder) seedImportInvoice() error {
+
+// }

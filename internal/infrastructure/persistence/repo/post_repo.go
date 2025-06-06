@@ -100,7 +100,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		Select(`
 			post.*,
 			author.full_name AS author_name,
-			author.avatar AS author_avatar
+			author.avatar AS author_avatar,
 			COUNT(DISTINCT interest.id) AS interest_count,
 			SUM(DISTINCT post_item.quantity) AS item_count
 		`).
