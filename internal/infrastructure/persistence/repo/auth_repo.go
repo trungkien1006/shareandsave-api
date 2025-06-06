@@ -30,7 +30,10 @@ func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password
 			Model(&dbmodel.User{}).
 			Where("email = ?", email).
 			Where("role_id != ?", clientRoleID).
-			Preload("Role").First(&dbUser).Error; err != nil {
+			Preload("Role").
+			Preload("Role.RolePermissions").
+			Preload("Role.RolePermissions.Permission").
+			First(&dbUser).Error; err != nil {
 			return nil, errors.New("Email không tồn tại: " + err.Error())
 		}
 	} else {

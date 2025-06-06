@@ -14,4 +14,9 @@ type User struct {
 	Status      int8
 	GoodPoint   int
 	Major       string
+	Permissions []Permission
+}
+
+type Permission struct {
+	Code string
 }

@@ -18,10 +18,11 @@ type UseCase struct {
 	service   *auth.AuthService
 	redisRepo redis.Reposity
 	roleRepo  rolepermission.Repository
+	userRepo  user.Repository
 	clientID  uint
 }
 
-func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity, roleRepo rolepermission.Repository) *UseCase {
+func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity, roleRepo rolepermission.Repository, userRepo user.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -34,8 +35,23 @@ func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity
 		service:   s,
 		redisRepo: redisRepo,
 		roleRepo:  roleRepo,
+		userRepo:  userRepo,
 		clientID:  clientID,
 	}
+}
+
+func (uc *UseCase) GetMe(ctx context.Context, user *user.User, userID uint, isAdmin bool) error {
+	if isAdmin {
+		if err := uc.userRepo.GetClientUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+			return err
+		}
+	} else {
+		if err := uc.userRepo.GetAdminUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JWT *string, refreshToken *string, domainUser *user.User, isAdmin bool) error {

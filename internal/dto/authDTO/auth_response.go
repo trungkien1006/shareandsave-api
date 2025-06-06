@@ -2,16 +2,28 @@ package authdto
 
 import userdto "final_project/internal/dto/userDTO"
 
-type LoginResponseWrapper struct {
-	Code    int           `json:"code"`
-	Message string        `json:"message"`
-	Data    LoginResponse `json:"data"`
+type ClientLoginResponseWrapper struct {
+	Code    int                 `json:"code"`
+	Message string              `json:"message"`
+	Data    ClientLoginResponse `json:"data"`
 }
 
-type LoginResponse struct {
+type ClientLoginResponse struct {
 	JWT          string                `json:"jwt"`
 	RefreshToken string                `json:"refreshToken"`
 	User         userdto.CommonUserDTO `json:"user"`
+}
+
+type AdminLoginResponseWrapper struct {
+	Code    int                `json:"code"`
+	Message string             `json:"message"`
+	Data    AdminLoginResponse `json:"data"`
+}
+
+type AdminLoginResponse struct {
+	JWT          string               `json:"jwt"`
+	RefreshToken string               `json:"refreshToken"`
+	User         userdto.AdminUserDTO `json:"user"`
 }
 
 type LogoutResponseWrapper struct {
@@ -28,4 +40,24 @@ type GetAccessTokenResponseWrapper struct {
 
 type GetAccessTokenResponse struct {
 	JWT string `json:"jwt"`
+}
+
+type AdminGetMeResponseWrapper struct {
+	Code    int                `json:"code"`
+	Message string             `json:"message"`
+	Data    AdminGetMeResponse `json:"data"`
+}
+
+type AdminGetMeResponse struct {
+	User userdto.AdminUserDTO `json:"user"`
+}
+
+type ClientGetMeResponseWrapper struct {
+	Code    int                 `json:"code"`
+	Message string              `json:"message"`
+	Data    ClientGetMeResponse `json:"data"`
+}
+
+type ClientGetMeResponse struct {
+	User userdto.CommonUserDTO `json:"user"`
 }

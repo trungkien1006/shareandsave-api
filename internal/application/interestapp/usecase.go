@@ -55,7 +55,7 @@ func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interes
 	return nil
 }
 
-func (uc *UseCase) DeleteInterest(ctx context.Context, interestID uint) error {
+func (uc *UseCase) DeleteInterest(ctx context.Context, interestID uint, userID uint) error {
 	if err := uc.repo.Delete(ctx, interestID); err != nil {
 		return err
 	}

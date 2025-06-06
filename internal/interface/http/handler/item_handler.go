@@ -130,7 +130,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		Image:       req.Image,
 	}
 	if err := h.uc.CreateItem(c.Request.Context(), &itm); err != nil {
-		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
 		return
 	}
 	c.JSON(http.StatusOK, itemdto.CreateItemResponseWrapper{

@@ -75,10 +75,31 @@ func (r *UserRepoDB) IsExist(ctx context.Context, userID uint) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
+func (r *UserRepoDB) GetClientUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
 	var dbUser dbmodel.User
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).Where("id = ?", userID).Where("role_id = ?", clientID).Preload("Role").First(&dbUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).Where("id = ?", userID).
+		Where("role_id = ?", clientID).
+		First(&dbUser).Error; err != nil {
+		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+	}
+
+	*domainUser = dbmodel.ToDomainUser(dbUser)
+
+	return nil
+}
+
+func (r *UserRepoDB) GetAdminUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
+	var dbUser dbmodel.User
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).Where("id = ?", userID).
+		Where("role_id != ?", clientID).
+		Preload("Role").
+		Preload("Role.RolePermissions").
+		Preload("Role.RolePermissions.Permission").
+		First(&dbUser).Error; err != nil {
 		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 	}
 

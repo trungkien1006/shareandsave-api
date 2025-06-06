@@ -22,6 +22,82 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
+// @Summary Admin Get Me
+// @Description API lấy thông tin admin + jwt
+// @Security BearerAuth
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} authdto.AdminGetMeResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /get-me [get]
+func (h *AuthHandler) AdminGetMe(c *gin.Context) {
+	var (
+		domainUser user.User
+		userDTORes userdto.AdminUserDTO
+	)
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.GetMe(c.Request.Context(), &domainUser, userID, true); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	userDTORes = userdto.DomainAdminUserToDTO(domainUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get me successfully",
+		"data": authdto.AdminGetMeResponse{
+			User: userDTORes,
+		},
+	})
+}
+
+// @Summary Client Get Me
+// @Description API lấy thông tin client + jwt
+// @Security BearerAuth
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} authdto.ClientGetMeResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/get-me [get]
+func (h *AuthHandler) ClientGetMe(c *gin.Context) {
+	var (
+		domainUser user.User
+		userDTORes userdto.CommonUserDTO
+	)
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.GetMe(c.Request.Context(), &domainUser, userID, false); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	userDTORes = userdto.DomainCommonUserToDTO(domainUser)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get me successfully",
+		"data": authdto.ClientGetMeResponse{
+			User: userDTORes,
+		},
+	})
+}
+
 // @Summary Admin Login
 // @Description Đăng nhập admin với email và mật khẩu mạnh
 // @Security BearerAuth
@@ -29,7 +105,7 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 // @Accept json
 // @Produce json
 // @Param login body authdto.LoginRequest true "Dữ liệu đăng nhập"
-// @Success 200 {object} authdto.LoginResponseWrapper
+// @Success 200 {object} authdto.AdminLoginResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
 // @Router /login [post]
@@ -55,16 +131,16 @@ func (h *AuthHandler) AdminLogin(c *gin.Context) {
 	domainAuthLogin = authdto.AuthDTOToDomain(req)
 
 	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken, &domainUser, true); err != nil {
-		c.JSON(http.StatusUnauthorized, enums.NewAppError(http.StatusUnauthorized, err.Error(), enums.ErrUnauthorized))
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrUnauthorized))
 		return
 	}
 
-	userDTO := userdto.DomainCommonUserToDTO(domainUser)
+	userDTO := userdto.DomainAdminUserToDTO(domainUser)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Login successfully",
-		"data": authdto.LoginResponse{
+		"data": authdto.AdminLoginResponse{
 			JWT:          JWT,
 			RefreshToken: refreshToken,
 			User:         userDTO,
@@ -79,7 +155,7 @@ func (h *AuthHandler) AdminLogin(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param login body authdto.LoginRequest true "Dữ liệu đăng nhập"
-// @Success 200 {object} authdto.LoginResponseWrapper
+// @Success 200 {object} authdto.ClientLoginResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 401 {object} enums.AppError
 // @Router /client/login [post]
@@ -105,7 +181,7 @@ func (h *AuthHandler) UserLogin(c *gin.Context) {
 	domainAuthLogin = authdto.AuthDTOToDomain(req)
 
 	if err := h.uc.Login(c.Request.Context(), domainAuthLogin, &JWT, &refreshToken, &domainUser, false); err != nil {
-		c.JSON(http.StatusUnauthorized, enums.NewAppError(http.StatusUnauthorized, err.Error(), enums.ErrUnauthorized))
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrUnauthorized))
 		return
 	}
 
@@ -114,7 +190,7 @@ func (h *AuthHandler) UserLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Login successfully",
-		"data": authdto.LoginResponse{
+		"data": authdto.ClientLoginResponse{
 			JWT:          JWT,
 			RefreshToken: refreshToken,
 			User:         userDTO,

@@ -1,5 +1,69 @@
 basePath: /api/v1
 definitions:
+  authdto.AdminGetMeResponse:
+    properties:
+      user:
+        $ref: '#/definitions/userdto.AdminUserDTO'
+    type: object
+  authdto.AdminGetMeResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.AdminGetMeResponse'
+      message:
+        type: string
+    type: object
+  authdto.AdminLoginResponse:
+    properties:
+      jwt:
+        type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/userdto.AdminUserDTO'
+    type: object
+  authdto.AdminLoginResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.AdminLoginResponse'
+      message:
+        type: string
+    type: object
+  authdto.ClientGetMeResponse:
+    properties:
+      user:
+        $ref: '#/definitions/userdto.CommonUserDTO'
+    type: object
+  authdto.ClientGetMeResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.ClientGetMeResponse'
+      message:
+        type: string
+    type: object
+  authdto.ClientLoginResponse:
+    properties:
+      jwt:
+        type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/userdto.CommonUserDTO'
+    type: object
+  authdto.ClientLoginResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.ClientLoginResponse'
+      message:
+        type: string
+    type: object
   authdto.GetAccessTokenRequest:
     properties:
       refreshToken:
@@ -37,24 +101,6 @@ definitions:
     - device
     - email
     - password
-    type: object
-  authdto.LoginResponse:
-    properties:
-      jwt:
-        type: string
-      refreshToken:
-        type: string
-      user:
-        $ref: '#/definitions/userdto.CommonUserDTO'
-    type: object
-  authdto.LoginResponseWrapper:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/authdto.LoginResponse'
-      message:
-        type: string
     type: object
   authdto.LogoutResponseWrapper:
     properties:
@@ -740,6 +786,35 @@ definitions:
       message:
         type: string
     type: object
+  userdto.AdminUserDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/userdto.Permission'
+        type: array
+      phoneNumber:
+        type: string
+      roleID:
+        type: integer
+      roleName:
+        type: string
+      status:
+        type: integer
+    type: object
   userdto.CommonUserDTO:
     properties:
       address:
@@ -853,6 +928,11 @@ definitions:
       message:
         type: string
     type: object
+  userdto.Permission:
+    properties:
+      code:
+        type: string
+    type: object
   userdto.UpdateUserRequest:
     properties:
       address:
@@ -954,6 +1034,31 @@ paths:
       summary: Get categories
       tags:
       - categories
+  /client/get-me:
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin client + jwt
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.ClientGetMeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Client Get Me
+      tags:
+      - auth
   /client/login:
     post:
       consumes:
@@ -972,7 +1077,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authdto.LoginResponseWrapper'
+            $ref: '#/definitions/authdto.ClientLoginResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -1060,6 +1165,31 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /get-me:
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin admin + jwt
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.AdminGetMeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Admin Get Me
+      tags:
+      - auth
   /import-invoice:
     get:
       consumes:
@@ -1448,7 +1578,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authdto.LoginResponseWrapper'
+            $ref: '#/definitions/authdto.AdminLoginResponseWrapper'
         "400":
           description: Bad Request
           schema:

@@ -72,7 +72,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//auth dependency
 	authService := auth.NewAuthService()
 	authRepo := persistence.NewAuthRepoDB(db)
-	authUC := authapp.NewUseCase(authRepo, authService, redisRepo, rolePerRepo)
+	authUC := authapp.NewUseCase(authRepo, authService, redisRepo, rolePerRepo, userRepo)
 	authHandler := handler.NewAuthHandler(authUC)
 
 	seed := seeder.NewSeeder(
@@ -147,6 +147,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.GetAllImportInvoice)
 
 		//auth API
+		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)
+		v1.GET("/client/get-me", middlewares.AuthGuard, authHandler.ClientGetMe)
 		v1.POST("/client/login", authHandler.UserLogin)
 		v1.POST("/login", authHandler.AdminLogin)
 		v1.POST("/refresh-token", authHandler.GetAccessToken)

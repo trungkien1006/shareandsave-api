@@ -57,6 +57,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/get-me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy thông tin client + jwt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client Get Me",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.ClientGetMeResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/login": {
             "post": {
                 "security": [
@@ -90,7 +130,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authdto.LoginResponseWrapper"
+                            "$ref": "#/definitions/authdto.ClientLoginResponseWrapper"
                         }
                     },
                     "400": {
@@ -210,6 +250,46 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy thông tin admin + jwt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Admin Get Me",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.AdminGetMeResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -812,7 +892,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authdto.LoginResponseWrapper"
+                            "$ref": "#/definitions/authdto.AdminLoginResponseWrapper"
                         }
                     },
                     "400": {
@@ -1412,6 +1492,106 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authdto.AdminGetMeResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/userdto.AdminUserDTO"
+                }
+            }
+        },
+        "authdto.AdminGetMeResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.AdminGetMeResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.AdminLoginResponse": {
+            "type": "object",
+            "properties": {
+                "jwt": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/userdto.AdminUserDTO"
+                }
+            }
+        },
+        "authdto.AdminLoginResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.AdminLoginResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.ClientGetMeResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/userdto.CommonUserDTO"
+                }
+            }
+        },
+        "authdto.ClientGetMeResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.ClientGetMeResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.ClientLoginResponse": {
+            "type": "object",
+            "properties": {
+                "jwt": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/userdto.CommonUserDTO"
+                }
+            }
+        },
+        "authdto.ClientLoginResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.ClientLoginResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "authdto.GetAccessTokenRequest": {
             "type": "object",
             "properties": {
@@ -1465,34 +1645,6 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "example": "Admin1234"
-                }
-            }
-        },
-        "authdto.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "jwt": {
-                    "type": "string"
-                },
-                "refreshToken": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/userdto.CommonUserDTO"
-                }
-            }
-        },
-        "authdto.LoginResponseWrapper": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/authdto.LoginResponse"
-                },
-                "message": {
-                    "type": "string"
                 }
             }
         },
@@ -2514,6 +2666,50 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.AdminUserDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.Permission"
+                    }
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "userdto.CommonUserDTO": {
             "type": "object",
             "properties": {
@@ -2681,6 +2877,14 @@ const docTemplate = `{
                     "$ref": "#/definitions/userdto.GetUserResponse"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.Permission": {
+            "type": "object",
+            "properties": {
+                "code": {
                     "type": "string"
                 }
             }

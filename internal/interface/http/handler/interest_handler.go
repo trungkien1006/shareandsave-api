@@ -154,7 +154,13 @@ func (h *InterestHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	if err := h.uc.DeleteInterest(c.Request.Context(), req.InterestID); err != nil {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.DeleteInterest(c.Request.Context(), req.InterestID, userID); err != nil {
 		c.JSON(
 			http.StatusConflict,
 			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),

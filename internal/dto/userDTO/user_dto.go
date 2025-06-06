@@ -14,6 +14,15 @@ type CommonUserDTO struct {
 	Major       string `json:"major,omitempty"`
 }
 
+type AdminUserDTO struct {
+	CommonUserDTO
+	Permissions []Permission
+}
+
+type Permission struct {
+	Code string `json:"code"`
+}
+
 type UserDTO struct {
 	ID          uint   `json:"id"`
 	Email       string `json:"email"`
