@@ -326,11 +326,17 @@ definitions:
       message:
         type: string
     type: object
+  interestdto.DeleteInterestResponse:
+    properties:
+      interestID:
+        type: integer
+    type: object
   interestdto.DeleteInterestResponseWrapper:
     properties:
       code:
         type: integer
-      data: {}
+      data:
+        $ref: '#/definitions/interestdto.DeleteInterestResponse'
       message:
         type: string
     type: object

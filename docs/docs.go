@@ -1967,13 +1967,23 @@ const docTemplate = `{
                 }
             }
         },
+        "interestdto.DeleteInterestResponse": {
+            "type": "object",
+            "properties": {
+                "interestID": {
+                    "type": "integer"
+                }
+            }
+        },
         "interestdto.DeleteInterestResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "data": {},
+                "data": {
+                    "$ref": "#/definitions/interestdto.DeleteInterestResponse"
+                },
                 "message": {
                     "type": "string"
                 }

@@ -41,39 +41,40 @@ func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.
 	return totalPage, nil
 }
 
-func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interest) error {
+func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interest) (uint, error) {
 	isUserExist, err := uc.userRepo.IsExist(ctx, interest.UserID)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if !isUserExist {
-		return errors.New("Người dùng không tồn tại")
+		return 0, errors.New("Người dùng không tồn tại")
 	}
 
 	isPostExist, err := uc.postRepo.IsExist(ctx, interest.PostID)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if !isPostExist {
-		return errors.New("Bài viết không tồn tại")
+		return 0, errors.New("Bài viết không tồn tại")
 	}
 
 	isInterestExist, err := uc.repo.IsExist(ctx, interest.UserID, interest.PostID)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if isInterestExist {
-		return errors.New("Bạn đã quan tâm rồi")
+		return 0, errors.New("Bạn đã quan tâm rồi")
 	}
 
-	if err := uc.repo.Create(ctx, interest); err != nil {
-		return err
+	id, err := uc.repo.Create(ctx, interest)
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (uc *UseCase) DeleteInterest(ctx context.Context, postID uint, userID uint) error {

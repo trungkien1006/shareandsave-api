@@ -121,7 +121,8 @@ func (h *InterestHandler) Create(c *gin.Context) {
 
 	domainInterest = interestdto.CreateDTOToDomain(req, userID)
 
-	if err := h.uc.CreateInterest(c.Request.Context(), domainInterest); err != nil {
+	interestID, err := h.uc.CreateInterest(c.Request.Context(), domainInterest)
+	if err != nil {
 		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
@@ -129,7 +130,9 @@ func (h *InterestHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Created post successfully",
-		"data":    gin.H{},
+		"data": interestdto.DeleteInterestResponse{
+			InterestID: interestID,
+		},
 	})
 }
 

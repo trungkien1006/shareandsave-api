@@ -94,7 +94,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 	return totalPage, nil
 }
 
-func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest) error {
+func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest) (uint, error) {
 	var dbInterest dbmodel.Interest
 
 	dbInterest = dbmodel.CreateDomainToDB(interest)
@@ -102,10 +102,10 @@ func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest)
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Interest{}).
 		Create(&dbInterest).Error; err != nil {
-		return errors.New("Quan tâm không thành công: " + err.Error())
+		return 0, errors.New("Quan tâm không thành công: " + err.Error())
 	}
 
-	return nil
+	return dbInterest.ID, nil
 }
 
 func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) error {
