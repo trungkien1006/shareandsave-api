@@ -7,7 +7,7 @@ type Warehouse struct {
 	SKU           string
 	Quantity      int
 	Description   string
-	Classify      string
+	Classify      int
 	StockPlace    string
 	ItemWareHouse []ItemWareHouse
 }

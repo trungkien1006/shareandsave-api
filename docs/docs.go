@@ -1835,6 +1835,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/interestdto.PostInterestItem"
                     }
                 },
+                "slug": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 },

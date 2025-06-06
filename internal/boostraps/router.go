@@ -83,6 +83,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		postRepo,
 		postService,
 		importInvoiceRepo,
+		importInvoiceService,
 	)
 
 	seed.Seed()

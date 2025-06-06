@@ -118,16 +118,19 @@ func (r *ImportInvoiceRepoDB) CreateImportInvoice(ctx context.Context, importInv
 	if err := tx.Debug().WithContext(ctx).
 		Model(&dbmodel.ImportInvoice{}).
 		Create(&DBImportInvoice).Error; err != nil {
+		tx.Rollback()
 		return errors.New("Có lỗi khi thêm mới phiếu nhập: " + err.Error())
 	}
 
 	if err := tx.Debug().WithContext(ctx).
 		Model(&dbmodel.Warehouse{}).
 		Create(&DBWarehouse).Error; err != nil {
+		tx.Rollback()
 		return errors.New("Có lỗi khi thêm mới danh sách lô đồ: " + err.Error())
 	}
 
 	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
 	}
 
@@ -142,4 +145,12 @@ func (r *ImportInvoiceRepoDB) CreateImportInvoice(ctx context.Context, importInv
 	}
 
 	return nil
+}
+
+func (r *ImportInvoiceRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&dbmodel.ImportInvoice{}).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count == 0, nil
 }

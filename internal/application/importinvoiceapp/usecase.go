@@ -75,7 +75,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 	// Gom nhóm các món đồ thành 1 lô và tạo danh sách các món đồ thuộc lô
 	warehouses := make(map[uint]warehouse.Warehouse)
 
-	for key, value := range importInvoice.ItemImportInvoice {
+	for _, value := range importInvoice.ItemImportInvoice {
 		if wh, ok := warehouses[value.ID]; ok {
 			wh.Quantity = wh.Quantity + int(value.Quantity)
 
@@ -85,7 +85,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 
 			wh.ItemID = value.ItemID
 			wh.ItemName = value.ItemName
-			wh.SKU = uc.service.GenerateSKU(int(value.ID), int64(key))
+			wh.SKU = uc.service.GenerateSKU(int(value.ID))
 			wh.Classify = importInvoice.Classify
 			wh.Description = ""
 			wh.Quantity = int(value.Quantity)

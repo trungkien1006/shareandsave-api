@@ -2,7 +2,6 @@ package importinvoicedto
 
 import (
 	importinvoice "final_project/internal/domain/import_invoice"
-	"final_project/internal/pkg/enums"
 )
 
 // DTO -> Domain
@@ -19,7 +18,7 @@ func CreateDTOToDomain(dto CreateImportInvoiceRequest) importinvoice.ImportInvoi
 
 	return importinvoice.ImportInvoice{
 		SenderID:          dto.SenderID,
-		Classify:          enums.ItemClassify.String(dto.Classify),
+		Classify:          int(dto.Classify),
 		Description:       dto.Description,
 		ItemImportInvoice: items,
 	}

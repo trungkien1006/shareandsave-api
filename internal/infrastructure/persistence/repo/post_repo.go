@@ -229,10 +229,12 @@ func (r *PostRepoDB) Save(ctx context.Context, post *post.CreatePost) error {
 	dbPost := dbmodel.CreatePostDomainToDB(*post)
 
 	if err := tx.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Create(&dbPost).Error; err != nil {
+		tx.Rollback()
 		return errors.New("Lỗi khi tạo bài đăng: " + err.Error())
 	}
 
 	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
 	}
 

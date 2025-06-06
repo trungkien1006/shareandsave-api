@@ -8,32 +8,37 @@ import (
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
 	"fmt"
+	"log"
 	"os"
+	"time"
 )
 
 type Seeder struct {
-	rolePerRepo   rolepermission.Repository
-	itemRepo      item.Repository
-	userRepo      user.Repository
-	categoryRepo  category.Repository
-	postRepo      post.Repository
-	postService   *post.PostService
-	imInvoiceRepo importinvoice.Repository
+	rolePerRepo      rolepermission.Repository
+	itemRepo         item.Repository
+	userRepo         user.Repository
+	categoryRepo     category.Repository
+	postRepo         post.Repository
+	postService      *post.PostService
+	imInvoiceRepo    importinvoice.Repository
+	imInvoiceService *importinvoice.ImportInvoiceService
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService, imInvoiceRepo importinvoice.Repository) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService, imInvoiceRepo importinvoice.Repository, imInvoiceService *importinvoice.ImportInvoiceService) *Seeder {
 	return &Seeder{
-		rolePerRepo:   rolePerRepo,
-		itemRepo:      itemRepo,
-		userRepo:      userRepo,
-		categoryRepo:  categoryRepo,
-		postRepo:      postRepo,
-		postService:   postService,
-		imInvoiceRepo: imInvoiceRepo,
+		rolePerRepo:      rolePerRepo,
+		itemRepo:         itemRepo,
+		userRepo:         userRepo,
+		categoryRepo:     categoryRepo,
+		postRepo:         postRepo,
+		postService:      postService,
+		imInvoiceRepo:    imInvoiceRepo,
+		imInvoiceService: imInvoiceService,
 	}
 }
 
@@ -63,6 +68,10 @@ func (s *Seeder) Seed() error {
 	}
 
 	if err := s.seedPosts(); err != nil {
+		return err
+	}
+
+	if err := s.seedImportInvoice(); err != nil {
 		return err
 	}
 
@@ -1179,6 +1188,397 @@ func (s *Seeder) seedPosts() error {
 	return nil
 }
 
-// func (s *Seeder) seedImportInvoice() error {
+func (s *Seeder) seedImportInvoice() error {
+	ctx := context.Background()
+	log.Println("Start seeding import invoices...")
 
-// }
+	// Kiểm tra bảng ImportInvoice có trống không
+	isEmpty, err := s.imInvoiceRepo.IsTableEmpty(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to check if import invoice table is empty: %w", err)
+	}
+
+	if !isEmpty {
+		log.Println("Import invoice table already has data, skipping seed...")
+		return nil
+	}
+
+	// Dữ liệu mẫu cho ImportInvoice
+	importInvoices := []importinvoice.ImportInvoice{
+		{
+			SenderID:     1,
+			SenderName:   "Nguyen Van A",
+			ReceiverID:   2,
+			ReceiverName: "Tran Thi B",
+			Classify:     1,
+			Description:  "Phiếu nhập sách giáo khoa",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      1,
+					ItemName:    "",
+					Quantity:    10,
+					Description: "Sách giáo khoa Toán lớp 12",
+				},
+				{
+					ItemID:      2,
+					ItemName:    "",
+					Quantity:    5,
+					Description: "Sách giáo khoa Văn lớp 12",
+				},
+			},
+			ItemCount: 15,
+			CreatedAt: time.Now(),
+		},
+		{
+			SenderID:     3,
+			SenderName:   "Le Van C",
+			ReceiverID:   4,
+			ReceiverName: "Pham Thi D",
+			Classify:     1,
+			Description:  "Phiếu nhập quần áo mùa đông",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      3,
+					ItemName:    "",
+					Quantity:    20,
+					Description: "Áo khoác nam size M",
+				},
+			},
+			ItemCount: 20,
+			CreatedAt: time.Now().Add(-1 * time.Hour),
+		},
+		{
+			SenderID:     5,
+			SenderName:   "Hoang Van E",
+			ReceiverID:   6,
+			ReceiverName: "Nguyen Thi F",
+			Classify:     1,
+			Description:  "Phiếu nhập dụng cụ sửa chữa",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      4,
+					ItemName:    "",
+					Quantity:    8,
+					Description: "Bộ cờ lê đa năng",
+				},
+				{
+					ItemID:      5,
+					ItemName:    "",
+					Quantity:    12,
+					Description: "Máy khoan cầm tay",
+				},
+			},
+			ItemCount: 20,
+			CreatedAt: time.Now().Add(-2 * time.Hour),
+		},
+		{
+			SenderID:     7,
+			SenderName:   "Tran Van G",
+			ReceiverID:   8,
+			ReceiverName: "Le Thi H",
+			Classify:     1,
+			Description:  "Phiếu nhập đồ dùng cá nhân",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      6,
+					ItemName:    "",
+					Quantity:    15,
+					Description: "Bàn chải đánh răng",
+				},
+			},
+			ItemCount: 15,
+			CreatedAt: time.Now().Add(-3 * time.Hour),
+		},
+		{
+			SenderID:     9,
+			SenderName:   "Pham Van I",
+			ReceiverID:   10,
+			ReceiverName: "Hoang Thi J",
+			Classify:     1,
+			Description:  "Phiếu nhập giấy tờ",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      7,
+					ItemName:    "",
+					Quantity:    5,
+					Description: "Hộ chiếu",
+				},
+				{
+					ItemID:      8,
+					ItemName:    "",
+					Quantity:    3,
+					Description: "Chứng minh nhân dân",
+				},
+			},
+			ItemCount: 8,
+			CreatedAt: time.Now().Add(-4 * time.Hour),
+		},
+		{
+			SenderID:     11,
+			SenderName:   "Nguyen Van K",
+			ReceiverID:   12,
+			ReceiverName: "Tran Thi L",
+			Classify:     1,
+			Description:  "Phiếu nhập tài liệu học tập",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      9,
+					ItemName:    "",
+					Quantity:    25,
+					Description: "Sổ tay ghi chú",
+				},
+			},
+			ItemCount: 25,
+			CreatedAt: time.Now().Add(-5 * time.Hour),
+		},
+		{
+			SenderID:     13,
+			SenderName:   "Le Van M",
+			ReceiverID:   14,
+			ReceiverName: "Pham Thi N",
+			Classify:     1,
+			Description:  "Phiếu nhập sách tham khảo",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      10,
+					ItemName:    "",
+					Quantity:    7,
+					Description: "Sách luyện thi IELTS",
+				},
+				{
+					ItemID:      11,
+					ItemName:    "",
+					Quantity:    6,
+					Description: "Sách luyện thi TOEIC",
+				},
+			},
+			ItemCount: 13,
+			CreatedAt: time.Now().Add(-6 * time.Hour),
+		},
+		{
+			SenderID:     15,
+			SenderName:   "Hoang Van O",
+			ReceiverID:   16,
+			ReceiverName: "Nguyen Thi P",
+			Classify:     1,
+			Description:  "Phiếu nhập quần áo mùa hè",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      12,
+					ItemName:    "",
+					Quantity:    18,
+					Description: "Áo thun nam size L",
+				},
+			},
+			ItemCount: 18,
+			CreatedAt: time.Now().Add(-7 * time.Hour),
+		},
+		{
+			SenderID:     17,
+			SenderName:   "Tran Van Q",
+			ReceiverID:   18,
+			ReceiverName: "Le Thi R",
+			Classify:     1,
+			Description:  "Phiếu nhập thiết bị cơ khí",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      13,
+					ItemName:    "",
+					Quantity:    10,
+					Description: "Máy mài góc",
+				},
+				{
+					ItemID:      14,
+					ItemName:    "",
+					Quantity:    5,
+					Description: "Bộ tua vít đa năng",
+				},
+			},
+			ItemCount: 15,
+			CreatedAt: time.Now().Add(-8 * time.Hour),
+		},
+		{
+			SenderID:     19,
+			SenderName:   "Pham Van S",
+			ReceiverID:   20,
+			ReceiverName: "Hoang Thi T",
+			Classify:     1,
+			Description:  "Phiếu nhập đồ vệ sinh cá nhân",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      15,
+					ItemName:    "",
+					Quantity:    30,
+					Description: "Kem đánh răng",
+				},
+			},
+			ItemCount: 30,
+			CreatedAt: time.Now().Add(-9 * time.Hour),
+		},
+		{
+			SenderID:     21,
+			SenderName:   "Nguyen Van U",
+			ReceiverID:   22,
+			ReceiverName: "Tran Thi V",
+			Classify:     1,
+			Description:  "Phiếu nhập giấy tờ hành chính",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      16,
+					ItemName:    "",
+					Quantity:    4,
+					Description: "Sổ hộ khẩu",
+				},
+			},
+			ItemCount: 4,
+			CreatedAt: time.Now().Add(-10 * time.Hour),
+		},
+		{
+			SenderID:     23,
+			SenderName:   "Le Van W",
+			ReceiverID:   24,
+			ReceiverName: "Pham Thi X",
+			Classify:     1,
+			Description:  "Phiếu nhập tài liệu ôn thi",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      17,
+					ItemName:    "",
+					Quantity:    12,
+					Description: "Tài liệu ôn thi đại học",
+				},
+				{
+					ItemID:      18,
+					ItemName:    "",
+					Quantity:    8,
+					Description: "Sách hướng dẫn lập trình",
+				},
+			},
+			ItemCount: 20,
+			CreatedAt: time.Now().Add(-11 * time.Hour),
+		},
+		{
+			SenderID:     5,
+			SenderName:   "Hoang Van E",
+			ReceiverID:   6,
+			ReceiverName: "Nguyen Thi F",
+			Classify:     1,
+			Description:  "Phiếu nhập sách văn học",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      19,
+					ItemName:    "",
+					Quantity:    9,
+					Description: "Tiểu thuyết lãng mạn",
+				},
+			},
+			ItemCount: 9,
+			CreatedAt: time.Now().Add(-12 * time.Hour),
+		},
+		{
+			SenderID:     7,
+			SenderName:   "Tran Van G",
+			ReceiverID:   8,
+			ReceiverName: "Le Thi H",
+			Classify:     1,
+			Description:  "Phiếu nhập phụ kiện thời trang",
+			ItemImportInvoice: []importinvoice.ItemImportInvoice{
+				{
+					ItemID:      20,
+					ItemName:    "",
+					Quantity:    25,
+					Description: "Mũ thời trang unisex",
+				},
+			},
+			ItemCount: 25,
+			CreatedAt: time.Now().Add(-13 * time.Hour),
+		},
+	}
+
+	for i, inv := range importInvoices {
+		// Lấy số hóa đơn
+		invoiceNum, err := s.imInvoiceRepo.GetImportInvoiceNum(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to get invoice number for invoice %d: %w", i+1, err)
+		}
+		importInvoices[i].InvoiceNum = invoiceNum
+		importInvoices[i].IsLock = false
+
+		// Kiểm tra SenderID tồn tại
+		senderExisted, err := s.userRepo.IsExist(ctx, inv.SenderID)
+		if err != nil {
+			return fmt.Errorf("failed to check sender existence for invoice %d: %w", i+1, err)
+		}
+		if !senderExisted {
+			return fmt.Errorf("sender ID %d does not exist for invoice %d", inv.SenderID, i+1)
+		}
+
+		// Kiểm tra ItemID và gán ItemName
+		for j, itemInv := range inv.ItemImportInvoice {
+			var item item.Item
+			err := s.itemRepo.GetByID(ctx, &item, itemInv.ItemID)
+			if err != nil {
+
+				return fmt.Errorf("failed to get item ID %d for invoice %d: %w", itemInv.ItemID, i+1, err)
+			}
+			if item.ID == 0 {
+
+				return fmt.Errorf("item ID %d does not exist for invoice %d", itemInv.ItemID, i+1)
+			}
+			importInvoices[i].ItemImportInvoice[j].ItemName = item.Name
+		}
+
+		// Gom nhóm các món đồ thành Warehouse và sinh ItemWareHouse
+		warehouses := make(map[uint]warehouse.Warehouse)
+		for _, itemInv := range inv.ItemImportInvoice {
+			if wh, ok := warehouses[itemInv.ItemID]; ok {
+				wh.Quantity += int(itemInv.Quantity)
+				warehouses[itemInv.ItemID] = wh
+			} else {
+				wh := warehouse.Warehouse{
+					ItemID:      itemInv.ItemID,
+					ItemName:    itemInv.ItemName,
+					SKU:         s.imInvoiceService.GenerateSKU(int(itemInv.ItemID)),
+					Classify:    inv.Classify,
+					Description: "",
+					Quantity:    int(itemInv.Quantity),
+					StockPlace:  "",
+				}
+				warehouses[itemInv.ItemID] = wh
+			}
+
+			// Sinh ItemWareHouse cho mỗi món đồ
+			wh := warehouses[itemInv.ItemID]
+			var itemWHs []warehouse.ItemWareHouse
+			for k := 0; k < int(itemInv.Quantity); k++ {
+				itemCode, err := s.imInvoiceService.GenerateUniqueDigitString(9)
+				if err != nil {
+
+					return fmt.Errorf("failed to generate code for item %d in invoice %d: %w", itemInv.ItemID, i+1, err)
+				}
+				itemWHs = append(itemWHs, warehouse.ItemWareHouse{
+					ItemID:      itemInv.ItemID,
+					ItemName:    itemInv.ItemName,
+					Code:        itemCode,
+					Description: itemInv.Description,
+				})
+			}
+			wh.ItemWareHouse = itemWHs
+			warehouses[itemInv.ItemID] = wh
+		}
+
+		// Chuyển map warehouses thành slice
+		var warehouseSlice []warehouse.Warehouse
+		for _, wh := range warehouses {
+			warehouseSlice = append(warehouseSlice, wh)
+		}
+
+		// Lưu ImportInvoice và Warehouse
+		if err := s.imInvoiceRepo.CreateImportInvoice(ctx, importInvoices[i], &warehouseSlice); err != nil {
+			return fmt.Errorf("failed to create import invoice %d: %w", i+1, err)
+		}
+	}
+
+	log.Printf("Successfully seeded %d import invoices", len(importInvoices))
+	return nil
+}

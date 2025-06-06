@@ -9,21 +9,12 @@ type ImportInvoice struct {
 	SenderName        string
 	ReceiverID        uint
 	ReceiverName      string
-	Classify          string
+	Classify          int
 	Description       string
 	IsLock            bool
 	ItemImportInvoice []ItemImportInvoice
 	ItemCount         int
 	CreatedAt         time.Time
-}
-
-type GetImportInvoice struct {
-	ID           uint
-	SenderName   string
-	ReceiverName string
-	Classify     string
-	ItemCount    int
-	CreatedAt    time.Time
 }
 
 type ItemImportInvoice struct {
@@ -33,4 +24,13 @@ type ItemImportInvoice struct {
 	ItemName    string
 	Quantity    int8
 	Description string
+}
+
+type GetImportInvoice struct {
+	ID           uint
+	SenderName   string
+	ReceiverName string
+	Classify     string
+	ItemCount    int
+	CreatedAt    time.Time
 }

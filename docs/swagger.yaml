@@ -325,6 +325,8 @@ definitions:
         items:
           $ref: '#/definitions/interestdto.PostInterestItem'
         type: array
+      slug:
+        type: string
       title:
         type: string
       type:

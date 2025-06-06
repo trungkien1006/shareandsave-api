@@ -13,7 +13,7 @@ type Warehouse struct {
 	SKU         string `gorm:"unique;size:255"`
 	Quantity    int
 	Description string `gorm:"type:TEXT"`
-	Classify    string `gorm:"size:12"`
+	Classify    int    `gorm:"type:int"`
 	StockPlace  string `gorm:"size:255"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
