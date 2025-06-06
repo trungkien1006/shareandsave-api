@@ -114,7 +114,7 @@ func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) e
 		dbInterest dbmodel.Interest
 	)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Comment{}).Where("user_id = ? AND post_id = ?", userID, postID).Find(&dbInterest).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Where("user_id = ? AND post_id = ?", userID, postID).Find(&dbInterest).Error; err != nil {
 		return errors.New("Có lỗi khi tìm kiếm quan tâm: " + err.Error())
 	}
 
