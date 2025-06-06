@@ -42,11 +42,11 @@ func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity
 
 func (uc *UseCase) GetMe(ctx context.Context, user *user.User, userID uint, isAdmin bool) error {
 	if isAdmin {
-		if err := uc.userRepo.GetClientUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+		if err := uc.userRepo.GetAdminUserByID(ctx, user, int(userID), uc.clientID); err != nil {
 			return err
 		}
 	} else {
-		if err := uc.userRepo.GetAdminUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+		if err := uc.userRepo.GetClientUserByID(ctx, user, int(userID), uc.clientID); err != nil {
 			return err
 		}
 	}
