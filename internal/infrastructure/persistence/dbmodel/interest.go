@@ -63,6 +63,7 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 	return interest.PostInterest{
 		ID:        db.ID,
 		Title:     db.Title,
+		Slug:      db.Slug,
 		Type:      db.Type,
 		Items:     domainItems,
 		Interests: domainInterest,

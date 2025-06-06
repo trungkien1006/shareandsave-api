@@ -22,6 +22,7 @@ type PostInterestItem struct {
 type PostInterest struct {
 	ID        uint               `json:"id"`
 	Title     string             `json:"title"`
+	Slug      string             `json:"slug"`
 	Type      enums.InterestType `json:"type"`
 	Items     []PostInterestItem `json:"items"`
 	Interests []Interest         `json:"interests"`

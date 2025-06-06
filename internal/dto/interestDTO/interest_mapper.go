@@ -57,6 +57,7 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 	return PostInterest{
 		ID:        domain.ID,
 		Title:     domain.Title,
+		Slug:      domain.Slug,
 		Type:      enums.InterestType(domain.Type),
 		Items:     domainItems,
 		Interests: domainInterest,

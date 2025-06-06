@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/interest"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 	"math"
 
 	"github.com/iancoleman/strcase"
@@ -25,11 +26,11 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 		dbPosts []dbmodel.Post
 	)
 
-	if filter.Type == 1 {
+	if filter.Type == int(enums.InterestTypeInterested) {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type").
+			Select("post.id, post.title, post.type, post.slug").
 			Preload("Interests").
 			Preload("Interests.User").
 			Preload("PostItem").
@@ -37,12 +38,12 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem.Item.Category").
 			Where("author_id = ?", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
-			Group("post.id, post.title, post.type")
+			Group("post.id, post.title, post.type, post.slug")
 	} else {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type").
+			Select("post.id, post.title, post.type, post.slug").
 			Preload("Interests").
 			Preload("Interests.User").
 			Preload("PostItem").

@@ -20,6 +20,7 @@ type PostInterestItem struct {
 type PostInterest struct {
 	ID        uint
 	Title     string
+	Slug      string
 	Type      int
 	Items     []PostInterestItem
 	Interests []Interest
