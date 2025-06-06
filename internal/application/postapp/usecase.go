@@ -214,7 +214,7 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error 
 				return errors.New("Không thể format ảnh:" + err.Error())
 			}
 
-			domainPost.Images[index] = formatedImage
+			updatePost.Images[index] = formatedImage
 		}
 	}
 
