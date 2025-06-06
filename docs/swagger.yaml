@@ -513,6 +513,8 @@ definitions:
     type: object
   postdto.DetailPostDTO:
     properties:
+      authorAvatar:
+        type: string
       authorID:
         type: integer
       authorName:
@@ -661,6 +663,8 @@ definitions:
     type: object
   postdto.PostWithCountDTO:
     properties:
+      authorAvatar:
+        type: string
       authorID:
         type: integer
       authorName:

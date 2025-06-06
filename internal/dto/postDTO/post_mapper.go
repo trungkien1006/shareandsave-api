@@ -22,6 +22,7 @@ func PostWithCountDomainToDTO(domain post.PostWithCount) PostWithCountDTO {
 		ID:            domain.ID,
 		AuthorID:      domain.AuthorID,
 		AuthorName:    domain.AuthorName,
+		AuthorAvatar:  domain.AuthorAvatar,
 		Type:          domain.Type,
 		Slug:          domain.Slug,
 		Title:         domain.Title,

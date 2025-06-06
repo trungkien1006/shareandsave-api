@@ -2119,6 +2119,9 @@ const docTemplate = `{
         "postdto.DetailPostDTO": {
             "type": "object",
             "properties": {
+                "authorAvatar": {
+                    "type": "string"
+                },
                 "authorID": {
                     "type": "integer"
                 },
@@ -2345,6 +2348,9 @@ const docTemplate = `{
         "postdto.PostWithCountDTO": {
             "type": "object",
             "properties": {
+                "authorAvatar": {
+                    "type": "string"
+                },
                 "authorID": {
                     "type": "integer"
                 },

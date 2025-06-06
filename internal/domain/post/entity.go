@@ -39,18 +39,19 @@ type CreatePost struct {
 }
 
 type Post struct {
-	ID          uint
-	AuthorID    uint
-	AuthorName  string
-	Type        int
-	Slug        string
-	Title       string
-	Content     string
-	Description string
-	Info        string
-	Status      int8
-	Images      []string
-	CreatedAt   time.Time
+	ID           uint
+	AuthorID     uint
+	AuthorName   string
+	AuthorAvatar string
+	Type         int
+	Slug         string
+	Title        string
+	Content      string
+	Description  string
+	Info         string
+	Status       int8
+	Images       []string
+	CreatedAt    time.Time
 }
 
 type DetailPostItem struct {
@@ -63,27 +64,29 @@ type DetailPostItem struct {
 }
 
 type DetailPost struct {
-	ID          uint
-	AuthorID    uint
-	AuthorName  string
-	Type        int
-	Slug        string
-	Title       string
-	Description string
-	Content     string
-	Info        string
-	Status      int8
-	Images      []string
-	CreatedAt   time.Time
-	Tag         []string
-	Interest    []interest.Interest
-	Items       []DetailPostItem
+	ID           uint
+	AuthorID     uint
+	AuthorName   string
+	AuthorAvatar string
+	Type         int
+	Slug         string
+	Title        string
+	Description  string
+	Content      string
+	Info         string
+	Status       int8
+	Images       []string
+	CreatedAt    time.Time
+	Tag          []string
+	Interest     []interest.Interest
+	Items        []DetailPostItem
 }
 
 type PostWithCount struct {
 	ID            uint
 	AuthorID      uint
 	AuthorName    string
+	AuthorAvatar  string
 	Type          int
 	Slug          string
 	Title         string

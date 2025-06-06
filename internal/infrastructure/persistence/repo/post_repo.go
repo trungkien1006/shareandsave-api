@@ -100,6 +100,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		Select(`
 			post.*,
 			author.full_name AS author_name,
+			author.avatar AS author_avatar
 			COUNT(DISTINCT interest.id) AS interest_count,
 			SUM(DISTINCT post_item.quantity) AS item_count
 		`).
@@ -110,7 +111,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			post.id, post.author_id, post.type, post.slug, post.title, post.description,
 			post.content, post.info, post.status, post.image, post.tag,
 			post.created_at, post.updated_at, post.deleted_at,
-			author.full_name
+			author.full_name, author.avatar
 		`)
 
 	if filter.Search != "" {

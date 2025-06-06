@@ -2112,6 +2112,9 @@
         "postdto.DetailPostDTO": {
             "type": "object",
             "properties": {
+                "authorAvatar": {
+                    "type": "string"
+                },
                 "authorID": {
                     "type": "integer"
                 },
@@ -2338,6 +2341,9 @@
         "postdto.PostWithCountDTO": {
             "type": "object",
             "properties": {
+                "authorAvatar": {
+                    "type": "string"
+                },
                 "authorID": {
                     "type": "integer"
                 },

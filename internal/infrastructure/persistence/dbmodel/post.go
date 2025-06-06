@@ -33,6 +33,7 @@ type Post struct {
 
 type PostWithCounts struct {
 	Post                 // Lấy toàn bộ trường từ bảng post
+	AuthorAvatar  string `gorm:"column:"author_avatar"`
 	AuthorName    string `gorm:"column:author_name"`
 	InterestCount int64  `gorm:"column:interest_count"`
 	ItemCount     int64  `gorm:"column:item_count"`
@@ -42,13 +43,14 @@ type PostWithCounts struct {
 func AdminPostDBToDomain(dbPost Post) post.Post {
 
 	return post.Post{
-		ID:         dbPost.ID,
-		AuthorName: dbPost.Author.FullName,
-		Type:       dbPost.Type,
-		Title:      dbPost.Title,
-		Status:     dbPost.Status,
-		CreatedAt:  dbPost.CreatedAt,
-		Images:     dbPost.Image,
+		ID:           dbPost.ID,
+		AuthorName:   dbPost.Author.FullName,
+		AuthorAvatar: dbPost.Author.Avatar,
+		Type:         dbPost.Type,
+		Title:        dbPost.Title,
+		Status:       dbPost.Status,
+		CreatedAt:    dbPost.CreatedAt,
+		Images:       dbPost.Image,
 	}
 }
 
@@ -69,6 +71,7 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 		ID:            db.ID,
 		AuthorID:      db.AuthorID,
 		AuthorName:    db.AuthorName,
+		AuthorAvatar:  db.AuthorAvatar,
 		Type:          db.Type,
 		Slug:          db.Slug,
 		Title:         db.Title,
@@ -122,21 +125,22 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 	}
 
 	return post.DetailPost{
-		ID:          db.ID,
-		AuthorID:    db.AuthorID,
-		AuthorName:  db.Author.FullName,
-		Type:        db.Type,
-		Slug:        db.Slug,
-		Title:       db.Title,
-		Description: db.Description,
-		Content:     db.Content,
-		Info:        db.Info,
-		Status:      db.Status,
-		Images:      domainImage,
-		CreatedAt:   db.CreatedAt,
-		Tag:         domainTag,
-		Interest:    domainInterest,
-		Items:       domainPostItem,
+		ID:           db.ID,
+		AuthorID:     db.AuthorID,
+		AuthorName:   db.Author.FullName,
+		AuthorAvatar: db.Author.Avatar,
+		Type:         db.Type,
+		Slug:         db.Slug,
+		Title:        db.Title,
+		Description:  db.Description,
+		Content:      db.Content,
+		Info:         db.Info,
+		Status:       db.Status,
+		Images:       domainImage,
+		CreatedAt:    db.CreatedAt,
+		Tag:          domainTag,
+		Interest:     domainInterest,
+		Items:        domainPostItem,
 	}
 }
 
