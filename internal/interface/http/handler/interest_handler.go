@@ -139,7 +139,7 @@ func (h *InterestHandler) Create(c *gin.Context) {
 // @Tags interests
 // @Accept json
 // @Produce json
-// @Param interestID path int true "ID interest"
+// @Param postID path int true "ID post"
 // @Success 200 {object} interestdto.DeleteInterestResponseWrapper "Deleted interest successfully"
 // @Failure 400 {object} enums.AppError
 // @Failure 500 {object} enums.AppError

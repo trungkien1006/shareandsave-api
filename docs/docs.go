@@ -571,8 +571,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID interest",
-                        "name": "interestID",
+                        "description": "ID post",
+                        "name": "postID",
                         "in": "path",
                         "required": true
                     }

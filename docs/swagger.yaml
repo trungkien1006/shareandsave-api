@@ -1361,9 +1361,9 @@ paths:
       - application/json
       description: API xóa interest theo ID
       parameters:
-      - description: ID interest
+      - description: ID post
         in: path
-        name: interestID
+        name: postID
         required: true
         type: integer
       produces:
