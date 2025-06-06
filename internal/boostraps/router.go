@@ -52,16 +52,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	itemUC := itemapp.NewUseCase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
 
-	//interest dependency
-	interestRepo := persistence.NewInterestRepoDB(db)
-	InterestUC := interestapp.NewUseCase(interestRepo, userRepo)
-	InterestHandler := handler.NewInterestHandler(InterestUC)
-
 	//post dependency
 	postService := post.NewPostService()
 	postRepo := persistence.NewPostRepoDB(db)
 	postUC := postapp.NewUseCase(postRepo, userRepo, rolePerRepo, postService, itemRepo, categoryRepo)
 	postHandler := handler.NewPostHandler(postUC)
+
+	//interest dependency
+	interestRepo := persistence.NewInterestRepoDB(db)
+	InterestUC := interestapp.NewUseCase(interestRepo, userRepo, postRepo)
+	InterestHandler := handler.NewInterestHandler(InterestUC)
 
 	//import invoice dependency
 	importInvoiceService := importinvoice.NewImportInvoiceService()

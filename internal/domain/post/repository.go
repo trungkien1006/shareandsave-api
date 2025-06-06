@@ -13,4 +13,5 @@ type Repository interface {
 	Save(ctx context.Context, post *CreatePost) error
 	Update(ctx context.Context, post *Post) error
 	IsTableEmpty(ctx context.Context) (bool, error)
+	IsExist(ctx context.Context, postID uint) (bool, error)
 }

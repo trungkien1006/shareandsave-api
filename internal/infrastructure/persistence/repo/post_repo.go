@@ -264,3 +264,13 @@ func (r *PostRepoDB) IsTableEmpty(ctx context.Context) (bool, error) {
 	}
 	return count == 0, nil
 }
+
+func (r *PostRepoDB) IsExist(ctx context.Context, postID uint) (bool, error) {
+	var count int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Where("id = ?", postID).Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra bài viết tồn tại: " + err.Error())
+	}
+
+	return count > 0, nil
+}
