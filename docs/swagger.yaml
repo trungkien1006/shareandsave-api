@@ -265,6 +265,21 @@ definitions:
       senderName:
         type: string
     type: object
+  interestdto.CreateInterest:
+    properties:
+      postID:
+        type: integer
+    required:
+    - postID
+    type: object
+  interestdto.CreateInterestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   interestdto.GetInterestResponse:
     properties:
       interests:
@@ -1132,8 +1147,7 @@ paths:
         minimum: 1
         name: limit
         type: integer
-      - description: Sort column
-        example: createdAt
+      - description: Sort column (createdAt)
         in: query
         name: sort
         type: string
@@ -1165,7 +1179,38 @@ paths:
       - BearerAuth: []
       summary: Get interest
       tags:
-      - interest
+      - interests
+    post:
+      consumes:
+      - application/json
+      description: API quan tâm đến bài viết + JWT
+      parameters:
+      - description: Interest creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interestdto.CreateInterest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/interestdto.CreateInterestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create interest
+      tags:
+      - interests
   /items:
     get:
       consumes:

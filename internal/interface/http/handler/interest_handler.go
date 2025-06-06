@@ -24,7 +24,7 @@ func NewInterestHandler(uc *interestapp.UseCase) *InterestHandler {
 // @Summary Get interest
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
 // @Security BearerAuth
-// @Tags interest
+// @Tags interests
 // @Accept json
 // @Produce json
 // @Param page query int false "Current page" minimum(1) example(1)
@@ -83,5 +83,52 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 			Interests: interestDTORes,
 			TotalPage: totalPage,
 		},
+	})
+}
+
+// @Summary Create interest
+// @Description API quan tâm đến bài viết + JWT
+// @Security BearerAuth
+// @Tags interests
+// @Accept json
+// @Produce json
+// @Param request body interestdto.CreateInterest true "Interest creation payload"
+// @Success 201 {object} interestdto.CreateInterestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 409 {object} enums.AppError
+// @Router /interests [post]
+func (h *InterestHandler) Create(c *gin.Context) {
+	var (
+		req            interestdto.CreateInterest
+		domainInterest interest.Interest
+	)
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	domainInterest = interestdto.CreateDTOToDomain(req, userID)
+
+	if err := h.uc.CreateInterest(c.Request.Context(), domainInterest); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Created post successfully",
+		"data":    gin.H{},
 	})
 }

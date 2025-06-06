@@ -6,6 +6,15 @@ import (
 )
 
 // DTO to Domain
+func CreateDTOToDomain(dto CreateInterest, userID uint) interest.Interest {
+	return interest.Interest{
+		PostID: dto.PostID,
+		UserID: userID,
+		Status: int(enums.InterestStatusStart),
+	}
+}
+
+// DTO to Domain
 func GetDTOToDomain(dto GetInterest) interest.GetInterest {
 	return interest.GetInterest{
 		Page:   dto.Page,

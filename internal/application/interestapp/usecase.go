@@ -22,3 +22,11 @@ func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.
 
 	return totalPage, nil
 }
+
+func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interest) error {
+	if err := uc.repo.Create(ctx, interest); err != nil {
+		return err
+	}
+
+	return nil
+}

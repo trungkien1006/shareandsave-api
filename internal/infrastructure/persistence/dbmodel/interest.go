@@ -23,6 +23,15 @@ type Interest struct {
 	Transactions []Transaction `gorm:"foreignKey:InterestID"`
 }
 
+// Domain to DB
+func CreateDomainToDB(domain interest.Interest) Interest {
+	return Interest{
+		UserID: domain.UserID,
+		PostID: domain.PostID,
+		Status: domain.Status,
+	}
+}
+
 // DB to Domain
 func GetDTOToDomain(db Post) interest.PostInterest {
 	var (

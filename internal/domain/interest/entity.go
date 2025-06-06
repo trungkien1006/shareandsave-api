@@ -33,3 +33,8 @@ type GetInterest struct {
 	Order  string
 	Search string
 }
+
+type CreateInterest struct {
+	UserID uint
+	PostID uint
+}

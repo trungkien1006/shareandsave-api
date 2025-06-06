@@ -25,3 +25,7 @@ func (r *GetInterest) SetDefault() {
 		r.Type = 1
 	}
 }
+
+type CreateInterest struct {
+	PostID uint `json:"postID" validate:"required"`
+}

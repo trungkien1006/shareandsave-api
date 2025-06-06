@@ -359,7 +359,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "interest"
+                    "interests"
                 ],
                 "summary": "Get interest",
                 "parameters": [
@@ -381,8 +381,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "createdAt",
-                        "description": "Sort column",
+                        "description": "Sort column (createdAt)",
                         "name": "sort",
                         "in": "query"
                     },
@@ -415,6 +414,55 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API quan tâm đến bài viết + JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "interests"
+                ],
+                "summary": "Create interest",
+                "parameters": [
+                    {
+                        "description": "Interest creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.CreateInterest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.CreateInterestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -1691,6 +1739,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "senderName": {
+                    "type": "string"
+                }
+            }
+        },
+        "interestdto.CreateInterest": {
+            "type": "object",
+            "required": [
+                "postID"
+            ],
+            "properties": {
+                "postID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "interestdto.CreateInterestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
                     "type": "string"
                 }
             }
