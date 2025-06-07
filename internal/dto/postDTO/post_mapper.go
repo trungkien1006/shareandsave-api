@@ -153,6 +153,7 @@ func CreateDomainToDTO(domain post.CreatePost) CreatePostRequest {
 func OldItemsDTOToDomain(item OldItemsPost) post.OldItemsInPost {
 	return post.OldItemsInPost{
 		ItemID:   item.ItemID,
+		Image:    item.Image,
 		Quantity: item.Quantity,
 	}
 }
@@ -161,6 +162,7 @@ func OldItemsDTOToDomain(item OldItemsPost) post.OldItemsInPost {
 func OldItemsDomainToDTO(item post.OldItemsInPost) OldItemsPost {
 	return OldItemsPost{
 		ItemID:   item.ItemID,
+		Image:    item.Image,
 		Quantity: item.Quantity,
 	}
 }
