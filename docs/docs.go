@@ -185,6 +185,11 @@ const docTemplate = `{
         },
         "/client/posts": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -1713,24 +1718,6 @@ const docTemplate = `{
                 }
             }
         },
-        "enums.InterestType": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2
-            ],
-            "x-enum-comments": {
-                "InterestTypeAll": "0",
-                "InterestTypeFollowing": "2 Đang quan tâm",
-                "InterestTypeInterested": "1 Đã quan tâm"
-            },
-            "x-enum-varnames": [
-                "InterestTypeAll",
-                "InterestTypeInterested",
-                "InterestTypeFollowing"
-            ]
-        },
         "enums.ItemClassify": {
             "type": "integer",
             "enum": [
@@ -2030,6 +2017,9 @@ const docTemplate = `{
         "interestdto.Interest": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -2053,6 +2043,9 @@ const docTemplate = `{
         "interestdto.PostInterest": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -2075,7 +2068,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "$ref": "#/definitions/enums.InterestType"
+                    "$ref": "#/definitions/enums.PostType"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },

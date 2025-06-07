@@ -40,12 +40,14 @@ type User struct {
 }
 
 func ToDomainUser(dbUser User) user.User {
-	var permissions []user.Permission
+	permissions := make([]user.Permission, 0)
 
-	for _, value := range dbUser.Role.RolePermissions {
-		permissions = append(permissions, user.Permission{
-			Code: value.Permission.Code,
-		})
+	if dbUser.Role.RolePermissions != nil {
+		for _, value := range dbUser.Role.RolePermissions {
+			permissions = append(permissions, user.Permission{
+				Code: value.Permission.Code,
+			})
+		}
 	}
 
 	return user.User{

@@ -89,7 +89,7 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 	return totalPage, nil
 }
 
-func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest) (int, error) {
+func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest, userID uint) (int, error) {
 	var (
 		query   *gorm.DB
 		results []dbmodel.PostWithCounts

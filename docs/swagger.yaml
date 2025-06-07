@@ -145,20 +145,6 @@ definitions:
         example: Name is require
         type: string
     type: object
-  enums.InterestType:
-    enum:
-    - 0
-    - 1
-    - 2
-    type: integer
-    x-enum-comments:
-      InterestTypeAll: "0"
-      InterestTypeFollowing: 2 Đang quan tâm
-      InterestTypeInterested: 1 Đã quan tâm
-    x-enum-varnames:
-    - InterestTypeAll
-    - InterestTypeInterested
-    - InterestTypeFollowing
   enums.ItemClassify:
     enum:
     - 0
@@ -366,6 +352,8 @@ definitions:
     type: object
   interestdto.Interest:
     properties:
+      createdAt:
+        type: string
       id:
         type: integer
       postID:
@@ -381,6 +369,8 @@ definitions:
     type: object
   interestdto.PostInterest:
     properties:
+      description:
+        type: string
       id:
         type: integer
       interests:
@@ -396,7 +386,9 @@ definitions:
       title:
         type: string
       type:
-        $ref: '#/definitions/enums.InterestType'
+        $ref: '#/definitions/enums.PostType'
+      updatedAt:
+        type: string
     type: object
   interestdto.PostInterestItem:
     properties:
@@ -1174,6 +1166,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get posts client
       tags:
       - posts
