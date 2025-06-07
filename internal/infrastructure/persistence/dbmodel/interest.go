@@ -34,10 +34,8 @@ func CreateDomainToDB(domain interest.Interest) Interest {
 
 // DB to Domain
 func GetDTOToDomain(db Post) interest.PostInterest {
-	var (
-		domainItems    []interest.PostInterestItem
-		domainInterest []interest.Interest
-	)
+	domainItems := make([]interest.PostInterestItem, 0)
+	domainInterest := make([]interest.Interest, 0)
 
 	for _, value := range db.PostItem {
 		domainItems = append(domainItems, interest.PostInterestItem{
