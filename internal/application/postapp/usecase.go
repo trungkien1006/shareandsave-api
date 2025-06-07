@@ -10,7 +10,6 @@ import (
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
-	"fmt"
 	"os"
 )
 
@@ -116,16 +115,15 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		if err != nil {
 			return err
 		}
-		fmt.Println("Ảnh khi convert:" + oldItem.Image)
+
 		if oldItem.Image == "" {
 			post.OldItems[key].Image = item.Image
 		} else {
-			// strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 
-			// if err != nil {
-			// 	return err
-			// }
-			strBase64Image := oldItem.Image
+			if err != nil {
+				return err
+			}
 
 			post.OldItems[key].Image = strBase64Image
 		}
