@@ -6,9 +6,7 @@ import (
 	"final_project/internal/domain/interest"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"final_project/internal/pkg/enums"
-	"fmt"
 	"math"
-	"strconv"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -28,13 +26,11 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 		dbPosts []dbmodel.Post
 	)
 
-	fmt.Println("Type interest neeeewdaw3rwrwr: "+strconv.Itoa(filter.Type), int(enums.InterestTypeInterested))
-
 	if filter.Type == int(enums.InterestTypeInterested) {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug, post.author_id").
+			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at").
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("user_id = ?", userID)
 			}).
@@ -44,12 +40,12 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem.Item.Category").
 			Where("interest.user_id = ?", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
-			Group("post.id, post.title, post.type, post.slug")
+			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at")
 	} else {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug, post.author_id").
+			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at").
 			Preload("Interests").
 			Preload("Interests.User").
 			Preload("PostItem").
@@ -80,6 +76,10 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 	//sort du lieu
 	if filter.Sort != "" && filter.Order != "" {
 		filter.Sort = strcase.ToSnake(filter.Sort)
+
+		if filter.Sort == "created_at" {
+			filter.Sort = "updated_at"
+		}
 
 		filter.Sort = "interest." + filter.Sort
 
