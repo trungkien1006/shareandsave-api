@@ -10,6 +10,7 @@ import (
 	"final_project/internal/shared/validator"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -60,11 +61,11 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Trước khi chạy set default: "+req.Type.String(), int(enums.InterestTypeInterested))
+	fmt.Println("Trước khi chạy set default: "+strconv.Itoa(req.Type), int(enums.InterestTypeInterested))
 
 	req.SetDefault()
 
-	fmt.Println("Sau khi chạy set default: "+req.Type.String(), int(enums.InterestTypeInterested))
+	fmt.Println("Sau khi chạy set default: "+strconv.Itoa(req.Type), int(enums.InterestTypeInterested))
 
 	domainReq = interestdto.GetDTOToDomain(req)
 

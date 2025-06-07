@@ -1,14 +1,12 @@
 package interestdto
 
-import "final_project/internal/pkg/enums"
-
 type GetInterest struct {
-	Page   int                `query:"page"`
-	Limit  int                `query:"limit"`
-	Type   enums.InterestType `query:"type" validate:"omitempty,oneof=1 2" example:"1"`
-	Sort   string             `query:"sort" validate:"omitempty,oneof=createdAt" example:"createdAt"`
-	Order  string             `query:"order" validate:"omitempty,oneof=ASC DESC" example:"ASC"`
-	Search string             `query:"search"`
+	Page   int    `query:"page"`
+	Limit  int    `query:"limit"`
+	Type   int    `query:"type" validate:"omitempty,oneof=1 2" example:"1"`
+	Sort   string `query:"sort" validate:"omitempty,oneof=createdAt" example:"createdAt"`
+	Order  string `query:"order" validate:"omitempty,oneof=ASC DESC" example:"ASC"`
+	Search string `query:"search"`
 }
 
 func (r *GetInterest) SetDefault() {
