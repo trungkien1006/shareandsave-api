@@ -78,7 +78,7 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched posts successfully",
+		"message": "Fetched interest successfully",
 		"data": interestdto.GetInterestResponse{
 			Interests: interestDTORes,
 			TotalPage: totalPage,
@@ -129,7 +129,7 @@ func (h *InterestHandler) Create(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Created post successfully",
+		"message": "Created interest successfully",
 		"data": interestdto.DeleteInterestResponse{
 			InterestID: interestID,
 		},
@@ -174,7 +174,7 @@ func (h *InterestHandler) Delete(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Interest deleted successfully",
+		"message": "Deleted interest successfully",
 		"data": interestdto.DeleteInterestResponse{
 			InterestID: interestID,
 		},
