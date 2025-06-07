@@ -36,7 +36,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem").
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
-			Where("post.author_id = ?", userID).
+			Where("interest.user_id = ?", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Group("post.id, post.title, post.type, post.slug")
 	} else {
@@ -50,7 +50,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
 			Joins("JOIN interest ON interest.post_id = post.id").
-			Where("interest.user_id = ?", userID)
+			Where("post.author_id = ?", userID)
 	}
 
 	//tim kiem
