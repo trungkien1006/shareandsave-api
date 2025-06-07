@@ -10,6 +10,7 @@ import (
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
+	"fmt"
 	"os"
 )
 
@@ -115,7 +116,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		if err != nil {
 			return err
 		}
-
+		fmt.Println("Ảnh khi convert:" + oldItem.Image)
 		if oldItem.Image == "" {
 			post.OldItems[key].Image = item.Image
 		} else {

@@ -3,6 +3,7 @@ package postdto
 import (
 	"final_project/internal/domain/post"
 	"final_project/internal/pkg/enums"
+	"fmt"
 )
 
 // Domain -> DTO
@@ -151,6 +152,7 @@ func CreateDomainToDTO(domain post.CreatePost) CreatePostRequest {
 
 // OldItems DTO -> Domain
 func OldItemsDTOToDomain(item OldItemsPost) post.OldItemsInPost {
+	fmt.Println("Ảnh khi mapping:" + item.Image)
 	return post.OldItemsInPost{
 		ItemID:   item.ItemID,
 		Image:    item.Image,
