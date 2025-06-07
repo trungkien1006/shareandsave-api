@@ -90,6 +90,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 
 // @Summary Get posts client
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
 // @Tags posts
 // @Accept json
 // @Produce json
