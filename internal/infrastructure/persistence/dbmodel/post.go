@@ -133,7 +133,7 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 			ItemID:       value.ItemID,
 			CategoryID:   value.Item.CategoryID,
 			CategoryName: value.Item.Category.Name,
-			Image:        value.Item.Image,
+			Image:        value.Image,
 			Name:         value.Item.Name,
 			Quantity:     value.Quantity,
 		})
