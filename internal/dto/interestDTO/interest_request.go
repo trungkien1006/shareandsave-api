@@ -1,12 +1,12 @@
 package interestdto
 
 type GetInterest struct {
-	Page   int    `query:"page"`
-	Limit  int    `query:"limit"`
-	Type   int    `query:"type" example:"1"`
-	Sort   string `query:"sort" validate:"omitempty,oneof=createdAt" example:"createdAt"`
-	Order  string `query:"order" validate:"omitempty,oneof=ASC DESC" example:"ASC"`
-	Search string `query:"search"`
+	Page   int    `form:"page"`
+	Limit  int    `form:"limit"`
+	Type   int    `form:"type" example:"1"`
+	Sort   string `form:"sort" validate:"omitempty,oneof=createdAt" example:"createdAt"`
+	Order  string `form:"order" validate:"omitempty,oneof=ASC DESC" example:"ASC"`
+	Search string `form:"search"`
 }
 
 func (r *GetInterest) SetDefault() {
