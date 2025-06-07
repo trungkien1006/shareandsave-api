@@ -3,9 +3,9 @@ package itemdto
 type GetAllItemRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
-	Sort        string `form:"sort"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=categoryID name"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=categoryName name"`
 	SearchValue string `form:"searchValue"`
 }
 

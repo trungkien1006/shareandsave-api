@@ -41,12 +41,18 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 	query = r.db.Debug().
 		WithContext(ctx).
 		Model(&dbmodel.Item{}).
-		Preload("Category")
+		Preload("Category").
 		// Table("item as item").
-		// Joins("JOIN category AS author ON category.id = item.author_id")
+		Joins("JOIN category ON category.id = item.category_id")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+
+		if column == "category_name" {
+			column = "category.name"
+		} else {
+			column = "item." + column
+		}
 
 		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
 
@@ -57,7 +63,7 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 	}
 
 	if req.Sort != "" && req.Order != "" {
-		query = query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
+		query = query.Order("item." + strcase.ToSnake(req.Sort) + " " + req.Order)
 	}
 
 	if req.Limit > 0 && req.Page > 0 {
