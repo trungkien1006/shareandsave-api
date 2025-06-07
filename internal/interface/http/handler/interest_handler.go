@@ -31,7 +31,7 @@ func NewInterestHandler(uc *interestapp.UseCase) *InterestHandler {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column (createdAt)"
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param type query int false "Interested: 1, Following: 2" example(1, 2)
+// @Param type query int false "Interested: 1, FollowedBy: 2" example(1, 2)
 // @Param search query string false "Search value"
 // @Success 200 {object} interestdto.GetInterestResponseWrapper
 // @Failure 400 {object} enums.AppError

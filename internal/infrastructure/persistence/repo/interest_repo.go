@@ -31,7 +31,9 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Model(&dbmodel.Post{}).
 			Table("post").
 			Select("post.id, post.title, post.type, post.slug, post.author_id").
-			Preload("Interests").
+			Preload("Interests", func(db *gorm.DB) *gorm.DB {
+				return db.Where("user_id = ?", userID)
+			}).
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").
