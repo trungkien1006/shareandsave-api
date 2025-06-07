@@ -77,11 +77,11 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 	if filter.Sort != "" && filter.Order != "" {
 		filter.Sort = strcase.ToSnake(filter.Sort)
 
-		if filter.Sort == "created_at" {
-			filter.Sort = "updated_at"
-		}
-
 		filter.Sort = "interest." + filter.Sort
+
+		if filter.Sort == "created_at" {
+			filter.Sort = "post.updated_at"
+		}
 
 		query.Order(filter.Sort + " " + filter.Order)
 	}
