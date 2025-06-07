@@ -23,6 +23,7 @@ type PostInterestItem struct {
 type PostInterest struct {
 	ID          uint
 	AuthorID    uint
+	AuthorName  string
 	Title       string
 	Description string
 	Slug        string

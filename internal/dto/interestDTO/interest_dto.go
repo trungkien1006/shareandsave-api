@@ -26,6 +26,7 @@ type PostInterestItem struct {
 type PostInterest struct {
 	ID          uint               `json:"id"`
 	AuthorID    uint               `json:"authorID"`
+	AuthorName  string             `json:"authorName"`
 	Title       string             `json:"title"`
 	Description string             `json:"description"`
 	Slug        string             `json:"slug"`
