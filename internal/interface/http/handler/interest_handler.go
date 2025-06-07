@@ -8,6 +8,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"final_project/internal/shared/validator"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -60,6 +61,8 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 	}
 
 	req.SetDefault()
+
+	fmt.Println("aw65da65d1a6d5a4d8aw4eq23423: "+req.Type.String(), int(enums.InterestTypeInterested))
 
 	domainReq = interestdto.GetDTOToDomain(req)
 

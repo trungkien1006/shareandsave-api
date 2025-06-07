@@ -474,7 +474,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Interested: 1, Following: 2",
+                        "description": "Interested: 1, FollowedBy: 2",
                         "name": "type",
                         "in": "query"
                     },
