@@ -40,7 +40,8 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 
 	query = r.db.Debug().
 		WithContext(ctx).
-		Model(&dbmodel.Item{})
+		Model(&dbmodel.Item{}).
+		Preload("Category")
 		// Table("item as item").
 		// Joins("JOIN category AS author ON category.id = item.author_id")
 

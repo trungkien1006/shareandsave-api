@@ -61,8 +61,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 	//tim kiem
 	if filter.Search != "" {
-		query.Where("post.title LIKE ? ", "%"+filter.Search+"%").
-			Or("user.full_name LIKE ?", "%"+filter.Search+"%")
+		query.Where("( post.title LIKE ? OR user.full_name LIKE ? )", "%"+filter.Search+"%", "%"+filter.Search+"%")
 	}
 
 	var totalRecord int64 = 0

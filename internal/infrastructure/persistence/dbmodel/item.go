@@ -37,10 +37,11 @@ func ItemDomainToDB(a item.Item) Item {
 // DB → Domain
 func ItemDBToDomain(a Item) item.Item {
 	return item.Item{
-		ID:          a.ID,
-		Name:        a.Name,
-		Description: a.Description,
-		Image:       a.Image,
-		CategoryID:  a.CategoryID,
+		ID:           a.ID,
+		Name:         a.Name,
+		Description:  a.Description,
+		Image:        a.Image,
+		CategoryID:   a.CategoryID,
+		CategoryName: a.Category.Name,
 	}
 }

@@ -1,9 +1,10 @@
 package item
 
 type Item struct {
-	ID          uint
-	CategoryID  uint
-	Name        string
-	Description string
-	Image       string
+	ID           uint
+	CategoryID   uint
+	CategoryName string
+	Name         string
+	Description  string
+	Image        string
 }
