@@ -1,5 +1,7 @@
 package interest
 
+import "time"
+
 type Interest struct {
 	ID         uint
 	UserID     uint
@@ -7,6 +9,7 @@ type Interest struct {
 	UserAvatar string
 	PostID     uint
 	Status     int
+	CreatedAt  time.Time
 }
 
 type PostInterestItem struct {
@@ -18,12 +21,14 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID        uint
-	Title     string
-	Slug      string
-	Type      int
-	Items     []PostInterestItem
-	Interests []Interest
+	ID          uint
+	Title       string
+	Description string
+	Slug        string
+	Type        int
+	Items       []PostInterestItem
+	Interests   []Interest
+	UpdatedAt   time.Time
 }
 
 type GetInterest struct {

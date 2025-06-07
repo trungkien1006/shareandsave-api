@@ -51,15 +51,18 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 			UserAvatar: value.UserAvatar,
 			PostID:     value.PostID,
 			Status:     value.Status,
+			CreatedAt:  value.CreatedAt,
 		})
 	}
 
 	return PostInterest{
-		ID:        domain.ID,
-		Title:     domain.Title,
-		Slug:      domain.Slug,
-		Type:      enums.InterestType(domain.Type),
-		Items:     domainItems,
-		Interests: domainInterest,
+		ID:          domain.ID,
+		Title:       domain.Title,
+		Description: domain.Description,
+		Slug:        domain.Slug,
+		Type:        enums.PostType(domain.Type),
+		Items:       domainItems,
+		Interests:   domainInterest,
+		UpdatedAt:   domain.UpdatedAt,
 	}
 }

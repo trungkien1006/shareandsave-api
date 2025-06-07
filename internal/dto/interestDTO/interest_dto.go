@@ -1,14 +1,18 @@
 package interestdto
 
-import "final_project/internal/pkg/enums"
+import (
+	"final_project/internal/pkg/enums"
+	"time"
+)
 
 type Interest struct {
-	ID         uint   `json:"id"`
-	UserID     uint   `json:"userID"`
-	UserName   string `json:"userName"`
-	UserAvatar string `json:"userAvatar"`
-	PostID     uint   `json:"postID"`
-	Status     int    `json:"status"`
+	ID         uint      `json:"id"`
+	UserID     uint      `json:"userID"`
+	UserName   string    `json:"userName"`
+	UserAvatar string    `json:"userAvatar"`
+	PostID     uint      `json:"postID"`
+	Status     int       `json:"status"`
+	CreatedAt  time.Time `json:"createdAt"`
 }
 
 type PostInterestItem struct {
@@ -20,10 +24,12 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID        uint               `json:"id"`
-	Title     string             `json:"title"`
-	Slug      string             `json:"slug"`
-	Type      enums.InterestType `json:"type"`
-	Items     []PostInterestItem `json:"items"`
-	Interests []Interest         `json:"interests"`
+	ID          uint               `json:"id"`
+	Title       string             `json:"title"`
+	Description string             `json:"description"`
+	Slug        string             `json:"slug"`
+	Type        enums.PostType     `json:"type"`
+	Items       []PostInterestItem `json:"items"`
+	Interests   []Interest         `json:"interests"`
+	UpdatedAt   time.Time          `json:"updatedAt"`
 }
