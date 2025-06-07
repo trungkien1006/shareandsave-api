@@ -79,7 +79,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 		filter.Sort = "interest." + filter.Sort
 
-		if filter.Sort == "created_at" {
+		if filter.Sort == "interest.created_at" {
 			filter.Sort = "post.updated_at"
 		}
 
