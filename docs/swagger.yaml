@@ -369,6 +369,8 @@ definitions:
     type: object
   interestdto.PostInterest:
     properties:
+      authorID:
+        type: integer
       description:
         type: string
       id:
@@ -516,6 +518,8 @@ definitions:
         type: string
       id:
         type: integer
+      isInterest:
+        type: boolean
       status:
         type: integer
       title:
@@ -1168,8 +1172,6 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
       summary: Get posts client
       tags:
       - posts
@@ -1680,6 +1682,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get posts
       tags:
       - posts

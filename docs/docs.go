@@ -185,11 +185,6 @@ const docTemplate = `{
         },
         "/client/posts": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -952,6 +947,11 @@ const docTemplate = `{
         },
         "/posts": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -2043,6 +2043,9 @@ const docTemplate = `{
         "interestdto.PostInterest": {
             "type": "object",
             "properties": {
+                "authorID": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -2269,6 +2272,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "isInterest": {
+                    "type": "boolean"
                 },
                 "status": {
                     "type": "integer"

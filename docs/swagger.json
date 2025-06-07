@@ -178,11 +178,6 @@
         },
         "/client/posts": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -945,6 +940,11 @@
         },
         "/posts": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -2036,6 +2036,9 @@
         "interestdto.PostInterest": {
             "type": "object",
             "properties": {
+                "authorID": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -2262,6 +2265,9 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "isInterest": {
+                    "type": "boolean"
                 },
                 "status": {
                     "type": "integer"
