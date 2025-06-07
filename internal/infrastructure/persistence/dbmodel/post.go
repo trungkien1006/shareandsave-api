@@ -33,7 +33,7 @@ type Post struct {
 
 type AdminPost struct {
 	Post
-	IsInterest   bool   `gorm:"column:is_interest"`
+	IsInterest   bool   `gorm:"column:is_interested"`
 	AuthorAvatar string `gorm:"column:"author_avatar"`
 	AuthorName   string `gorm:"column:author_name"`
 }
