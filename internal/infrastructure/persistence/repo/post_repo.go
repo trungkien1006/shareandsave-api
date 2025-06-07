@@ -19,17 +19,30 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest, userID uint) (int, error) {
 	var (
 		query  *gorm.DB
-		dbPost []dbmodel.Post
+		dbPost []dbmodel.AdminPost
 	)
 
 	query = r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Post{}).
 		Table("post as post").
 		Joins("JOIN user AS author ON author.id = post.author_id").
-		Preload("Author")
+		Preload("Author").
+		Select(`post.id,
+			post.type,
+			post.title,
+			post.status,
+			post.created_at,
+			post.image,
+			author.full_name AS author_name,
+			author.avatar AS author_avatar,
+			EXISTS (
+				SELECT 1 FROM interest i WHERE i.post_id = post.id AND i.user_id = ?
+			) AS is_interested`,
+			userID,
+		)
 
 	if filter.SearchBy != "" && filter.SearchValue != "" {
 		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"
@@ -218,7 +231,7 @@ func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) 
 		return errors.New("Có lỗi khi tìm kiếm bài viết theo ID: " + err.Error())
 	}
 
-	*post = dbmodel.AdminPostDBToDomain(dbPost)
+	*post = dbmodel.PostDBToDomain(dbPost)
 
 	return nil
 }

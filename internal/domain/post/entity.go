@@ -52,6 +52,7 @@ type Post struct {
 	Status       int8
 	Images       []string
 	CreatedAt    time.Time
+	IsInterested bool `gorm:"-"`
 }
 
 type DetailPostItem struct {

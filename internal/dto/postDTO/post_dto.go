@@ -11,6 +11,7 @@ type AdminPostDTO struct {
 	Title      string    `json:"title"`
 	Status     int8      `json:"status"`
 	CreatedAt  time.Time `json:"createdAt"`
+	IsInterest bool      `json:"isInterest"`
 }
 
 type PostDTO struct {

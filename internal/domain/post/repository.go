@@ -5,7 +5,7 @@ import (
 )
 
 type Repository interface {
-	AdminGetAll(ctx context.Context, posts *[]Post, filter AdminPostFilterRequest) (int, error)
+	AdminGetAll(ctx context.Context, posts *[]Post, filter AdminPostFilterRequest, userID uint) (int, error)
 	GetAll(ctx context.Context, posts *[]PostWithCount, filter PostFilterRequest) (int, error)
 	GetDetailByID(ctx context.Context, post *DetailPost, postID uint) error
 	GetDetailBySlug(ctx context.Context, post *DetailPost, postSlug string) error

@@ -204,6 +204,7 @@ func DomainAdminPostToDTO(domainPost post.Post) AdminPostDTO {
 		Title:      domainPost.Title,
 		Status:     domainPost.Status,
 		CreatedAt:  domainPost.CreatedAt,
+		IsInterest: domainPost.IsInterested,
 	}
 }
 

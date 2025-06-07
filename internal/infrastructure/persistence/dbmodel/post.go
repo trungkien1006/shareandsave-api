@@ -31,6 +31,11 @@ type Post struct {
 	PostItem  []PostItem `gorm:"foreignKey:PostID"`
 }
 
+type AdminPost struct {
+	Post
+	IsInterest bool `gorm:"column:is_interest"`
+}
+
 type PostWithCounts struct {
 	Post                 // Lấy toàn bộ trường từ bảng post
 	AuthorAvatar  string `gorm:"column:"author_avatar"`
@@ -40,7 +45,23 @@ type PostWithCounts struct {
 }
 
 // DB → Domain
-func AdminPostDBToDomain(dbPost Post) post.Post {
+func AdminPostDBToDomain(dbPost AdminPost) post.Post {
+
+	return post.Post{
+		ID:           dbPost.ID,
+		AuthorName:   dbPost.Author.FullName,
+		AuthorAvatar: dbPost.Author.Avatar,
+		Type:         dbPost.Type,
+		Title:        dbPost.Title,
+		Status:       dbPost.Status,
+		CreatedAt:    dbPost.CreatedAt,
+		Images:       dbPost.Image,
+		IsInterested: dbPost.IsInterest,
+	}
+}
+
+// DB → Domain
+func PostDBToDomain(dbPost Post) post.Post {
 
 	return post.Post{
 		ID:           dbPost.ID,
