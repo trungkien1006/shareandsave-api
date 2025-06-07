@@ -39,7 +39,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem").
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
-			Where("interest.user_id = ?", userID).
+			Where("interest.user_id = ? AND deleted_at IS NULL", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at")
 	} else {
@@ -54,7 +54,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
 			Joins("JOIN interest ON interest.post_id = post.id").
-			Where("post.author_id = ?", userID)
+			Where("post.author_id = ? AND deleted_at IS NULL", userID)
 	}
 
 	//tim kiem
