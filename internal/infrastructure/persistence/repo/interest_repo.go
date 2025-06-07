@@ -6,7 +6,9 @@ import (
 	"final_project/internal/domain/interest"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"final_project/internal/pkg/enums"
+	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -25,6 +27,8 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 		query   *gorm.DB
 		dbPosts []dbmodel.Post
 	)
+
+	fmt.Println("Type interest neeeewdaw3rwrwr: "+strconv.Itoa(filter.Type), int(enums.InterestTypeInterested))
 
 	if filter.Type == int(enums.InterestTypeInterested) {
 		query = r.db.Debug().WithContext(ctx).
