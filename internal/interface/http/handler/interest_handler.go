@@ -60,9 +60,11 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("Trước khi chạy set default: "+req.Type.String(), int(enums.InterestTypeInterested))
+
 	req.SetDefault()
 
-	fmt.Println("aw65da65d1a6d5a4d8aw4eq23423: "+req.Type.String(), int(enums.InterestTypeInterested))
+	fmt.Println("Sau khi chạy set default: "+req.Type.String(), int(enums.InterestTypeInterested))
 
 	domainReq = interestdto.GetDTOToDomain(req)
 
