@@ -153,7 +153,7 @@ func (r *InterestRepoDB) Delete(ctx context.Context, postID uint, userID uint) (
 		return 0, errors.New("Không thể hủy quan tâm do đã có tin nhắn")
 	}
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Where("id = ?", dbInterest.ID).Delete(&dbInterest).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Delete(&dbmodel.Interest{}, dbInterest.ID).Error; err != nil {
 		return 0, errors.New("Lỗi khi xóa quan tâm: " + err.Error())
 	}
 
