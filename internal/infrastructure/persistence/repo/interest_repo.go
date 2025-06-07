@@ -101,7 +101,18 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 }
 
 func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest) (uint, error) {
-	var dbInterest dbmodel.Interest
+	var (
+		dbInterest dbmodel.Interest
+		authorID   uint
+	)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Select("author_id").Where("id = ?", interest.PostID).Scan(&authorID).Error; err != nil {
+		return 0, errors.New("Có lỗi khi kiểm tra quan tâm chính mình: " + err.Error())
+	}
+
+	if authorID == interest.UserID {
+		return 0, errors.New("Không thể quan tâm chính bài viết của mình:")
+	}
 
 	dbInterest = dbmodel.CreateDomainToDB(interest)
 
