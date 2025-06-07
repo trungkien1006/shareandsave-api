@@ -99,6 +99,7 @@ type PostWithCount struct {
 	Tag           []string
 	InterestCount uint
 	ItemCount     uint
+	IsInterest    int
 }
 
 type AdminPostFilterRequest struct {

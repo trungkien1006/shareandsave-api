@@ -79,4 +79,5 @@ type PostWithCountDTO struct {
 	Tag           []string  `json:"tags"`
 	InterestCount uint      `json:"interestCount"`
 	ItemCount     uint      `json:"itemCount"`
+	IsInterest    int       `json:"isInterest"`
 }

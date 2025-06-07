@@ -37,6 +37,7 @@ type PostWithCounts struct {
 	AuthorName    string `gorm:"column:author_name"`
 	InterestCount int64  `gorm:"column:interest_count"`
 	ItemCount     int64  `gorm:"column:item_count"`
+	IsInterest    int    `gorm:"column:is_interest"`
 }
 
 // DB → Domain
@@ -84,6 +85,7 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 		Tag:           domainTag,
 		InterestCount: uint(db.InterestCount),
 		ItemCount:     uint(db.ItemCount),
+		IsInterest:    db.IsInterest,
 	}
 }
 
