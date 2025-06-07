@@ -14,7 +14,7 @@ type User struct {
 	Status      int8
 	GoodPoint   int
 	Major       string
-	Permissions []Permission
+	Permissions []Permission `gorm:"-"`
 }
 
 type Permission struct {
