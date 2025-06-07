@@ -135,6 +135,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		item := item.Item{
 			CategoryID: newItem.CategoryID,
 			Name:       newItem.Name,
+			Image:      "",
 		}
 
 		if newItem.Image == "" {

@@ -39,7 +39,7 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 			author.full_name AS author_name,
 			author.avatar AS author_avatar,
 			EXISTS (
-				SELECT 1 FROM interest i WHERE i.post_id = post.id AND i.user_id = ?
+				SELECT 1 FROM interest i WHERE i.post_id = post.id AND i.user_id = ? AND deleted_at IS NULL
 			) AS is_interested`,
 			userID,
 		)
