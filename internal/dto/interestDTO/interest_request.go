@@ -3,7 +3,7 @@ package interestdto
 type GetInterest struct {
 	Page   int    `query:"page"`
 	Limit  int    `query:"limit"`
-	Type   int    `query:"type" validate:"oneof=1 2" example:"1"`
+	Type   int    `query:"type" example:"1"`
 	Sort   string `query:"sort" validate:"omitempty,oneof=createdAt" example:"createdAt"`
 	Order  string `query:"order" validate:"omitempty,oneof=ASC DESC" example:"ASC"`
 	Search string `query:"search"`
