@@ -2046,6 +2046,9 @@ const docTemplate = `{
                 "authorID": {
                     "type": "integer"
                 },
+                "authorName": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -2207,6 +2210,12 @@ const docTemplate = `{
             "properties": {
                 "categoryID": {
                     "type": "integer"
+                },
+                "categoryName": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
