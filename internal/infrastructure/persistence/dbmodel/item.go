@@ -43,5 +43,6 @@ func ItemDBToDomain(a Item) item.Item {
 		Image:        a.Image,
 		CategoryID:   a.CategoryID,
 		CategoryName: a.Category.Name,
+		CreatedAt:    a.CreatedAt,
 	}
 }

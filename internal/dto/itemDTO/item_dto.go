@@ -1,14 +1,18 @@
 package itemdto
 
-import "final_project/internal/domain/item"
+import (
+	"final_project/internal/domain/item"
+	"time"
+)
 
 type ItemDTO struct {
-	ID           uint   `json:"id"`
-	CategoryID   uint   `json:"categoryID"`
-	CategoryName string `json:"categoryName"`
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	Image        string `json:"image"`
+	ID           uint      `json:"id"`
+	CategoryID   uint      `json:"categoryID"`
+	CategoryName string    `json:"categoryName"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	Image        string    `json:"image"`
+	CreatedAt    time.Time `json:"createdAt"`
 }
 
 func ToItemDTO(item item.Item) ItemDTO {
@@ -19,5 +23,6 @@ func ToItemDTO(item item.Item) ItemDTO {
 		Name:         item.Name,
 		Description:  item.Description,
 		Image:        item.Image,
+		CreatedAt:    item.CreatedAt,
 	}
 }

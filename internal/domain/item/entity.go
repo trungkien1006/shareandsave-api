@@ -1,5 +1,7 @@
 package item
 
+import "time"
+
 type Item struct {
 	ID           uint
 	CategoryID   uint
@@ -7,4 +9,5 @@ type Item struct {
 	Name         string
 	Description  string
 	Image        string
+	CreatedAt    time.Time
 }
