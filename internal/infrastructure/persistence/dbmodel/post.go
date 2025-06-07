@@ -33,7 +33,9 @@ type Post struct {
 
 type AdminPost struct {
 	Post
-	IsInterest bool `gorm:"column:is_interest"`
+	IsInterest   bool   `gorm:"column:is_interest"`
+	AuthorAvatar string `gorm:"column:"author_avatar"`
+	AuthorName   string `gorm:"column:author_name"`
 }
 
 type PostWithCounts struct {
@@ -49,8 +51,8 @@ func AdminPostDBToDomain(dbPost AdminPost) post.Post {
 
 	return post.Post{
 		ID:           dbPost.ID,
-		AuthorName:   dbPost.Author.FullName,
-		AuthorAvatar: dbPost.Author.Avatar,
+		AuthorName:   dbPost.AuthorName,
+		AuthorAvatar: dbPost.AuthorAvatar,
 		Type:         dbPost.Type,
 		Title:        dbPost.Title,
 		Status:       dbPost.Status,
