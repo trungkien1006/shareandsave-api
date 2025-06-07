@@ -745,6 +745,8 @@ definitions:
         type: string
       interestCount:
         type: integer
+      isInterest:
+        type: integer
       itemCount:
         type: integer
       slug:

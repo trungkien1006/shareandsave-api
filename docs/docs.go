@@ -2613,6 +2613,9 @@ const docTemplate = `{
                 "interestCount": {
                     "type": "integer"
                 },
+                "isInterest": {
+                    "type": "integer"
+                },
                 "itemCount": {
                     "type": "integer"
                 },
