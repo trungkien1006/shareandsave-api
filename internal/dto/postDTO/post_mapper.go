@@ -35,7 +35,6 @@ func PostWithCountDomainToDTO(domain post.PostWithCount) PostWithCountDTO {
 		Tag:           DTOTag,
 		InterestCount: domain.InterestCount,
 		ItemCount:     domain.ItemCount,
-		IsInterest:    domain.IsInterest,
 	}
 }
 

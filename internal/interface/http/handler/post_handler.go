@@ -22,6 +22,7 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 
 // @Summary Get posts
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
 // @Tags posts
 // @Accept json
 // @Produce json
@@ -90,7 +91,6 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 
 // @Summary Get posts client
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
-// @Security BearerAuth
 // @Tags posts
 // @Accept json
 // @Produce json
@@ -118,12 +118,6 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 		return
 	}
 
-	userID, err := helpers.GetUintFromContext(c, "userID")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
-		return
-	}
-
 	req.SetDefault()
 
 	domainReq.Page = req.Page
@@ -133,7 +127,7 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 	domainReq.Type = int(req.Type)
 	domainReq.Search = req.Search
 
-	totalPage, err := h.uc.GetAllPost(c.Request.Context(), &posts, domainReq, userID)
+	totalPage, err := h.uc.GetAllPost(c.Request.Context(), &posts, domainReq)
 
 	if err != nil {
 		c.JSON(

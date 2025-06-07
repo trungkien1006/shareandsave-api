@@ -89,7 +89,7 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 	return totalPage, nil
 }
 
-func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest, userID uint) (int, error) {
+func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, filter post.PostFilterRequest) (int, error) {
 	var (
 		query   *gorm.DB
 		results []dbmodel.PostWithCounts
@@ -102,12 +102,8 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			author.full_name AS author_name,
 			author.avatar AS author_avatar,
 			COUNT(DISTINCT interest.id) AS interest_count,
-			SUM(DISTINCT post_item.quantity) AS item_count,
-			EXISTS (
-				SELECT 1 FROM interest i
-				WHERE i.post_id = post.id AND i.user_id = ?
-			) AS is_interested
-		`, userID).
+			SUM(DISTINCT post_item.quantity) AS item_count
+		`).
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id").
 		Joins("LEFT JOIN post_item ON post_item.post_id = post.id").
