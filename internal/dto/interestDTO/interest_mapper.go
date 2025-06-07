@@ -57,6 +57,7 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 
 	return PostInterest{
 		ID:          domain.ID,
+		AuthorID:    domain.AuthorID,
 		Title:       domain.Title,
 		Description: domain.Description,
 		Slug:        domain.Slug,

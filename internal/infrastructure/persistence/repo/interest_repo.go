@@ -30,20 +30,20 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug").
+			Select("post.id, post.title, post.type, post.slug, post.author_id").
 			Preload("Interests").
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
-			Where("author_id = ?", userID).
+			Where("post.author_id = ?", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Group("post.id, post.title, post.type, post.slug")
 	} else {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug").
+			Select("post.id, post.title, post.type, post.slug, post.author_id").
 			Preload("Interests").
 			Preload("Interests.User").
 			Preload("PostItem").
