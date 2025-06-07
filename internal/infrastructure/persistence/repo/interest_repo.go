@@ -105,11 +105,15 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest) (uint, error) {
 	var (
 		dbInterest dbmodel.Interest
-		authorID   uint
+		authorID   uint = 0
 	)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Select("author_id").Where("id = ?", interest.PostID).Scan(&authorID).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Post{}).Select("author_id").Where("id = ? AND status != 2", interest.PostID).Scan(&authorID).Error; err != nil {
 		return 0, errors.New("Có lỗi khi kiểm tra quan tâm chính mình: " + err.Error())
+	}
+
+	if authorID == 0 {
+		return 0, errors.New("Không thể quan tâm bài viết đã từ chối:")
 	}
 
 	if authorID == interest.UserID {
