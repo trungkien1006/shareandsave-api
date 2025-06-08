@@ -133,10 +133,10 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		tagJSON, _ := json.Marshal(filter.Search)
 
 		query.Where(
-			"( post.title LIKE ? OR post.content LIKE ? OR JSON_CONTAINS(tag, ?) OR author.full_name LIKE ? OR post.description LIKE ? )",
-			"%"+filter.Search+"%",
-			"%"+filter.Search+"%",
+			"JSON_CONTAINS(tag, ?) OR post.title LIKE ? OR post.content LIKE ? OR author.full_name LIKE ? OR post.description LIKE ?",
 			string(tagJSON),
+			"%"+filter.Search+"%",
+			"%"+filter.Search+"%",
 			"%"+filter.Search+"%",
 			"%"+filter.Search+"%",
 		)
