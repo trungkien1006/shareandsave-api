@@ -117,7 +117,12 @@ func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {
 
 	dbItem = itemdto.DomainItemToDTO(*i)
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Updates(&dbItem).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Item{}).
+		Omit("CreatedAt").
+		Omit("DeleteAt").
+		Where("id = ?", dbItem.ID).
+		Updates(&dbItem).Error; err != nil {
 		return errors.New("Có lỗi khi cập nhật item: " + err.Error())
 	}
 
