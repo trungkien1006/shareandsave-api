@@ -15,7 +15,7 @@ import (
 )
 
 // @BasePath        /api/v1
-// @title           API DATN 2025
+// @title           ShareAndSave - API
 // @version         1.0
 // @description     Đây là tài liệu Swagger cho hệ thống.
 // @termsOfService  http://swagger.io/terms/
