@@ -56,7 +56,8 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("PostItem.Item.Category").
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Joins("JOIN user ON interest.user_id = user.id").
-			Where("post.author_id = ? AND post.deleted_at IS NULL", userID)
+			Where("post.author_id = ? AND post.deleted_at IS NULL", userID).
+			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.description")
 	}
 
 	//tim kiem

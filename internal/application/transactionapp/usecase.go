@@ -1,4 +1,4 @@
-package transaction
+package transactionapp
 
 import (
 	"final_project/internal/domain/transaction"
