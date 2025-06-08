@@ -182,9 +182,7 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	c.JSON(http.StatusOK, itemdto.UpdateItemResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Item updated successfully",
-		Data: itemdto.UpdateItemResponse{
-			Item: itemdto.ToItemDTO(*itm),
-		},
+		Data:    gin.H{},
 	})
 }
 

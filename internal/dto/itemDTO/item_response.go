@@ -26,15 +26,15 @@ type GetItemResponseWrapper struct {
 }
 
 // Response trả về item sau khi update
-type UpdateItemResponse struct {
-	Item ItemDTO `json:"item"`
-}
+// type UpdateItemResponse struct {
+// 	Item ItemDTO `json:"item"`
+// }
 
 // Wrapper cho response update item
 type UpdateItemResponseWrapper struct {
-	Code    int                `json:"code"`
-	Message string             `json:"message"`
-	Data    UpdateItemResponse `json:"data"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 // Response trả về sau khi delete (không có dữ liệu)
