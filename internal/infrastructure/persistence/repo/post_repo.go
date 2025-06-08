@@ -129,10 +129,16 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		`)
 
 	if filter.Search != "" {
-		query.Where("post.title LIKE ? ", "%"+filter.Search+"%").
-			Or("post.content LIKE ?", "%"+filter.Search+"%").
-			Or("JSON_CONTAINS(tag, ?)", `"`+filter.Search+`"`).
-			Or("author.full_name LIKE ?", "%"+filter.Search+"%")
+		query.Where(
+			"( post.title LIKE ? OR post.content LIKE ? OR JSON_CONTAINS(tag, ?) OR author.full_name LIKE ? )",
+			"%"+filter.Search+"%",
+			"%"+filter.Search+"%",
+			"%"+filter.Search+"%",
+			"%"+filter.Search+"%",
+		)
+		// Or("post.content LIKE ?", "%"+filter.Search+"%").
+		// Or("JSON_CONTAINS(tag, ?)", `"`+filter.Search+`"`).
+		// Or("author.full_name LIKE ?", "%"+filter.Search+"%")
 	}
 
 	if filter.Type != 0 {
