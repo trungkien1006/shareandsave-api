@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
+	itemdto "final_project/internal/dto/itemDTO"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 
 	"github.com/iancoleman/strcase"
@@ -112,8 +113,15 @@ func (r *ItemRepoDB) IsExist(ctx context.Context, itemID uint) (bool, error) {
 }
 
 func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {
-	return r.db.Debug().WithContext(ctx).Omit("CreatedAt").
-		Omit("DeleteAt").Where("id = ?", i.ID).Updates(i).Error
+	var dbItem dbmodel.Item
+
+	dbItem = itemdto.DomainItemToDTO(*i)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Updates(&dbItem).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật item: " + err.Error())
+	}
+
+	return nil
 }
 
 func (r *ItemRepoDB) Delete(ctx context.Context, i *item.Item) error {
