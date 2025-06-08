@@ -26,5 +26,11 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 // 		return
 // 	}
 
+// 	userID, err := helpers.GetUintFromContext(c, "userID")
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+// 		return
+// 	}
+
 // 	domainTransaction = transactiondto.CreateDTOToDomain(req)
 // }

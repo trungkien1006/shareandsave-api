@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"final_project/internal/domain/post"
 	"final_project/internal/infrastructure/persistence/dbmodel"
@@ -129,11 +130,13 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		`)
 
 	if filter.Search != "" {
+		tag, _ := json.Marshal(filter.Search)
+
 		query.Where(
-			"( post.title LIKE ? OR post.content LIKE ? OR JSON_CONTAINS(tag, JSON_QUOTE(?)) OR author.full_name LIKE ? OR post.description LIKE ? )",
+			"( post.title LIKE ? OR post.content LIKE ? OR JSON_CONTAINS(tag, ?) OR author.full_name LIKE ? OR post.description LIKE ? )",
 			"%"+filter.Search+"%",
 			"%"+filter.Search+"%",
-			filter.Search,
+			tag,
 			"%"+filter.Search+"%",
 			"%"+filter.Search+"%",
 		)
