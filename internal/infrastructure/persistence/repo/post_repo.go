@@ -307,7 +307,7 @@ func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postItemID u
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.PostItem{}).
-		Where("id = ?", postItem).
+		Where("id = ?", postItemID).
 		Find(&postItem).Error; err != nil {
 		return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
 	}
