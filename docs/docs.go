@@ -2759,16 +2759,12 @@ const docTemplate = `{
         "transactiondto.CreateTransactionRequest": {
             "type": "object",
             "required": [
-                "id",
                 "interestID",
                 "items",
                 "postID",
                 "senderID"
             ],
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "interestID": {
                     "type": "integer"
                 },

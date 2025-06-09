@@ -808,8 +808,6 @@ definitions:
     type: object
   transactiondto.CreateTransactionRequest:
     properties:
-      id:
-        type: integer
       interestID:
         type: integer
       items:
@@ -821,7 +819,6 @@ definitions:
       senderID:
         type: integer
     required:
-    - id
     - interestID
     - items
     - postID
