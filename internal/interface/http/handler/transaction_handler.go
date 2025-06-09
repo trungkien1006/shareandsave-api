@@ -26,6 +26,7 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 // @Tags transactions
 // @Accept json
 // @Produce json
+// @Param transactionID path int true "ID transaction"
 // @Param request body transactiondto.CreateTransactionRequest true "Transaction creation payload"
 // @Success 201 {object} transactiondto.CreateTransactionResponseWrapper
 // @Failure 400 {object} enums.AppError

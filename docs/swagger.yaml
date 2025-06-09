@@ -1967,6 +1967,11 @@ paths:
       - application/json
       description: API tạo mới một giao dịch và trả về thông tin giao dịch
       parameters:
+      - description: ID transaction
+        in: path
+        name: transactionID
+        required: true
+        type: integer
       - description: Transaction creation payload
         in: body
         name: request
@@ -1990,7 +1995,7 @@ paths:
             $ref: '#/definitions/enums.AppError'
       security:
       - BearerAuth: []
-      summary: Create a new transaction
+      summary: Create transaction
       tags:
       - transactions
   /transactions/{transactionID}:
@@ -2022,7 +2027,7 @@ paths:
             $ref: '#/definitions/enums.AppError'
       security:
       - BearerAuth: []
-      summary: Update a new transaction
+      summary: Update transaction
       tags:
       - transactions
   /users:
