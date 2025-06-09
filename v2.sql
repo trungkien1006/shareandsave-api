@@ -53,7 +53,7 @@ CREATE TABLE `post` (
 );
 
 CREATE TABLE `post_item` (
-  `id` uint,
+  `id` int PRIMARY KEY AUTO_INCREMENT,
   `post_id` int,
   `item_id` int,
   `quantity` int,

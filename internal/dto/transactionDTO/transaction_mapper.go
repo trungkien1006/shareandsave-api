@@ -24,7 +24,7 @@ func CreateDTOToDomain(dto CreateTransactionRequest, userID uint) transaction.Tr
 
 // DTO to Domain
 func DomainToDTO(domain transaction.Transaction) TransactionDTO {
-	var dtoItems []TransactionItemDTO
+	dtoItems := make([]TransactionItemDTO, 0)
 
 	for _, value := range domain.Items {
 		dtoItems = append(dtoItems, TransactionItemDTO{
