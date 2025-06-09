@@ -1,7 +1,6 @@
 package transactiondto
 
 type CreateTransactionRequest struct {
-	ID         uint                    `json:"id" binding:"required"`
 	PostID     uint                    `json:"postID" binding:"required"`
 	InterestID uint                    `json:"interestID" binding:"required"`
 	SenderID   uint                    `json:"senderID" binding:"required"`
