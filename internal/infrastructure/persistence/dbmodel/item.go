@@ -20,7 +20,6 @@ type Item struct {
 	Category           Category            `gorm:"foreignKey:CategoryID"`
 	ItemWarehouses     []ItemWarehouse     `gorm:"foreignKey:ItemID"`
 	ItemImportInvoices []ItemImportInvoice `gorm:"foreignKey:ItemID"`
-	TransactionItems   []TransactionItem   `gorm:"foreignKey:ItemID"`
 }
 
 // Domain → DB
