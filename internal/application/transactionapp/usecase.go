@@ -8,6 +8,7 @@ import (
 	"final_project/internal/domain/post"
 	"final_project/internal/domain/transaction"
 	"final_project/internal/domain/user"
+	"final_project/internal/pkg/enums"
 )
 
 type UseCase struct {
@@ -64,6 +65,12 @@ func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transacti
 		if err != nil {
 			return err
 		}
+	}
+
+	transaction.Status = int(enums.TransactionStatusPending)
+
+	if err := uc.repo.Create(ctx, transaction); err != nil {
+		return err
 	}
 
 	return nil

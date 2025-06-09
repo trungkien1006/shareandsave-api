@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/transaction"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,4 +22,46 @@ type Transaction struct {
 	Receiver User     `gorm:"foreignKey:ReceiverID"`
 
 	TransactionItems []TransactionItem `gorm:"foreignKey:TransactionID"`
+}
+
+// Domain to DB
+func TransactionDomainToDB(domain transaction.Transaction) Transaction {
+	var dbItem []TransactionItem
+
+	for _, value := range domain.Items {
+		dbItem = append(dbItem, TransactionItem{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
+	return Transaction{
+		ID:               domain.ID,
+		InterestID:       domain.InterestID,
+		SenderID:         domain.SenderID,
+		ReceiverID:       domain.ReceiverID,
+		TransactionItems: dbItem,
+		Status:           domain.Status,
+	}
+}
+
+// DB to Domain
+func TransactionDBToDomain(db Transaction) transaction.Transaction {
+	var dbItem []transaction.TransactionItem
+
+	for _, value := range db.TransactionItems {
+		dbItem = append(dbItem, transaction.TransactionItem{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
+	return transaction.Transaction{
+		ID:         db.ID,
+		InterestID: db.InterestID,
+		SenderID:   db.SenderID,
+		ReceiverID: db.ReceiverID,
+		Items:      dbItem,
+		Status:     db.Status,
+	}
 }

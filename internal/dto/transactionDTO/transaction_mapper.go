@@ -3,7 +3,7 @@ package transactiondto
 import "final_project/internal/domain/transaction"
 
 // DTO to Domain
-func CreateDTOToDomain(dto CreateTransactionRequest) transaction.Transaction {
+func CreateDTOToDomain(dto CreateTransactionRequest, userID uint) transaction.Transaction {
 	var domainItems []transaction.TransactionItem
 
 	for _, value := range dto.Items {
@@ -18,7 +18,28 @@ func CreateDTOToDomain(dto CreateTransactionRequest) transaction.Transaction {
 		PostID:     dto.PostID,
 		InterestID: dto.InterestID,
 		SenderID:   dto.SenderID,
-		ReceiverID: dto.ReceiverID,
+		ReceiverID: userID,
 		Items:      domainItems,
+	}
+}
+
+// DTO to Domain
+func DomainToDTO(domain transaction.Transaction) TransactionDTO {
+	var dtoItems []TransactionItemDTO
+
+	for _, value := range domain.Items {
+		dtoItems = append(dtoItems, TransactionItemDTO{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
+	return TransactionDTO{
+		ID:         domain.ID,
+		PostID:     domain.PostID,
+		InterestID: domain.InterestID,
+		SenderID:   domain.SenderID,
+		ReceiverID: domain.ReceiverID,
+		Items:      dtoItems,
 	}
 }

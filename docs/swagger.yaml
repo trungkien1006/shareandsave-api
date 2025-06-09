@@ -398,10 +398,10 @@ definitions:
     properties:
       categoryName:
         type: string
-      id:
-        type: integer
       image:
         type: string
+      itemID:
+        type: integer
       name:
         type: string
       quantity:
@@ -502,17 +502,11 @@ definitions:
       name:
         type: string
     type: object
-  itemdto.UpdateItemResponse:
-    properties:
-      item:
-        $ref: '#/definitions/itemdto.ItemDTO'
-    type: object
   itemdto.UpdateItemResponseWrapper:
     properties:
       code:
         type: integer
-      data:
-        $ref: '#/definitions/itemdto.UpdateItemResponse'
+      data: {}
       message:
         type: string
     type: object
@@ -802,6 +796,75 @@ definitions:
       message:
         type: string
     type: object
+  transactiondto.CreateTransactionItem:
+    properties:
+      itemID:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - itemID
+    - quantity
+    type: object
+  transactiondto.CreateTransactionRequest:
+    properties:
+      id:
+        type: integer
+      interestID:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/transactiondto.CreateTransactionItem'
+        type: array
+      postID:
+        type: integer
+      senderID:
+        type: integer
+    required:
+    - id
+    - interestID
+    - items
+    - postID
+    - senderID
+    type: object
+  transactiondto.CreateTransactionResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/transactiondto.TransactionDTO'
+    type: object
+  transactiondto.CreateTransactionResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/transactiondto.CreateTransactionResponse'
+      message:
+        type: string
+    type: object
+  transactiondto.TransactionDTO:
+    properties:
+      id:
+        type: integer
+      interestID:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/transactiondto.TransactionItemDTO'
+        type: array
+      postID:
+        type: integer
+      receiverID:
+        type: integer
+      senderID:
+        type: integer
+    type: object
+  transactiondto.TransactionItemDTO:
+    properties:
+      itemID:
+        type: integer
+      quantity:
+        type: integer
+    type: object
   userdto.AdminUserDTO:
     properties:
       address:
@@ -1024,7 +1087,7 @@ info:
   license:
     name: Apache 2.0
   termsOfService: http://swagger.io/terms/
-  title: API DATN 2025
+  title: ShareAndSave - API
   version: "1.0"
 paths:
   /categories:
@@ -1696,7 +1759,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: API tạo mới một post và trả về thông tin post + user + JWT
+      description: API tạo mới một post
       parameters:
       - description: Post creation payload
         in: body
@@ -1842,6 +1905,38 @@ paths:
       summary: Refresh Token
       tags:
       - auth
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: API tạo mới một giao dịch và trả về thông tin giao dịch
+      parameters:
+      - description: Transaction creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transactiondto.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/transactiondto.CreateTransactionResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create a new transaction
+      tags:
+      - transactions
   /users:
     get:
       consumes:

@@ -1042,7 +1042,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "API tạo mới một post và trả về thông tin post + user + JWT",
+                "description": "API tạo mới một post",
                 "consumes": [
                     "application/json"
                 ],
@@ -1258,6 +1258,57 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API tạo mới một giao dịch và trả về thông tin giao dịch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Create a new transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.CreateTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.CreateTransactionResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -2087,11 +2138,11 @@ const docTemplate = `{
                 "categoryName": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "image": {
                     "type": "string"
+                },
+                "itemID": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -2248,23 +2299,13 @@ const docTemplate = `{
                 }
             }
         },
-        "itemdto.UpdateItemResponse": {
-            "type": "object",
-            "properties": {
-                "item": {
-                    "$ref": "#/definitions/itemdto.ItemDTO"
-                }
-            }
-        },
         "itemdto.UpdateItemResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "data": {
-                    "$ref": "#/definitions/itemdto.UpdateItemResponse"
-                },
+                "data": {},
                 "message": {
                     "type": "string"
                 }
@@ -2700,6 +2741,110 @@ const docTemplate = `{
                 }
             }
         },
+        "transactiondto.CreateTransactionItem": {
+            "type": "object",
+            "required": [
+                "itemID",
+                "quantity"
+            ],
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.CreateTransactionRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "interestID",
+                "items",
+                "postID",
+                "senderID"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "interestID": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transactiondto.CreateTransactionItem"
+                    }
+                },
+                "postID": {
+                    "type": "integer"
+                },
+                "senderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.CreateTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "transaction": {
+                    "$ref": "#/definitions/transactiondto.TransactionDTO"
+                }
+            }
+        },
+        "transactiondto.CreateTransactionResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/transactiondto.CreateTransactionResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "transactiondto.TransactionDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "interestID": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transactiondto.TransactionItemDTO"
+                    }
+                },
+                "postID": {
+                    "type": "integer"
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "senderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.TransactionItemDTO": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "userdto.AdminUserDTO": {
             "type": "object",
             "properties": {
@@ -3040,7 +3185,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "API DATN 2025",
+	Title:            "ShareAndSave - API",
 	Description:      "Đây là tài liệu Swagger cho hệ thống.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

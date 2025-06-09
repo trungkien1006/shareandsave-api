@@ -246,7 +246,7 @@ func (h *PostHandler) GetPostBySlug(c *gin.Context) {
 }
 
 // @Summary Create a new post
-// @Description API tạo mới một post và trả về thông tin post + user + JWT
+// @Description API tạo mới một post
 // @Security BearerAuth
 // @Tags posts
 // @Accept json
