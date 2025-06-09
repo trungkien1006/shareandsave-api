@@ -132,6 +132,7 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 
 	for _, value := range db.PostItem {
 		domainPostItem = append(domainPostItem, post.DetailPostItem{
+			ID:              value.ID,
 			ItemID:          value.ItemID,
 			CategoryID:      value.Item.CategoryID,
 			CategoryName:    value.Item.Category.Name,
