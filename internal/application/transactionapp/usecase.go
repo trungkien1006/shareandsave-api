@@ -30,16 +30,6 @@ func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo
 }
 
 func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transaction.Transaction) error {
-	// Kiểm tra người sẽ tặng đồ có tồn tại hay không
-	senderExisted, err := uc.userRepo.IsExist(ctx, transaction.SenderID)
-	if err != nil {
-		return err
-	}
-
-	if !senderExisted {
-		return errors.New("Người chủ bài viết bạn muốn tạo giao dịch, không tồn tại")
-	}
-
 	// Kiểm tra phiếu quan tâm có tồn tại hay không
 	interestExisted, err := uc.interestRepo.IsExistByID(ctx, transaction.InterestID)
 	if err != nil {
