@@ -35,10 +35,10 @@ func DomainToDTO(domain transaction.Transaction) TransactionDTO {
 
 	return TransactionDTO{
 		ID:         domain.ID,
-		PostID:     domain.PostID,
 		InterestID: domain.InterestID,
 		SenderID:   domain.SenderID,
 		ReceiverID: domain.ReceiverID,
+		Status:     domain.Status,
 		Items:      dtoItems,
 	}
 }

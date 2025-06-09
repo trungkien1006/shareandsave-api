@@ -2,10 +2,10 @@ package transactiondto
 
 type TransactionDTO struct {
 	ID         uint                 `json:"id"`
-	PostID     uint                 `json:"postID"`
 	InterestID uint                 `json:"interestID"`
 	SenderID   uint                 `json:"senderID"`
 	ReceiverID uint                 `json:"receiverID"`
+	Status     int                  `json:"status"`
 	Items      []TransactionItemDTO `json:"items"`
 }
 
