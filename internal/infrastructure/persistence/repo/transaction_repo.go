@@ -30,7 +30,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 
 	// Lấy ra id của post theo interest id
 	if err := tx.WithContext(ctx).Model(&dbmodel.Interest{}).
-		Select("post_id").Where("interest_id = ?", transaction.InterestID).
+		Select("post_id").Where("id = ?", transaction.InterestID).
 		Scan(&postID).Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi lấy post id từ interest id: " + err.Error())
