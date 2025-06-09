@@ -7,6 +7,7 @@ import (
 	"final_project/internal/application/interestapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
+	"final_project/internal/application/transactionapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/domain/auth"
 	importinvoice "final_project/internal/domain/import_invoice"
@@ -62,6 +63,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	interestRepo := persistence.NewInterestRepoDB(db)
 	interestUC := interestapp.NewUseCase(interestRepo, userRepo, postRepo)
 	interestHandler := handler.NewInterestHandler(interestUC)
+
+	//transaction dependency
+	transactionRepo := persistence.NewTransactionRepoDB(db)
+	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo)
+	transactionHandler := handler.NewTransactionHandler(transactionUC)
 
 	//import invoice dependency
 	importInvoiceService := importinvoice.NewImportInvoiceService()
@@ -141,6 +147,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/interests", middlewares.AuthGuard, interestHandler.GetAll)
 		v1.POST("/interests", middlewares.AuthGuard, interestHandler.Create)
 		v1.DELETE("/interests/:postID", middlewares.AuthGuard, interestHandler.Delete)
+
+		//transaction API
+		v1.POST("/transactions", middlewares.AuthGuard, transactionHandler.Create)
 
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)
