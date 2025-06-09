@@ -311,7 +311,7 @@ func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postItemID u
 		return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
 	}
 
-	if quantity > postItem.Quantity {
+	if quantity > postItem.CurrentQuantity {
 		return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
 	}
 

@@ -39,12 +39,13 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 
 	for _, value := range db.PostItem {
 		domainItems = append(domainItems, interest.PostInterestItem{
-			ID:           value.ID,
-			ItemID:       value.ItemID,
-			Name:         value.Item.Name,
-			CategoryName: value.Item.Category.Name,
-			Quantity:     value.Quantity,
-			Image:        value.Image,
+			ID:              value.ID,
+			ItemID:          value.ItemID,
+			Name:            value.Item.Name,
+			CategoryName:    value.Item.Category.Name,
+			Quantity:        value.Quantity,
+			CurrentQuantity: value.CurrentQuantity,
+			Image:           value.Image,
 		})
 	}
 

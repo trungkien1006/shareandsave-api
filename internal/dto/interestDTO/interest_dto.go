@@ -16,12 +16,13 @@ type Interest struct {
 }
 
 type PostInterestItem struct {
-	ID           uint   `json:"id"`
-	ItemID       uint   `json:"itemID"`
-	Name         string `json:"name"`
-	CategoryName string `json:"categoryName"`
-	Quantity     int    `json:"quantity"`
-	Image        string `json:"image"`
+	ID              uint   `json:"id"`
+	ItemID          uint   `json:"itemID"`
+	Name            string `json:"name"`
+	CategoryName    string `json:"categoryName"`
+	Quantity        int    `json:"quantity"`
+	CurrentQuantity int    `json:"currentQuantity"`
+	Image           string `json:"image"`
 }
 
 type PostInterest struct {

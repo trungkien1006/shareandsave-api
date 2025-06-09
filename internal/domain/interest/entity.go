@@ -13,12 +13,13 @@ type Interest struct {
 }
 
 type PostInterestItem struct {
-	ID           uint
-	ItemID       uint
-	Name         string
-	CategoryName string
-	Quantity     int
-	Image        string
+	ID              uint
+	ItemID          uint
+	Name            string
+	CategoryName    string
+	Quantity        int
+	CurrentQuantity int
+	Image           string
 }
 
 type PostInterest struct {
