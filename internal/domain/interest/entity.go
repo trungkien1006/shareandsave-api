@@ -13,6 +13,7 @@ type Interest struct {
 }
 
 type PostInterestItem struct {
+	ID           uint
 	ItemID       uint
 	Name         string
 	CategoryName string

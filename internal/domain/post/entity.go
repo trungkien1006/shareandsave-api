@@ -56,6 +56,7 @@ type Post struct {
 }
 
 type DetailPostItem struct {
+	ID           uint
 	ItemID       uint
 	CategoryID   uint
 	CategoryName string

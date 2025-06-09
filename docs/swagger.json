@@ -2131,6 +2131,9 @@
                 "categoryName": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "image": {
                     "type": "string"
                 },
@@ -2470,6 +2473,9 @@
                 },
                 "categoryName": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "image": {
                     "type": "string"

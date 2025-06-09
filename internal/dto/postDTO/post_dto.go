@@ -27,6 +27,7 @@ type PostDTO struct {
 }
 
 type DetailPostItemDTO struct {
+	ID           uint   `json:"id"`
 	ItemID       uint   `json:"itemID"`
 	CategoryID   uint   `json:"categoryID"`
 	CategoryName string `json:"categoryName"`

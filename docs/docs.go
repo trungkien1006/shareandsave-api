@@ -2138,6 +2138,9 @@ const docTemplate = `{
                 "categoryName": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "image": {
                     "type": "string"
                 },
@@ -2477,6 +2480,9 @@ const docTemplate = `{
                 },
                 "categoryName": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "image": {
                     "type": "string"

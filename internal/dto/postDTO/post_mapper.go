@@ -58,6 +58,7 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 
 	for _, value := range domain.Items {
 		DTOPostItem = append(DTOPostItem, DetailPostItemDTO{
+			ID:           value.ID,
 			ItemID:       value.ItemID,
 			CategoryID:   value.CategoryID,
 			CategoryName: value.CategoryName,
