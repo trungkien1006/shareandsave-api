@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/transaction"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -19,6 +20,18 @@ func NewTransactionRepoDB(db *gorm.DB) *TransactionRepoDB {
 	return &TransactionRepoDB{db: db}
 }
 
+func (r *TransactionRepoDB) GetByID(ctx context.Context, transactionID uint, transaction *transaction.Transaction) error {
+	var dbTransaction dbmodel.Transaction
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Transaction{}).Where("id = ?", transactionID).First(&dbTransaction).Error; err != nil {
+		return errors.New("Có lỗi khi truy vấn giao dịch theo id: " + err.Error())
+	}
+
+	*transaction = dbmodel.TransactionDBToDomain(dbTransaction)
+
+	return nil
+}
+
 func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction.Transaction) error {
 	var (
 		dbTransaction dbmodel.Transaction
@@ -30,7 +43,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 
 	tx := r.db.Debug().Begin()
 
-	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
+	// Kiểm tra món đồ có tồn tại hay không
 	for _, value := range transaction.Items {
 		var postItem dbmodel.PostItem
 
@@ -40,7 +53,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 			Where("id = ?", value.PostItemID).
 			First(&postItem).Error; err != nil {
 			tx.Rollback()
-			return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+			return errors.New("Có lỗi khi kiểm tra đồ trong bài viết tồn tại: " + err.Error())
 		}
 
 		if value.Quantity > postItem.CurrentQuantity {
@@ -74,13 +87,72 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 		return errors.New("Có lỗi khi tạo giao dịch mới: " + err.Error())
 	}
 
-	// Cập nhật lại số lượng đồ đạc ở post_item
-	for _, value := range dbTransaction.TransactionItems {
-		if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
+	// // Cập nhật lại số lượng đồ đạc ở post_item
+	// for _, value := range dbTransaction.TransactionItems {
+	// 	if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
+	// 		Where("id = ?", value.PostItemID).
+	// 		Update("current_quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
+	// 		tx.Rollback()
+	// 		return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
+	// 	}
+	// }
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+
+	*transaction = dbmodel.TransactionDBToDomain(dbTransaction)
+
+	return nil
+}
+
+func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction.Transaction) error {
+	var (
+		dbTransaction dbmodel.Transaction
+	)
+
+	dbTransaction = dbmodel.TransactionDomainToDB(*transaction)
+
+	tx := r.db.Debug().Begin()
+
+	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
+	for _, value := range transaction.Items {
+		var postItem dbmodel.PostItem
+
+		if err := tx.WithContext(ctx).
+			Model(&dbmodel.PostItem{}).
+			Clauses(clause.Locking{Strength: "UPDATE"}).
 			Where("id = ?", value.PostItemID).
-			Update("current_quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
+			First(&postItem).Error; err != nil {
 			tx.Rollback()
-			return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
+			return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+		}
+
+		if value.Quantity > postItem.CurrentQuantity {
+			tx.Rollback()
+			return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+		}
+	}
+
+	// Cập nhật giao dịch
+	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).
+		Where("id = ?", dbTransaction.ID).
+		Updates(&dbTransaction).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi cập nhật giao dịch: " + err.Error())
+	}
+
+	if dbTransaction.Status == int(enums.TransactionStatusSuccess) {
+		// Cập nhật lại số lượng đồ đạc ở post_item
+		for _, value := range dbTransaction.TransactionItems {
+			if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
+				Where("id = ?", value.PostItemID).
+				Update("current_quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
+			}
 		}
 	}
 
@@ -93,4 +165,17 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	*transaction = dbmodel.TransactionDBToDomain(dbTransaction)
 
 	return nil
+}
+
+func (r *TransactionRepoDB) IsExist(ctx context.Context, transactionID uint) (bool, error) {
+	var count int64
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Transaction{}).
+		Where("id = ?", transactionID).
+		Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra giao dịch tồn tại: " + err.Error())
+	}
+
+	return count > 0, nil
 }

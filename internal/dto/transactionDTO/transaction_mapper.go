@@ -23,6 +23,27 @@ func CreateDTOToDomain(dto CreateTransactionRequest, userID uint) transaction.Tr
 }
 
 // DTO to Domain
+func UpdateDTOToDomain(dto UpdateTransactionRequest, userID uint, transactionID uint) transaction.Transaction {
+	var domainItems []transaction.TransactionItem
+
+	for _, value := range dto.Items {
+		domainItems = append(domainItems, transaction.TransactionItem{
+			TransactionID: value.TransactionID,
+			PostItemID:    value.PostItemID,
+			Quantity:      value.Quantity,
+		})
+	}
+
+	return transaction.Transaction{
+		ID:         transactionID,
+		SenderID:   userID,
+		Status:     int(dto.Status),
+		ReceiverID: userID,
+		Items:      domainItems,
+	}
+}
+
+// DTO to Domain
 func DomainToDTO(domain transaction.Transaction) TransactionDTO {
 	dtoItems := make([]TransactionItemDTO, 0)
 

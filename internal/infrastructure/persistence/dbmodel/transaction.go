@@ -51,8 +51,9 @@ func TransactionDBToDomain(db Transaction) transaction.Transaction {
 
 	for _, value := range db.TransactionItems {
 		dbItem = append(dbItem, transaction.TransactionItem{
-			PostItemID: value.PostItemID,
-			Quantity:   value.Quantity,
+			TransactionID: value.TransactionID,
+			PostItemID:    value.PostItemID,
+			Quantity:      value.Quantity,
 		})
 	}
 

@@ -150,6 +150,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//transaction API
 		v1.POST("/transactions", middlewares.AuthGuard, transactionHandler.Create)
+		v1.PATCH("/transactions/:transactionID", middlewares.AuthGuard, transactionHandler.Update)
 
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)
