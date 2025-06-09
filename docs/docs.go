@@ -1316,6 +1316,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/transactions/{transactionID}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API cập nhật một giao dịch và trả về thông tin giao dịch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Update a new transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction update payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.UpdateTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.UpdateTransactionResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -1832,6 +1883,27 @@ const docTemplate = `{
                 "PostTypeOther"
             ]
         },
+        "enums.TransactionStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-comments": {
+                "TransactionStatusAll": "0 all",
+                "TransactionStatusCancelled": "3 đã hủy bởi 1 trong 2 bên",
+                "TransactionStatusPending": "1 đợi xác nhận từ chủ bài viết",
+                "TransactionStatusSuccess": "2 thành công"
+            },
+            "x-enum-varnames": [
+                "TransactionStatusAll",
+                "TransactionStatusPending",
+                "TransactionStatusSuccess",
+                "TransactionStatusCancelled"
+            ]
+        },
         "enums.UserStatus": {
             "type": "integer",
             "enum": [
@@ -2137,6 +2209,9 @@ const docTemplate = `{
             "properties": {
                 "categoryName": {
                     "type": "string"
+                },
+                "currentQuantity": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -2481,6 +2556,9 @@ const docTemplate = `{
                 "categoryName": {
                     "type": "string"
                 },
+                "currentQuantity": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -2657,6 +2735,9 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "currentItemCount": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -2819,13 +2900,13 @@ const docTemplate = `{
                         "$ref": "#/definitions/transactiondto.TransactionItemDTO"
                     }
                 },
-                "postID": {
-                    "type": "integer"
-                },
                 "receiverID": {
                     "type": "integer"
                 },
                 "senderID": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "integer"
                 }
             }
@@ -2838,6 +2919,61 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                }
+            }
+        },
+        "transactiondto.UpdateTransactionItem": {
+            "type": "object",
+            "required": [
+                "postItemID",
+                "quantity",
+                "transactionID"
+            ],
+            "properties": {
+                "postItemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "transactionID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.UpdateTransactionRequest": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transactiondto.UpdateTransactionItem"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/enums.TransactionStatus"
+                }
+            }
+        },
+        "transactiondto.UpdateTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "transaction": {
+                    "$ref": "#/definitions/transactiondto.TransactionDTO"
+                }
+            }
+        },
+        "transactiondto.UpdateTransactionResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/transactiondto.UpdateTransactionResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

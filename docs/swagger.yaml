@@ -196,6 +196,23 @@ definitions:
     - PostTypeFoundItem
     - PostTypeSeekLoseItem
     - PostTypeOther
+  enums.TransactionStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-comments:
+      TransactionStatusAll: 0 all
+      TransactionStatusCancelled: 3 đã hủy bởi 1 trong 2 bên
+      TransactionStatusPending: 1 đợi xác nhận từ chủ bài viết
+      TransactionStatusSuccess: 2 thành công
+    x-enum-varnames:
+    - TransactionStatusAll
+    - TransactionStatusPending
+    - TransactionStatusSuccess
+    - TransactionStatusCancelled
   enums.UserStatus:
     enum:
     - 0
@@ -398,6 +415,8 @@ definitions:
     properties:
       categoryName:
         type: string
+      currentQuantity:
+        type: integer
       id:
         type: integer
       image:
@@ -626,6 +645,8 @@ definitions:
         type: integer
       categoryName:
         type: string
+      currentQuantity:
+        type: integer
       id:
         type: integer
       image:
@@ -741,6 +762,8 @@ definitions:
         type: string
       createdAt:
         type: string
+      currentItemCount:
+        type: integer
       description:
         type: string
       id:
@@ -848,11 +871,11 @@ definitions:
         items:
           $ref: '#/definitions/transactiondto.TransactionItemDTO'
         type: array
-      postID:
-        type: integer
       receiverID:
         type: integer
       senderID:
+        type: integer
+      status:
         type: integer
     type: object
   transactiondto.TransactionItemDTO:
@@ -861,6 +884,42 @@ definitions:
         type: integer
       quantity:
         type: integer
+    type: object
+  transactiondto.UpdateTransactionItem:
+    properties:
+      postItemID:
+        type: integer
+      quantity:
+        type: integer
+      transactionID:
+        type: integer
+    required:
+    - postItemID
+    - quantity
+    - transactionID
+    type: object
+  transactiondto.UpdateTransactionRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/transactiondto.UpdateTransactionItem'
+        type: array
+      status:
+        $ref: '#/definitions/enums.TransactionStatus'
+    type: object
+  transactiondto.UpdateTransactionResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/transactiondto.TransactionDTO'
+    type: object
+  transactiondto.UpdateTransactionResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/transactiondto.UpdateTransactionResponse'
+      message:
+        type: string
     type: object
   userdto.AdminUserDTO:
     properties:
@@ -1932,6 +1991,38 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new transaction
+      tags:
+      - transactions
+  /transactions/{transactionID}:
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật một giao dịch và trả về thông tin giao dịch
+      parameters:
+      - description: Transaction update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transactiondto.UpdateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/transactiondto.UpdateTransactionResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update a new transaction
       tags:
       - transactions
   /users:
