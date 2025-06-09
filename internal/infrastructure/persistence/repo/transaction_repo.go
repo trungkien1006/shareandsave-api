@@ -5,8 +5,10 @@ import (
 	"errors"
 	"final_project/internal/domain/transaction"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"strconv"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TransactionRepoDB struct {
@@ -27,6 +29,25 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	dbTransaction = dbmodel.TransactionDomainToDB(*transaction)
 
 	tx := r.db.Debug().Begin()
+
+	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
+	for _, value := range transaction.Items {
+		var postItem dbmodel.PostItem
+
+		if err := tx.WithContext(ctx).
+			Model(&dbmodel.PostItem{}).
+			Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("id = ?", value.PostItemID).
+			First(&postItem).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+		}
+
+		if value.Quantity > postItem.CurrentQuantity {
+			tx.Rollback()
+			return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+		}
+	}
 
 	// Lấy ra id của post theo interest id
 	if err := tx.WithContext(ctx).Model(&dbmodel.Interest{}).

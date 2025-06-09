@@ -40,14 +40,6 @@ func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transacti
 		return errors.New("Quan tâm không tồn tại hoặc đã bị xóa")
 	}
 
-	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
-	for _, value := range transaction.Items {
-		err = uc.postRepo.CheckPostItemQuantityOver(ctx, value.PostItemID, value.Quantity)
-		if err != nil {
-			return err
-		}
-	}
-
 	transaction.Status = int(enums.TransactionStatusPending)
 
 	if err := uc.repo.Create(ctx, transaction); err != nil {
