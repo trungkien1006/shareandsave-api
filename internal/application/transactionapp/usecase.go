@@ -52,16 +52,7 @@ func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transacti
 
 	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
 	for _, value := range transaction.Items {
-		itemExisted, err := uc.itemRepo.IsExist(ctx, value.ItemID)
-		if err != nil {
-			return err
-		}
-
-		if !itemExisted {
-			return errors.New("Món đồ không tồn tại")
-		}
-
-		err = uc.postRepo.CheckPostItemQuantityOver(ctx, transaction.PostID, value.ItemID, value.Quantity)
+		err = uc.postRepo.CheckPostItemQuantityOver(ctx, value.PostItemID, value.Quantity)
 		if err != nil {
 			return err
 		}

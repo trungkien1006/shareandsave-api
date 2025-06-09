@@ -2,9 +2,9 @@ package dbmodel
 
 type TransactionItem struct {
 	TransactionID uint `gorm:"primaryKey"`
-	ItemID        uint `gorm:"primaryKey"`
+	PostItemID    uint `gorm:"primaryKey"`
 	Quantity      int  `gorm:"type:int"`
 
 	Transaction Transaction `gorm:"foreignKey:TransactionID"`
-	Item        Item        `gorm:"foreignKey:ItemID"`
+	PostItem    PostItem    `gorm:"foreignKey:PostItemID"`
 }

@@ -2744,11 +2744,11 @@ const docTemplate = `{
         "transactiondto.CreateTransactionItem": {
             "type": "object",
             "required": [
-                "itemID",
+                "postItemID",
                 "quantity"
             ],
             "properties": {
-                "itemID": {
+                "postItemID": {
                     "type": "integer"
                 },
                 "quantity": {
@@ -2827,7 +2827,7 @@ const docTemplate = `{
         "transactiondto.TransactionItemDTO": {
             "type": "object",
             "properties": {
-                "itemID": {
+                "postItemID": {
                     "type": "integer"
                 },
                 "quantity": {

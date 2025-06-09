@@ -301,11 +301,11 @@ func (r *PostRepoDB) IsExist(ctx context.Context, postID uint) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postID uint, itemID uint, quantity int) error {
+func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postItemID uint, quantity int) error {
 	var postItem dbmodel.PostItem
 
 	if err := r.db.Debug().WithContext(ctx).
-		Where("post_id = ? AND item_id = ?", postID, itemID).
+		Where("id = ?", postItem).
 		Find(&postItem).Error; err != nil {
 		return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
 	}

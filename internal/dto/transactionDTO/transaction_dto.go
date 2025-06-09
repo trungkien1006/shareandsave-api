@@ -10,6 +10,6 @@ type TransactionDTO struct {
 }
 
 type TransactionItemDTO struct {
-	ItemID   uint `json:"itemID"`
-	Quantity int  `json:"quantity"`
+	PostItemID uint `json:"postItemID"`
+	Quantity   int  `json:"quantity"`
 }

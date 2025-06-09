@@ -8,8 +8,8 @@ func CreateDTOToDomain(dto CreateTransactionRequest, userID uint) transaction.Tr
 
 	for _, value := range dto.Items {
 		domainItems = append(domainItems, transaction.TransactionItem{
-			ItemID:   value.ItemID,
-			Quantity: value.Quantity,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
 		})
 	}
 
@@ -28,8 +28,8 @@ func DomainToDTO(domain transaction.Transaction) TransactionDTO {
 
 	for _, value := range domain.Items {
 		dtoItems = append(dtoItems, TransactionItemDTO{
-			ItemID:   value.ItemID,
-			Quantity: value.Quantity,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
 		})
 	}
 

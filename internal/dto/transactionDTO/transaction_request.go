@@ -8,6 +8,6 @@ type CreateTransactionRequest struct {
 }
 
 type CreateTransactionItem struct {
-	ItemID   uint `json:"itemID" binding:"required"`
-	Quantity int  `json:"quantity" binding:"required"`
+	PostItemID uint `json:"postItemID" binding:"required"`
+	Quantity   int  `json:"quantity" binding:"required"`
 }

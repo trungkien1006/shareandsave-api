@@ -12,6 +12,6 @@ type Transaction struct {
 
 type TransactionItem struct {
 	TransactionID uint
-	ItemID        uint
+	PostItemID    uint
 	Quantity      int
 }

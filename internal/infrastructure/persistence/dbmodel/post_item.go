@@ -1,8 +1,9 @@
 package dbmodel
 
 type PostItem struct {
-	PostID   uint   `gorm:"primaryKey"`
-	ItemID   uint   `gorm:"primaryKey"`
+	ID       uint   `gorm:"primaryKey"`
+	PostID   uint   `gorm:"type:int"`
+	ItemID   uint   `gorm:"type:int"`
 	Quantity int    `gorm:"type:INT"`
 	Image    string `gorm:"type:LONGTEXT"`
 

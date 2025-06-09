@@ -798,12 +798,12 @@ definitions:
     type: object
   transactiondto.CreateTransactionItem:
     properties:
-      itemID:
+      postItemID:
         type: integer
       quantity:
         type: integer
     required:
-    - itemID
+    - postItemID
     - quantity
     type: object
   transactiondto.CreateTransactionRequest:
@@ -853,7 +853,7 @@ definitions:
     type: object
   transactiondto.TransactionItemDTO:
     properties:
-      itemID:
+      postItemID:
         type: integer
       quantity:
         type: integer

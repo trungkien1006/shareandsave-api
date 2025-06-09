@@ -2737,11 +2737,11 @@
         "transactiondto.CreateTransactionItem": {
             "type": "object",
             "required": [
-                "itemID",
+                "postItemID",
                 "quantity"
             ],
             "properties": {
-                "itemID": {
+                "postItemID": {
                     "type": "integer"
                 },
                 "quantity": {
@@ -2820,7 +2820,7 @@
         "transactiondto.TransactionItemDTO": {
             "type": "object",
             "properties": {
-                "itemID": {
+                "postItemID": {
                     "type": "integer"
                 },
                 "quantity": {

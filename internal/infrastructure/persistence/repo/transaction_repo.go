@@ -56,7 +56,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	// Cập nhật lại số lượng đồ đạc ở post_item
 	for _, value := range dbTransaction.TransactionItems {
 		if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
-			Where("post_id = ? AND item_id = ?", postID, value.ItemID).
+			Where("id = ?", value.PostItemID).
 			Update("quantity", gorm.Expr("quantity - ?", value.Quantity)).Error; err != nil {
 			tx.Rollback()
 			return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())

@@ -53,6 +53,7 @@ CREATE TABLE `post` (
 );
 
 CREATE TABLE `post_item` (
+  `id` uint,
   `post_id` int,
   `item_id` int,
   `quantity` int,
@@ -93,7 +94,7 @@ CREATE TABLE `transaction` (
 
 CREATE TABLE `transaction_item` (
   `transaction_id` int,
-  `item_id` int,
+  `post_item_id` int,
   `quantity` int
 );
 
@@ -269,7 +270,7 @@ ALTER TABLE `transaction` ADD FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id
 
 ALTER TABLE `transaction_item` ADD FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`);
 
-ALTER TABLE `transaction_item` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
+ALTER TABLE `transaction_item` ADD FOREIGN KEY (`post_item_id`) REFERENCES `post_item` (`id`);
 
 ALTER TABLE `appointment` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
