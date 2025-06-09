@@ -73,8 +73,13 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		return err
 	}
 
-	updateTransaction.Status = domainTransaction.Status
-	updateTransaction.Items = domainTransaction.Items
+	if domainTransaction.Status != 0 {
+		updateTransaction.Status = domainTransaction.Status
+	}
+
+	if domainTransaction.Items != nil {
+		updateTransaction.Items = domainTransaction.Items
+	}
 
 	// Cập nhật
 	if err := uc.repo.Update(ctx, &updateTransaction); err != nil {

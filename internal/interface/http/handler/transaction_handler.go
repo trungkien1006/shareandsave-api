@@ -20,7 +20,7 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 	return &TransactionHandler{uc: uc}
 }
 
-// @Summary Create a new transaction
+// @Summary Create transaction
 // @Description API tạo mới một giao dịch và trả về thông tin giao dịch
 // @Security BearerAuth
 // @Tags transactions
@@ -74,7 +74,7 @@ func (h *TransactionHandler) Create(c *gin.Context) {
 	})
 }
 
-// @Summary Update a new transaction
+// @Summary Update transaction
 // @Description API cập nhật một giao dịch và trả về thông tin giao dịch
 // @Security BearerAuth
 // @Tags transactions
