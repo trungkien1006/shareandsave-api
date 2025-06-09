@@ -15,6 +15,7 @@ func CreateDTOToDomain(dto CreateTransactionRequest) transaction.Transaction {
 
 	return transaction.Transaction{
 		ID:         dto.ID,
+		PostID:     dto.PostID,
 		InterestID: dto.InterestID,
 		SenderID:   dto.SenderID,
 		ReceiverID: dto.ReceiverID,

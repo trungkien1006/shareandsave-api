@@ -1,4 +1,9 @@
 package transaction
 
-type Repository struct {
+import (
+	"context"
+)
+
+type Repository interface {
+	Create(ctx context.Context, transaction *Transaction) error
 }

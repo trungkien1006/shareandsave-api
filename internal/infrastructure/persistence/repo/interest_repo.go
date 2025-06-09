@@ -177,3 +177,13 @@ func (r *InterestRepoDB) IsExist(ctx context.Context, userID uint, postID uint) 
 
 	return count > 0, nil
 }
+
+func (r *InterestRepoDB) IsExistByID(ctx context.Context, interestID uint) (bool, error) {
+	var count int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Interest{}).Where("id = ?", interestID).Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra quan tâm tồn tại: " + err.Error())
+	}
+
+	return count > 0, nil
+}

@@ -2,6 +2,7 @@ package transaction
 
 type Transaction struct {
 	ID         uint
+	PostID     uint
 	InterestID uint
 	SenderID   uint
 	ReceiverID uint

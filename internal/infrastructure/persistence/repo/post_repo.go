@@ -7,6 +7,7 @@ import (
 	"final_project/internal/domain/post"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"math"
+	"strconv"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -298,4 +299,20 @@ func (r *PostRepoDB) IsExist(ctx context.Context, postID uint) (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postID uint, itemID uint, quantity int) error {
+	var postItem dbmodel.PostItem
+
+	if err := r.db.Debug().WithContext(ctx).
+		Where("post_id = ? AND item_id = ?", postID, itemID).
+		Find(&postItem).Error; err != nil {
+		return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+	}
+
+	if quantity > postItem.Quantity {
+		return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+	}
+
+	return nil
 }

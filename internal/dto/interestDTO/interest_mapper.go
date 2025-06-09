@@ -35,7 +35,7 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 
 	for _, value := range domain.Items {
 		domainItems = append(domainItems, PostInterestItem{
-			ID:           value.ID,
+			ItemID:       value.ItemID,
 			Name:         value.Name,
 			CategoryName: value.CategoryName,
 			Quantity:     value.Quantity,

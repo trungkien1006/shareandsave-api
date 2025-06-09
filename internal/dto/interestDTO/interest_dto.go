@@ -16,7 +16,7 @@ type Interest struct {
 }
 
 type PostInterestItem struct {
-	ID           uint   `json:"id`
+	ItemID       uint   `json:"itemID`
 	Name         string `json:"name"`
 	CategoryName string `json:"categoryName"`
 	Quantity     int    `json:"quantity"`
