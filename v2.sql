@@ -57,6 +57,7 @@ CREATE TABLE `post_item` (
   `post_id` int,
   `item_id` int,
   `quantity` int,
+  `current_quantity` int,
   `image` longtext
 );
 

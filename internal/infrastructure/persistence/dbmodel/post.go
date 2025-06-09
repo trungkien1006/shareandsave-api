@@ -39,11 +39,12 @@ type AdminPost struct {
 }
 
 type PostWithCounts struct {
-	Post                 // Lấy toàn bộ trường từ bảng post
-	AuthorAvatar  string `gorm:"column:"author_avatar"`
-	AuthorName    string `gorm:"column:author_name"`
-	InterestCount int64  `gorm:"column:interest_count"`
-	ItemCount     int64  `gorm:"column:item_count"`
+	Post                    // Lấy toàn bộ trường từ bảng post
+	AuthorAvatar     string `gorm:"column:"author_avatar"`
+	AuthorName       string `gorm:"column:author_name"`
+	InterestCount    int64  `gorm:"column:interest_count"`
+	ItemCount        int64  `gorm:"column:item_count"`
+	CurrentItemCount int    `gorm:"column:current_item_count"`
 }
 
 // DB → Domain
@@ -91,22 +92,23 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 	}
 
 	return post.PostWithCount{
-		ID:            db.ID,
-		AuthorID:      db.AuthorID,
-		AuthorName:    db.AuthorName,
-		AuthorAvatar:  db.AuthorAvatar,
-		Type:          db.Type,
-		Slug:          db.Slug,
-		Title:         db.Title,
-		Description:   db.Description,
-		Content:       db.Content,
-		Info:          db.Info,
-		Status:        db.Status,
-		Images:        domainImage,
-		CreatedAt:     db.CreatedAt,
-		Tag:           domainTag,
-		InterestCount: uint(db.InterestCount),
-		ItemCount:     uint(db.ItemCount),
+		ID:               db.ID,
+		AuthorID:         db.AuthorID,
+		AuthorName:       db.AuthorName,
+		AuthorAvatar:     db.AuthorAvatar,
+		Type:             db.Type,
+		Slug:             db.Slug,
+		Title:            db.Title,
+		Description:      db.Description,
+		Content:          db.Content,
+		Info:             db.Info,
+		Status:           db.Status,
+		Images:           domainImage,
+		CreatedAt:        db.CreatedAt,
+		Tag:              domainTag,
+		InterestCount:    uint(db.InterestCount),
+		ItemCount:        uint(db.ItemCount),
+		CurrentItemCount: uint(db.CurrentItemCount),
 	}
 }
 
@@ -130,12 +132,13 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 
 	for _, value := range db.PostItem {
 		domainPostItem = append(domainPostItem, post.DetailPostItem{
-			ItemID:       value.ItemID,
-			CategoryID:   value.Item.CategoryID,
-			CategoryName: value.Item.Category.Name,
-			Image:        value.Image,
-			Name:         value.Item.Name,
-			Quantity:     value.Quantity,
+			ItemID:          value.ItemID,
+			CategoryID:      value.Item.CategoryID,
+			CategoryName:    value.Item.Category.Name,
+			Image:           value.Image,
+			Name:            value.Item.Name,
+			Quantity:        value.Quantity,
+			CurrentQuantity: value.CurrentQuantity,
 		})
 	}
 
@@ -189,17 +192,19 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 
 	for _, value := range domainPost.OldItems {
 		postItems = append(postItems, PostItem{
-			ItemID:   value.ItemID,
-			Image:    value.Image,
-			Quantity: value.Quantity,
+			ItemID:          value.ItemID,
+			Image:           value.Image,
+			Quantity:        value.Quantity,
+			CurrentQuantity: value.Quantity,
 		})
 	}
 
 	for _, value := range domainPost.NewItems {
 		postItems = append(postItems, PostItem{
-			ItemID:   value.ItemID,
-			Image:    value.Image,
-			Quantity: value.Quantity,
+			ItemID:          value.ItemID,
+			Image:           value.Image,
+			Quantity:        value.Quantity,
+			CurrentQuantity: value.Quantity,
 		})
 	}
 

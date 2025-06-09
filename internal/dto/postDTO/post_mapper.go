@@ -19,22 +19,23 @@ func PostWithCountDomainToDTO(domain post.PostWithCount) PostWithCountDTO {
 	}
 
 	return PostWithCountDTO{
-		ID:            domain.ID,
-		AuthorID:      domain.AuthorID,
-		AuthorName:    domain.AuthorName,
-		AuthorAvatar:  domain.AuthorAvatar,
-		Type:          domain.Type,
-		Slug:          domain.Slug,
-		Title:         domain.Title,
-		Description:   domain.Description,
-		Content:       domain.Content,
-		Info:          domain.Info,
-		Status:        domain.Status,
-		Images:        DTOImage,
-		CreatedAt:     domain.CreatedAt,
-		Tag:           DTOTag,
-		InterestCount: domain.InterestCount,
-		ItemCount:     domain.ItemCount,
+		ID:               domain.ID,
+		AuthorID:         domain.AuthorID,
+		AuthorName:       domain.AuthorName,
+		AuthorAvatar:     domain.AuthorAvatar,
+		Type:             domain.Type,
+		Slug:             domain.Slug,
+		Title:            domain.Title,
+		Description:      domain.Description,
+		Content:          domain.Content,
+		Info:             domain.Info,
+		Status:           domain.Status,
+		Images:           DTOImage,
+		CreatedAt:        domain.CreatedAt,
+		Tag:              DTOTag,
+		InterestCount:    domain.InterestCount,
+		ItemCount:        domain.ItemCount,
+		CurrentItemCount: domain.CurrentItemCount,
 	}
 }
 
@@ -58,13 +59,14 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 
 	for _, value := range domain.Items {
 		DTOPostItem = append(DTOPostItem, DetailPostItemDTO{
-			ID:           value.ID,
-			ItemID:       value.ItemID,
-			CategoryID:   value.CategoryID,
-			CategoryName: value.CategoryName,
-			Image:        value.Image,
-			Name:         value.Name,
-			Quantity:     value.Quantity,
+			ID:              value.ID,
+			ItemID:          value.ItemID,
+			CategoryID:      value.CategoryID,
+			CategoryName:    value.CategoryName,
+			Image:           value.Image,
+			Name:            value.Name,
+			Quantity:        value.Quantity,
+			CurrentQuantity: value.CurrentQuantity,
 		})
 	}
 

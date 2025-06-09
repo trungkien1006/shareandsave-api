@@ -13,11 +13,12 @@ type OldItemsInPost struct {
 }
 
 type NewItemsInPost struct {
-	ItemID     uint
-	CategoryID uint
-	Image      string
-	Name       string
-	Quantity   int
+	ItemID          uint
+	CategoryID      uint
+	Image           string
+	Name            string
+	Quantity        int
+	CurrentQuantity int
 }
 
 type CreatePost struct {
@@ -56,13 +57,14 @@ type Post struct {
 }
 
 type DetailPostItem struct {
-	ID           uint
-	ItemID       uint
-	CategoryID   uint
-	CategoryName string
-	Image        string
-	Name         string
-	Quantity     int
+	ID              uint
+	ItemID          uint
+	CategoryID      uint
+	CategoryName    string
+	Image           string
+	Name            string
+	Quantity        int
+	CurrentQuantity int
 }
 
 type DetailPost struct {
@@ -85,22 +87,24 @@ type DetailPost struct {
 }
 
 type PostWithCount struct {
-	ID            uint
-	AuthorID      uint
-	AuthorName    string
-	AuthorAvatar  string
-	Type          int
-	Slug          string
-	Title         string
-	Description   string
-	Content       string
-	Info          string
-	Status        int8
-	Images        []string
-	CreatedAt     time.Time
-	Tag           []string
-	InterestCount uint
-	ItemCount     uint
+	ID               uint
+	AuthorID         uint
+	AuthorName       string
+	AuthorAvatar     string
+	Type             int
+	Slug             string
+	Title            string
+	Description      string
+	Content          string
+	Info             string
+	Status           int8
+	Images           []string
+	CreatedAt        time.Time
+	Tag              []string
+	InterestCount    uint
+	ItemCount        uint
+	CurrentItemCount uint
+	IsInterest       int
 }
 
 type AdminPostFilterRequest struct {
