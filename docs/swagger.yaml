@@ -809,20 +809,16 @@ definitions:
   transactiondto.CreateTransactionRequest:
     properties:
       interestID:
+        description: PostID     uint                    `json:"postID" binding:"required"`
         type: integer
       items:
+        description: SenderID   uint                    `json:"senderID" binding:"required"`
         items:
           $ref: '#/definitions/transactiondto.CreateTransactionItem'
         type: array
-      postID:
-        type: integer
-      senderID:
-        type: integer
     required:
     - interestID
     - items
-    - postID
-    - senderID
     type: object
   transactiondto.CreateTransactionResponse:
     properties:

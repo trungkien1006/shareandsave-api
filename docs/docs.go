@@ -2760,25 +2760,19 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "interestID",
-                "items",
-                "postID",
-                "senderID"
+                "items"
             ],
             "properties": {
                 "interestID": {
+                    "description": "PostID     uint                    ` + "`" + `json:\"postID\" binding:\"required\"` + "`" + `",
                     "type": "integer"
                 },
                 "items": {
+                    "description": "SenderID   uint                    ` + "`" + `json:\"senderID\" binding:\"required\"` + "`" + `",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/transactiondto.CreateTransactionItem"
                     }
-                },
-                "postID": {
-                    "type": "integer"
-                },
-                "senderID": {
-                    "type": "integer"
                 }
             }
         },
