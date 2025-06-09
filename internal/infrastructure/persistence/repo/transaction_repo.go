@@ -57,7 +57,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	for _, value := range dbTransaction.TransactionItems {
 		if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
 			Where("id = ?", value.PostItemID).
-			Update("quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
+			Update("current_quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
 			tx.Rollback()
 			return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
 		}
