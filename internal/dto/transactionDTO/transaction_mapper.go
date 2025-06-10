@@ -63,3 +63,28 @@ func DomainToDTO(domain transaction.Transaction) TransactionDTO {
 		Items:      dtoItems,
 	}
 }
+
+// Domain to DTO
+func DomainToDetailDTO(domain transaction.DetailTransaction) DetailTransactionDTO {
+	dtoDetailItems := make([]DetailTransactionItemDTO, 0)
+
+	for _, value := range domain.Items {
+		dtoDetailItems = append(dtoDetailItems, DetailTransactionItemDTO{
+			ItemID:     value.ItemID,
+			ItemName:   value.ItemName,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
+		})
+	}
+
+	return DetailTransactionDTO{
+		ID:           domain.ID,
+		InterestID:   domain.InterestID,
+		SenderID:     domain.SenderID,
+		ReceiverID:   domain.ReceiverID,
+		SenderName:   domain.SenderName,
+		ReceiverName: domain.ReceiverName,
+		Status:       domain.Status,
+		Items:        dtoDetailItems,
+	}
+}

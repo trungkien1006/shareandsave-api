@@ -20,6 +20,73 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 	return &TransactionHandler{uc: uc}
 }
 
+// @Summary Get transaction
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
+// @Tags transactions
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record per page" minimum(1) example(10)
+// @Param sort query string false "Sort column (vd: name)" example(name)
+// @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param status query string false "Pending:1, Success:2, Cancelled:3" example(1, 2, 3)
+// @Param   searchBy   query    string  false  "Trường lọc (senderID, senderName, receiverID, receiverName)"
+// @Param   searchValue   query    string  false  "Giá trị lọc:"
+// @Success 200 {object} transactiondto.FilterTransactionResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /transactions [get]
+func (h *TransactionHandler) GetAll(c *gin.Context) {
+	var (
+		req                transactiondto.GetTransactionRequest
+		filter             transaction.FilterTransaction
+		domainTransactions []transaction.DetailTransaction
+	)
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	req.SetDefault()
+
+	filter.Page = req.Page
+	filter.Limit = req.Limit
+	filter.Sort = req.Sort
+	filter.Order = req.Order
+	filter.Status = req.Status
+	filter.SearchBy = req.SearchBy
+	filter.SearchValue = req.SearchValue
+
+	totalPage, err := h.uc.GetAllTransaction(c.Request.Context(), &domainTransactions, filter)
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	transactionDTORes := make([]transactiondto.DetailTransactionDTO, 0)
+
+	for _, value := range domainTransactions {
+		transactionDTORes = append(transactionDTORes, transactiondto.DomainToDetailDTO(value))
+	}
+
+	c.JSON(http.StatusOK, transactiondto.FilterTransactionResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched items successfully",
+		Data: transactiondto.FilterTransactionResponse{
+			Transactions: transactionDTORes,
+			TotalPage:    totalPage,
+		},
+	})
+}
+
 // @Summary Create transaction
 // @Description API tạo mới một giao dịch và trả về thông tin giao dịch
 // @Security BearerAuth

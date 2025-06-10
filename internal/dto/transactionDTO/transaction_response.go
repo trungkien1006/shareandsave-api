@@ -19,3 +19,14 @@ type UpdateTransactionResponseWrapper struct {
 type UpdateTransactionResponse struct {
 	Transaction TransactionDTO `json:"transaction"`
 }
+
+type FilterTransactionResponseWrapper struct {
+	Code    int                       `json:"code"`
+	Message string                    `json:"message"`
+	Data    FilterTransactionResponse `json:"data"`
+}
+
+type FilterTransactionResponse struct {
+	Transactions []DetailTransactionDTO `json:"transactions"`
+	TotalPage    int                    `json:"totalPage"`
+}

@@ -5,6 +5,7 @@ import (
 )
 
 type Repository interface {
+	GetAll(ctx context.Context, transactions *[]DetailTransaction, req FilterTransaction) (int, error)
 	GetByID(ctx context.Context, transactionID uint, transaction *Transaction) error
 	Create(ctx context.Context, transaction *Transaction) error
 	Update(ctx context.Context, transaction *Transaction) error

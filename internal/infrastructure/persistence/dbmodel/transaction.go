@@ -66,3 +66,28 @@ func TransactionDBToDomain(db Transaction) transaction.Transaction {
 		Status:     db.Status,
 	}
 }
+
+// DB to Domain
+func TransactionDBToDetailDomain(db Transaction) transaction.DetailTransaction {
+	var domainItems []transaction.DetailTransactionItem
+
+	for _, value := range db.TransactionItems {
+		domainItems = append(domainItems, transaction.DetailTransactionItem{
+			ItemID:     value.PostItem.ItemID,
+			ItemName:   value.PostItem.Item.Name,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
+		})
+	}
+
+	return transaction.DetailTransaction{
+		ID:           db.ID,
+		InterestID:   db.InterestID,
+		SenderID:     db.SenderID,
+		ReceiverID:   db.ReceiverID,
+		SenderName:   db.Sender.FullName,
+		ReceiverName: db.Receiver.FullName,
+		Items:        domainItems,
+		Status:       db.Status,
+	}
+}

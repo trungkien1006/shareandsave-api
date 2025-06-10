@@ -8,6 +8,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"strconv"
 
+	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -18,6 +19,68 @@ type TransactionRepoDB struct {
 
 func NewTransactionRepoDB(db *gorm.DB) *TransactionRepoDB {
 	return &TransactionRepoDB{db: db}
+}
+
+func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transaction.DetailTransaction, req transaction.FilterTransaction) (int, error) {
+	var (
+		query         *gorm.DB
+		totalRecords  int64
+		dbTransaction []dbmodel.Transaction
+	)
+
+	query = r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Transaction{}).
+		Table("transaction").
+		Preload("Sender").
+		Preload("Receiver").
+		Preload("TransactionItems").
+		Preload("TransactionItems.PostItem").
+		Preload("TransactionItems.PostItem.Item").
+		Joins("JOIN user as sender ON sender.id = transaction.sender_id").
+		Joins("JOIN user as receiver ON receiver.id = transaction.receiver_id")
+
+	if req.SearchBy != "" && req.SearchValue != "" {
+		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+
+		if column == "sender_name" {
+			column = "sender.full_name"
+		} else if column == "receiver_name" {
+			column = "receiver.full_name"
+		} else {
+			column = "transaction." + column
+		}
+
+		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+	}
+
+	if req.Status != 0 {
+		query.Where("transaction.status = ? ", req.Status)
+	}
+
+	if err := query.Count(&totalRecords).Error; err != nil {
+		return 0, err
+	}
+
+	if req.Sort != "" && req.Order != "" {
+		query = query.Order("transaction." + strcase.ToSnake(req.Sort) + " " + req.Order)
+	}
+
+	if req.Limit > 0 && req.Page > 0 {
+		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
+	}
+
+	if err := query.Find(&dbTransaction).Error; err != nil {
+		return 0, err
+	}
+
+	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
+
+	for _, value := range dbTransaction {
+		*transactions = append(*transactions, dbmodel.TransactionDBToDetailDomain(value))
+	}
+
+	return totalPages, nil
 }
 
 func (r *TransactionRepoDB) GetByID(ctx context.Context, transactionID uint, transaction *transaction.Transaction) error {

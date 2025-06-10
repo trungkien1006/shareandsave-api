@@ -1259,6 +1259,90 @@
             }
         },
         "/transactions": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Get transaction",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "name",
+                        "description": "Sort column (vd: name)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "1, 2, 3",
+                        "description": "Pending:1, Success:2, Cancelled:3",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (senderID, senderName, receiverID, receiverName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc:",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.FilterTransactionResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -2879,6 +2963,83 @@
                 },
                 "data": {
                     "$ref": "#/definitions/transactiondto.CreateTransactionResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "transactiondto.DetailTransactionDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "interestID": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transactiondto.DetailTransactionItemDTO"
+                    }
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "integer"
+                },
+                "senderName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.DetailTransactionItemDTO": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "postItemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.FilterTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "totalPage": {
+                    "type": "integer"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transactiondto.DetailTransactionDTO"
+                    }
+                }
+            }
+        },
+        "transactiondto.FilterTransactionResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/transactiondto.FilterTransactionResponse"
                 },
                 "message": {
                     "type": "string"

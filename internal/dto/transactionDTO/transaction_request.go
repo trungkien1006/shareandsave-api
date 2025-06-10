@@ -2,6 +2,28 @@ package transactiondto
 
 import "final_project/internal/pkg/enums"
 
+type GetTransactionRequest struct {
+	Page        int                     `form:"page"`
+	Limit       int                     `form:"limit"`
+	Sort        string                  `form:"sort" binding:"omitempty,oneof=createdAt" example:"createdAt"`
+	Order       string                  `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
+	Status      enums.TransactionStatus `form:"status"`
+	SearchBy    string                  `form:"searchBy" binding:"omitempty,oneof=senderID receiverID senderName receiverName"`
+	SearchValue string                  `form:"searchValue"`
+}
+
+func (r *GetTransactionRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 8
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
+}
+
 type CreateTransactionRequest struct {
 	// PostID     uint                    `json:"postID" binding:"required"`
 	InterestID uint `json:"interestID" binding:"required"`
