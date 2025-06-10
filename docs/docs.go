@@ -1322,6 +1322,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "Id bài viết",
+                        "name": "postID",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "Trường lọc (senderID, senderName, receiverID, receiverName, interestID)",
                         "name": "searchBy",

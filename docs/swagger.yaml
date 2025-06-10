@@ -2044,6 +2044,10 @@ paths:
         in: query
         name: status
         type: string
+      - description: Id bài viết
+        in: query
+        name: postID
+        type: integer
       - description: Trường lọc (senderID, senderName, receiverID, receiverName, interestID)
         in: query
         name: searchBy

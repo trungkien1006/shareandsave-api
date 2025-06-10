@@ -31,6 +31,7 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 // @Param sort query string false "Sort column (vd: name)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
 // @Param status query string false "Pending:1, Success:2, Cancelled:3" example(1, 2, 3)
+// @Param postID query int false "Id bài viết"
 // @Param   searchBy   query    string  false  "Trường lọc (senderID, senderName, receiverID, receiverName, interestID)"
 // @Param   searchValue   query    string  false  "Giá trị lọc:"
 // @Success 200 {object} transactiondto.FilterTransactionResponseWrapper
