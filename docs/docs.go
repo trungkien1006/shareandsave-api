@@ -1285,13 +1285,6 @@ const docTemplate = `{
                 "summary": "Create transaction",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "ID transaction",
-                        "name": "transactionID",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Transaction creation payload",
                         "name": "request",
                         "in": "body",
@@ -1342,6 +1335,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update transaction",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID transaction",
+                        "name": "transactionID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Transaction update payload",
                         "name": "request",

@@ -1967,11 +1967,6 @@ paths:
       - application/json
       description: API tạo mới một giao dịch và trả về thông tin giao dịch
       parameters:
-      - description: ID transaction
-        in: path
-        name: transactionID
-        required: true
-        type: integer
       - description: Transaction creation payload
         in: body
         name: request
@@ -2004,6 +1999,11 @@ paths:
       - application/json
       description: API cập nhật một giao dịch và trả về thông tin giao dịch
       parameters:
+      - description: ID transaction
+        in: path
+        name: transactionID
+        required: true
+        type: integer
       - description: Transaction update payload
         in: body
         name: request

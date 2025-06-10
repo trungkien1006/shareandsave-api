@@ -26,7 +26,6 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 // @Tags transactions
 // @Accept json
 // @Produce json
-// @Param transactionID path int true "ID transaction"
 // @Param request body transactiondto.CreateTransactionRequest true "Transaction creation payload"
 // @Success 201 {object} transactiondto.CreateTransactionResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -81,6 +80,7 @@ func (h *TransactionHandler) Create(c *gin.Context) {
 // @Tags transactions
 // @Accept json
 // @Produce json
+// @Param transactionID path int true "ID transaction"
 // @Param request body transactiondto.UpdateTransactionRequest true "Transaction update payload"
 // @Success 200 {object} transactiondto.UpdateTransactionResponseWrapper
 // @Failure 400 {object} enums.AppError
