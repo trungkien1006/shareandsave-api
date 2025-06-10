@@ -116,6 +116,7 @@ CREATE TABLE `appointment_item_warehouse` (
 
 CREATE TABLE `warehouse` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
+  `import_invoice_id` int,
   `item_id` int,
   `sku` varchar(255) UNIQUE,
   `quantity` int,
@@ -240,6 +241,8 @@ CREATE TABLE `setting` (
   `updated_at` timestamp,
   `deleted_at` timestamp
 );
+
+ALTER TABLE `warehouse` ADD FOREIGN KEY (`import_invoice_id`) REFERENCES `import_invoice` (`id`);
 
 ALTER TABLE `warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 

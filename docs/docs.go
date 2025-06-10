@@ -1323,7 +1323,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (senderID, senderName, receiverID, receiverName)",
+                        "description": "Trường lọc (senderID, senderName, receiverID, receiverName, interestID)",
                         "name": "searchBy",
                         "in": "query"
                     },

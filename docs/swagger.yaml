@@ -2044,7 +2044,7 @@ paths:
         in: query
         name: status
         type: string
-      - description: Trường lọc (senderID, senderName, receiverID, receiverName)
+      - description: Trường lọc (senderID, senderName, receiverID, receiverName, interestID)
         in: query
         name: searchBy
         type: string
