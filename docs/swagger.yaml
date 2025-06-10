@@ -2067,6 +2067,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get transaction
       tags:
       - transactions
