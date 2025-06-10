@@ -23,6 +23,7 @@ type FilterTransaction struct {
 	Limit       int
 	Sort        string
 	Order       string
+	PostID      uint
 	Status      enums.TransactionStatus
 	SearchBy    string
 	SearchValue string

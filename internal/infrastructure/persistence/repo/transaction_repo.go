@@ -38,7 +38,8 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 		Preload("TransactionItems.PostItem").
 		Preload("TransactionItems.PostItem.Item").
 		Joins("JOIN user as sender ON sender.id = transaction.sender_id").
-		Joins("JOIN user as receiver ON receiver.id = transaction.receiver_id")
+		Joins("JOIN user as receiver ON receiver.id = transaction.receiver_id").
+		Joins("JOIN interest ON interest.id = transaction.interest_id")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
@@ -52,6 +53,10 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 		}
 
 		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+	}
+
+	if req.PostID != 0 {
+		query.Where("interest.post_id = ? ", req.PostID)
 	}
 
 	if req.Status != 0 {

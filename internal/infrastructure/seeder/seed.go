@@ -67,9 +67,9 @@ func (s *Seeder) Seed() error {
 		return err
 	}
 
-	// if err := s.seedPosts(); err != nil {
-	// 	return err
-	// }
+	if err := s.seedPosts(); err != nil {
+		return err
+	}
 
 	// if err := s.seedImportInvoice(); err != nil {
 	// 	return err

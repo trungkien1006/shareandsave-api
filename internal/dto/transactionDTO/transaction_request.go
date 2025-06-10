@@ -7,8 +7,9 @@ type GetTransactionRequest struct {
 	Limit       int                     `form:"limit"`
 	Sort        string                  `form:"sort" binding:"omitempty,oneof=createdAt" example:"createdAt"`
 	Order       string                  `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
+	PostID      uint                    `form:"postID"`
 	Status      enums.TransactionStatus `form:"status"`
-	SearchBy    string                  `form:"searchBy" binding:"omitempty,oneof=senderID receiverID senderName receiverName"`
+	SearchBy    string                  `form:"searchBy" binding:"omitempty,oneof=senderID receiverID senderName receiverName interestID"`
 	SearchValue string                  `form:"searchValue"`
 }
 

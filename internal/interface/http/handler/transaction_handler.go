@@ -31,7 +31,7 @@ func NewTransactionHandler(uc *transactionapp.UseCase) *TransactionHandler {
 // @Param sort query string false "Sort column (vd: name)" example(name)
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
 // @Param status query string false "Pending:1, Success:2, Cancelled:3" example(1, 2, 3)
-// @Param   searchBy   query    string  false  "Trường lọc (senderID, senderName, receiverID, receiverName)"
+// @Param   searchBy   query    string  false  "Trường lọc (senderID, senderName, receiverID, receiverName, interestID)"
 // @Param   searchValue   query    string  false  "Giá trị lọc:"
 // @Success 200 {object} transactiondto.FilterTransactionResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -58,6 +58,7 @@ func (h *TransactionHandler) GetAll(c *gin.Context) {
 	filter.Limit = req.Limit
 	filter.Sort = req.Sort
 	filter.Order = req.Order
+	filter.PostID = req.PostID
 	filter.Status = req.Status
 	filter.SearchBy = req.SearchBy
 	filter.SearchValue = req.SearchValue
@@ -79,7 +80,7 @@ func (h *TransactionHandler) GetAll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, transactiondto.FilterTransactionResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched items successfully",
+		Message: "Fetched transactions successfully",
 		Data: transactiondto.FilterTransactionResponse{
 			Transactions: transactionDTORes,
 			TotalPage:    totalPage,
