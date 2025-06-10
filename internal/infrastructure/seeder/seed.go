@@ -1574,7 +1574,7 @@ func (s *Seeder) seedImportInvoice() error {
 		}
 
 		// Lưu ImportInvoice và Warehouse
-		if err := s.imInvoiceRepo.CreateImportInvoice(ctx, importInvoices[i], &warehouseSlice); err != nil {
+		if err := s.imInvoiceRepo.CreateImportInvoice(ctx, &importInvoices[i]); err != nil {
 			return fmt.Errorf("failed to create import invoice %d: %w", i+1, err)
 		}
 	}

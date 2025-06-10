@@ -8,17 +8,19 @@ import (
 )
 
 type Warehouse struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	ItemID      uint   `gorm:"index"` // mới thêm
-	SKU         string `gorm:"unique;size:255"`
-	Quantity    int
-	Description string `gorm:"type:TEXT"`
-	Classify    int    `gorm:"type:int"`
-	StockPlace  string `gorm:"size:255"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	ID              uint   `gorm:"primaryKey;autoIncrement"`
+	ImportInvoiceID uint   `gorm:"index"`
+	ItemID          uint   `gorm:"index"` // mới thêm
+	SKU             string `gorm:"unique;size:255"`
+	Quantity        int
+	Description     string `gorm:"type:TEXT"`
+	Classify        int    `gorm:"type:int"`
+	StockPlace      string `gorm:"size:255"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
 
+	ImportInvoice  ImportInvoice   `gorm:"foreignKey:ImportInvoiceID"`
 	Item           Item            `gorm:"foreignKey:ItemID"`
 	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:WarehouseID"`
 }

@@ -8,7 +8,7 @@ import (
 
 type ItemExportInvoice struct {
 	ID              uint   `gorm:"primaryKey;autoIncrement"`
-	InvoiceID       string `gorm:"size:255;index"`
+	InvoiceID       int    `gorm:"index"`
 	ItemWarehouseID uint   `gorm:"index"`
 	SKU             string `gorm:"unique;size:255"`
 	Quantity        int8

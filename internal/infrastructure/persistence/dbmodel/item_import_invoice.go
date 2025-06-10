@@ -7,9 +7,9 @@ import (
 )
 
 type ItemImportInvoice struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	InvoiceID   string `gorm:"size:255;index"`
-	ItemID      uint   `gorm:"index"`
+	ID          uint `gorm:"primaryKey;autoIncrement"`
+	InvoiceID   int  `gorm:"index"`
+	ItemID      uint `gorm:"index"`
 	Quantity    int8
 	Description string `gorm:"type:TEXT"` // mới thêm
 	CreatedAt   time.Time

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"final_project/internal/domain/filter"
 	importinvoice "final_project/internal/domain/import_invoice"
-	"final_project/internal/domain/warehouse"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"math"
 
@@ -101,48 +100,35 @@ func (r *ImportInvoiceRepoDB) GetImportInvoiceNum(ctx context.Context) (int, err
 	return int(invoiceNum + 1), nil
 }
 
-func (r *ImportInvoiceRepoDB) CreateImportInvoice(ctx context.Context, importInvoice importinvoice.ImportInvoice, warehouse *[]warehouse.Warehouse) error {
+func (r *ImportInvoiceRepoDB) CreateImportInvoice(ctx context.Context, importInvoice *importinvoice.ImportInvoice) error {
 	var (
-		DBImportInvoice dbmodel.ImportInvoice
-		DBWarehouse     []dbmodel.Warehouse
+		dbImportInvoice dbmodel.ImportInvoice
 	)
 
-	DBImportInvoice = dbmodel.ImportInvoiceDomainToDB(importInvoice)
-
-	for _, value := range *warehouse {
-		DBWarehouse = append(DBWarehouse, dbmodel.WarehouseDomainToDB(value))
-	}
+	dbImportInvoice = dbmodel.ImportInvoiceDomainToDB(*importInvoice)
 
 	tx := r.db.Begin()
 
 	if err := tx.Debug().WithContext(ctx).
 		Model(&dbmodel.ImportInvoice{}).
-		Create(&DBImportInvoice).Error; err != nil {
+		Create(&dbImportInvoice).Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi thêm mới phiếu nhập: " + err.Error())
 	}
 
-	if err := tx.Debug().WithContext(ctx).
-		Model(&dbmodel.Warehouse{}).
-		Create(&DBWarehouse).Error; err != nil {
-		tx.Rollback()
-		return errors.New("Có lỗi khi thêm mới danh sách lô đồ: " + err.Error())
-	}
+	// if err := tx.Debug().WithContext(ctx).
+	// 	Model(&dbmodel.Warehouse{}).
+	// 	Create(&DBWarehouse).Error; err != nil {
+	// 	tx.Rollback()
+	// 	return errors.New("Có lỗi khi thêm mới danh sách lô đồ: " + err.Error())
+	// }
 
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
 	}
 
-	var tempItemName []string
-
-	for _, value := range *warehouse {
-		tempItemName = append(tempItemName, value.ItemName)
-	}
-
-	for key, value := range DBWarehouse {
-		*warehouse = append(*warehouse, dbmodel.WarehouseDBToDomain(value, tempItemName[key]))
-	}
+	*importInvoice = dbmodel.ImportInvoiceDBToDomain(dbImportInvoice)
 
 	return nil
 }

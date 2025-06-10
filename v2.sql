@@ -134,6 +134,7 @@ CREATE TABLE `item_warehouse` (
   `warehouse_id` int,
   `code` varchar(255) UNIQUE,
   `description` text,
+  `status` int,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp

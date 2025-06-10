@@ -4,9 +4,7 @@ import (
 	"final_project/internal/application/importinvoiceapp"
 	"final_project/internal/domain/filter"
 	importinvoice "final_project/internal/domain/import_invoice"
-	"final_project/internal/domain/warehouse"
 	importinvoicedto "final_project/internal/dto/importinvoiceDTO"
-	warehousedto "final_project/internal/dto/warehouseDTO"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"final_project/internal/shared/validator"
@@ -103,8 +101,6 @@ func (h *ImportInvoiceHandler) CreateImportInvoice(c *gin.Context) {
 	var (
 		req                 importinvoicedto.CreateImportInvoiceRequest
 		domainImportInvoice importinvoice.ImportInvoice
-		domainWarehouse     []warehouse.Warehouse
-		DTOItemWarehouse    []warehousedto.ItemWarehouse
 	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -127,22 +123,18 @@ func (h *ImportInvoiceHandler) CreateImportInvoice(c *gin.Context) {
 
 	domainImportInvoice.ReceiverID = userID
 
-	if err := h.uc.CreateImportInvoice(c.Request.Context(), domainImportInvoice, &domainWarehouse); err != nil {
+	if err := h.uc.CreateImportInvoice(c.Request.Context(), &domainImportInvoice); err != nil {
 		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
 
-	for _, value := range domainWarehouse {
-		for _, v := range value.ItemWareHouse {
-			DTOItemWarehouse = append(DTOItemWarehouse, warehousedto.ItemWarehouseDomainToDTO(v))
-		}
-	}
+	importinvoiceDTORes := importinvoicedto.ImportInvoiceDomainToDTO(domainImportInvoice)
 
 	c.JSON(http.StatusOK, importinvoicedto.CreateImportInvoiceResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Fetched items successfully",
 		Data: importinvoicedto.CreateImportInvoiceResponse{
-			Items: DTOItemWarehouse,
+			ImportInvoice: importinvoiceDTORes,
 		},
 	})
 }

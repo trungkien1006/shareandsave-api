@@ -12,6 +12,7 @@ type ItemWarehouse struct {
 	WarehouseID uint   `gorm:"index"`
 	Code        string `gorm:"unique;size:255"`
 	Description string `gorm:"type:TEXT"` // mới thêm
+	Status      int    `gorm:"type:int"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

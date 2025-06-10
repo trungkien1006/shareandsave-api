@@ -2,6 +2,7 @@ package importinvoicedto
 
 import (
 	importinvoice "final_project/internal/domain/import_invoice"
+	warehousedto "final_project/internal/dto/warehouseDTO"
 )
 
 // DTO -> Domain
@@ -33,5 +34,57 @@ func GetDomainToDTO(domain importinvoice.GetImportInvoice) ImportInvoiceListDTO 
 		Classify:     domain.Classify,
 		CreatedAt:    domain.CreatedAt,
 		ItemCount:    domain.ItemCount,
+	}
+}
+
+// Domain to DTO
+func ImportInvoiceDomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceDTO {
+	var (
+		warehouses []warehousedto.WarehouseDTO
+		items      []ItemImportInvoiceDTO
+	)
+
+	for _, value := range domain.ItemImportInvoice {
+		items = append(items, ItemImportInvoiceDTO{
+			ItemID:      value.ItemID,
+			ItemName:    value.ItemName,
+			Quantity:    value.Quantity,
+			Description: value.Description,
+		})
+	}
+
+	for _, v := range domain.Warehouses {
+		var itemWarehouses []warehousedto.ItemWareHouseDTO
+
+		for _, value := range v.ItemWareHouse {
+			itemWarehouses = append(itemWarehouses, warehousedto.ItemWareHouseDTO{
+				ItemID:      value.ItemID,
+				ItemName:    value.ItemName,
+				Code:        value.Code,
+				Description: value.Description,
+				Status:      value.Status,
+			})
+		}
+
+		warehouses = append(warehouses, warehousedto.WarehouseDTO{
+			ItemID:        v.ItemID,
+			SKU:           v.SKU,
+			Quantity:      v.Quantity,
+			Classify:      v.Classify,
+			Description:   v.Description,
+			StockPlace:    v.StockPlace,
+			ItemWareHouse: itemWarehouses,
+		})
+	}
+
+	return ImportInvoiceDTO{
+		InvoiceNum:        domain.InvoiceNum,
+		SenderID:          domain.SenderID,
+		ReceiverID:        domain.ReceiverID,
+		Classify:          domain.Classify,
+		Description:       domain.Description,
+		IsLock:            domain.IsLock,
+		ItemImportInvoice: items,
+		Warehouses:        warehouses,
 	}
 }

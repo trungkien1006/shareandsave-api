@@ -1,11 +1,7 @@
 package importinvoicedto
 
-import (
-	warehousedto "final_project/internal/dto/warehouseDTO"
-)
-
 type CreateImportInvoiceResponse struct {
-	Items []warehousedto.ItemWarehouse `json:"items"`
+	ImportInvoice ImportInvoiceDTO `json:"importInvoice"`
 }
 
 type CreateImportInvoiceResponseWrapper struct {

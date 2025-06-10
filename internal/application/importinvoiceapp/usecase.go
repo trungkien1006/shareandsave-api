@@ -8,6 +8,7 @@ import (
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/user"
 	"final_project/internal/domain/warehouse"
+	"final_project/internal/pkg/enums"
 )
 
 type UseCase struct {
@@ -36,7 +37,11 @@ func (uc *UseCase) GetAllImportInvoice(ctx context.Context, importInvoice *[]imp
 	return totalPage, nil
 }
 
-func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice importinvoice.ImportInvoice, handlerWarehouse *[]warehouse.Warehouse) error {
+func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *importinvoice.ImportInvoice) error {
+	var (
+		handlerWarehouse []warehouse.Warehouse
+	)
+
 	// Lấy số hóa đơn hiện tại
 	invoiceNum, err := uc.repo.GetImportInvoiceNum(ctx)
 	if err != nil {
@@ -107,6 +112,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 				ItemName:    value.ItemName,
 				Description: value.Description,
 				Code:        itemCode,
+				Status:      int(enums.ItemWarehouseStatusInStock),
 			})
 		}
 
@@ -118,10 +124,12 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice import
 	}
 
 	for _, value := range warehouses {
-		*handlerWarehouse = append(*handlerWarehouse, value)
+		handlerWarehouse = append(handlerWarehouse, value)
 	}
 
-	if err := uc.repo.CreateImportInvoice(ctx, importInvoice, handlerWarehouse); err != nil {
+	importInvoice.Warehouses = handlerWarehouse
+
+	if err := uc.repo.CreateImportInvoice(ctx, importInvoice); err != nil {
 		return err
 	}
 

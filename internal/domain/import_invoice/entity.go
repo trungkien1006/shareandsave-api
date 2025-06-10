@@ -1,6 +1,9 @@
 package importinvoice
 
-import "time"
+import (
+	"final_project/internal/domain/warehouse"
+	"time"
+)
 
 type ImportInvoice struct {
 	ID                uint
@@ -13,13 +16,14 @@ type ImportInvoice struct {
 	Description       string
 	IsLock            bool
 	ItemImportInvoice []ItemImportInvoice
+	Warehouses        []warehouse.Warehouse
 	ItemCount         int
 	CreatedAt         time.Time
 }
 
 type ItemImportInvoice struct {
 	ID          uint
-	InvoiceID   string
+	InvoiceID   int
 	ItemID      uint
 	ItemName    string
 	Quantity    int8
