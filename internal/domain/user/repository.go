@@ -6,9 +6,8 @@ import (
 )
 
 type Repository interface {
-	GetAll(ctx context.Context, users *[]User, req filter.FilterRequest, roleID uint) (int, error)
-	GetClientUserByID(ctx context.Context, domainUser *User, userID int, clientID uint) error
-	GetAdminUserByID(ctx context.Context, domainUser *User, userID int, clientID uint) error
+	GetAll(ctx context.Context, users *[]User, req filter.FilterRequest, clientID uint, superAdminID uint) (int, error)
+	GetUserByID(ctx context.Context, domainUser *User, userID int, clientID uint, superAdminID uint) error
 	GetCommonUserByID(ctx context.Context, domainUser *User, userID int) error
 	GetByEmailPhoneNumber(ctx context.Context, user *User, email string, phoneNumber string) error
 	Save(ctx context.Context, user *User) error

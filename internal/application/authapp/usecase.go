@@ -14,12 +14,13 @@ import (
 )
 
 type UseCase struct {
-	repo      auth.Repository
-	service   *auth.AuthService
-	redisRepo redis.Reposity
-	roleRepo  rolepermission.Repository
-	userRepo  user.Repository
-	clientID  uint
+	repo         auth.Repository
+	service      *auth.AuthService
+	redisRepo    redis.Reposity
+	roleRepo     rolepermission.Repository
+	userRepo     user.Repository
+	clientID     uint
+	superAdminID uint
 }
 
 func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity, roleRepo rolepermission.Repository, userRepo user.Repository) *UseCase {
@@ -30,23 +31,29 @@ func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity
 		fmt.Println("Có lỗi khi set roleID mặc định cho user usecase: " + err.Error())
 	}
 
+	supderAdminID, err := roleRepo.GetRoleIDByName(ctx, "Super Admin")
+	if err != nil {
+		fmt.Println("Có lỗi khi set roleID mặc định cho user usecase: " + err.Error())
+	}
+
 	return &UseCase{
-		repo:      r,
-		service:   s,
-		redisRepo: redisRepo,
-		roleRepo:  roleRepo,
-		userRepo:  userRepo,
-		clientID:  clientID,
+		repo:         r,
+		service:      s,
+		redisRepo:    redisRepo,
+		roleRepo:     roleRepo,
+		userRepo:     userRepo,
+		clientID:     clientID,
+		superAdminID: supderAdminID,
 	}
 }
 
 func (uc *UseCase) GetMe(ctx context.Context, user *user.User, userID uint, isAdmin bool) error {
 	if isAdmin {
-		if err := uc.userRepo.GetAdminUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+		if err := uc.userRepo.GetUserByID(ctx, user, int(userID), uc.clientID, uc.superAdminID); err != nil {
 			return err
 		}
 	} else {
-		if err := uc.userRepo.GetClientUserByID(ctx, user, int(userID), uc.clientID); err != nil {
+		if err := uc.userRepo.GetUserByID(ctx, user, int(userID), uc.clientID, 0); err != nil {
 			return err
 		}
 	}

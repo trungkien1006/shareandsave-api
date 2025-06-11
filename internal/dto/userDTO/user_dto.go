@@ -5,7 +5,7 @@ type CommonUserDTO struct {
 	RoleID      uint   `json:"roleID"`
 	RoleName    string `json:"roleName"`
 	Email       string `json:"email"`
-	Fullname    string `json:"fullName"`
+	FullName    string `json:"fullName"`
 	Avatar      string `json:"avatar,omitempty"`
 	PhoneNumber string `json:"phoneNumber,omitempty"`
 	Address     string `json:"address,omitempty"`
@@ -23,8 +23,22 @@ type Permission struct {
 	Code string `json:"code"`
 }
 
-type UserDTO struct {
+type ClientDTO struct {
 	ID          uint   `json:"id"`
+	Email       string `json:"email"`
+	Fullname    string `json:"fullName"`
+	Avatar      string `json:"avatar,omitempty"`
+	PhoneNumber string `json:"phoneNumber,omitempty"`
+	Address     string `json:"address,omitempty"`
+	Status      int8   `json:"status"`
+	GoodPoint   int    `json:"goodPoint"`
+	Major       string `json:"major,omitempty"`
+}
+
+type AdminDTO struct {
+	ID          uint   `json:"id"`
+	RoleID      uint   `json:"roleID"`
+	RoleName    string `json:"roleName"`
 	Email       string `json:"email"`
 	Fullname    string `json:"fullName"`
 	Avatar      string `json:"avatar,omitempty"`

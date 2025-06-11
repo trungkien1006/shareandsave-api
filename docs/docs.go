@@ -22,6 +22,197 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admins": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admins"
+                ],
+                "summary": "Get admins",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort column (createdAt goodPoint)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (fullName email phoneNumber status roleName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/{adminID}": {
+            "get": {
+                "description": "API get admin by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admins"
+                ],
+                "summary": "Get admin by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID admin",
+                        "name": "adminID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetAdminByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API delete admin by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admins"
+                ],
+                "summary": "Delete admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID admin",
+                        "name": "adminID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.DeleteAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "API cập nhật người dùng",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admins"
+                ],
+                "summary": "Update admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID admin",
+                        "name": "adminID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update admin info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated admin successfully",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateAdminResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/categories": {
             "get": {
                 "description": "API lấy ra tất cả danh mục đồ đạc",
@@ -246,6 +437,235 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/postdto.GetPostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients": {
+            "get": {
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Get clients",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort column (createdAt goodPoint)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (fullName email phoneNumber status)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetClientResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "API thêm người dùng",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Create client",
+                "parameters": [
+                    {
+                        "description": "Create client info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userdto.CreateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created client successfully",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.CreateClientResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{clientID}": {
+            "get": {
+                "description": "API get client by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Get client by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID client",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetClientByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API delete client by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Delete client",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID client",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.DeleteClientResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "API cập nhật người dùng",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Update client",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID client",
+                        "name": "clientID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update client info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated client successfully",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.UpdateClientResponseWrapper"
                         }
                     },
                     "400": {
@@ -1265,6 +1685,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/roles": {
+            "get": {
+                "description": "API lấy ra tất cả chức vụ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Get roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roledto.GetRoleResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/transactions": {
             "get": {
                 "security": [
@@ -1470,77 +1925,6 @@ const docTemplate = `{
             }
         },
         "/users": {
-            "get": {
-                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get users",
-                "parameters": [
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "Current page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 10,
-                        "description": "Number record of page",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "name",
-                        "description": "Sort column (vd: fullName, email)",
-                        "name": "sort",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "ASC",
-                        "description": "Sort type: ASC hoặc DESC",
-                        "name": "order",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Trường lọc (vd: email, fullName)",
-                        "name": "searchBy",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
-                        "name": "searchValue",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/userdto.GetUserResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "API thêm người dùng",
                 "consumes": [
@@ -1560,7 +1944,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userdto.CreateUserRequest"
+                            "$ref": "#/definitions/userdto.CreateAdminRequest"
                         }
                     }
                 ],
@@ -1568,126 +1952,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created user successfully",
                         "schema": {
-                            "$ref": "#/definitions/userdto.CreateUserResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{userID}": {
-            "get": {
-                "description": "API get user by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get user by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID user",
-                        "name": "userID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/userdto.GetUserByIDResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "API delete user by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Delete user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID user",
-                        "name": "userID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/userdto.DeleteUserResponseWrapper"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/enums.AppError"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "API cập nhật người dùng",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Update user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID user",
-                        "name": "userID",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update user info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/userdto.UpdateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Updated user successfully",
-                        "schema": {
-                            "$ref": "#/definitions/userdto.UpdateUserResponseWrapper"
+                            "$ref": "#/definitions/userdto.CreateAdminResponseWrapper"
                         }
                     },
                     "400": {
@@ -2064,11 +2329,8 @@ const docTemplate = `{
         "importinvoicedto.CreateImportInvoiceResponse": {
             "type": "object",
             "properties": {
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/warehousedto.ItemWarehouse"
-                    }
+                "importInvoice": {
+                    "$ref": "#/definitions/importinvoicedto.ImportInvoiceDTO"
                 }
             }
         },
@@ -2133,6 +2395,56 @@ const docTemplate = `{
                 }
             }
         },
+        "importinvoicedto.ImportInvoiceDTO": {
+            "type": "object",
+            "properties": {
+                "classify": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "invoiceNum": {
+                    "type": "integer"
+                },
+                "isLock": {
+                    "type": "boolean"
+                },
+                "itemCount": {
+                    "type": "integer"
+                },
+                "itemImportInvoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/importinvoicedto.ItemImportInvoiceDTO"
+                    }
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "integer"
+                },
+                "senderName": {
+                    "type": "string"
+                },
+                "warehouses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.WarehouseDTO"
+                    }
+                }
+            }
+        },
         "importinvoicedto.ImportInvoiceListDTO": {
             "type": "object",
             "properties": {
@@ -2153,6 +2465,29 @@ const docTemplate = `{
                 },
                 "senderName": {
                     "type": "string"
+                }
+            }
+        },
+        "importinvoicedto.ItemImportInvoiceDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "invoiceID": {
+                    "type": "integer"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },
@@ -2930,6 +3265,42 @@ const docTemplate = `{
                 }
             }
         },
+        "roledto.GetRoleResponse": {
+            "type": "object",
+            "properties": {
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/roledto.RoleDTO"
+                    }
+                }
+            }
+        },
+        "roledto.GetRoleResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/roledto.GetRoleResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "roledto.RoleDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "transactiondto.CreateTransactionItem": {
             "type": "object",
             "required": [
@@ -3156,6 +3527,44 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.AdminDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "userdto.AdminUserDTO": {
             "type": "object",
             "properties": {
@@ -3193,6 +3602,38 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "roleName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "userdto.ClientDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "phoneNumber": {
                     "type": "string"
                 },
                 "status": {
@@ -3238,7 +3679,82 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.CreateUserRequest": {
+        "userdto.CreateAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "fullName",
+                "password",
+                "roleID"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@gmail.com"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "0123456789"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "0: inactive, 1: active, 2: banned",
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ],
+                    "example": 1
+                }
+            }
+        },
+        "userdto.CreateAdminResponse": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "$ref": "#/definitions/userdto.AdminDTO"
+                }
+            }
+        },
+        "userdto.CreateAdminResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.CreateAdminResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.CreateClientRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -3287,29 +3803,29 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.CreateUserResponse": {
+        "userdto.CreateClientResponse": {
             "type": "object",
             "properties": {
-                "user": {
-                    "$ref": "#/definitions/userdto.UserDTO"
+                "client": {
+                    "$ref": "#/definitions/userdto.ClientDTO"
                 }
             }
         },
-        "userdto.CreateUserResponseWrapper": {
+        "userdto.CreateClientResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/userdto.CreateUserResponse"
+                    "$ref": "#/definitions/userdto.CreateClientResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "userdto.DeleteUserResponseWrapper": {
+        "userdto.DeleteAdminResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3321,50 +3837,112 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.GetUserByIDResponse": {
+        "userdto.DeleteClientResponseWrapper": {
             "type": "object",
             "properties": {
-                "user": {
-                    "$ref": "#/definitions/userdto.UserDTO"
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
                 }
             }
         },
-        "userdto.GetUserByIDResponseWrapper": {
+        "userdto.GetAdminByIDResponse": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "$ref": "#/definitions/userdto.AdminDTO"
+                }
+            }
+        },
+        "userdto.GetAdminByIDResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/userdto.GetUserByIDResponse"
+                    "$ref": "#/definitions/userdto.GetAdminByIDResponse"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "userdto.GetUserResponse": {
+        "userdto.GetAdminResponse": {
             "type": "object",
             "properties": {
-                "totalPage": {
-                    "type": "integer"
-                },
-                "users": {
+                "admins": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/userdto.UserDTO"
+                        "$ref": "#/definitions/userdto.AdminDTO"
                     }
+                },
+                "totalPage": {
+                    "type": "integer"
                 }
             }
         },
-        "userdto.GetUserResponseWrapper": {
+        "userdto.GetAdminResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/userdto.GetUserResponse"
+                    "$ref": "#/definitions/userdto.GetAdminResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.GetClientByIDResponse": {
+            "type": "object",
+            "properties": {
+                "client": {
+                    "$ref": "#/definitions/userdto.ClientDTO"
+                }
+            }
+        },
+        "userdto.GetClientByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.GetClientByIDResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.GetClientResponse": {
+            "type": "object",
+            "properties": {
+                "clients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.ClientDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "userdto.GetClientResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.GetClientResponse"
                 },
                 "message": {
                     "type": "string"
@@ -3379,7 +3957,62 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.UpdateUserRequest": {
+        "userdto.UpdateAdminRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string",
+                    "example": "Information Technology"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "0123456789"
+                },
+                "roleID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "0: inactive, 1: active, 2: banned",
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserStatus"
+                        }
+                    ],
+                    "example": 1
+                }
+            }
+        },
+        "userdto.UpdateAdminResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.UpdateClientRequest": {
             "type": "object",
             "properties": {
                 "address": {
@@ -3419,7 +4052,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.UpdateUserResponseWrapper": {
+        "userdto.UpdateClientResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3431,39 +4064,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userdto.UserDTO": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "fullName": {
-                    "type": "string"
-                },
-                "goodPoint": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "major": {
-                    "type": "string"
-                },
-                "phoneNumber": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "warehousedto.ItemWarehouse": {
+        "warehousedto.ItemWareHouseDTO": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3472,10 +4073,57 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "itemID": {
                     "type": "integer"
                 },
                 "itemName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "warehouseID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.WarehouseDTO": {
+            "type": "object",
+            "properties": {
+                "SKU": {
+                    "type": "string"
+                },
+                "classify": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "importInvoiceID": {
+                    "type": "integer"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "itemWarehouses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.ItemWareHouseDTO"
+                    }
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "stockPlace": {
                     "type": "string"
                 }
             }

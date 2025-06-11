@@ -254,10 +254,8 @@ definitions:
     type: object
   importinvoicedto.CreateImportInvoiceResponse:
     properties:
-      items:
-        items:
-          $ref: '#/definitions/warehousedto.ItemWarehouse'
-        type: array
+      importInvoice:
+        $ref: '#/definitions/importinvoicedto.ImportInvoiceDTO'
     type: object
   importinvoicedto.CreateImportInvoiceResponseWrapper:
     properties:
@@ -299,6 +297,39 @@ definitions:
       message:
         type: string
     type: object
+  importinvoicedto.ImportInvoiceDTO:
+    properties:
+      classify:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      invoiceNum:
+        type: integer
+      isLock:
+        type: boolean
+      itemCount:
+        type: integer
+      itemImportInvoices:
+        items:
+          $ref: '#/definitions/importinvoicedto.ItemImportInvoiceDTO'
+        type: array
+      receiverID:
+        type: integer
+      receiverName:
+        type: string
+      senderID:
+        type: integer
+      senderName:
+        type: string
+      warehouses:
+        items:
+          $ref: '#/definitions/warehousedto.WarehouseDTO'
+        type: array
+    type: object
   importinvoicedto.ImportInvoiceListDTO:
     properties:
       classify:
@@ -313,6 +344,21 @@ definitions:
         type: string
       senderName:
         type: string
+    type: object
+  importinvoicedto.ItemImportInvoiceDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      invoiceID:
+        type: integer
+      itemID:
+        type: integer
+      itemName:
+        type: string
+      quantity:
+        type: integer
     type: object
   interestdto.CreateInterest:
     properties:
@@ -823,6 +869,29 @@ definitions:
       message:
         type: string
     type: object
+  roledto.GetRoleResponse:
+    properties:
+      roles:
+        items:
+          $ref: '#/definitions/roledto.RoleDTO'
+        type: array
+    type: object
+  roledto.GetRoleResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/roledto.GetRoleResponse'
+      message:
+        type: string
+    type: object
+  roledto.RoleDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -971,6 +1040,31 @@ definitions:
       message:
         type: string
     type: object
+  userdto.AdminDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      phoneNumber:
+        type: string
+      roleID:
+        type: integer
+      roleName:
+        type: string
+      status:
+        type: integer
+    type: object
   userdto.AdminUserDTO:
     properties:
       address:
@@ -1000,6 +1094,27 @@ definitions:
       status:
         type: integer
     type: object
+  userdto.ClientDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      phoneNumber:
+        type: string
+      status:
+        type: integer
+    type: object
   userdto.CommonUserDTO:
     properties:
       address:
@@ -1025,7 +1140,58 @@ definitions:
       status:
         type: integer
     type: object
-  userdto.CreateUserRequest:
+  userdto.CreateAdminRequest:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        example: john@gmail.com
+        type: string
+      fullName:
+        example: John Doe
+        type: string
+      goodPoint:
+        type: integer
+      password:
+        minLength: 8
+        type: string
+      phoneNumber:
+        example: "0123456789"
+        type: string
+      roleID:
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        description: '0: inactive, 1: active, 2: banned'
+        enum:
+        - 0
+        - 1
+        - 2
+        example: 1
+    required:
+    - email
+    - fullName
+    - password
+    - roleID
+    type: object
+  userdto.CreateAdminResponse:
+    properties:
+      admin:
+        $ref: '#/definitions/userdto.AdminDTO'
+    type: object
+  userdto.CreateAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.CreateAdminResponse'
+      message:
+        type: string
+    type: object
+  userdto.CreateClientRequest:
     properties:
       address:
         type: string
@@ -1059,21 +1225,21 @@ definitions:
     - fullName
     - password
     type: object
-  userdto.CreateUserResponse:
+  userdto.CreateClientResponse:
     properties:
-      user:
-        $ref: '#/definitions/userdto.UserDTO'
+      client:
+        $ref: '#/definitions/userdto.ClientDTO'
     type: object
-  userdto.CreateUserResponseWrapper:
+  userdto.CreateClientResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/userdto.CreateUserResponse'
+        $ref: '#/definitions/userdto.CreateClientResponse'
       message:
         type: string
     type: object
-  userdto.DeleteUserResponseWrapper:
+  userdto.DeleteAdminResponseWrapper:
     properties:
       code:
         type: integer
@@ -1081,35 +1247,75 @@ definitions:
       message:
         type: string
     type: object
-  userdto.GetUserByIDResponse:
-    properties:
-      user:
-        $ref: '#/definitions/userdto.UserDTO'
-    type: object
-  userdto.GetUserByIDResponseWrapper:
+  userdto.DeleteClientResponseWrapper:
     properties:
       code:
         type: integer
-      data:
-        $ref: '#/definitions/userdto.GetUserByIDResponse'
+      data: {}
       message:
         type: string
     type: object
-  userdto.GetUserResponse:
+  userdto.GetAdminByIDResponse:
     properties:
-      totalPage:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/userdto.UserDTO'
-        type: array
+      admin:
+        $ref: '#/definitions/userdto.AdminDTO'
     type: object
-  userdto.GetUserResponseWrapper:
+  userdto.GetAdminByIDResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/userdto.GetUserResponse'
+        $ref: '#/definitions/userdto.GetAdminByIDResponse'
+      message:
+        type: string
+    type: object
+  userdto.GetAdminResponse:
+    properties:
+      admins:
+        items:
+          $ref: '#/definitions/userdto.AdminDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  userdto.GetAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetAdminResponse'
+      message:
+        type: string
+    type: object
+  userdto.GetClientByIDResponse:
+    properties:
+      client:
+        $ref: '#/definitions/userdto.ClientDTO'
+    type: object
+  userdto.GetClientByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetClientByIDResponse'
+      message:
+        type: string
+    type: object
+  userdto.GetClientResponse:
+    properties:
+      clients:
+        items:
+          $ref: '#/definitions/userdto.ClientDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  userdto.GetClientResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetClientResponse'
       message:
         type: string
     type: object
@@ -1118,7 +1324,44 @@ definitions:
       code:
         type: string
     type: object
-  userdto.UpdateUserRequest:
+  userdto.UpdateAdminRequest:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      fullName:
+        example: John Doe
+        type: string
+      goodPoint:
+        type: integer
+      major:
+        example: Information Technology
+        type: string
+      phoneNumber:
+        example: "0123456789"
+        type: string
+      roleID:
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.UserStatus'
+        description: '0: inactive, 1: active, 2: banned'
+        enum:
+        - 0
+        - 1
+        - 2
+        example: 1
+    type: object
+  userdto.UpdateAdminResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  userdto.UpdateClientRequest:
     properties:
       address:
         type: string
@@ -1145,7 +1388,7 @@ definitions:
         - 2
         example: 1
     type: object
-  userdto.UpdateUserResponseWrapper:
+  userdto.UpdateClientResponseWrapper:
     properties:
       code:
         type: integer
@@ -1153,36 +1396,46 @@ definitions:
       message:
         type: string
     type: object
-  userdto.UserDTO:
-    properties:
-      address:
-        type: string
-      avatar:
-        type: string
-      email:
-        type: string
-      fullName:
-        type: string
-      goodPoint:
-        type: integer
-      id:
-        type: integer
-      major:
-        type: string
-      phoneNumber:
-        type: string
-      status:
-        type: integer
-    type: object
-  warehousedto.ItemWarehouse:
+  warehousedto.ItemWareHouseDTO:
     properties:
       code:
         type: string
       description:
         type: string
+      id:
+        type: integer
       itemID:
         type: integer
       itemName:
+        type: string
+      status:
+        type: integer
+      warehouseID:
+        type: integer
+    type: object
+  warehousedto.WarehouseDTO:
+    properties:
+      SKU:
+        type: string
+      classify:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      importInvoiceID:
+        type: integer
+      itemID:
+        type: integer
+      itemName:
+        type: string
+      itemWarehouses:
+        items:
+          $ref: '#/definitions/warehousedto.ItemWareHouseDTO'
+        type: array
+      quantity:
+        type: integer
+      stockPlace:
         type: string
     type: object
 info:
@@ -1196,6 +1449,134 @@ info:
   title: ShareAndSave - API
   version: "1.0"
 paths:
+  /admins:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column (createdAt goodPoint)
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: Trường lọc (fullName email phoneNumber status roleName)
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get admins
+      tags:
+      - admins
+  /admins/{adminID}:
+    delete:
+      consumes:
+      - application/json
+      description: API delete admin by id
+      parameters:
+      - description: ID admin
+        in: path
+        name: adminID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.DeleteAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Delete admin
+      tags:
+      - admins
+    get:
+      consumes:
+      - application/json
+      description: API get admin by id
+      parameters:
+      - description: ID admin
+        in: path
+        name: adminID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetAdminByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get admin by ID
+      tags:
+      - admins
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật người dùng
+      parameters:
+      - description: ID admin
+        in: path
+        name: adminID
+        required: true
+        type: integer
+      - description: Update admin info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.UpdateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated admin successfully
+          schema:
+            $ref: '#/definitions/userdto.UpdateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update admin
+      tags:
+      - admins
   /categories:
     get:
       consumes:
@@ -1350,6 +1731,159 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /clients:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column (createdAt goodPoint)
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: Trường lọc (fullName email phoneNumber status)
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetClientResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get clients
+      tags:
+      - clients
+    post:
+      consumes:
+      - application/json
+      description: API thêm người dùng
+      parameters:
+      - description: Create client info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.CreateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created client successfully
+          schema:
+            $ref: '#/definitions/userdto.CreateClientResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create client
+      tags:
+      - clients
+  /clients/{clientID}:
+    delete:
+      consumes:
+      - application/json
+      description: API delete client by id
+      parameters:
+      - description: ID client
+        in: path
+        name: clientID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.DeleteClientResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Delete client
+      tags:
+      - clients
+    get:
+      consumes:
+      - application/json
+      description: API get client by id
+      parameters:
+      - description: ID client
+        in: path
+        name: clientID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetClientByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get client by ID
+      tags:
+      - clients
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật người dùng
+      parameters:
+      - description: ID client
+        in: path
+        name: clientID
+        required: true
+        type: integer
+      - description: Update client info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.UpdateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated client successfully
+          schema:
+            $ref: '#/definitions/userdto.UpdateClientResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update client
+      tags:
+      - clients
   /get-me:
     get:
       consumes:
@@ -2011,6 +2545,29 @@ paths:
       summary: Refresh Token
       tags:
       - auth
+  /roles:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra tất cả chức vụ
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/roledto.GetRoleResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get roles
+      tags:
+      - roles
   /transactions:
     get:
       consumes:
@@ -2145,55 +2702,6 @@ paths:
       tags:
       - transactions
   /users:
-    get:
-      consumes:
-      - application/json
-      description: API bao gồm cả lọc, phân trang và sắp xếp
-      parameters:
-      - description: Current page
-        example: 1
-        in: query
-        minimum: 1
-        name: page
-        type: integer
-      - description: Number record of page
-        example: 10
-        in: query
-        minimum: 1
-        name: limit
-        type: integer
-      - description: 'Sort column (vd: fullName, email)'
-        example: name
-        in: query
-        name: sort
-        type: string
-      - description: 'Sort type: ASC hoặc DESC'
-        example: ASC
-        in: query
-        name: order
-        type: string
-      - description: 'Trường lọc (vd: email, fullName)'
-        in: query
-        name: searchBy
-        type: string
-      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
-        in: query
-        name: searchValue
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userdto.GetUserResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Get users
-      tags:
-      - users
     post:
       consumes:
       - application/json
@@ -2204,98 +2712,19 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/userdto.CreateUserRequest'
+          $ref: '#/definitions/userdto.CreateAdminRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created user successfully
           schema:
-            $ref: '#/definitions/userdto.CreateUserResponseWrapper'
+            $ref: '#/definitions/userdto.CreateAdminResponseWrapper'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Create user
-      tags:
-      - users
-  /users/{userID}:
-    delete:
-      consumes:
-      - application/json
-      description: API delete user by id
-      parameters:
-      - description: ID user
-        in: path
-        name: userID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userdto.DeleteUserResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Delete user
-      tags:
-      - users
-    get:
-      consumes:
-      - application/json
-      description: API get user by id
-      parameters:
-      - description: ID user
-        in: path
-        name: userID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userdto.GetUserByIDResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Get user by ID
-      tags:
-      - users
-    patch:
-      consumes:
-      - application/json
-      description: API cập nhật người dùng
-      parameters:
-      - description: ID user
-        in: path
-        name: userID
-        required: true
-        type: integer
-      - description: Update user info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/userdto.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Updated user successfully
-          schema:
-            $ref: '#/definitions/userdto.UpdateUserResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Update user
       tags:
       - users
 securityDefinitions:

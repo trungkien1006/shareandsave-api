@@ -121,12 +121,19 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
 
-		//user API
-		v1.GET("/users", userHandler.GetAllUser)
-		v1.GET("/users/:userID", userHandler.GetUserByID)
-		v1.POST("/users", userHandler.CreateUser)
-		v1.PATCH("/users/:userID", userHandler.UpdateUser)
-		v1.DELETE("/users/:userID", userHandler.DeleteUser)
+		//client API
+		v1.GET("/clients", userHandler.GetAllClient)
+		v1.GET("/clients/:clientID", userHandler.GetClientByID)
+		v1.POST("/clients", userHandler.CreateClient)
+		v1.PATCH("/clients/:clientID", userHandler.UpdateClient)
+		v1.DELETE("/clients/:clientID", userHandler.DeleteClient)
+
+		//admin API
+		v1.GET("/admins", userHandler.GetAllAdmin)
+		v1.GET("/admins/:adminID", userHandler.GetAdminByID)
+		v1.POST("/admins", userHandler.CreateAdmin)
+		v1.PATCH("/admins/:adminID", userHandler.UpdateAdmin)
+		v1.DELETE("/admins/:adminID", userHandler.DeleteAdmin)
 
 		//item API
 		v1.GET("/items", itemHandler.GetAllItem)

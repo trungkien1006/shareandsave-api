@@ -21,17 +21,36 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 	return &UserRepoDB{db: db}
 }
 
-func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest, roleID uint) (int, error) {
+func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest, clientID uint, superAdminID uint) (int, error) {
 	var (
 		query  *gorm.DB
 		dbUser []dbmodel.User
 	)
 
-	query = r.db.Debug().WithContext(ctx).Where("role_id = ?", roleID).Model(&dbmodel.User{}).Preload("Role")
+	if clientID != 0 && superAdminID == 0 {
+		query = r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).
+			Table("user").
+			Where("role_id = ?", clientID)
+	} else {
+		query = r.db.Debug().WithContext(ctx).Where("role_id != ? AND role_id != ?", clientID, superAdminID).
+			Model(&dbmodel.User{}).
+			Table("user").
+			Preload("Role").
+			Joins("JOIN role ON role.id = user.role_id")
+	}
 
 	if req.SearchBy != "" && req.SearchValue != "" {
-		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
-		query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), "%"+req.SearchValue+"%")
+		column := strcase.ToSnake(req.SearchBy)
+
+		if req.SearchBy == "role_id" {
+			req.SearchBy = "role.role_id"
+
+			query = query.Where(fmt.Sprintf("`%s` = ?", column), req.SearchValue)
+		} else {
+			req.SearchBy = "user." + req.SearchBy
+
+			query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), req.SearchValue+"%")
+		}
 	}
 
 	var totalRecord int64 = 0
@@ -48,7 +67,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 
 	//sort du lieu
 	if req.Sort != "" {
-		query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
+		query.Order("user." + strcase.ToSnake(req.Sort) + " " + req.Order)
 	}
 
 	if err := query.Find(&dbUser).Error; err != nil {
@@ -75,32 +94,26 @@ func (r *UserRepoDB) IsExist(ctx context.Context, userID uint) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *UserRepoDB) GetClientUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
+func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint, superAdminID uint) error {
 	var dbUser dbmodel.User
 
-	if err := r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.User{}).Where("id = ?", userID).
-		Where("role_id = ?", clientID).
-		First(&dbUser).Error; err != nil {
-		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
-	}
-
-	*domainUser = dbmodel.ToDomainUser(dbUser)
-
-	return nil
-}
-
-func (r *UserRepoDB) GetAdminUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint) error {
-	var dbUser dbmodel.User
-
-	if err := r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.User{}).Where("id = ?", userID).
-		Where("role_id != ?", clientID).
-		Preload("Role").
-		Preload("Role.RolePermissions").
-		Preload("Role.RolePermissions.Permission").
-		First(&dbUser).Error; err != nil {
-		return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+	if clientID != 0 && superAdminID == 0 {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).Where("id = ?", userID).
+			Where("role_id = ?", clientID).
+			First(&dbUser).Error; err != nil {
+			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+		}
+	} else {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).Where("id = ?", userID).
+			Where("user.role_id != ? AND user.role_id != ?", clientID, superAdminID).
+			Preload("Role").
+			Preload("Role.RolePermissions").
+			Preload("Role.RolePermissions.Permission").
+			First(&dbUser).Error; err != nil {
+			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+		}
 	}
 
 	*domainUser = dbmodel.ToDomainUser(dbUser)
