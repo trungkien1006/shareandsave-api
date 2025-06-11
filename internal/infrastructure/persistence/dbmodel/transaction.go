@@ -75,6 +75,7 @@ func TransactionDBToDetailDomain(db Transaction) transaction.DetailTransaction {
 		domainItems = append(domainItems, transaction.DetailTransactionItem{
 			ItemID:     value.PostItem.ItemID,
 			ItemName:   value.PostItem.Item.Name,
+			ItemImage:  value.PostItem.Image,
 			PostItemID: value.PostItemID,
 			Quantity:   value.Quantity,
 		})

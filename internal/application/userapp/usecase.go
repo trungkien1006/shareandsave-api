@@ -2,8 +2,10 @@ package userapp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"final_project/internal/domain/filter"
+	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
@@ -11,6 +13,8 @@ import (
 	"final_project/internal/pkg/helpers"
 	"fmt"
 	"os"
+	"strconv"
+	"time"
 )
 
 type UseCase struct {
@@ -18,9 +22,10 @@ type UseCase struct {
 	roleRepo     rolepermission.Repository
 	clientID     uint
 	superAdminID uint
+	redisRepo    redis.Reposity
 }
 
-func NewUseCase(r user.Repository, roleRepo rolepermission.Repository) *UseCase {
+func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Reposity) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -38,6 +43,7 @@ func NewUseCase(r user.Repository, roleRepo rolepermission.Repository) *UseCase 
 		roleRepo:     roleRepo,
 		clientID:     uint(clientID),
 		superAdminID: supderAdminID,
+		redisRepo:    redisRepo,
 	}
 }
 
@@ -182,6 +188,21 @@ func (uc *UseCase) CreateAdmin(ctx context.Context, user *user.User) error {
 		return err
 	}
 
+	// Lưu dữ liệu vào redis dưới dạng key = role:user:{userID} value = role_id
+	if err := uc.redisRepo.InsertToRedis(ctx, "role:user:"+strconv.Itoa(int(user.ID)), string(user.RoleID), 30*24*time.Hour); err != nil {
+		return err
+	}
+
+	permissionJSON, err := uc.redisRepo.GetFromRedis(ctx, "permission:role"+strconv.Itoa(int(user.ID)))
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal([]byte(permissionJSON), &user.Permissions)
+	if err != nil {
+		return errors.New("Có lỗi khi mã hóa danh sách quyền: " + err.Error())
+	}
+
 	return nil
 }
 
@@ -324,6 +345,21 @@ func (uc *UseCase) UpdateAdmin(ctx context.Context, domainUser *user.User) error
 		return err
 	}
 
+	// Lưu dữ liệu vào redis dưới dạng key = role:user:{userID} value = role_id
+	if err := uc.redisRepo.InsertToRedis(ctx, "role:user:"+strconv.Itoa(int(domainUser.ID)), string(domainUser.RoleID), 30*24*time.Hour); err != nil {
+		return err
+	}
+
+	permissionJSON, err := uc.redisRepo.GetFromRedis(ctx, "permission:role"+strconv.Itoa(int(domainUser.ID)))
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal([]byte(permissionJSON), &domainUser.Permissions)
+	if err != nil {
+		return errors.New("Có lỗi khi mã hóa danh sách quyền: " + err.Error())
+	}
+
 	return nil
 }
 
@@ -358,6 +394,10 @@ func (uc *UseCase) DeleteAdmin(ctx context.Context, userID int) error {
 
 	if err := uc.repo.Delete(ctx, &deleteUser); err != nil {
 		return err
+	}
+
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "role:user:"+strconv.Itoa(int(deleteUser.ID))); err != nil {
+		return errors.New("Có lỗi khi xóa role id của user: " + err.Error())
 	}
 
 	return nil

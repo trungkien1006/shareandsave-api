@@ -72,6 +72,7 @@ func DomainToDetailDTO(domain transaction.DetailTransaction) DetailTransactionDT
 		dtoDetailItems = append(dtoDetailItems, DetailTransactionItemDTO{
 			ItemID:     value.ItemID,
 			ItemName:   value.ItemName,
+			ItemImage:  value.ItemImage,
 			PostItemID: value.PostItemID,
 			Quantity:   value.Quantity,
 		})

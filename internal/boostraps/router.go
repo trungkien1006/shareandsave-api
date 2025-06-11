@@ -48,7 +48,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
-	userUC := userapp.NewUseCase(userRepo, rolePerRepo)
+	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo)
 	userHandler := handler.NewUserHandler(userUC)
 
 	//item dependency

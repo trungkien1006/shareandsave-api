@@ -43,6 +43,7 @@ type DetailTransaction struct {
 type DetailTransactionItem struct {
 	ItemID     uint
 	ItemName   string
+	ItemImage  string
 	PostItemID uint
 	Quantity   int
 }

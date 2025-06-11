@@ -62,7 +62,7 @@ func (uc *UseCase) GetMe(ctx context.Context, user *user.User, userID uint, isAd
 }
 
 func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JWT *string, refreshToken *string, domainUser *user.User, isAdmin bool) error {
-	permissionCodes, err := uc.repo.Login(ctx, domainUser, domainAuthLogin.Email, domainAuthLogin.Password, isAdmin, uc.clientID)
+	err := uc.repo.Login(ctx, domainUser, domainAuthLogin.Email, domainAuthLogin.Password, isAdmin, uc.clientID)
 	if err != nil {
 		return err
 	}
@@ -96,14 +96,19 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 	}
 
 	if isAdmin {
-		permissionCodesJSON, err := json.Marshal(permissionCodes)
-		if err != nil {
-			return errors.New("Lỗi khi mã hóa danh sách quyền của user: " + err.Error())
+		// Lưu dữ liệu vào redis dưới dạng key = role:user:{userID} value = int
+		if err := uc.redisRepo.InsertToRedis(ctx, "role:user:"+strconv.Itoa(int(domainUser.ID)), string(domainUser.RoleID), 30*24*time.Hour); err != nil {
+			return err
 		}
 
-		// Lưu dữ liệu vào redis dưới dạng key = permission:user:{userID} value = "[]string"
-		if err := uc.redisRepo.InsertToRedis(ctx, "permission:user:"+strconv.Itoa(int(domainUser.ID)), string(permissionCodesJSON), 30*24*time.Hour); err != nil {
+		permisisonJSON, err := uc.redisRepo.GetFromRedis(ctx, "permission:role:"+strconv.Itoa(int(domainUser.RoleID)))
+		if err != nil {
 			return err
+		}
+
+		err = json.Unmarshal([]byte(permisisonJSON), &domainUser.Permissions)
+		if err != nil {
+			return errors.New("Có lỗi khi mã hóa danh sách quyền từ redis: " + err.Error())
 		}
 	}
 

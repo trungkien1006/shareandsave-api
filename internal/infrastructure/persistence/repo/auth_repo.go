@@ -19,10 +19,9 @@ func NewAuthRepoDB(db *gorm.DB) *AuthRepoDB {
 	return &AuthRepoDB{db: db}
 }
 
-func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string, isAdmin bool, clientRoleID uint) ([]string, error) {
+func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string, isAdmin bool, clientRoleID uint) error {
 	var (
-		dbUser      dbmodel.User
-		permisisons []string
+		dbUser dbmodel.User
 	)
 
 	if isAdmin {
@@ -31,10 +30,8 @@ func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password
 			Where("email = ?", email).
 			Where("role_id != ?", clientRoleID).
 			Preload("Role").
-			Preload("Role.RolePermissions").
-			Preload("Role.RolePermissions.Permission").
 			First(&dbUser).Error; err != nil {
-			return nil, errors.New("Email không tồn tại: " + err.Error())
+			return errors.New("Email không tồn tại: " + err.Error())
 		}
 	} else {
 		if err := r.db.Debug().WithContext(ctx).
@@ -42,31 +39,19 @@ func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password
 			Where("email = ?", email).
 			Where("role_id = ?", clientRoleID).
 			Preload("Role").First(&dbUser).Error; err != nil {
-			return nil, errors.New("Email không tồn tại: " + err.Error())
+			return errors.New("Email không tồn tại: " + err.Error())
 		}
 	}
 
 	if !hash.CheckPasswordHash(password, dbUser.Password) {
-		return nil, errors.New("Mật khẩu không đúng")
+		return errors.New("Mật khẩu không đúng")
 	}
 
 	if dbUser.Status == int8(enums.UserStatusLocked) {
-		return nil, errors.New("Tài khoản đã bị khóa")
-	}
-
-	if isAdmin {
-		if err := r.db.Debug().WithContext(ctx).
-			Model(&dbmodel.Permission{}).
-			Table("permission as permission").
-			Select("permission.code").
-			Joins("join role_permission on role_permission.permission_id = permission.id").
-			Where("role_permission.role_id = ?", dbUser.Role.ID).
-			Scan(&permisisons).Error; err != nil {
-			return nil, errors.New("Lỗi khi truy suất danh sách quyền: " + err.Error())
-		}
+		return errors.New("Tài khoản đã bị khóa")
 	}
 
 	*user = dbmodel.ToDomainUser(dbUser)
 
-	return permisisons, nil
+	return nil
 }

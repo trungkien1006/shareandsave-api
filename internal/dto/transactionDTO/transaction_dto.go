@@ -28,6 +28,7 @@ type DetailTransactionDTO struct {
 type DetailTransactionItemDTO struct {
 	ItemID     uint   `json:"itemID"`
 	ItemName   string `json:"itemName"`
+	ItemImage  string `json:"itemImage"`
 	PostItemID uint   `json:"postItemID"`
 	Quantity   int    `json:"quantity"`
 }
