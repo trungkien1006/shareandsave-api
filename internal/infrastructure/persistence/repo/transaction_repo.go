@@ -102,14 +102,24 @@ func (r *TransactionRepoDB) GetByID(ctx context.Context, transactionID uint, tra
 
 func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction.Transaction) error {
 	var (
-		dbTransaction dbmodel.Transaction
-		postID        uint
-		senderID      uint
+		dbTransaction           dbmodel.Transaction
+		postID                  uint
+		senderID                uint
+		pendingTransactionCount int64
 	)
 
 	dbTransaction = dbmodel.TransactionDomainToDB(*transaction)
 
 	tx := r.db.Debug().Begin()
+
+	// Kiểm tra có giao dịch nào chưa hoàn tất hay chưa
+	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).Where("id = ? AND status = 1", dbTransaction.InterestID).Count(&pendingTransactionCount).Error; err != nil {
+		return errors.New("Có lỗi khi kiểm tra giao dịch chưa hoàn tất: " + err.Error())
+	}
+
+	if pendingTransactionCount > 0 {
+		return errors.New("Có 1 giao dịch chưa hoàn tất, không thể tạo thêm lúc này")
+	}
 
 	// Kiểm tra món đồ có tồn tại hay không
 	for _, value := range transaction.Items {
