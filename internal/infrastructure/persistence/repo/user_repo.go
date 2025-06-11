@@ -110,8 +110,31 @@ func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, use
 			Model(&dbmodel.User{}).Where("id = ?", userID).
 			Where("user.role_id != ? AND user.role_id != ?", clientID, superAdminID).
 			Preload("Role").
-			Preload("Role.RolePermissions").
-			Preload("Role.RolePermissions.Permission").
+			First(&dbUser).Error; err != nil {
+			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+		}
+	}
+
+	*domainUser = dbmodel.ToDomainUser(dbUser)
+
+	return nil
+}
+
+func (r *UserRepoDB) GetMe(ctx context.Context, domainUser *user.User, userID int, clientID uint, isAdmin bool) error {
+	var dbUser dbmodel.User
+
+	if !isAdmin {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).Where("id = ?", userID).
+			Where("role_id = ?", clientID).
+			First(&dbUser).Error; err != nil {
+			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
+		}
+	} else {
+		if err := r.db.Debug().WithContext(ctx).
+			Model(&dbmodel.User{}).Where("id = ?", userID).
+			Where("user.role_id != ?", clientID).
+			Preload("Role").
 			First(&dbUser).Error; err != nil {
 			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 		}

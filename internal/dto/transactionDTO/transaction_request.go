@@ -43,7 +43,6 @@ type UpdateTransactionRequest struct {
 }
 
 type UpdateTransactionItem struct {
-	TransactionID uint `json:"transactionID" binding:"required"`
-	PostItemID    uint `json:"postItemID" binding:"required"`
-	Quantity      int  `json:"quantity" binding:"required"`
+	PostItemID uint `json:"postItemID" binding:"required"`
+	Quantity   int  `json:"quantity" binding:"required"`
 }

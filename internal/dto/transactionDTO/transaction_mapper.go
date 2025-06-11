@@ -28,9 +28,8 @@ func UpdateDTOToDomain(dto UpdateTransactionRequest, userID uint, transactionID 
 
 	for _, value := range dto.Items {
 		domainItems = append(domainItems, transaction.TransactionItem{
-			TransactionID: value.TransactionID,
-			PostItemID:    value.PostItemID,
-			Quantity:      value.Quantity,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
 		})
 	}
 
