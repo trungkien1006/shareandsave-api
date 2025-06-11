@@ -81,6 +81,20 @@ func (r *RolePerRepoDB) GetAllPermission(permissions *[]rolepermission.Permissio
 	return nil
 }
 
+func (r *RolePerRepoDB) GetAllRolePermisson(ctx context.Context, roles *[]rolepermission.RolePermissionList) error {
+	var dbRole []dbmodel.Role
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Role{}).Preload("RolePermissions").Preload("RolePermissions.Permission").Find(&dbRole).Error; err != nil {
+		return err
+	}
+
+	for _, value := range dbRole {
+		*roles = append(*roles, dbmodel.DBToRolePermissions(value))
+	}
+
+	return nil
+}
+
 func (r *RolePerRepoDB) SaveRolePermission(rolePermissions *[]rolepermission.RolePermission) error {
 	var dbRolePer []dbmodel.RolePermission
 

@@ -9,6 +9,7 @@ type Repository interface {
 	SaveRole(roles *[]Role) error
 	GetAllRoles(ctx context.Context, roles *[]Role) error
 	GetAllPermission(ermissions *[]Permission) error
+	GetAllRolePermisson(ctx context.Context, rolePers *[]RolePermissionList) error
 	SaveRolePermission(rolePermissions *[]RolePermission) error
 	IsRoleExisted(ctx context.Context, roleID uint) (bool, error)
 	IsRoleTableEmpty(ctx context.Context) (bool, error)

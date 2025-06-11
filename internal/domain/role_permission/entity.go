@@ -15,3 +15,9 @@ type RolePermission struct {
 	RoleID       uint
 	PermissionID uint
 }
+
+type RolePermissionList struct {
+	ID          uint
+	Name        string
+	Permissions []Permission
+}

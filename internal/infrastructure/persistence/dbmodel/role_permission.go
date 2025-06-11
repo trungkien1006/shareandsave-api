@@ -26,3 +26,20 @@ func RolePerDBToDomain(db RolePermission) rolepermission.RolePermission {
 	}
 	// Các trường CreatedAt, UpdatedAt, DeletedAt sẽ để GORM xử lý
 }
+
+// DB -> Domain
+func DBToRolePermissions(db Role) rolepermission.RolePermissionList {
+	permissons := make([]rolepermission.Permission, 0)
+
+	for _, value := range db.RolePermissions {
+		permissons = append(permissons, rolepermission.Permission{
+			Code: value.Permission.Code,
+		})
+	}
+
+	return rolepermission.RolePermissionList{
+		ID:          db.ID,
+		Name:        db.Name,
+		Permissions: permissons,
+	}
+}

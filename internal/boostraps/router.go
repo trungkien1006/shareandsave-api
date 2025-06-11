@@ -84,6 +84,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	authUC := authapp.NewUseCase(authRepo, authService, redisRepo, rolePerRepo, userRepo)
 	authHandler := handler.NewAuthHandler(authUC)
 
+	redisSeed := redisapp.NewRedisSeeder(
+		redisRepo,
+		rolePerRepo,
+	)
+
 	seed := seeder.NewSeeder(
 		rolePerRepo,
 		itemRepo,
@@ -96,6 +101,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	)
 
 	seed.Seed()
+	redisSeed.SeedInitialData()
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
