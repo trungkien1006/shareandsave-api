@@ -33,7 +33,7 @@ type CreatePostRequest struct {
 type GetAdminPostRequest struct {
 	Page        int              `form:"page"`
 	Limit       int              `form:"limit"`
-	Sort        string           `form:"sort" binding:"omitempty,oneof=authorName title createdAT"`
+	Sort        string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
 	Order       string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
 	Status      enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2 3"`
 	Type        enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
