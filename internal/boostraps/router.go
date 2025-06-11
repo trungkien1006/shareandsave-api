@@ -14,7 +14,7 @@ import (
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
 	persistence "final_project/internal/infrastructure/persistence/repo"
-	"final_project/internal/infrastructure/redisrepo"
+	redisapp "final_project/internal/infrastructure/redis"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
 	middlewares "final_project/internal/interface/http/middleware"
@@ -34,7 +34,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	r := gin.Default()
 
 	//redis
-	redisRepo := redisrepo.NewRedisRepo(redisClient)
+	redisRepo := redisapp.NewRedisRepo(redisClient)
 
 	//role permission dependency
 	rolePerRepo := persistence.NewRolePerRepoDB(db)

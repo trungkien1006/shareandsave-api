@@ -22,10 +22,10 @@ type UseCase struct {
 	roleRepo     rolepermission.Repository
 	clientID     uint
 	superAdminID uint
-	redisRepo    redis.Reposity
+	redisRepo    redis.Repository
 }
 
-func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Reposity) *UseCase {
+func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")

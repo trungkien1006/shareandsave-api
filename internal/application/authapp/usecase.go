@@ -2,7 +2,6 @@ package authapp
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"final_project/internal/domain/auth"
 	"final_project/internal/domain/redis"
@@ -16,14 +15,14 @@ import (
 type UseCase struct {
 	repo         auth.Repository
 	service      *auth.AuthService
-	redisRepo    redis.Reposity
+	redisRepo    redis.Repository
 	roleRepo     rolepermission.Repository
 	userRepo     user.Repository
 	clientID     uint
 	superAdminID uint
 }
 
-func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposity, roleRepo rolepermission.Repository, userRepo user.Repository) *UseCase {
+func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Repository, roleRepo rolepermission.Repository, userRepo user.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -101,15 +100,15 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 			return err
 		}
 
-		permisisonJSON, err := uc.redisRepo.GetFromRedis(ctx, "permission:role:"+strconv.Itoa(int(domainUser.RoleID)))
-		if err != nil {
-			return err
-		}
+		// permisisonJSON, err := uc.redisRepo.GetFromRedis(ctx, "permission:role:"+strconv.Itoa(int(domainUser.RoleID)))
+		// if err != nil {
+		// 	return err
+		// }
 
-		err = json.Unmarshal([]byte(permisisonJSON), &domainUser.Permissions)
-		if err != nil {
-			return errors.New("Có lỗi khi mã hóa danh sách quyền từ redis: " + err.Error())
-		}
+		// err = json.Unmarshal([]byte(permisisonJSON), &domainUser.Permissions)
+		// if err != nil {
+		// 	return errors.New("Có lỗi khi mã hóa danh sách quyền từ redis: " + err.Error())
+		// }
 	}
 
 	return nil
