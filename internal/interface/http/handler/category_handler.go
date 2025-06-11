@@ -44,7 +44,7 @@ func (h *CategoryHandler) GetAll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, categorydto.GetCategoryResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched items successfully",
+		Message: "Fetched categories successfully",
 		Data: categorydto.GetCategoryResponse{
 			Categories: categoriesDTO,
 		},

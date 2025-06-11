@@ -7,6 +7,7 @@ import (
 	"final_project/internal/application/interestapp"
 	"final_project/internal/application/itemapp"
 	"final_project/internal/application/postapp"
+	"final_project/internal/application/roleapp"
 	"final_project/internal/application/transactionapp"
 	"final_project/internal/application/userapp"
 	"final_project/internal/domain/auth"
@@ -37,6 +38,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//role permission dependency
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
+	roleUC := roleapp.NewUseCase(rolePerRepo)
+	roleHandler := handler.NewRoleHandler(roleUC)
 
 	//category dependency
 	categoryRepo := persistence.NewCategoryRepoDB(db)
@@ -115,14 +118,17 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	v1 := r.Group("/api/v1")
 	{
-		//user CRUD API
+		//role API
+		v1.GET("/roles", roleHandler.GetAll)
+
+		//user API
 		v1.GET("/users", userHandler.GetAllUser)
 		v1.GET("/users/:userID", userHandler.GetUserByID)
 		v1.POST("/users", userHandler.CreateUser)
 		v1.PATCH("/users/:userID", userHandler.UpdateUser)
 		v1.DELETE("/users/:userID", userHandler.DeleteUser)
 
-		//item CRUD API
+		//item API
 		v1.GET("/items", itemHandler.GetAllItem)
 		v1.GET("/items/:itemID", itemHandler.GetItemByID)
 		v1.POST("/items", itemHandler.CreateItem)

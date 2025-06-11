@@ -209,7 +209,7 @@ func (s *Seeder) seedRolePer() error {
 	var permissions []rolepermission.Permission
 	var rolePerms []rolepermission.RolePermission
 
-	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
+	if err := s.rolePerRepo.GetAllRoles(ctx, &roles); err != nil {
 		return err
 	}
 
@@ -394,7 +394,7 @@ func (s *Seeder) seedUsers() error {
 
 	// Lấy tất cả role từ DB
 	var roles []rolepermission.Role
-	if err := s.rolePerRepo.GetAllRoles(&roles); err != nil {
+	if err := s.rolePerRepo.GetAllRoles(ctx, &roles); err != nil {
 		return err
 	}
 

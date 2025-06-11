@@ -65,8 +65,8 @@ func (r *RolePerRepoDB) SaveRole(roles *[]rolepermission.Role) error {
 	return nil
 }
 
-func (r *RolePerRepoDB) GetAllRoles(roles *[]rolepermission.Role) error {
-	if err := r.db.Debug().Find(&roles).Error; err != nil {
+func (r *RolePerRepoDB) GetAllRoles(ctx context.Context, roles *[]rolepermission.Role) error {
+	if err := r.db.Debug().WithContext(ctx).Find(&roles).Error; err != nil {
 		return err
 	}
 
