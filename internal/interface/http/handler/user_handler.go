@@ -234,15 +234,15 @@ func (h *UserHandler) GetAdminByID(c *gin.Context) {
 	})
 }
 
-// @Summary Create user
+// @Summary Create admin
 // @Description API thêm người dùng
-// @Tags users
+// @Tags admins
 // @Accept json
 // @Produce json
-// @Param request body userdto.CreateAdminRequest true "Create user info"
-// @Success 201 {object} userdto.CreateAdminResponseWrapper "Created user successfully"
+// @Param request body userdto.CreateAdminRequest true "Create admin info"
+// @Success 201 {object} userdto.CreateAdminResponseWrapper "Created admin successfully"
 // @Failure 400 {object} enums.AppError
-// @Router /users [post]
+// @Router /admins [post]
 func (h *UserHandler) CreateAdmin(c *gin.Context) {
 	var req userdto.CreateAdminRequest
 
@@ -280,7 +280,7 @@ func (h *UserHandler) CreateAdmin(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"code":    http.StatusCreated,
-		"message": "Created user successfully",
+		"message": "Created admin successfully",
 		"data": userdto.CreateAdminResponse{
 			Admin: adminDTORes,
 		},

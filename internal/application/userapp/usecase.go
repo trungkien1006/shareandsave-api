@@ -52,7 +52,7 @@ func (uc *UseCase) GetAllClient(ctx context.Context, users *[]user.User, domainR
 }
 
 func (uc *UseCase) GetAllAdmin(ctx context.Context, users *[]user.User, domainReq filter.FilterRequest) (int, error) {
-	totalPage, err := uc.repo.GetAll(ctx, users, domainReq, uc.superAdminID, uc.superAdminID)
+	totalPage, err := uc.repo.GetAll(ctx, users, domainReq, uc.clientID, uc.superAdminID)
 
 	if err != nil {
 		return 0, err

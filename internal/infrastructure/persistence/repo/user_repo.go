@@ -27,12 +27,13 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 		dbUser []dbmodel.User
 	)
 
-	if clientID != 0 && superAdminID == 0 {
+	if superAdminID == 0 {
 		query = r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).
 			Table("user").
 			Where("role_id = ?", clientID)
 	} else {
-		query = r.db.Debug().WithContext(ctx).Where("role_id != ? AND role_id != ?", clientID, superAdminID).
+		query = r.db.Debug().WithContext(ctx).
+			Where("role_id != ? AND role_id != ?", clientID, superAdminID).
 			Model(&dbmodel.User{}).
 			Table("user").
 			Preload("Role").
@@ -97,7 +98,7 @@ func (r *UserRepoDB) IsExist(ctx context.Context, userID uint) (bool, error) {
 func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, userID int, clientID uint, superAdminID uint) error {
 	var dbUser dbmodel.User
 
-	if clientID != 0 && superAdminID == 0 {
+	if superAdminID == 0 {
 		if err := r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.User{}).Where("id = ?", userID).
 			Where("role_id = ?", clientID).

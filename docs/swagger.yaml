@@ -1498,6 +1498,31 @@ paths:
       summary: Get admins
       tags:
       - admins
+    post:
+      consumes:
+      - application/json
+      description: API thêm người dùng
+      parameters:
+      - description: Create admin info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.CreateAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created admin successfully
+          schema:
+            $ref: '#/definitions/userdto.CreateAdminResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Create admin
+      tags:
+      - admins
   /admins/{adminID}:
     delete:
       consumes:
@@ -2701,32 +2726,6 @@ paths:
       summary: Update transaction
       tags:
       - transactions
-  /users:
-    post:
-      consumes:
-      - application/json
-      description: API thêm người dùng
-      parameters:
-      - description: Create user info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/userdto.CreateAdminRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created user successfully
-          schema:
-            $ref: '#/definitions/userdto.CreateAdminResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      summary: Create user
-      tags:
-      - users
 securityDefinitions:
   BearerAuth:
     in: header
