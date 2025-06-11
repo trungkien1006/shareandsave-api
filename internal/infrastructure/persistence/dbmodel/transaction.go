@@ -90,5 +90,7 @@ func TransactionDBToDetailDomain(db Transaction) transaction.DetailTransaction {
 		ReceiverName: db.Receiver.FullName,
 		Items:        domainItems,
 		Status:       db.Status,
+		CreatedAt:    db.CreatedAt,
+		UpdatedAt:    db.UpdatedAt,
 	}
 }

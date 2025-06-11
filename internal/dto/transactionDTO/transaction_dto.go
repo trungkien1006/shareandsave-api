@@ -1,5 +1,7 @@
 package transactiondto
 
+import "time"
+
 type TransactionDTO struct {
 	ID         uint                 `json:"id"`
 	InterestID uint                 `json:"interestID"`
@@ -23,6 +25,8 @@ type DetailTransactionDTO struct {
 	ReceiverName string                     `json:"receiverName"`
 	Status       int                        `json:"status"`
 	Items        []DetailTransactionItemDTO `json:"items"`
+	CreatedAt    time.Time                  `json:"createdAt"`
+	UpdatedAt    time.Time                  `json:"updatedAt"`
 }
 
 type DetailTransactionItemDTO struct {

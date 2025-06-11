@@ -3359,6 +3359,9 @@ const docTemplate = `{
         "transactiondto.DetailTransactionDTO": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -3385,6 +3388,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
@@ -3393,6 +3399,9 @@ const docTemplate = `{
             "properties": {
                 "itemID": {
                     "type": "integer"
+                },
+                "itemImage": {
+                    "type": "string"
                 },
                 "itemName": {
                     "type": "string"
@@ -3474,17 +3483,13 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "postItemID",
-                "quantity",
-                "transactionID"
+                "quantity"
             ],
             "properties": {
                 "postItemID": {
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "integer"
-                },
-                "transactionID": {
                     "type": "integer"
                 }
             }

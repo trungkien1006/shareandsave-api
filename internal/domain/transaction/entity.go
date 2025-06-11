@@ -1,6 +1,9 @@
 package transaction
 
-import "final_project/internal/pkg/enums"
+import (
+	"final_project/internal/pkg/enums"
+	"time"
+)
 
 type Transaction struct {
 	ID         uint
@@ -38,6 +41,8 @@ type DetailTransaction struct {
 	ReceiverName string
 	Status       int
 	Items        []DetailTransactionItem
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type DetailTransactionItem struct {

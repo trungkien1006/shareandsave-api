@@ -86,5 +86,7 @@ func DomainToDetailDTO(domain transaction.DetailTransaction) DetailTransactionDT
 		ReceiverName: domain.ReceiverName,
 		Status:       domain.Status,
 		Items:        dtoDetailItems,
+		CreatedAt:    domain.CreatedAt,
+		UpdatedAt:    domain.UpdatedAt,
 	}
 }
