@@ -50,7 +50,7 @@ func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.
 		} else {
 			req.SearchBy = "user." + req.SearchBy
 
-			query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), req.SearchValue+"%")
+			query = query.Where(fmt.Sprintf("`%s` LIKE ?", column), "%"+req.SearchValue+"%")
 		}
 	}
 
