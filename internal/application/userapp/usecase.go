@@ -261,7 +261,7 @@ func (uc *UseCase) UpdateClient(ctx context.Context, domainUser *user.User) erro
 	}
 
 	if domainUser.Avatar != "" {
-		strBase64Image, err := helpers.ResizeImageFromBase64(domainUser.Avatar, enums.UserImageWidth, enums.UserImageHeight)
+		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 
 		if err != nil {
 			return err
@@ -332,7 +332,7 @@ func (uc *UseCase) UpdateAdmin(ctx context.Context, domainUser *user.User) error
 	}
 
 	if domainUser.Avatar != "" {
-		strBase64Image, err := helpers.ResizeImageFromBase64(domainUser.Avatar, enums.UserImageWidth, enums.UserImageHeight)
+		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 
 		if err != nil {
 			return err
