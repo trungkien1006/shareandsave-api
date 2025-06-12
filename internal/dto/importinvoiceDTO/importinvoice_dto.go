@@ -15,19 +15,19 @@ type ImportInvoiceListDTO struct {
 }
 
 type ImportInvoiceDTO struct {
-	ID                uint                        `json:"id"`
-	InvoiceNum        int                         `json:"invoiceNum"`
-	SenderID          uint                        `json:"senderID"`
-	SenderName        string                      `json:"senderName"`
-	ReceiverID        uint                        `json:"receiverID"`
-	ReceiverName      string                      `json:"receiverName"`
-	Classify          int                         `json:"classify"`
-	Description       string                      `json:"description"`
-	IsLock            bool                        `json:"isLock"`
-	ItemImportInvoice []ItemImportInvoiceDTO      `json:"itemImportInvoices"`
-	Warehouses        []warehousedto.WarehouseDTO `json:"warehouses"`
-	ItemCount         int                         `json:"itemCount"`
-	CreatedAt         time.Time                   `json:"createdAt"`
+	ID                uint                              `json:"id"`
+	InvoiceNum        int                               `json:"invoiceNum"`
+	SenderID          uint                              `json:"senderID"`
+	SenderName        string                            `json:"senderName"`
+	ReceiverID        uint                              `json:"receiverID"`
+	ReceiverName      string                            `json:"receiverName"`
+	Classify          int                               `json:"classify"`
+	Description       string                            `json:"description"`
+	IsLock            bool                              `json:"isLock"`
+	ItemImportInvoice []ItemImportInvoiceDTO            `json:"itemImportInvoices"`
+	Warehouses        []warehousedto.DetailWarehouseDTO `json:"warehouses"`
+	ItemCount         int                               `json:"itemCount"`
+	CreatedAt         time.Time                         `json:"createdAt"`
 }
 
 type ItemImportInvoiceDTO struct {

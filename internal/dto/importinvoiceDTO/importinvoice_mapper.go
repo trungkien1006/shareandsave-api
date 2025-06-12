@@ -40,7 +40,7 @@ func GetDomainToDTO(domain importinvoice.GetImportInvoice) ImportInvoiceListDTO 
 // Domain to DTO
 func ImportInvoiceDomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceDTO {
 	var (
-		warehouses []warehousedto.WarehouseDTO
+		warehouses []warehousedto.DetailWarehouseDTO
 		items      []ItemImportInvoiceDTO
 	)
 
@@ -66,7 +66,7 @@ func ImportInvoiceDomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceD
 			})
 		}
 
-		warehouses = append(warehouses, warehousedto.WarehouseDTO{
+		warehouses = append(warehouses, warehousedto.DetailWarehouseDTO{
 			ItemID:        v.ItemID,
 			SKU:           v.SKU,
 			Quantity:      v.Quantity,

@@ -39,7 +39,7 @@ func (uc *UseCase) GetAllImportInvoice(ctx context.Context, importInvoice *[]imp
 
 func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *importinvoice.ImportInvoice) error {
 	var (
-		handlerWarehouse []warehouse.Warehouse
+		handlerWarehouse []warehouse.DetailWarehouse
 	)
 
 	// Lấy số hóa đơn hiện tại
@@ -78,7 +78,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 	}
 
 	// Gom nhóm các món đồ thành 1 lô và tạo danh sách các món đồ thuộc lô
-	warehouses := make(map[uint]warehouse.Warehouse)
+	warehouses := make(map[uint]warehouse.DetailWarehouse)
 
 	for _, value := range importInvoice.ItemImportInvoice {
 		if wh, ok := warehouses[value.ID]; ok {
