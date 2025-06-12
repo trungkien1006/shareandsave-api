@@ -2521,7 +2521,7 @@ const docTemplate = `{
                 "warehouses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/warehousedto.WarehouseDTO"
+                        "$ref": "#/definitions/warehousedto.DetailWarehouseDTO"
                     }
                 }
             }
@@ -4153,6 +4153,44 @@ const docTemplate = `{
                 }
             }
         },
+        "warehousedto.DetailWarehouseDTO": {
+            "type": "object",
+            "properties": {
+                "SKU": {
+                    "type": "string"
+                },
+                "classify": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "importInvoiceID": {
+                    "type": "integer"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "itemWarehouses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.ItemWareHouseDTO"
+                    }
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "stockPlace": {
+                    "type": "string"
+                }
+            }
+        },
         "warehousedto.FilterWarehouseResponse": {
             "type": "object",
             "properties": {
@@ -4178,6 +4216,32 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "warehousedto.ItemWareHouseDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "warehouseID": {
+                    "type": "integer"
                 }
             }
         },

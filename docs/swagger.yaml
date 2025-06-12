@@ -327,7 +327,7 @@ definitions:
         type: string
       warehouses:
         items:
-          $ref: '#/definitions/warehousedto.WarehouseDTO'
+          $ref: '#/definitions/warehousedto.DetailWarehouseDTO'
         type: array
     type: object
   importinvoicedto.ImportInvoiceListDTO:
@@ -1401,6 +1401,31 @@ definitions:
       message:
         type: string
     type: object
+  warehousedto.DetailWarehouseDTO:
+    properties:
+      SKU:
+        type: string
+      classify:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      importInvoiceID:
+        type: integer
+      itemID:
+        type: integer
+      itemName:
+        type: string
+      itemWarehouses:
+        items:
+          $ref: '#/definitions/warehousedto.ItemWareHouseDTO'
+        type: array
+      quantity:
+        type: integer
+      stockPlace:
+        type: string
+    type: object
   warehousedto.FilterWarehouseResponse:
     properties:
       totalPage:
@@ -1418,6 +1443,23 @@ definitions:
         $ref: '#/definitions/warehousedto.FilterWarehouseResponse'
       message:
         type: string
+    type: object
+  warehousedto.ItemWareHouseDTO:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      itemID:
+        type: integer
+      itemName:
+        type: string
+      status:
+        type: integer
+      warehouseID:
+        type: integer
     type: object
   warehousedto.WarehouseDTO:
     properties:

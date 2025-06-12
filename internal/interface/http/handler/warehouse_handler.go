@@ -15,6 +15,10 @@ type WarehouseHandler struct {
 	uc *warehouseapp.UseCase
 }
 
+func NewWarehouseHandler(uc *warehouseapp.UseCase) *WarehouseHandler {
+	return &WarehouseHandler{uc: uc}
+}
+
 // @Summary Get warehouse
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
 // @Security BearerAuth
@@ -31,10 +35,6 @@ type WarehouseHandler struct {
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
 // @Router /warehouses [get]
-func NewWarehouseHandler(uc *warehouseapp.UseCase) *WarehouseHandler {
-	return &WarehouseHandler{uc: uc}
-}
-
 func (h *WarehouseHandler) GetAll(c *gin.Context) {
 	var (
 		req             warehousedto.GetWarehouseRequest
