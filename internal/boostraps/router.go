@@ -10,6 +10,7 @@ import (
 	"final_project/internal/application/roleapp"
 	"final_project/internal/application/transactionapp"
 	"final_project/internal/application/userapp"
+	"final_project/internal/application/warehouseapp"
 	"final_project/internal/domain/auth"
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
@@ -77,6 +78,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	importInvoiceRepo := persistence.NewImportInvoiceRepoDB(db)
 	importInvoiceUC := importinvoiceapp.NewUseCase(importInvoiceRepo, userRepo, itemRepo, importInvoiceService)
 	importInvoiceHandler := handler.NewImportInvoiceHandler(importInvoiceUC)
+
+	//warehouse dependency
+	warehouseRepo := persistence.NewWarehouseRepoDB(db)
+	warehouseUC := warehouseapp.NewUseCase(warehouseRepo)
+	warehouseHandler := handler.NewWarehouseHandler(warehouseUC)
 
 	//auth dependency
 	authService := auth.NewAuthService()
@@ -175,6 +181,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)
 		v1.GET("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.GetAllImportInvoice)
+
+		//warehouse API
+		v1.GET("/warehouses", middlewares.AuthGuard, warehouseHandler.GetAll)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)
