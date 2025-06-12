@@ -62,15 +62,16 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 	}
 
 	return interest.PostInterest{
-		ID:          db.ID,
-		AuthorID:    db.AuthorID,
-		AuthorName:  db.Author.FullName,
-		Title:       db.Title,
-		Description: db.Description,
-		Slug:        db.Slug,
-		Type:        db.Type,
-		Items:       domainItems,
-		Interests:   domainInterest,
-		UpdatedAt:   db.UpdatedAt,
+		ID:           db.ID,
+		AuthorID:     db.AuthorID,
+		AuthorName:   db.Author.FullName,
+		AuthorAvatar: db.Author.Avatar,
+		Title:        db.Title,
+		Description:  db.Description,
+		Slug:         db.Slug,
+		Type:         db.Type,
+		Items:        domainItems,
+		Interests:    domainInterest,
+		UpdatedAt:    db.UpdatedAt,
 	}
 }

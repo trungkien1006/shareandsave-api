@@ -7,6 +7,7 @@ import (
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"math"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -91,8 +92,11 @@ func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]impor
 func (r *ImportInvoiceRepoDB) GetImportInvoiceNum(ctx context.Context) (int, error) {
 	var invoiceNum int64 = 0
 
+	year := time.Now().Year()
+
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.ImportInvoice{}).
+		Where("YEAR(created_at) = ?", year).
 		Count(&invoiceNum).Error; err != nil {
 		return int(invoiceNum + 1), errors.New("Gặp lỗi khi đếm số phiếu nhập: " + err.Error())
 	}

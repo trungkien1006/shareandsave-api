@@ -26,14 +26,15 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID          uint               `json:"id"`
-	AuthorID    uint               `json:"authorID"`
-	AuthorName  string             `json:"authorName"`
-	Title       string             `json:"title"`
-	Description string             `json:"description"`
-	Slug        string             `json:"slug"`
-	Type        enums.PostType     `json:"type"`
-	Items       []PostInterestItem `json:"items"`
-	Interests   []Interest         `json:"interests"`
-	UpdatedAt   time.Time          `json:"updatedAt"`
+	ID           uint               `json:"id"`
+	AuthorID     uint               `json:"authorID"`
+	AuthorName   string             `json:"authorName"`
+	AuthorAvatar string             `json:"authorAvatar"`
+	Title        string             `json:"title"`
+	Description  string             `json:"description"`
+	Slug         string             `json:"slug"`
+	Type         enums.PostType     `json:"type"`
+	Items        []PostInterestItem `json:"items"`
+	Interests    []Interest         `json:"interests"`
+	UpdatedAt    time.Time          `json:"updatedAt"`
 }

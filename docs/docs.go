@@ -2601,6 +2601,9 @@ const docTemplate = `{
         "interestdto.PostInterest": {
             "type": "object",
             "properties": {
+                "authorAvatar": {
+                    "type": "string"
+                },
                 "authorID": {
                     "type": "integer"
                 },

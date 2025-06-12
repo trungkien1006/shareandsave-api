@@ -432,6 +432,8 @@ definitions:
     type: object
   interestdto.PostInterest:
     properties:
+      authorAvatar:
+        type: string
       authorID:
         type: integer
       authorName:

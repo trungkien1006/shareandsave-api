@@ -23,16 +23,17 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID          uint
-	AuthorID    uint
-	AuthorName  string
-	Title       string
-	Description string
-	Slug        string
-	Type        int
-	Items       []PostInterestItem
-	Interests   []Interest
-	UpdatedAt   time.Time
+	ID           uint
+	AuthorID     uint
+	AuthorName   string
+	AuthorAvatar string
+	Title        string
+	Description  string
+	Slug         string
+	Type         int
+	Items        []PostInterestItem
+	Interests    []Interest
+	UpdatedAt    time.Time
 }
 
 type GetInterest struct {
