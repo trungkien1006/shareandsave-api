@@ -108,13 +108,29 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 func (r *WarehouseRepoDB) Update(ctx context.Context, warehouse warehouse.DetailWarehouse) error {
 	var dbWarehouse dbmodel.Warehouse
 
+	tx := r.db.Debug().WithContext(ctx).Begin()
+
 	dbWarehouse = dbmodel.UpdateDomainToDB(warehouse)
 
-	if err := r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.Warehouse{}).
+	if err := tx.Model(&dbmodel.Warehouse{}).
 		Where("id = ?", dbWarehouse.ID).
 		Updates(&dbWarehouse).Error; err != nil {
+		tx.Rollback()
 		return errors.New("Có lỗi khi cập nhật lô hàng: " + err.Error())
+	}
+
+	for _, value := range dbWarehouse.ItemWarehouses {
+		if err := tx.Model(&dbmodel.ItemWarehouse{}).
+			Where("id = ?", value.ID).
+			Updates(&value).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi cập nhật chi tiết lô hàng: " + err.Error())
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
 	}
 
 	return nil
