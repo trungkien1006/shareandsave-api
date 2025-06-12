@@ -76,10 +76,53 @@ func (h *WarehouseHandler) GetAll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, warehousedto.FilterWarehouseResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched transactions successfully",
+		Message: "Fetched warehouses successfully",
 		Data: warehousedto.FilterWarehouseResponse{
 			Warehouses: warehouseDTORes,
 			TotalPage:  totalPage,
+		},
+	})
+}
+
+// @Summary Get warehouse by ID
+// @Description API lấy thông tin warehouse theo ID
+// @Tags warehouses
+// @Accept json
+// @Produce json
+// @Param warehouseID path int true "ID warehouse"
+// @Success 200 {object} warehousedto.GetWarehouseByIDResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /warehouses/{warehouseID} [get]
+func (h *WarehouseHandler) GetByID(c *gin.Context) {
+	var (
+		req             warehousedto.GetWarehouseByIDRequest
+		domainWarehouse warehouse.DetailWarehouse
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.GetWarehouseByID(c.Request.Context(), &domainWarehouse, req.WarehouseID); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	warehouseDTORes := warehousedto.DetailWarehouseDomainToDTO(domainWarehouse)
+
+	c.JSON(http.StatusOK, warehousedto.GetWarehouseByIDResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched warehouses successfully",
+		Data: warehousedto.GetWarehouseByIDResponse{
+			Warehouse: warehouseDTORes,
 		},
 	})
 }

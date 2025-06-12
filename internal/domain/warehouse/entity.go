@@ -17,6 +17,7 @@ type DetailWarehouse struct {
 	ID              uint
 	ItemID          uint
 	ImportInvoiceID uint
+	SenderName      string
 	ItemName        string
 	SKU             string
 	Quantity        int

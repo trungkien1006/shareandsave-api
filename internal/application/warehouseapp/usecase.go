@@ -22,3 +22,11 @@ func (uc *UseCase) GetAllWarehouse(ctx context.Context, warehouses *[]warehouse.
 
 	return totalPage, nil
 }
+
+func (uc *UseCase) GetWarehouseByID(ctx context.Context, warehouse *warehouse.DetailWarehouse, warehouseID uint) error {
+	if err := uc.repo.GetByID(ctx, warehouse, warehouseID); err != nil {
+		return err
+	}
+
+	return nil
+}

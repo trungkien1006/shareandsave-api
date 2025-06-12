@@ -20,3 +20,7 @@ func (r *GetWarehouseRequest) SetDefault() {
 		r.Order = "ASC"
 	}
 }
+
+type GetWarehouseByIDRequest struct {
+	WarehouseID uint `uri:"warehouseID" binding:"required"`
+}

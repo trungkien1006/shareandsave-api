@@ -17,6 +17,7 @@ type DetailWarehouseDTO struct {
 	ID              uint               `json:"id"`
 	ItemID          uint               `json:"itemID"`
 	ImportInvoiceID uint               `json:"importInvoiceID"`
+	SenderName      string             `json:"senderName"`
 	ItemName        string             `json:"itemName"`
 	SKU             string             `json:"SKU"`
 	Quantity        int                `json:"quantity"`

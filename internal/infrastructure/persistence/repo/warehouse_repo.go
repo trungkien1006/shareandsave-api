@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/infrastructure/persistence/dbmodel"
@@ -76,4 +77,30 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 	}
 
 	return totalPages, nil
+}
+
+func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.DetailWarehouse, warehouseID uint) error {
+	var dbWarehouse dbmodel.DetailWarehouse
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.DetailWarehouse{}).
+		Table("warehouse").
+		Select(`
+			warehouse.*,
+			item.name AS item_name,
+			sender.full_name AS sender_name
+		`).
+		Where("warehouse.id = ?", warehouseID).
+		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = warehouse.id").
+		Joins("JOIN item ON item.id = warehouse.item_id").
+		Joins("JOIN import_invoice as ii ON ii.id = warehouse.import_invoice_id").
+		Joins("JOIN user as sender ON sender.id = ii.sender_id").
+		First(&dbWarehouse).Error; err != nil {
+		return errors.New("Có lỗi khi truy vấn warehouse: " + err.Error())
+	}
+
+	*warehouse = dbmodel.DetailDBToDetailDomain(dbWarehouse)
+
+	return nil
 }

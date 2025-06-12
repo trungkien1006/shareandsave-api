@@ -2044,6 +2044,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/warehouses/{warehouseID}": {
+            "get": {
+                "description": "API lấy thông tin warehouse theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "warehouses"
+                ],
+                "summary": "Get warehouse by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID warehouse",
+                        "name": "warehouseID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.GetWarehouseByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -4186,6 +4230,9 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer"
                 },
+                "senderName": {
+                    "type": "string"
+                },
                 "stockPlace": {
                     "type": "string"
                 }
@@ -4213,6 +4260,28 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/warehousedto.FilterWarehouseResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "warehousedto.GetWarehouseByIDResponse": {
+            "type": "object",
+            "properties": {
+                "warehouse": {
+                    "$ref": "#/definitions/warehousedto.DetailWarehouseDTO"
+                }
+            }
+        },
+        "warehousedto.GetWarehouseByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/warehousedto.GetWarehouseByIDResponse"
                 },
                 "message": {
                     "type": "string"

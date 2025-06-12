@@ -7,4 +7,5 @@ import (
 
 type Repository interface {
 	GetAll(ctx context.Context, warehouses *[]Warehouse, req filter.FilterRequest) (int, error)
+	GetByID(ctx context.Context, warehouse *DetailWarehouse, warehouseID uint) error
 }
