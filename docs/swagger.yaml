@@ -1477,6 +1477,35 @@ definitions:
       warehouseID:
         type: integer
     type: object
+  warehousedto.UpdateItemWarehouse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+    required:
+    - description
+    - id
+    type: object
+  warehousedto.UpdateWarehouseRequest:
+    properties:
+      description:
+        type: string
+      itemWarehouses:
+        items:
+          $ref: '#/definitions/warehousedto.UpdateItemWarehouse'
+        type: array
+      stockPlace:
+        type: string
+    type: object
+  warehousedto.UpdateWarehouseResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   warehousedto.WarehouseDTO:
     properties:
       SKU:
@@ -2871,6 +2900,40 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Get warehouse by ID
+      tags:
+      - warehouses
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật warehouse
+      parameters:
+      - description: ID warehouse
+        in: path
+        name: warehouseID
+        required: true
+        type: integer
+      - description: Update warehouse info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/warehousedto.UpdateWarehouseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated warehouse successfully
+          schema:
+            $ref: '#/definitions/warehousedto.UpdateWarehouseResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update warehouse
       tags:
       - warehouses
 securityDefinitions:

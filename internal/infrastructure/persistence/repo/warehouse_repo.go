@@ -104,3 +104,18 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 
 	return nil
 }
+
+func (r *WarehouseRepoDB) Update(ctx context.Context, warehouse warehouse.DetailWarehouse) error {
+	var dbWarehouse dbmodel.Warehouse
+
+	dbWarehouse = dbmodel.UpdateDomainToDB(warehouse)
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Warehouse{}).
+		Where("id = ?", dbWarehouse.ID).
+		Updates(&dbWarehouse).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật lô hàng: " + err.Error())
+	}
+
+	return nil
+}

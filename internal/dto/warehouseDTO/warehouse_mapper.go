@@ -2,6 +2,24 @@ package warehousedto
 
 import "final_project/internal/domain/warehouse"
 
+// DTO to Domain
+func UpdateWarehouseDTOToDomain(dto UpdateWarehouseRequest) warehouse.DetailWarehouse {
+	var itemWarehouses []warehouse.ItemWareHouse
+
+	for _, value := range dto.ItemWarehouses {
+		itemWarehouses = append(itemWarehouses, warehouse.ItemWareHouse{
+			ID:          value.ID,
+			Description: value.Descripton,
+		})
+	}
+
+	return warehouse.DetailWarehouse{
+		Description:   dto.Description,
+		StockPlace:    dto.StockPlace,
+		ItemWareHouse: itemWarehouses,
+	}
+}
+
 // Domain to DTO
 func WarehouseDomainToDTO(domain warehouse.Warehouse) WarehouseDTO {
 	return WarehouseDTO{

@@ -20,3 +20,9 @@ type GetWarehouseByIDResponseWrapper struct {
 type GetWarehouseByIDResponse struct {
 	Warehouse DetailWarehouseDTO `json:"warehouse"`
 }
+
+type UpdateWarehouseResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

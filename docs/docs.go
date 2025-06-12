@@ -2087,6 +2087,57 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "API cập nhật warehouse",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "warehouses"
+                ],
+                "summary": "Update warehouse",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID warehouse",
+                        "name": "warehouseID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update warehouse info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.UpdateWarehouseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated warehouse successfully",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.UpdateWarehouseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         }
     },
@@ -4311,6 +4362,50 @@ const docTemplate = `{
                 },
                 "warehouseID": {
                     "type": "integer"
+                }
+            }
+        },
+        "warehousedto.UpdateItemWarehouse": {
+            "type": "object",
+            "required": [
+                "description",
+                "id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.UpdateWarehouseRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "itemWarehouses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.UpdateItemWarehouse"
+                    }
+                },
+                "stockPlace": {
+                    "type": "string"
+                }
+            }
+        },
+        "warehousedto.UpdateWarehouseResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
                 }
             }
         },

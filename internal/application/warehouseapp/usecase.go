@@ -30,3 +30,25 @@ func (uc *UseCase) GetWarehouseByID(ctx context.Context, warehouse *warehouse.De
 
 	return nil
 }
+
+func (uc *UseCase) UpdateWarehouse(ctx context.Context, domainWarehouse warehouse.DetailWarehouse) error {
+	var updateWarehouse warehouse.DetailWarehouse
+
+	if domainWarehouse.Description != "" {
+		updateWarehouse.Description = domainWarehouse.Description
+	}
+
+	if domainWarehouse.StockPlace != "" {
+		updateWarehouse.StockPlace = domainWarehouse.StockPlace
+	}
+
+	if domainWarehouse.ItemWareHouse != nil {
+		updateWarehouse.ItemWareHouse = domainWarehouse.ItemWareHouse
+	}
+
+	if err := uc.repo.Update(ctx, updateWarehouse); err != nil {
+		return err
+	}
+
+	return nil
+}

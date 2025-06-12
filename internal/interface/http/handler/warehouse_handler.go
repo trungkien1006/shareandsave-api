@@ -7,6 +7,7 @@ import (
 	warehousedto "final_project/internal/dto/warehouseDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -120,9 +121,62 @@ func (h *WarehouseHandler) GetByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, warehousedto.GetWarehouseByIDResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched warehouses successfully",
+		Message: "Fetched warehouse successfully",
 		Data: warehousedto.GetWarehouseByIDResponse{
 			Warehouse: warehouseDTORes,
 		},
+	})
+}
+
+// @Summary Update warehouse
+// @Description API cập nhật warehouse
+// @Tags warehouses
+// @Accept json
+// @Produce json
+// @Param warehouseID path int true "ID warehouse"
+// @Param request body warehousedto.UpdateWarehouseRequest true "Update warehouse info"
+// @Success 200 {object} warehousedto.UpdateWarehouseResponseWrapper "Updated warehouse successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /warehouses/{warehouseID} [patch]
+func (h *WarehouseHandler) Update(c *gin.Context) {
+	var (
+		req             warehousedto.UpdateWarehouseRequest
+		domainWarehouse warehouse.DetailWarehouse
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	warehouseID, err := strconv.Atoi(c.Param("warehouseID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	domainWarehouse = warehousedto.UpdateWarehouseDTOToDomain(req)
+
+	domainWarehouse.ID = uint(warehouseID)
+
+	if err := h.uc.UpdateWarehouse(c.Request.Context(), domainWarehouse); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, warehousedto.UpdateWarehouseResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated warehouses successfully",
+		Data:    gin.H{},
 	})
 }

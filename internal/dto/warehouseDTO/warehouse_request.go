@@ -24,3 +24,14 @@ func (r *GetWarehouseRequest) SetDefault() {
 type GetWarehouseByIDRequest struct {
 	WarehouseID uint `uri:"warehouseID" binding:"required"`
 }
+
+type UpdateWarehouseRequest struct {
+	Description    string                `json:"description"`
+	StockPlace     string                `json:"stockPlace"`
+	ItemWarehouses []UpdateItemWarehouse `json:"itemWarehouses"`
+}
+
+type UpdateItemWarehouse struct {
+	ID         uint   `json:"id" binding:"required"`
+	Descripton string `json:"description" binding:"required"`
+}

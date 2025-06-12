@@ -47,6 +47,25 @@ func DetailDBToDomain(db DetailWarehouse) warehouse.Warehouse {
 	}
 }
 
+// Domain to DB
+func UpdateDomainToDB(domain warehouse.DetailWarehouse) Warehouse {
+	var itemWarehouses []ItemWarehouse
+
+	for _, value := range domain.ItemWareHouse {
+		itemWarehouses = append(itemWarehouses, ItemWarehouse{
+			ID:          value.ID,
+			Description: value.Description,
+		})
+	}
+
+	return Warehouse{
+		ID:             domain.ID,
+		Description:    domain.Description,
+		StockPlace:     domain.StockPlace,
+		ItemWarehouses: itemWarehouses,
+	}
+}
+
 // DB to Domain
 func DetailDBToDetailDomain(db DetailWarehouse) warehouse.DetailWarehouse {
 	itemWarehouses := make([]warehouse.ItemWareHouse, 0)
