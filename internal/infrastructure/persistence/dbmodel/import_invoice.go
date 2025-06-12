@@ -79,7 +79,7 @@ func ImportInvoiceDomainToDB(domain importinvoice.ImportInvoice) ImportInvoice {
 // Domain to DB
 func ImportInvoiceDBToDomain(db ImportInvoice) importinvoice.ImportInvoice {
 	var (
-		warehouses []warehouse.Warehouse
+		warehouses []warehouse.DetailWarehouse
 		items      []importinvoice.ItemImportInvoice
 	)
 
@@ -104,7 +104,7 @@ func ImportInvoiceDBToDomain(db ImportInvoice) importinvoice.ImportInvoice {
 			})
 		}
 
-		warehouses = append(warehouses, warehouse.Warehouse{
+		warehouses = append(warehouses, warehouse.DetailWarehouse{
 			ItemID:        v.ItemID,
 			SKU:           v.SKU,
 			Quantity:      v.Quantity,

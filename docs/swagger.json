@@ -1954,6 +1954,89 @@
                     }
                 }
             }
+        },
+        "/warehouses": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "warehouses"
+                ],
+                "summary": "Get warehouse",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort column (createdAt quantity)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (senderName invoiceNum itemName classify sku description stockPlace)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc:",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.FilterWarehouseResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -4063,29 +4146,31 @@
                 }
             }
         },
-        "warehousedto.ItemWareHouseDTO": {
+        "warehousedto.FilterWarehouseResponse": {
+            "type": "object",
+            "properties": {
+                "totalPage": {
+                    "type": "integer"
+                },
+                "warehouses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.WarehouseDTO"
+                    }
+                }
+            }
+        },
+        "warehousedto.FilterWarehouseResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/warehousedto.FilterWarehouseResponse"
+                },
+                "message": {
                     "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "itemID": {
-                    "type": "integer"
-                },
-                "itemName": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "warehouseID": {
-                    "type": "integer"
                 }
             }
         },
@@ -4113,14 +4198,11 @@
                 "itemName": {
                     "type": "string"
                 },
-                "itemWarehouses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/warehousedto.ItemWareHouseDTO"
-                    }
-                },
                 "quantity": {
                     "type": "integer"
+                },
+                "senderName": {
+                    "type": "string"
                 },
                 "stockPlace": {
                     "type": "string"

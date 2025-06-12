@@ -25,8 +25,30 @@ type Warehouse struct {
 	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:WarehouseID"`
 }
 
+type DetailWarehouse struct {
+	Warehouse
+	ItemName   string `gorm:"column:item_name"`
+	SenderName string `gorm:"column:sender_name"`
+}
+
+// DB to Domain
+func DetailDBToDomain(db DetailWarehouse) warehouse.Warehouse {
+	return warehouse.Warehouse{
+		ID:              db.ID,
+		ItemID:          db.ItemID,
+		ImportInvoiceID: db.ImportInvoiceID,
+		SenderName:      db.SenderName,
+		ItemName:        db.ItemName,
+		SKU:             db.SKU,
+		Quantity:        db.Quantity,
+		Description:     db.Description,
+		Classify:        db.Classify,
+		StockPlace:      db.StockPlace,
+	}
+}
+
 // Domain to DB
-func WarehouseDomainToDB(domain warehouse.Warehouse) Warehouse {
+func WarehouseDomainToDB(domain warehouse.DetailWarehouse) Warehouse {
 	var items []ItemWarehouse
 
 	for _, value := range domain.ItemWareHouse {
@@ -49,7 +71,7 @@ func WarehouseDomainToDB(domain warehouse.Warehouse) Warehouse {
 }
 
 // Domain to DB
-func WarehouseDBToDomain(db Warehouse, itemName string) warehouse.Warehouse {
+func WarehouseDBToDomain(db Warehouse, itemName string) warehouse.DetailWarehouse {
 	var items []warehouse.ItemWareHouse
 
 	for _, value := range db.ItemWarehouses {
@@ -63,7 +85,7 @@ func WarehouseDBToDomain(db Warehouse, itemName string) warehouse.Warehouse {
 		})
 	}
 
-	return warehouse.Warehouse{
+	return warehouse.DetailWarehouse{
 		ID:            db.ID,
 		ItemID:        db.ItemID,
 		ItemName:      itemName,

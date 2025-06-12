@@ -1,6 +1,19 @@
 package warehousedto
 
 type WarehouseDTO struct {
+	ID              uint   `json:"id"`
+	ItemID          uint   `json:"itemID"`
+	ImportInvoiceID uint   `json:"importInvoiceID"`
+	SenderName      string `json:"senderName"`
+	ItemName        string `json:"itemName"`
+	SKU             string `json:"SKU"`
+	Quantity        int    `json:"quantity"`
+	Description     string `json:"description"`
+	Classify        int    `json:"classify"`
+	StockPlace      string `json:"stockPlace"`
+}
+
+type DetailWarehouseDTO struct {
 	ID              uint               `json:"id"`
 	ItemID          uint               `json:"itemID"`
 	ImportInvoiceID uint               `json:"importInvoiceID"`

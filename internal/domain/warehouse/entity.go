@@ -4,6 +4,19 @@ type Warehouse struct {
 	ID              uint
 	ItemID          uint
 	ImportInvoiceID uint
+	SenderName      string
+	ItemName        string
+	SKU             string
+	Quantity        int
+	Description     string
+	Classify        int
+	StockPlace      string
+}
+
+type DetailWarehouse struct {
+	ID              uint
+	ItemID          uint
+	ImportInvoiceID uint
 	ItemName        string
 	SKU             string
 	Quantity        int

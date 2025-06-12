@@ -1529,13 +1529,13 @@ func (s *Seeder) seedImportInvoice() error {
 		}
 
 		// Gom nhóm các món đồ thành Warehouse và sinh ItemWareHouse
-		warehouses := make(map[uint]warehouse.Warehouse)
+		warehouses := make(map[uint]warehouse.DetailWarehouse)
 		for _, itemInv := range inv.ItemImportInvoice {
 			if wh, ok := warehouses[itemInv.ItemID]; ok {
 				wh.Quantity += int(itemInv.Quantity)
 				warehouses[itemInv.ItemID] = wh
 			} else {
-				wh := warehouse.Warehouse{
+				wh := warehouse.DetailWarehouse{
 					ItemID:      itemInv.ItemID,
 					ItemName:    itemInv.ItemName,
 					SKU:         s.imInvoiceService.GenerateSKU(int(itemInv.ItemID)),
@@ -1568,7 +1568,7 @@ func (s *Seeder) seedImportInvoice() error {
 		}
 
 		// Chuyển map warehouses thành slice
-		var warehouseSlice []warehouse.Warehouse
+		var warehouseSlice []warehouse.DetailWarehouse
 		for _, wh := range warehouses {
 			warehouseSlice = append(warehouseSlice, wh)
 		}

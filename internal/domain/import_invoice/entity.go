@@ -16,7 +16,7 @@ type ImportInvoice struct {
 	Description       string
 	IsLock            bool
 	ItemImportInvoice []ItemImportInvoice
-	Warehouses        []warehouse.Warehouse
+	Warehouses        []warehouse.DetailWarehouse
 	ItemCount         int
 	CreatedAt         time.Time
 }
