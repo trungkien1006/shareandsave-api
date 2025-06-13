@@ -1,1 +1,4 @@
-package export_invoice
+package exportinvoice
+
+type Repository interface {
+}

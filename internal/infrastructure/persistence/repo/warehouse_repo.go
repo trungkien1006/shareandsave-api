@@ -35,7 +35,6 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 			item.name AS item_name,
 			sender.full_name AS sender_name
 		`).
-		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = warehouse.id").
 		Joins("JOIN item ON item.id = warehouse.item_id").
 		Joins("JOIN import_invoice as ii ON ii.id = warehouse.import_invoice_id").
 		Joins("JOIN user as sender ON sender.id = ii.sender_id")
