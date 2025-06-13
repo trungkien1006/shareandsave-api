@@ -388,9 +388,14 @@ func (h *UserHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
+	userDTORes := userdto.DomainClientToDTO(user)
+
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Updated client successfully",
+		"data": userdto.UpdateClientResponse{
+			Client: userDTORes,
+		},
 	})
 }
 

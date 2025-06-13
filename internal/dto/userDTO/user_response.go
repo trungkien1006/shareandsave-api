@@ -70,9 +70,13 @@ type CreateAdminResponse struct {
 
 // Update client
 type UpdateClientResponseWrapper struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int                  `json:"code"`
+	Message string               `json:"message"`
+	Data    UpdateClientResponse `json:"data"`
+}
+
+type UpdateClientResponse struct {
+	Client ClientDTO `json:"client"`
 }
 
 // Update admin
