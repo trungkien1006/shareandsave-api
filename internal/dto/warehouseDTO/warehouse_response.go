@@ -37,3 +37,13 @@ type FilterItemWarehouseResponse struct {
 	ItemWarehouses []ItemWareHouseDTO `json:"itemWarehouses"`
 	TotalPage      int                `json:"totalPage"`
 }
+
+type GetItemWarehouseByCodeResponseWrapper struct {
+	Code    int                            `json:"code"`
+	Message string                         `json:"message"`
+	Data    GetItemWarehouseByCodeResponse `json:"data"`
+}
+
+type GetItemWarehouseByCodeResponse struct {
+	ItemWarehouse ItemWareHouseDTO `json:"itemWarehouse"`
+}

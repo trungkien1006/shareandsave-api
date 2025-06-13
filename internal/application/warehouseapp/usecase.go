@@ -32,6 +32,14 @@ func (uc *UseCase) GetAllItemWarehouse(ctx context.Context, warehouses *[]wareho
 	return totalPage, nil
 }
 
+func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
+	if err := uc.repo.GetItemByCode(ctx, itemWarehouse, code); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uc *UseCase) GetWarehouseByID(ctx context.Context, warehouse *warehouse.DetailWarehouse, warehouseID uint) error {
 	if err := uc.repo.GetByID(ctx, warehouse, warehouseID); err != nil {
 		return err

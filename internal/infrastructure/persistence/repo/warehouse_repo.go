@@ -138,6 +138,26 @@ func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]ware
 	return totalPages, nil
 }
 
+func (r *WarehouseRepoDB) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
+	var dbItemWarehouse dbmodel.ItemWarehouse
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.ItemWarehouse{}).
+		Table("item_warehouse as iw").
+		Where("iw.code = ?", code).
+		Joins("JOIN item ON item.id = iw.item_id").
+		Preload("Item").
+		Preload("Item.Category").
+		Find(&dbItemWarehouse).Error; err != nil {
+		return errors.New("Có lỗi khi lấy đồ theo mã code: " + err.Error())
+	}
+
+	*itemWarehouse = dbmodel.ItemWarehouseDBToDomain(dbItemWarehouse)
+
+	return nil
+}
+
 func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.DetailWarehouse, warehouseID uint) error {
 	var dbWarehouse dbmodel.DetailWarehouse
 

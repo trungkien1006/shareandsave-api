@@ -1393,11 +1393,17 @@ definitions:
         - 2
         example: 1
     type: object
+  userdto.UpdateClientResponse:
+    properties:
+      client:
+        $ref: '#/definitions/userdto.ClientDTO'
+    type: object
   userdto.UpdateClientResponseWrapper:
     properties:
       code:
         type: integer
-      data: {}
+      data:
+        $ref: '#/definitions/userdto.UpdateClientResponse'
       message:
         type: string
     type: object
@@ -1465,6 +1471,20 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/warehousedto.FilterWarehouseResponse'
+      message:
+        type: string
+    type: object
+  warehousedto.GetItemWarehouseByCodeResponse:
+    properties:
+      itemWarehouse:
+        $ref: '#/definitions/warehousedto.ItemWareHouseDTO'
+    type: object
+  warehousedto.GetItemWarehouseByCodeResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/warehousedto.GetItemWarehouseByCodeResponse'
       message:
         type: string
     type: object
@@ -2302,6 +2322,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Get item warehouse
+      tags:
+      - item warehouses
+  /item-warehouses/{itemCode}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin item warehouse bằng code
+      parameters:
+      - description: Code item warehouse
+        in: path
+        name: itemCode
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehousedto.GetItemWarehouseByCodeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get item warehouse by code
       tags:
       - item warehouses
   /items:

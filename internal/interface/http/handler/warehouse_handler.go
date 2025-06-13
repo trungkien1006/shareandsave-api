@@ -150,6 +150,52 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 	})
 }
 
+// @Summary Get item warehouse by code
+// @Description API lấy thông tin item warehouse bằng code
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Param itemCode path int true "Code item warehouse"
+// @Success 200 {object} warehousedto.GetItemWarehouseByCodeResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /item-warehouses/{itemCode} [get]
+func (h *WarehouseHandler) GetItemByCode(c *gin.Context) {
+	var (
+		req                 warehousedto.GetItemWarehouseByCodeRequest
+		domainItemWarehouse warehouse.ItemWareHouse
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.GetItemByCode(c.Request.Context(), &domainItemWarehouse, req.ItemCode); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	var itemWarehouseDTORes warehousedto.ItemWareHouseDTO
+
+	itemWarehouseDTORes = warehousedto.ItemWarehouseDomainToDTO(domainItemWarehouse)
+
+	c.JSON(http.StatusOK, warehousedto.GetItemWarehouseByCodeResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched warehouses successfully",
+		Data: warehousedto.GetItemWarehouseByCodeResponse{
+			ItemWarehouse: itemWarehouseDTORes,
+		},
+	})
+}
+
 // @Summary Get warehouse by ID
 // @Description API lấy thông tin warehouse theo ID
 // @Security BearerAuth

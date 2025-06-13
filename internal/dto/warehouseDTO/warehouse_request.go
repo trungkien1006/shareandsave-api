@@ -57,3 +57,7 @@ func (r *GetItemWarehouseRequest) SetDefault() {
 		r.Order = "ASC"
 	}
 }
+
+type GetItemWarehouseByCodeRequest struct {
+	ItemCode string `uri:"itemCode" binding:"required"`
+}

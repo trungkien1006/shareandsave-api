@@ -1140,6 +1140,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/item-warehouses/{itemCode}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy thông tin item warehouse bằng code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Get item warehouse by code",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Code item warehouse",
+                        "name": "itemCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.GetItemWarehouseByCodeResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/items": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -4329,13 +4378,23 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.UpdateClientResponse": {
+            "type": "object",
+            "properties": {
+                "client": {
+                    "$ref": "#/definitions/userdto.ClientDTO"
+                }
+            }
+        },
         "userdto.UpdateClientResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "data": {},
+                "data": {
+                    "$ref": "#/definitions/userdto.UpdateClientResponse"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -4438,6 +4497,28 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/warehousedto.FilterWarehouseResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "warehousedto.GetItemWarehouseByCodeResponse": {
+            "type": "object",
+            "properties": {
+                "itemWarehouse": {
+                    "$ref": "#/definitions/warehousedto.ItemWareHouseDTO"
+                }
+            }
+        },
+        "warehousedto.GetItemWarehouseByCodeResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/warehousedto.GetItemWarehouseByCodeResponse"
                 },
                 "message": {
                     "type": "string"
