@@ -40,6 +40,10 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 		Joins("JOIN user as sender ON sender.id = ii.sender_id")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
+		if req.SearchBy == "SKU" {
+			req.SearchBy = "sku"
+		}
+
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
 
 		if column == "sender_name" {

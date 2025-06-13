@@ -3,9 +3,9 @@ package warehousedto
 type GetWarehouseRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
-	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt" example:"createdAt quantity"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt quantity" example:"createdAt quantity"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=senderName invoiceNum itemName classify sku description stockPlace"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=senderName invoiceNum itemName classify SKU description stockPlace"`
 	SearchValue string `form:"searchValue"`
 }
 
