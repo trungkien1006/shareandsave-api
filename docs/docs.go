@@ -2130,6 +2130,11 @@ const docTemplate = `{
         },
         "/warehouses/{warehouseID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy thông tin warehouse theo ID",
                 "consumes": [
                     "application/json"
@@ -2172,6 +2177,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API cập nhật warehouse",
                 "consumes": [
                     "application/json"
@@ -4528,6 +4538,9 @@ const docTemplate = `{
                 },
                 "classify": {
                     "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
