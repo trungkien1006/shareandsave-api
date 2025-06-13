@@ -222,6 +222,14 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		return errors.New("Có lỗi khi cập nhật giao dịch: " + err.Error())
 	}
 
+	if len(dbTransaction.TransactionItems) == 0 {
+		if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
+			Where("transaction_id = ?", dbTransaction.ID).
+			Find(&dbTransaction.TransactionItems).Error; err != nil {
+			tx.Rollback()
+		}
+	}
+
 	for _, value := range dbTransaction.TransactionItems {
 		if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
 			Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
