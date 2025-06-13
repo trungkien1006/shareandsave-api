@@ -1,5 +1,7 @@
 package warehouse
 
+import "time"
+
 type Warehouse struct {
 	ID              uint
 	ItemID          uint
@@ -11,6 +13,7 @@ type Warehouse struct {
 	Description     string
 	Classify        int
 	StockPlace      string
+	CreatedAt       time.Time
 }
 
 type DetailWarehouse struct {

@@ -33,6 +33,7 @@ func WarehouseDomainToDTO(domain warehouse.Warehouse) WarehouseDTO {
 		Description:     domain.Description,
 		Classify:        domain.Classify,
 		StockPlace:      domain.StockPlace,
+		CreatedAt:       domain.CreatedAt,
 	}
 }
 
