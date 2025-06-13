@@ -117,8 +117,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			author.avatar AS author_avatar,
 			COUNT(DISTINCT interest.id) AS interest_count,
 			SUM(DISTINCT post_item.quantity) AS item_count,
-			SUM(DISTINCT post_item.current_quantity) AS current_item_count,
-			SUM(DISTINCT post_item.quantity) AS item_count
+			SUM(DISTINCT post_item.current_quantity) AS current_item_count
 		`).
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id AND author.deleted_at IS NULL").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id AND interest.deleted_at IS NULL").
