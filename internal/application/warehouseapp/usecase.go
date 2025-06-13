@@ -63,6 +63,8 @@ func (uc *UseCase) UpdateWarehouse(ctx context.Context, domainWarehouse warehous
 		updateWarehouse.ItemWareHouse = domainWarehouse.ItemWareHouse
 	}
 
+	updateWarehouse.ID = domainWarehouse.ID
+
 	if err := uc.repo.Update(ctx, updateWarehouse); err != nil {
 		return err
 	}
