@@ -28,6 +28,7 @@ type DetailWarehouse struct {
 	Classify        int
 	StockPlace      string
 	ItemWareHouse   []ItemWareHouse
+	CreatedAt       time.Time
 }
 
 type ItemWareHouse struct {

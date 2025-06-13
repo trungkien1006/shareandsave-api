@@ -28,6 +28,7 @@ type DetailWarehouseDTO struct {
 	Classify        int                `json:"classify"`
 	StockPlace      string             `json:"stockPlace"`
 	ItemWareHouse   []ItemWareHouseDTO `json:"itemWarehouses"`
+	CreatedAt       time.Time          `json:"createdAt"`
 }
 
 type ItemWareHouseDTO struct {

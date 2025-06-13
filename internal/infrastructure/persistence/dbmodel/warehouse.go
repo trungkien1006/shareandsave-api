@@ -108,6 +108,7 @@ func DetailDBToDetailDomain(db DetailWarehouse) warehouse.DetailWarehouse {
 		Classify:        db.Classify,
 		StockPlace:      db.StockPlace,
 		ItemWareHouse:   itemWarehouses,
+		CreatedAt:       db.CreatedAt,
 	}
 }
 

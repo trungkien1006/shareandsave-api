@@ -145,6 +145,8 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 			item.name AS item_name,
 			sender.full_name AS sender_name
 		`).
+		Preload("ItemWarehouses").
+		Preload("ItemWarehouses.Item").
 		Where("warehouse.id = ?", warehouseID).
 		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = warehouse.id").
 		Joins("JOIN item ON item.id = warehouse.item_id").

@@ -78,5 +78,6 @@ func DetailWarehouseDomainToDTO(domain warehouse.DetailWarehouse) DetailWarehous
 		Classify:        domain.Classify,
 		StockPlace:      domain.StockPlace,
 		ItemWareHouse:   itemWarehouses,
+		CreatedAt:       domain.CreatedAt,
 	}
 }
