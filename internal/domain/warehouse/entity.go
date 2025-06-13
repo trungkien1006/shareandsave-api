@@ -32,11 +32,12 @@ type DetailWarehouse struct {
 }
 
 type ItemWareHouse struct {
-	ID          uint
-	ItemID      uint
-	ItemName    string
-	WarehouseID uint
-	Code        string
-	Description string
-	Status      int
+	ID           uint
+	ItemID       uint
+	ItemName     string
+	CategoryName string
+	WarehouseID  uint
+	Code         string
+	Description  string
+	Status       int
 }

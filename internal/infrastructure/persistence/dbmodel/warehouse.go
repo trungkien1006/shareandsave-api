@@ -51,13 +51,14 @@ func DetailDBToDomain(db DetailWarehouse) warehouse.Warehouse {
 // DB to Domain
 func ItemWarehouseDBToDomain(db ItemWarehouse) warehouse.ItemWareHouse {
 	return warehouse.ItemWareHouse{
-		ID:          db.ID,
-		ItemID:      db.ItemID,
-		ItemName:    db.Item.Name,
-		WarehouseID: db.WarehouseID,
-		Code:        db.Code,
-		Description: db.Description,
-		Status:      db.Status,
+		ID:           db.ID,
+		ItemID:       db.ItemID,
+		ItemName:     db.Item.Name,
+		CategoryName: db.Item.Category.Name,
+		WarehouseID:  db.WarehouseID,
+		Code:         db.Code,
+		Description:  db.Description,
+		Status:       db.Status,
 	}
 }
 
@@ -86,13 +87,14 @@ func DetailDBToDetailDomain(db DetailWarehouse) warehouse.DetailWarehouse {
 
 	for _, value := range db.ItemWarehouses {
 		itemWarehouses = append(itemWarehouses, warehouse.ItemWareHouse{
-			ID:          value.ID,
-			ItemID:      value.ItemID,
-			ItemName:    value.Item.Name,
-			WarehouseID: value.WarehouseID,
-			Code:        value.Code,
-			Description: value.Description,
-			Status:      value.Status,
+			ID:           value.ID,
+			ItemID:       value.ItemID,
+			ItemName:     value.Item.Name,
+			CategoryName: value.Item.Category.Name,
+			WarehouseID:  value.WarehouseID,
+			Code:         value.Code,
+			Description:  value.Description,
+			Status:       value.Status,
 		})
 	}
 

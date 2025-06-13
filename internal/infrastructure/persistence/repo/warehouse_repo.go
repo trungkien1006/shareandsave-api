@@ -94,7 +94,8 @@ func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]ware
 		Model(&dbmodel.ItemWarehouse{}).
 		Table("item_warehouse as iw").
 		Joins("JOIN item ON item.id = iw.item_id").
-		Preload("Item")
+		Preload("Item").
+		Preload("Item.Category")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"

@@ -32,11 +32,12 @@ type DetailWarehouseDTO struct {
 }
 
 type ItemWareHouseDTO struct {
-	ID          uint   `json:"id"`
-	ItemID      uint   `json:"itemID"`
-	ItemName    string `json:"itemName"`
-	WarehouseID uint   `json:"warehouseID"`
-	Code        string `json:"code"`
-	Description string `json:"description"`
-	Status      int    `json:"status"`
+	ID           uint   `json:"id"`
+	ItemID       uint   `json:"itemID"`
+	ItemName     string `json:"itemName"`
+	CategoryName string `json:"categoryName"`
+	WarehouseID  uint   `json:"warehouseID"`
+	Code         string `json:"code"`
+	Description  string `json:"description"`
+	Status       int    `json:"status"`
 }

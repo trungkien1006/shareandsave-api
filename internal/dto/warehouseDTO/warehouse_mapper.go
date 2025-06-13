@@ -40,13 +40,14 @@ func WarehouseDomainToDTO(domain warehouse.Warehouse) WarehouseDTO {
 // Domain to DTO
 func ItemWarehouseDomainToDTO(domain warehouse.ItemWareHouse) ItemWareHouseDTO {
 	return ItemWareHouseDTO{
-		ID:          domain.ID,
-		ItemID:      domain.ItemID,
-		ItemName:    domain.ItemName,
-		WarehouseID: domain.WarehouseID,
-		Code:        domain.Code,
-		Description: domain.Description,
-		Status:      domain.Status,
+		ID:           domain.ID,
+		ItemID:       domain.ItemID,
+		ItemName:     domain.ItemName,
+		CategoryName: domain.CategoryName,
+		WarehouseID:  domain.WarehouseID,
+		Code:         domain.Code,
+		Description:  domain.Description,
+		Status:       domain.Status,
 	}
 }
 
@@ -56,13 +57,14 @@ func DetailWarehouseDomainToDTO(domain warehouse.DetailWarehouse) DetailWarehous
 
 	for _, value := range domain.ItemWareHouse {
 		itemWarehouses = append(itemWarehouses, ItemWareHouseDTO{
-			ID:          value.ID,
-			ItemID:      value.ItemID,
-			ItemName:    value.ItemName,
-			WarehouseID: value.WarehouseID,
-			Code:        value.Code,
-			Description: value.Description,
-			Status:      value.Status,
+			ID:           value.ID,
+			ItemID:       value.ItemID,
+			ItemName:     value.ItemName,
+			CategoryName: value.CategoryName,
+			WarehouseID:  value.WarehouseID,
+			Code:         value.Code,
+			Description:  value.Description,
+			Status:       value.Status,
 		})
 	}
 
