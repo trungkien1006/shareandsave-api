@@ -43,7 +43,7 @@ func (s *AuthService) GenerateToken(user JWTSubject) string {
 
 	currentTime := GetCurrentTimeVN()
 
-	tokenExp := currentTime.Add(time.Hour * 1).Format("02-01-2006 15:04:05")
+	tokenExp := currentTime.Add(time.Hour * 4).Format("02-01-2006 15:04:05")
 
 	var payload Payload = Payload{
 		Sub: user,
