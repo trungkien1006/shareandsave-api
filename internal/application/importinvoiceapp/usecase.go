@@ -81,22 +81,22 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 	warehouses := make(map[uint]warehouse.DetailWarehouse)
 
 	for _, value := range importInvoice.ItemImportInvoice {
-		if wh, ok := warehouses[value.ID]; ok {
+		if wh, ok := warehouses[value.ItemID]; ok {
 			wh.Quantity = wh.Quantity + int(value.Quantity)
 
-			warehouses[value.ID] = wh
+			warehouses[value.ItemID] = wh
 		} else {
-			wh := warehouses[value.ID]
+			wh := warehouses[value.ItemID]
 
 			wh.ItemID = value.ItemID
 			wh.ItemName = value.ItemName
-			wh.SKU = uc.service.GenerateSKU(int(value.ID))
+			wh.SKU = uc.service.GenerateSKU(int(value.ItemID))
 			wh.Classify = importInvoice.Classify
 			wh.Description = ""
 			wh.Quantity = int(value.Quantity)
 			wh.StockPlace = ""
 
-			warehouses[value.ID] = wh
+			warehouses[value.ItemID] = wh
 		}
 
 		var itemWHs []warehouse.ItemWareHouse
@@ -116,11 +116,11 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 			})
 		}
 
-		wh := warehouses[value.ID]
+		wh := warehouses[value.ItemID]
 
 		wh.ItemWareHouse = itemWHs
 
-		warehouses[value.ID] = wh
+		warehouses[value.ItemID] = wh
 	}
 
 	for _, value := range warehouses {
