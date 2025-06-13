@@ -273,6 +273,8 @@ func (uc *UseCase) UpdateClient(ctx context.Context, domainUser *user.User) erro
 		return err
 	}
 
+	domainUser = &updateUser
+
 	return nil
 }
 
