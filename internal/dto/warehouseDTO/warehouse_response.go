@@ -26,3 +26,14 @@ type UpdateWarehouseResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type FilterItemWarehouseResponseWrapper struct {
+	Code    int                         `json:"code"`
+	Message string                      `json:"message"`
+	Data    FilterItemWarehouseResponse `json:"data"`
+}
+
+type FilterItemWarehouseResponse struct {
+	ItemWarehouses []ItemWareHouseDTO `json:"itemWarehouses"`
+	TotalPage      int                `json:"totalPage"`
+}

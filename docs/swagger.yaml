@@ -1428,6 +1428,24 @@ definitions:
       stockPlace:
         type: string
     type: object
+  warehousedto.FilterItemWarehouseResponse:
+    properties:
+      itemWarehouses:
+        items:
+          $ref: '#/definitions/warehousedto.ItemWareHouseDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  warehousedto.FilterItemWarehouseResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/warehousedto.FilterItemWarehouseResponse'
+      message:
+        type: string
+    type: object
   warehousedto.FilterWarehouseResponse:
     properties:
       totalPage:
@@ -2221,6 +2239,61 @@ paths:
       summary: Delete Interest
       tags:
       - interests
+  /item-warehouses:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record per page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column (createdAt)
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: Trường lọc (itemName description code status)
+        in: query
+        name: searchBy
+        type: string
+      - description: 'Giá trị lọc:'
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehousedto.FilterItemWarehouseResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get item warehouse
+      tags:
+      - item warehouses
   /items:
     get:
       consumes:

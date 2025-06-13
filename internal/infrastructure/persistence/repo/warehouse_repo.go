@@ -78,6 +78,57 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 	return totalPages, nil
 }
 
+func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]warehouse.ItemWareHouse, req filter.FilterRequest) (int, error) {
+	var (
+		query           *gorm.DB
+		totalRecords    int64
+		dbItemWarehouse []dbmodel.ItemWarehouse
+	)
+
+	query = r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.ItemWarehouse{}).
+		Table("item_warehouse as iw").
+		Joins("JOIN item ON item.id = iw.item_id").
+		Preload("Item")
+
+	if req.SearchBy != "" && req.SearchValue != "" {
+		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+
+		if column == "item_name" {
+			column = "item.name"
+		} else {
+			column = "iw." + column
+		}
+
+		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+	}
+
+	if err := query.Count(&totalRecords).Error; err != nil {
+		return 0, err
+	}
+
+	if req.Sort != "" && req.Order != "" {
+		query = query.Order("iw." + strcase.ToSnake(req.Sort) + " " + req.Order)
+	}
+
+	if req.Limit > 0 && req.Page > 0 {
+		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
+	}
+
+	if err := query.Find(&dbItemWarehouse).Error; err != nil {
+		return 0, err
+	}
+
+	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
+
+	for _, value := range dbItemWarehouse {
+		*itemWarehouses = append(*itemWarehouses, dbmodel.ItemWarehouseDBToDomain(value))
+	}
+
+	return totalPages, nil
+}
+
 func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.DetailWarehouse, warehouseID uint) error {
 	var dbWarehouse dbmodel.DetailWarehouse
 

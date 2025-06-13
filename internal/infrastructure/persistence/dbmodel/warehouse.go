@@ -47,6 +47,19 @@ func DetailDBToDomain(db DetailWarehouse) warehouse.Warehouse {
 	}
 }
 
+// DB to Domain
+func ItemWarehouseDBToDomain(db ItemWarehouse) warehouse.ItemWareHouse {
+	return warehouse.ItemWareHouse{
+		ID:          db.ID,
+		ItemID:      db.ItemID,
+		ItemName:    db.Item.Name,
+		WarehouseID: db.WarehouseID,
+		Code:        db.Code,
+		Description: db.Description,
+		Status:      db.Status,
+	}
+}
+
 // Domain to DB
 func UpdateDomainToDB(domain warehouse.DetailWarehouse) Warehouse {
 	var itemWarehouses []ItemWarehouse
