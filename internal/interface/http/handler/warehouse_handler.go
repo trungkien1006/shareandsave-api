@@ -142,7 +142,7 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, warehousedto.FilterItemWarehouseResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched warehouses successfully",
+		Message: "Fetched item warehouses successfully",
 		Data: warehousedto.FilterItemWarehouseResponse{
 			ItemWarehouses: itemWarehouseDTORes,
 			TotalPage:      totalPage,
