@@ -110,6 +110,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 	)
 
 	query = r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Post{}).
 		Table("post").
 		Select(`
 			post.*,
