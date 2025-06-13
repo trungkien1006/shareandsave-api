@@ -362,7 +362,7 @@ func (h *UserHandler) UpdateClient(c *gin.Context) {
 
 	var user user.User
 
-	userID, err := strconv.Atoi(c.Param("clientID"))
+	clientID, err := strconv.Atoi(c.Param("clientID"))
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
@@ -371,7 +371,7 @@ func (h *UserHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	user.ID = uint(userID)
+	user.ID = uint(clientID)
 	user.Avatar = req.Avatar
 	user.FullName = req.FullName
 	user.PhoneNumber = req.PhoneNumber
