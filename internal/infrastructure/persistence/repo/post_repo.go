@@ -115,7 +115,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		Select(`
 			post.*,
 			author.full_name AS author_name,
-			author.avatar AS author_avatar,
+			author.avatar AS author_avatar
 		`).
 		Preload("Interest").
 		Preload("PostItem").
