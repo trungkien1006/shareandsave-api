@@ -63,6 +63,20 @@ func DomainClientToDTO(u user.User) ClientDTO {
 }
 
 //Domain -> DTO
+func DomainUpdateUserToDTO(u user.User) UpdateUserDTO {
+	return UpdateUserDTO{
+		ID:          u.ID,
+		Fullname:    u.FullName,
+		Avatar:      u.Avatar,
+		PhoneNumber: u.PhoneNumber,
+		Address:     u.Address,
+		Status:      u.Status,
+		GoodPoint:   u.GoodPoint,
+		Major:       u.Major,
+	}
+}
+
+//Domain -> DTO
 func DomainAdminToDTO(u user.User) AdminDTO {
 	return AdminDTO{
 		ID:          u.ID,

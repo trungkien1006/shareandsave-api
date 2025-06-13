@@ -48,3 +48,14 @@ type AdminDTO struct {
 	GoodPoint   int    `json:"goodPoint"`
 	Major       string `json:"major,omitempty"`
 }
+
+type UpdateUserDTO struct {
+	ID          uint   `json:"id"`
+	Fullname    string `json:"fullName"`
+	Avatar      string `json:"avatar,omitempty"`
+	PhoneNumber string `json:"phoneNumber,omitempty"`
+	Address     string `json:"address,omitempty"`
+	Status      int8   `json:"status"`
+	GoodPoint   int    `json:"goodPoint"`
+	Major       string `json:"major,omitempty"`
+}

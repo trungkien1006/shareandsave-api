@@ -76,7 +76,7 @@ type UpdateClientResponseWrapper struct {
 }
 
 type UpdateClientResponse struct {
-	Client ClientDTO `json:"client"`
+	Client UpdateUserDTO `json:"client"`
 }
 
 // Update admin
