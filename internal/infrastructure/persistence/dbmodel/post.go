@@ -82,6 +82,8 @@ func PostDBToDomain(dbPost Post) post.Post {
 func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 	domainTag := make([]string, 0)
 	domainImage := make([]string, 0)
+	currentItemCount := 0
+	itemCount := 0
 
 	for _, value := range db.Tag {
 		domainTag = append(domainTag, value)
@@ -89,6 +91,11 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 
 	for _, value := range db.Image {
 		domainImage = append(domainImage, value)
+	}
+
+	for _, value := range db.PostItem {
+		currentItemCount += value.CurrentQuantity
+		itemCount += value.Quantity
 	}
 
 	return post.PostWithCount{
@@ -106,9 +113,9 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 		Images:           domainImage,
 		CreatedAt:        db.CreatedAt,
 		Tag:              domainTag,
-		InterestCount:    uint(db.InterestCount),
-		ItemCount:        uint(db.ItemCount),
-		CurrentItemCount: uint(db.CurrentItemCount),
+		InterestCount:    uint(len(db.Interests)),
+		ItemCount:        uint(itemCount),
+		CurrentItemCount: uint(currentItemCount),
 	}
 }
 
