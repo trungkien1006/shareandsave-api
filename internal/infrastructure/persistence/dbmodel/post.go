@@ -39,12 +39,12 @@ type AdminPost struct {
 }
 
 type PostWithCounts struct {
-	Post                    // Lấy toàn bộ trường từ bảng post
-	AuthorAvatar     string `gorm:"column:"author_avatar"`
-	AuthorName       string `gorm:"column:author_name"`
-	InterestCount    int64  `gorm:"column:interest_count"`
-	ItemCount        int64  `gorm:"column:item_count"`
-	CurrentItemCount int    `gorm:"column:current_item_count"`
+	Post                // Lấy toàn bộ trường từ bảng post
+	AuthorAvatar string `gorm:"column:"author_avatar"`
+	AuthorName   string `gorm:"column:author_name"`
+	// Add these to support Preload
+	Interests []Interest `gorm:"foreignKey:PostID"`
+	PostItem  []PostItem `gorm:"foreignKey:PostID"`
 }
 
 // DB → Domain
