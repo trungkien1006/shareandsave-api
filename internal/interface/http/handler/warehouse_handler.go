@@ -152,6 +152,7 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 
 // @Summary Get warehouse by ID
 // @Description API lấy thông tin warehouse theo ID
+// @Security BearerAuth
 // @Tags warehouses
 // @Accept json
 // @Produce json
@@ -195,6 +196,7 @@ func (h *WarehouseHandler) GetByID(c *gin.Context) {
 
 // @Summary Update warehouse
 // @Description API cập nhật warehouse
+// @Security BearerAuth
 // @Tags warehouses
 // @Accept json
 // @Produce json
