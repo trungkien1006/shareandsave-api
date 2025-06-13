@@ -2088,7 +2088,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (senderName invoiceNum itemName classify sku description stockPlace)",
+                        "description": "Trường lọc (senderName receiverName invoiceNum itemName classify sku description stockPlace)",
                         "name": "searchBy",
                         "in": "query"
                     },
@@ -4343,6 +4343,9 @@
                 "classify": {
                     "type": "integer"
                 },
+                "createdAt": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -4366,6 +4369,9 @@
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
                 },
                 "senderName": {
                     "type": "string"
@@ -4456,6 +4462,9 @@
         "warehousedto.ItemWareHouseDTO": {
             "type": "object",
             "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
                 "code": {
                     "type": "string"
                 },
@@ -4552,6 +4561,9 @@
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
                 },
                 "senderName": {
                     "type": "string"

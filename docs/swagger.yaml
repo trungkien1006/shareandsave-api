@@ -1407,6 +1407,8 @@ definitions:
         type: string
       classify:
         type: integer
+      createdAt:
+        type: string
       description:
         type: string
       id:
@@ -1423,6 +1425,8 @@ definitions:
         type: array
       quantity:
         type: integer
+      receiverName:
+        type: string
       senderName:
         type: string
       stockPlace:
@@ -1480,6 +1484,8 @@ definitions:
     type: object
   warehousedto.ItemWareHouseDTO:
     properties:
+      categoryName:
+        type: string
       code:
         type: string
       description:
@@ -1544,6 +1550,8 @@ definitions:
         type: string
       quantity:
         type: integer
+      receiverName:
+        type: string
       senderName:
         type: string
       stockPlace:
@@ -2919,8 +2927,8 @@ paths:
         in: query
         name: order
         type: string
-      - description: Trường lọc (senderName invoiceNum itemName classify sku description
-          stockPlace)
+      - description: Trường lọc (senderName receiverName invoiceNum itemName classify
+          sku description stockPlace)
         in: query
         name: searchBy
         type: string

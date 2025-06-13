@@ -30,7 +30,7 @@ func NewWarehouseHandler(uc *warehouseapp.UseCase) *WarehouseHandler {
 // @Param limit query int false "Number record per page" minimum(1) example(10)
 // @Param sort query string false "Sort column (createdAt quantity)"
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param   searchBy   query    string  false  "Trường lọc (senderName invoiceNum itemName classify sku description stockPlace)"
+// @Param   searchBy   query    string  false  "Trường lọc (senderName receiverName invoiceNum itemName classify sku description stockPlace)"
 // @Param   searchValue   query    string  false  "Giá trị lọc:"
 // @Success 200 {object} warehousedto.FilterWarehouseResponseWrapper
 // @Failure 400 {object} enums.AppError

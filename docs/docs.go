@@ -2095,7 +2095,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (senderName invoiceNum itemName classify sku description stockPlace)",
+                        "description": "Trường lọc (senderName receiverName invoiceNum itemName classify sku description stockPlace)",
                         "name": "searchBy",
                         "in": "query"
                     },
@@ -4350,6 +4350,9 @@ const docTemplate = `{
                 "classify": {
                     "type": "integer"
                 },
+                "createdAt": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -4373,6 +4376,9 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
                 },
                 "senderName": {
                     "type": "string"
@@ -4463,6 +4469,9 @@ const docTemplate = `{
         "warehousedto.ItemWareHouseDTO": {
             "type": "object",
             "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
                 "code": {
                     "type": "string"
                 },
@@ -4559,6 +4568,9 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
                 },
                 "senderName": {
                     "type": "string"

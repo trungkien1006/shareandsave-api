@@ -5,7 +5,7 @@ type GetWarehouseRequest struct {
 	Limit       int    `form:"limit"`
 	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt quantity" example:"createdAt quantity"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=senderName invoiceNum itemName classify SKU description stockPlace"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=senderName receiverName invoiceNum itemName classify SKU description stockPlace"`
 	SearchValue string `form:"searchValue"`
 }
 
