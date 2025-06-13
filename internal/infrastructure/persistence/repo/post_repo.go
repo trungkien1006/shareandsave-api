@@ -117,7 +117,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			author.full_name AS author_name,
 			author.avatar AS author_avatar
 		`).
-		Preload("Interest").
+		Preload("Interests").
 		Preload("PostItem").
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id AND author.deleted_at IS NULL").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id AND interest.deleted_at IS NULL").
