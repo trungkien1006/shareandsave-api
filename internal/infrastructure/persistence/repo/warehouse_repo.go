@@ -33,11 +33,13 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 		Select(`
 			warehouse.*,
 			item.name AS item_name,
-			sender.full_name AS sender_name
+			sender.full_name AS sender_name,
+			receiver.full_name AS receiver_name
 		`).
 		Joins("JOIN item ON item.id = warehouse.item_id").
 		Joins("JOIN import_invoice as ii ON ii.id = warehouse.import_invoice_id").
-		Joins("JOIN user as sender ON sender.id = ii.sender_id")
+		Joins("JOIN user as sender ON sender.id = ii.sender_id").
+		Joins("JOIN user as receiver ON receiver.id = ii.receiver_id")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		if req.SearchBy == "SKU" {
@@ -50,6 +52,8 @@ func (r *WarehouseRepoDB) GetAll(ctx context.Context, warehouses *[]warehouse.Wa
 			column = "sender.full_name"
 		} else if column == "item_name" {
 			column = "item.name"
+		} else if column == "receiver_name" {
+			column = "receiver.receiver_name"
 		} else {
 			column = "warehouse." + column
 		}
@@ -144,7 +148,8 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 		Select(`
 			warehouse.*,
 			item.name AS item_name,
-			sender.full_name AS sender_name
+			sender.full_name AS sender_name,
+			receiver.full_name AS receiver_name
 		`).
 		Preload("ItemWarehouses").
 		Preload("ItemWarehouses.Item").
@@ -153,6 +158,7 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 		Joins("JOIN item ON item.id = warehouse.item_id").
 		Joins("JOIN import_invoice as ii ON ii.id = warehouse.import_invoice_id").
 		Joins("JOIN user as sender ON sender.id = ii.sender_id").
+		Joins("JOIN user as receiver ON receiver.id = ii.receiver_id").
 		First(&dbWarehouse).Error; err != nil {
 		return errors.New("Có lỗi khi truy vấn warehouse: " + err.Error())
 	}

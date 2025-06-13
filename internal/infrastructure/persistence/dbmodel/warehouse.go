@@ -27,8 +27,9 @@ type Warehouse struct {
 
 type DetailWarehouse struct {
 	Warehouse
-	ItemName   string `gorm:"column:item_name"`
-	SenderName string `gorm:"column:sender_name"`
+	ItemName     string `gorm:"column:item_name"`
+	SenderName   string `gorm:"column:sender_name"`
+	ReceiverName string `gorm:"column:receiver_name"`
 }
 
 // DB to Domain
@@ -38,6 +39,7 @@ func DetailDBToDomain(db DetailWarehouse) warehouse.Warehouse {
 		ItemID:          db.ItemID,
 		ImportInvoiceID: db.ImportInvoiceID,
 		SenderName:      db.SenderName,
+		ReceiverName:    db.ReceiverName,
 		ItemName:        db.ItemName,
 		SKU:             db.SKU,
 		Quantity:        db.Quantity,
@@ -103,6 +105,7 @@ func DetailDBToDetailDomain(db DetailWarehouse) warehouse.DetailWarehouse {
 		ItemID:          db.ItemID,
 		ImportInvoiceID: db.ImportInvoiceID,
 		SenderName:      db.SenderName,
+		ReceiverName:    db.ReceiverName,
 		ItemName:        db.ItemName,
 		SKU:             db.SKU,
 		Quantity:        db.Quantity,

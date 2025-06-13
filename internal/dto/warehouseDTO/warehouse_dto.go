@@ -7,6 +7,7 @@ type WarehouseDTO struct {
 	ItemID          uint      `json:"itemID"`
 	ImportInvoiceID uint      `json:"importInvoiceID"`
 	SenderName      string    `json:"senderName"`
+	ReceiverName    string    `json:"receiverName"`
 	ItemName        string    `json:"itemName"`
 	SKU             string    `json:"SKU"`
 	Quantity        int       `json:"quantity"`
@@ -21,6 +22,7 @@ type DetailWarehouseDTO struct {
 	ItemID          uint               `json:"itemID"`
 	ImportInvoiceID uint               `json:"importInvoiceID"`
 	SenderName      string             `json:"senderName"`
+	ReceiverName    string             `json:"receiverName"`
 	ItemName        string             `json:"itemName"`
 	SKU             string             `json:"SKU"`
 	Quantity        int                `json:"quantity"`

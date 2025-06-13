@@ -7,6 +7,7 @@ type Warehouse struct {
 	ItemID          uint
 	ImportInvoiceID uint
 	SenderName      string
+	ReceiverName    string
 	ItemName        string
 	SKU             string
 	Quantity        int
@@ -21,6 +22,7 @@ type DetailWarehouse struct {
 	ItemID          uint
 	ImportInvoiceID uint
 	SenderName      string
+	ReceiverName    string
 	ItemName        string
 	SKU             string
 	Quantity        int
