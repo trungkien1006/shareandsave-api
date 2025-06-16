@@ -7,9 +7,10 @@ import (
 )
 
 type OldItemsInPost struct {
-	ItemID   uint
-	Image    string
-	Quantity int
+	ItemID          uint
+	Image           string
+	Quantity        int
+	CurrentQuantity int
 }
 
 type NewItemsInPost struct {

@@ -3,8 +3,7 @@ package comment
 import "time"
 
 type GetComment struct {
-	SenderID   uint
-	ReceiverID uint
+	InterestID int
 	Page       int
 	Limit      int
 	Search     string

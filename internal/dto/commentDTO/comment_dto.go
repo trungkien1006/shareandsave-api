@@ -7,7 +7,7 @@ type CommentDTO struct {
 	InterestID uint      `json:"interestID"`
 	SenderID   uint      `json:"senderID"`
 	ReceiverID uint      `json:"receiverID"`
-	Content    string    `json:"content"`
-	IsRead     uint      `json:"isread"`
+	Content    string    `json:"message"`
+	IsRead     uint      `json:"isRead"`
 	CreatedAt  time.Time `json:"createdAt"`
 }

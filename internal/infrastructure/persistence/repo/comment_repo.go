@@ -26,7 +26,7 @@ func (r *CommentRepoDB) GetAll(ctx context.Context, domainComment *[]comment.Com
 	query = r.db.Debug().
 		WithContext(ctx).
 		Model(&dbmodel.Comment{}).
-		Where("sender_id = ? AND receiver_id = ?", req.SenderID, req.ReceiverID).
+		Where("interest_id = ?", req.InterestID).
 		Where("content LIKE ?", "%"+req.Search+"%").
 		Order("created_at DESC")
 

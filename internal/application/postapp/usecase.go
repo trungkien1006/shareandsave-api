@@ -69,7 +69,7 @@ func (uc *UseCase) GetPostBySlug(ctx context.Context, post *post.DetailPost, pos
 	return nil
 }
 
-func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error {
+func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) error {
 	var (
 		author user.User
 		tags   []string
@@ -77,38 +77,38 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 
 	itemIDs := make(map[uint]uint, 0)
 
-	if err := uc.userRepo.GetCommonUserByID(ctx, &author, int(post.AuthorID)); err != nil {
+	if err := uc.userRepo.GetCommonUserByID(ctx, &author, int(domainPost.AuthorID)); err != nil {
 		return err
 	}
 
-	if post.Info != "" {
-		postContent, err := uc.service.GenerateContent(post.Info)
+	if domainPost.Info != "" {
+		postContent, err := uc.service.GenerateContent(domainPost.Info)
 		if err != nil {
 			return errors.New("Lỗi khi tạo content từ info:" + err.Error())
 		}
 
-		post.Content = postContent
+		domainPost.Content = postContent
 	} else {
-		post.Content = "{}"
-		post.Info = "{}"
+		domainPost.Content = "{}"
+		domainPost.Info = "{}"
 	}
 
-	post.AuthorID = author.ID
-	post.Status = int8(enums.PostStatusPending) // Mặc định trạng thái là Pending
-	post.Slug = uc.service.GenerateSlug(post.Title)
-	post.AuthorName = author.FullName
+	domainPost.AuthorID = author.ID
+	domainPost.Status = int8(enums.PostStatusPending) // Mặc định trạng thái là Pending
+	domainPost.Slug = uc.service.GenerateSlug(domainPost.Title)
+	domainPost.AuthorName = author.FullName
 
 	//resize ảnh
-	for index, image := range post.Images {
+	for index, image := range domainPost.Images {
 		formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
 		if err != nil {
 			return errors.New("Không thể format ảnh:" + err.Error())
 		}
 
-		post.Images[index] = formatedImage
+		domainPost.Images[index] = formatedImage
 	}
 
-	for key, oldItem := range post.OldItems {
+	for key, oldItem := range domainPost.OldItems {
 		var item item.Item
 
 		err := uc.itemRepo.GetByID(ctx, &item, oldItem.ItemID)
@@ -117,7 +117,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 		}
 
 		if oldItem.Image == "" {
-			post.OldItems[key].Image = item.Image
+			domainPost.OldItems[key].Image = item.Image
 		} else {
 			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 
@@ -125,58 +125,79 @@ func (uc *UseCase) CreatePost(ctx context.Context, post *post.CreatePost) error 
 				return err
 			}
 
-			post.OldItems[key].Image = strBase64Image
+			domainPost.OldItems[key].Image = strBase64Image
 		}
 
 		itemIDs[oldItem.ItemID] = oldItem.ItemID
 	}
 
-	for key, newItem := range post.NewItems {
-		item := item.Item{
-			CategoryID: newItem.CategoryID,
-			Name:       newItem.Name,
-			Image:      "",
-		}
+	for key, newItem := range domainPost.NewItems {
+		var checkItem item.Item
 
-		if newItem.Image == "" {
-			base64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
-			if err != nil {
-				return err
-			}
-
-			strBase64Image, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
-			if err != nil {
-				return err
-			}
-
-			item.Image = strBase64Image
-		} else {
-			strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
-
-			if err != nil {
-				return err
-			}
-
-			item.Image = strBase64Image
-		}
-
-		if err := uc.itemRepo.Save(ctx, &item); err != nil {
+		if err := uc.itemRepo.GetByName(ctx, &checkItem, newItem.Name); err != nil {
 			return err
 		}
 
-		post.NewItems[key].ItemID = item.ID
+		if checkItem.ID == 0 {
+			if newItem.Image == "" {
+				base64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
+				if err != nil {
+					return err
+				}
 
-		itemIDs[item.ID] = item.ID
+				strBase64Image, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+				if err != nil {
+					return err
+				}
+
+				checkItem.Image = strBase64Image
+			} else {
+				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+
+				if err != nil {
+					return err
+				}
+
+				checkItem.Image = strBase64Image
+			}
+
+			if err := uc.itemRepo.Save(ctx, &checkItem); err != nil {
+				return err
+			}
+
+			domainPost.NewItems[key].ItemID = checkItem.ID
+		} else {
+			var tempItem post.OldItemsInPost
+
+			if newItem.Image != "" {
+				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+				if err != nil {
+					return err
+				}
+
+				tempItem.Image = strBase64Image
+			} else {
+				tempItem.Image = newItem.Image
+			}
+
+			tempItem.ItemID = checkItem.ID
+			tempItem.Quantity = newItem.Quantity
+			tempItem.CurrentQuantity = newItem.CurrentQuantity
+
+			domainPost.OldItems = append(domainPost.OldItems, tempItem)
+		}
+
+		itemIDs[checkItem.ID] = checkItem.ID
 	}
 
 	if err := uc.categoryRepo.GetCategoryNameByItemIDs(ctx, itemIDs, &tags); err != nil {
 		return err
 	}
 
-	post.Tag = tags
+	domainPost.Tag = tags
 
 	//create post
-	if err := uc.repo.Save(ctx, post); err != nil {
+	if err := uc.repo.Save(ctx, domainPost); err != nil {
 		return err
 	}
 

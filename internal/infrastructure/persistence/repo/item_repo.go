@@ -96,6 +96,18 @@ func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) erro
 	return nil
 }
 
+func (r *ItemRepoDB) GetByName(ctx context.Context, item *item.Item, name string) error {
+	var dbItem dbmodel.Item
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("name = ?", name).First(&dbItem).Error; err != nil {
+		return errors.New("Có lỗi khi truy suất đồ đạc theo tên: " + err.Error())
+	}
+
+	*item = dbmodel.ItemDBToDomain(dbItem)
+
+	return nil
+}
+
 // func (r *ItemRepoDB) GetCategoryNameByItemID(ctx context.Context, itemID uint) (string, error) {
 // 	var item
 
