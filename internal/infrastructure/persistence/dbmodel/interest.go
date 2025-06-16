@@ -73,5 +73,6 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 		Items:        domainItems,
 		Interests:    domainInterest,
 		UpdatedAt:    db.UpdatedAt,
+		CreatedAt:    db.CreatedAt,
 	}
 }

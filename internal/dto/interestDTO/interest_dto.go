@@ -37,4 +37,5 @@ type PostInterest struct {
 	Items        []PostInterestItem `json:"items"`
 	Interests    []Interest         `json:"interests"`
 	UpdatedAt    time.Time          `json:"updatedAt"`
+	CreatedAt    time.Time          `json:"createdAt"`
 }

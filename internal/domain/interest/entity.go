@@ -34,6 +34,7 @@ type PostInterest struct {
 	Items        []PostInterestItem
 	Interests    []Interest
 	UpdatedAt    time.Time
+	CreatedAt    time.Time
 }
 
 type GetInterest struct {

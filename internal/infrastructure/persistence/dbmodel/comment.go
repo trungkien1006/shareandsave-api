@@ -12,6 +12,7 @@ type Comment struct {
 	SenderID   uint   `gorm:"index"`
 	ReceiverID uint   `gorm:"index"`
 	Content    string `gorm:"type:TEXT"`
+	IsRead     uint   `gorm:"type:TINYINT"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`

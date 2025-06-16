@@ -30,7 +30,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.description").
+			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description").
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("user_id = ?", userID)
 			}).
@@ -42,12 +42,12 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Where("interest.user_id = ? AND interest.deleted_at IS NULL", userID).
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Joins("JOIN user ON interest.user_id = user.id").
-			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.description")
+			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description")
 	} else {
 		query = r.db.Debug().WithContext(ctx).
 			Model(&dbmodel.Post{}).
 			Table("post").
-			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.description").
+			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description").
 			Preload("Author").
 			Preload("Interests").
 			Preload("Interests.User").
@@ -57,7 +57,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Joins("JOIN interest ON interest.post_id = post.id").
 			Joins("JOIN user ON interest.user_id = user.id").
 			Where("post.author_id = ? AND post.deleted_at IS NULL", userID).
-			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.description")
+			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description")
 	}
 
 	//tim kiem
