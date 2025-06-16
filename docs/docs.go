@@ -1535,6 +1535,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/messages/sender/:senderID/receiver/:receiverID": {
+            "get": {
+                "description": "API bao gồm cả tìm kiếm và phân trang",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Get messages",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search message content",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/commentdto.GetCommentResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/posts": {
             "get": {
                 "security": [
@@ -2488,6 +2547,57 @@ const docTemplate = `{
                 }
             }
         },
+        "commentdto.CommentDTO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "interestID": {
+                    "type": "integer"
+                },
+                "isread": {
+                    "type": "integer"
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "senderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "commentdto.GetCommentResponse": {
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/commentdto.CommentDTO"
+                    }
+                }
+            }
+        },
+        "commentdto.GetCommentResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/commentdto.GetCommentResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "enums.AppError": {
             "type": "object",
             "properties": {
@@ -2928,6 +3038,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "authorName": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
@@ -4382,7 +4495,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "client": {
-                    "$ref": "#/definitions/userdto.ClientDTO"
+                    "$ref": "#/definitions/userdto.UpdateUserDTO"
                 }
             }
         },
@@ -4397,6 +4510,35 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "userdto.UpdateUserDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },

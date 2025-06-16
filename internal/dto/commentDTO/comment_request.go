@@ -1,9 +1,11 @@
 package commentdto
 
 type GetAllCommentRequest struct {
-	Page   uint   `json:"page" binding:"required"`
-	Limit  uint   `json:"limit" binding:"required"`
-	Search string `json:"search"`
+	SenderID   uint   `uri:"senderID" binding:"required"`
+	ReceiverID uint   `uri:"receiverID" binding:"required"`
+	Page       int    `form:"page" binding:"required"`
+	Limit      int    `form:"limit" binding:"required"`
+	Search     string `form:"search"`
 }
 
 func (r *GetAllCommentRequest) SetDefault() {

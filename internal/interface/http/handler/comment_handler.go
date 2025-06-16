@@ -2,6 +2,12 @@ package handler
 
 import (
 	"final_project/internal/application/commentapp"
+	"final_project/internal/domain/comment"
+	commentdto "final_project/internal/dto/commentDTO"
+	"final_project/internal/pkg/enums"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type CommentHandler struct {
@@ -12,11 +18,57 @@ func NewCommentHandler(uc *commentapp.UseCase) *CommentHandler {
 	return &CommentHandler{uc: uc}
 }
 
-// func (h *CommentHandler) GetAll(c *gin.Context) {
-// 	var (
-// 		req           commentdto.GetAllCommentRequest
-// 		filter        comment.GetComment
-// 		domainComment comment.Comment
-// 	)
+// @Summary Get messages
+// @Description API bao gồm cả tìm kiếm và phân trang
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record per page" minimum(1) example(10)
+// @Param   search   query    string  false "Search message content"
+// @Success 200 {object} commentdto.GetCommentResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /messages/sender/:senderID/receiver/:receiverID [get]
+func (h *CommentHandler) GetAll(c *gin.Context) {
+	var (
+		req           commentdto.GetAllCommentRequest
+		filter        comment.GetComment
+		domainComment []comment.Comment
+	)
 
-// }
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	req.SetDefault()
+
+	filter.SenderID = req.SenderID
+	filter.ReceiverID = req.ReceiverID
+	filter.Page = req.Page
+	filter.Limit = req.Limit
+	filter.Search = req.Search
+
+	if err := h.uc.GetAllComment(c.Request.Context(), &domainComment, filter); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	commentDTORes := make([]commentdto.CommentDTO, 0)
+
+	for _, value := range domainComment {
+		commentDTORes = append(commentDTORes, commentdto.CommentDomainToDTO(value))
+	}
+
+	c.JSON(http.StatusOK, commentdto.GetCommentResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched messages successfully",
+		Data: commentdto.GetCommentResponse{
+			Comments: commentDTORes,
+		},
+	})
+}

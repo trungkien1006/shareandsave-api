@@ -1,6 +1,9 @@
 package commentapp
 
-import "final_project/internal/domain/comment"
+import (
+	"context"
+	"final_project/internal/domain/comment"
+)
 
 type UseCase struct {
 	repo comment.Repository
@@ -8,4 +11,12 @@ type UseCase struct {
 
 func NewUseCase(r comment.Repository) *UseCase {
 	return &UseCase{repo: r}
+}
+
+func (uc *UseCase) GetAllComment(ctx context.Context, domainComment *[]comment.Comment, filter comment.GetComment) error {
+	if err := uc.repo.GetAll(ctx, domainComment, filter); err != nil {
+		return err
+	}
+
+	return nil
 }

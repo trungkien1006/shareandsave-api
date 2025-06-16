@@ -133,6 +133,39 @@ definitions:
       message:
         type: string
     type: object
+  commentdto.CommentDTO:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      interestID:
+        type: integer
+      isread:
+        type: integer
+      receiverID:
+        type: integer
+      senderID:
+        type: integer
+    type: object
+  commentdto.GetCommentResponse:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/commentdto.CommentDTO'
+        type: array
+    type: object
+  commentdto.GetCommentResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/commentdto.GetCommentResponse'
+      message:
+        type: string
+    type: object
   enums.AppError:
     properties:
       code:
@@ -437,6 +470,8 @@ definitions:
       authorID:
         type: integer
       authorName:
+        type: string
+      createdAt:
         type: string
       description:
         type: string
@@ -1396,7 +1431,7 @@ definitions:
   userdto.UpdateClientResponse:
     properties:
       client:
-        $ref: '#/definitions/userdto.ClientDTO'
+        $ref: '#/definitions/userdto.UpdateUserDTO'
     type: object
   userdto.UpdateClientResponseWrapper:
     properties:
@@ -1406,6 +1441,25 @@ definitions:
         $ref: '#/definitions/userdto.UpdateClientResponse'
       message:
         type: string
+    type: object
+  userdto.UpdateUserDTO:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      fullName:
+        type: string
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
+        type: string
+      phoneNumber:
+        type: string
+      status:
+        type: integer
     type: object
   warehousedto.DetailWarehouseDTO:
     properties:
@@ -2584,6 +2638,46 @@ paths:
       summary: Admin Logout
       tags:
       - auth
+  /messages/sender/:senderID/receiver/:receiverID:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả tìm kiếm và phân trang
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record per page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Search message content
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/commentdto.GetCommentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get messages
+      tags:
+      - messages
   /posts:
     get:
       consumes:
