@@ -226,6 +226,11 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 				return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
 			}
 
+			if postItem.CurrentQuantity == 0 {
+				tx.Rollback()
+				return errors.New("Hết hàng: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+			}
+
 			if value.Quantity > postItem.CurrentQuantity {
 				tx.Rollback()
 				return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
