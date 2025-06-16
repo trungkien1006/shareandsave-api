@@ -3,6 +3,7 @@ package boostraps
 import (
 	"final_project/internal/application/authapp"
 	"final_project/internal/application/categoryapp"
+	"final_project/internal/application/commentapp"
 	"final_project/internal/application/importinvoiceapp"
 	"final_project/internal/application/interestapp"
 	"final_project/internal/application/itemapp"
@@ -83,6 +84,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	warehouseRepo := persistence.NewWarehouseRepoDB(db)
 	warehouseUC := warehouseapp.NewUseCase(warehouseRepo)
 	warehouseHandler := handler.NewWarehouseHandler(warehouseUC)
+
+	//message dependency
+	commentRepo := persistence.NewCommentRepoDB(db)
+	commentUC := commentapp.NewUseCase(commentRepo)
+	commentHandler := handler.NewCommentHandler(commentUC)
 
 	//auth dependency
 	authService := auth.NewAuthService()
@@ -190,6 +196,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//item warehouse API
 		v1.GET("/item-warehouses", middlewares.AuthGuard, warehouseHandler.GetAllItem)
 		v1.GET("/item-warehouses/:itemCode", middlewares.AuthGuard, warehouseHandler.GetItemByCode)
+
+		//message API
+		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

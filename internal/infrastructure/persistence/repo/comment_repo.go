@@ -17,7 +17,7 @@ func NewCommentRepoDB(db *gorm.DB) *CommentRepoDB {
 	return &CommentRepoDB{db: db}
 }
 
-func (r *CategoryRepoDB) GetAll(ctx context.Context, domainComment *[]comment.Comment, req comment.GetComment) error {
+func (r *CommentRepoDB) GetAll(ctx context.Context, domainComment *[]comment.Comment, req comment.GetComment) error {
 	var (
 		query      *gorm.DB
 		dbComments []dbmodel.Comment

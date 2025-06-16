@@ -2638,12 +2638,17 @@ paths:
       summary: Admin Logout
       tags:
       - auth
-  /messages/sender/:senderID/receiver/:receiverID:
+  /messages:
     get:
       consumes:
       - application/json
       description: API bao gồm cả tìm kiếm và phân trang
       parameters:
+      - description: ReceiverID
+        in: query
+        name: receiverID
+        required: true
+        type: integer
       - description: Current page
         example: 1
         in: query
@@ -2675,6 +2680,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get messages
       tags:
       - messages

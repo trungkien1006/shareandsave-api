@@ -1,8 +1,8 @@
 package commentdto
 
 type GetAllCommentRequest struct {
-	SenderID   uint   `uri:"senderID" binding:"required"`
-	ReceiverID uint   `uri:"receiverID" binding:"required"`
+	SenderID   uint   `form:"senderID" binding:"required"`
+	ReceiverID uint   `form:"receiverID" binding:"required"`
 	Page       int    `form:"page" binding:"required"`
 	Limit      int    `form:"limit" binding:"required"`
 	Search     string `form:"search"`

@@ -1535,8 +1535,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/messages/sender/:senderID/receiver/:receiverID": {
+        "/messages": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả tìm kiếm và phân trang",
                 "consumes": [
                     "application/json"
@@ -1549,6 +1554,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get messages",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ReceiverID",
+                        "name": "receiverID",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "minimum": 1,
                         "type": "integer",

@@ -5,6 +5,7 @@ import (
 	"final_project/internal/domain/comment"
 	commentdto "final_project/internal/dto/commentDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,16 +21,18 @@ func NewCommentHandler(uc *commentapp.UseCase) *CommentHandler {
 
 // @Summary Get messages
 // @Description API bao gồm cả tìm kiếm và phân trang
+// @Security BearerAuth
 // @Tags messages
 // @Accept json
 // @Produce json
+// @Param receiverID query int true "ReceiverID"
 // @Param page query int false "Current page" minimum(1) example(1)
 // @Param limit query int false "Number record per page" minimum(1) example(10)
 // @Param   search   query    string  false "Search message content"
 // @Success 200 {object} commentdto.GetCommentResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
-// @Router /messages/sender/:senderID/receiver/:receiverID [get]
+// @Router /messages [get]
 func (h *CommentHandler) GetAll(c *gin.Context) {
 	var (
 		req           commentdto.GetAllCommentRequest
@@ -42,9 +45,15 @@ func (h *CommentHandler) GetAll(c *gin.Context) {
 		return
 	}
 
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
 	req.SetDefault()
 
-	filter.SenderID = req.SenderID
+	filter.SenderID = userID
 	filter.ReceiverID = req.ReceiverID
 	filter.Page = req.Page
 	filter.Limit = req.Limit
