@@ -195,40 +195,43 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 
 	tx := r.db.Debug().Begin()
 
-	if len(dbTransaction.TransactionItems) == 0 {
-		if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
-			Where("transaction_id = ?", dbTransaction.ID).
-			Find(&dbTransaction.TransactionItems).Error; err != nil {
-			tx.Rollback()
-		}
-	}
-
-	for _, value := range dbTransaction.TransactionItems {
-		if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
-			Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
-			Updates(&value).Error; err != nil {
-			tx.Rollback()
-			return errors.New("Có lỗi khi cập nhật đồ của giao dịch: " + err.Error())
-		}
-	}
-
-	// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
-	for _, value := range dbTransaction.TransactionItems {
-		var postItem dbmodel.PostItem
-
-		if err := tx.WithContext(ctx).
-			Model(&dbmodel.PostItem{}).
-			Clauses(clause.Locking{Strength: "UPDATE"}).
-			Where("id = ?", value.PostItemID).
-			First(&postItem).Error; err != nil {
-			tx.Rollback()
-			return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+	if dbTransaction.Status == int(enums.TransactionStatusSuccess) {
+		if len(dbTransaction.TransactionItems) == 0 {
+			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
+				Where("transaction_id = ?", dbTransaction.ID).
+				Find(&dbTransaction.TransactionItems).Error; err != nil {
+				tx.Rollback()
+			}
 		}
 
-		if value.Quantity > postItem.CurrentQuantity {
-			tx.Rollback()
-			return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+		for _, value := range dbTransaction.TransactionItems {
+			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
+				Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
+				Updates(&value).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi cập nhật đồ của giao dịch: " + err.Error())
+			}
 		}
+
+		// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
+		for _, value := range dbTransaction.TransactionItems {
+			var postItem dbmodel.PostItem
+
+			if err := tx.WithContext(ctx).
+				Model(&dbmodel.PostItem{}).
+				Clauses(clause.Locking{Strength: "UPDATE"}).
+				Where("id = ?", value.PostItemID).
+				First(&postItem).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+			}
+
+			if value.Quantity > postItem.CurrentQuantity {
+				tx.Rollback()
+				return errors.New("Món đồ giao dịch không được có số lượng lớn hơn cho phép: id món đồ " + strconv.Itoa(int(postItem.ItemID)))
+			}
+		}
+
 	}
 
 	// Cập nhật giao dịch
