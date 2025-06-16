@@ -2,7 +2,7 @@ package commentdto
 
 import "time"
 
-type Comment struct {
+type CommentDTO struct {
 	ID         uint      `json:"id"`
 	InterestID uint      `json:"interestID"`
 	SenderID   uint      `json:"senderID"`
