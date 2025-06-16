@@ -79,21 +79,22 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 	}
 
 	return DetailPostDTO{
-		ID:          domain.ID,
-		AuthorID:    domain.AuthorID,
-		AuthorName:  domain.AuthorName,
-		Type:        domain.Type,
-		Slug:        domain.Slug,
-		Title:       domain.Title,
-		Description: domain.Description,
-		Content:     domain.Content,
-		Info:        domain.Info,
-		Status:      domain.Status,
-		Images:      DTOImage,
-		CreatedAt:   domain.CreatedAt,
-		Tag:         DTOTag,
-		Interest:    DTOInterest,
-		Items:       DTOPostItem,
+		ID:           domain.ID,
+		AuthorID:     domain.AuthorID,
+		AuthorName:   domain.AuthorName,
+		AuthorAvatar: domain.AuthorAvatar,
+		Type:         domain.Type,
+		Slug:         domain.Slug,
+		Title:        domain.Title,
+		Description:  domain.Description,
+		Content:      domain.Content,
+		Info:         domain.Info,
+		Status:       domain.Status,
+		Images:       DTOImage,
+		CreatedAt:    domain.CreatedAt,
+		Tag:          DTOTag,
+		Interest:     DTOInterest,
+		Items:        DTOPostItem,
 	}
 }
 
