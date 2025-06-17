@@ -24,7 +24,7 @@ func (w *ChatHandler) Run() error {
 	// Chạy goroutine scan pending định kỳ
 	go func() {
 		for {
-			time.Sleep(30 * time.Second)
+			time.Sleep(30 * time.Minute)
 			log.Println("Checking pending messages...")
 			w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
 				return w.uc.CreateMessage(ctx, data)
