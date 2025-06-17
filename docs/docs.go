@@ -1010,6 +1010,11 @@ const docTemplate = `{
         },
         "/interests/{interestID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy thông tin interest theo ID",
                 "consumes": [
                     "application/json"
