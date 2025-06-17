@@ -116,7 +116,9 @@ func (h *InterestHandler) GetByID(c *gin.Context) {
 
 	var interestDTORes interestdto.PostInterest
 
-	interestDTORes = interestdto.GetDomainToDTO(domainInterest)
+	if domainInterest.ID != 0 {
+		interestDTORes = interestdto.GetDomainToDTO(domainInterest)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
