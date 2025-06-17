@@ -1556,8 +1556,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ReceiverID",
-                        "name": "receiverID",
+                        "description": "InterestID",
+                        "name": "interestID",
                         "in": "query",
                         "required": true
                     },
@@ -2562,9 +2562,6 @@ const docTemplate = `{
         "commentdto.CommentDTO": {
             "type": "object",
             "properties": {
-                "content": {
-                    "type": "string"
-                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -2574,8 +2571,11 @@ const docTemplate = `{
                 "interestID": {
                     "type": "integer"
                 },
-                "isread": {
+                "isRead": {
                     "type": "integer"
+                },
+                "message": {
+                    "type": "string"
                 },
                 "receiverID": {
                     "type": "integer"

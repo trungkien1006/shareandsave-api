@@ -135,16 +135,16 @@ definitions:
     type: object
   commentdto.CommentDTO:
     properties:
-      content:
-        type: string
       createdAt:
         type: string
       id:
         type: integer
       interestID:
         type: integer
-      isread:
+      isRead:
         type: integer
+      message:
+        type: string
       receiverID:
         type: integer
       senderID:
@@ -2644,9 +2644,9 @@ paths:
       - application/json
       description: API bao gồm cả tìm kiếm và phân trang
       parameters:
-      - description: ReceiverID
+      - description: InterestID
         in: query
-        name: receiverID
+        name: interestID
         required: true
         type: integer
       - description: Current page
