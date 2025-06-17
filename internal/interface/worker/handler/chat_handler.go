@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"context"
 	"final_project/internal/application/worker/chatapp"
 	redisapp "final_project/internal/infrastructure/redis"
+	"log"
+	"time"
 )
 
 type ChatHandler struct {
@@ -18,20 +21,20 @@ func NewChatHandler(c *redisapp.StreamConsumer, uc *chatapp.UseCase) *ChatHandle
 }
 
 func (w *ChatHandler) Run() error {
-	// // Chạy goroutine scan pending định kỳ
-	// go func() {
-	// 	for {
-	// 		time.Sleep(30 * time.Second)
-	// 		log.Println("Checking pending messages...")
-	// 		w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
-	// 			return w.uc.CreateMessage(ctx, data)
-	// 		})
-	// 	}
-	// }()
+	// Chạy goroutine scan pending định kỳ
+	go func() {
+		for {
+			time.Sleep(30 * time.Second)
+			log.Println("Checking pending messages...")
+			w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
+				return w.uc.CreateMessage(ctx, data)
+			})
+		}
+	}()
 
-	// // Chạy consumer chính
-	// return w.consumer.Consume(func(ctx context.Context, data []map[string]string) error {
-	// 	return w.uc.CreateMessage(ctx, data)
-	// })
-	return nil
+	// Chạy consumer chính
+	return w.consumer.Consume(func(ctx context.Context, data []map[string]string) error {
+		return w.uc.CreateMessage(ctx, data)
+	})
+	// return nil
 }
