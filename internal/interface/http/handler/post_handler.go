@@ -159,6 +159,77 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 	})
 }
 
+// @Summary Get my posts
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record of page" minimum(1) example(10)
+// @Param sort query string false "Sort column" example(authorName, title, createdAt)
+// @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
+// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param   search   query    string  false  "Giá trị lọc (author_name, title, tag, content)"
+// @Success 200 {object} postdto.GetPostResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /posts/my-post [get]
+func (h *PostHandler) GetAllUserPost(c *gin.Context) {
+	var (
+		req       postdto.GetPostRequest
+		posts     []post.PostWithCount
+		domainReq post.PostFilterRequest
+	)
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	req.SetDefault()
+
+	domainReq.Page = req.Page
+	domainReq.Limit = req.Limit
+	domainReq.Sort = req.Sort
+	domainReq.Order = req.Order
+	domainReq.Type = int(req.Type)
+	domainReq.Search = req.Search
+
+	totalPage, err := h.uc.GetAllUserPost(c.Request.Context(), &posts, userID, domainReq)
+
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_POST_NOT_FOUND"),
+		)
+		return
+	}
+
+	postsDTORes := make([]postdto.PostWithCountDTO, 0)
+
+	for _, post := range posts {
+		postsDTORes = append(postsDTORes, postdto.PostWithCountDomainToDTO(post))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Fetched my posts successfully",
+		"data": postdto.GetPostResponse{
+			Posts:     postsDTORes,
+			TotalPage: totalPage,
+		},
+	})
+}
+
 // @Summary Get detail post by id
 // @Description API lấy bài viết theo id
 // @Tags posts

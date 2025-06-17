@@ -181,6 +181,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/client/posts", postHandler.GetAllPost)
 		v1.GET("/client/posts/:postID", postHandler.GetPostByID)
 
+		//my post API
+		v1.GET("/posts/my-post", postHandler.GetAllUserPost)
+
 		//post API
 		v1.GET("/posts", middlewares.AuthGuard, postHandler.GetAllAdminPost)
 		v1.GET("/posts/:postID", postHandler.GetPostByID)

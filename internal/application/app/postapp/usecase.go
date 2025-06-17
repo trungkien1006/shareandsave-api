@@ -53,6 +53,16 @@ func (uc *UseCase) GetAllPost(ctx context.Context, posts *[]post.PostWithCount, 
 	return totalPage, nil
 }
 
+func (uc *UseCase) GetAllUserPost(ctx context.Context, posts *[]post.PostWithCount, userID uint, filter post.PostFilterRequest) (int, error) {
+	totalPage, err := uc.repo.GetAllUserPost(ctx, posts, userID, filter)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return totalPage, nil
+}
+
 func (uc *UseCase) GetPostByID(ctx context.Context, post *post.DetailPost, postID uint) error {
 	if err := uc.repo.GetDetailByID(ctx, post, postID); err != nil {
 		return err
