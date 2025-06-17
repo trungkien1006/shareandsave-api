@@ -8,6 +8,16 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	batchSize   = 100
+	batchWindow = 2 * time.Second
+)
+
+var (
+	buffer     []redis.XMessage
+	lastInsert = time.Now()
+)
+
 type StreamConsumer struct {
 	client       *redis.Client
 	stream       string
@@ -29,7 +39,7 @@ func (c *StreamConsumer) CreateConsumerGroup() error {
 	return c.client.XGroupCreateMkStream(ctx, c.stream, c.group, "0").Err()
 }
 
-func (c *StreamConsumer) Consume(handler func(map[string]string) error) error {
+func (c *StreamConsumer) Consume(handler func(ctx context.Context, data []map[string]string) error) error {
 	ctx := context.Background()
 
 	for {
@@ -37,30 +47,63 @@ func (c *StreamConsumer) Consume(handler func(map[string]string) error) error {
 			Group:    c.group,
 			Consumer: c.consumerName,
 			Streams:  []string{c.stream, ">"},
-			Count:    10,
+			Count:    batchSize,
 			Block:    time.Second * 5,
 		}).Result()
 
 		if err != nil && err != redis.Nil {
-			log.Println("Error reading from stream:", err)
+			log.Println("+++Error reading from stream:", err)
 			continue
 		}
 
+		now := time.Now()
+
 		for _, stream := range res {
 			for _, msg := range stream.Messages {
-				err := handler(ValuesToString(msg))
-				if err == nil {
-					// Ack sau khi xử lý xong
+				buffer = append(buffer, msg)
+			}
+		}
+
+		// Điều kiện xử lý batch
+		if len(buffer) >= batchSize || now.Sub(lastInsert) >= batchWindow {
+			// Gọi handler xử lý cả batch
+			if err := c.handlerBatch(ctx, buffer, handler); err != nil {
+				log.Println("+++Handler batch error:", err)
+				// Có thể retry hoặc xử lý theo logic riêng
+			} else {
+				// Xác nhận ack toàn bộ message đã xử lý thành công
+				for _, msg := range buffer {
 					c.client.XAck(ctx, c.stream, c.group, msg.ID)
-				} else {
-					log.Println("Handler error:", err)
 				}
+
+				buffer = nil // clear buffer
+				lastInsert = time.Now()
 			}
 		}
 	}
 }
 
-func (c *StreamConsumer) RecoverPending(handler func(map[string]string) error) {
+func (c *StreamConsumer) handlerBatch(ctx context.Context, msgs []redis.XMessage, handler func(ctx context.Context, data []map[string]string) error) error {
+	// Chuyển đổi sang struct phù hợp
+	var comments []map[string]string
+	for _, msg := range msgs {
+		cmt := ValuesToString(msg)
+		comments = append(comments, cmt)
+	}
+
+	// Gọi insert batch (ví dụ MySQL: INSERT INTO ... VALUES (...), (...), ...)
+	if len(comments) > 0 {
+		return handler(ctx, comments)
+	}
+
+	return nil
+}
+
+func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data []map[string]string) error) {
+	var (
+		streams []redis.XMessage
+	)
+
 	ctx := context.Background()
 
 	res, err := c.client.XPendingExt(ctx, &redis.XPendingExtArgs{
@@ -68,12 +111,12 @@ func (c *StreamConsumer) RecoverPending(handler func(map[string]string) error) {
 		Group:    c.group,
 		Start:    "-",
 		End:      "+",
-		Count:    10,
+		Count:    100,
 		Consumer: c.consumerName,
 	}).Result()
 
 	if err != nil {
-		log.Println("XPendingExt error:", err)
+		log.Println("+++XPendingExt error:", err)
 		return
 	}
 
@@ -82,13 +125,16 @@ func (c *StreamConsumer) RecoverPending(handler func(map[string]string) error) {
 		if err != nil || len(msgRes) == 0 {
 			continue
 		}
+		streams = append(streams, msgRes[0])
+	}
 
-		msg := msgRes[0]
-		err = handler(ValuesToString(msg))
-		if err == nil {
-			c.client.XAck(ctx, c.stream, c.group, msg.ID)
+	if len(buffer) > 0 {
+		if err := c.handlerBatch(ctx, buffer, handler); err != nil {
+			log.Println("+++Batch recovery error:", err)
 		} else {
-			log.Println("Error recovering pending message:", err)
+			for _, msg := range buffer {
+				c.client.XAck(ctx, c.stream, c.group, msg.ID)
+			}
 		}
 	}
 }

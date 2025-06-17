@@ -12,6 +12,7 @@ import (
 	"final_project/internal/application/app/transactionapp"
 	"final_project/internal/application/app/userapp"
 	"final_project/internal/application/app/warehouseapp"
+	"final_project/internal/application/worker/chatapp"
 	"final_project/internal/domain/auth"
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
@@ -20,6 +21,8 @@ import (
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/interface/http/handler"
 	middlewares "final_project/internal/interface/http/middleware"
+	workerHandler "final_project/internal/interface/worker/handler"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +37,10 @@ import (
 
 func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	r := gin.Default()
+
+	stream := "chatstream"
+	group := "chatgroup"
+	consumer := "worker-chat"
 
 	//redis
 	redisRepo := redisapp.NewRedisRepo(redisClient)
@@ -90,6 +97,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
 
+	//chat dependency
+	chatUC := chatapp.NewUseCase(commentRepo)
+
 	//auth dependency
 	authService := auth.NewAuthService()
 	authRepo := persistence.NewAuthRepoDB(db)
@@ -114,6 +124,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	seed.Seed()
 	redisSeed.SeedInitialData()
+
+	//run chat worker
+	streamConsumer := redisapp.NewStreamConsumer(redisClient, stream, group, consumer)
+	if err := streamConsumer.CreateConsumerGroup(); err != nil {
+		log.Println("Group may already exist:", err)
+	}
+
+	chatHandler := workerHandler.NewChatHandler(streamConsumer, chatUC)
+
+	chatHandler.Run()
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
