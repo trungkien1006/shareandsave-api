@@ -73,3 +73,37 @@ func (h *CommentHandler) GetAll(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Update is read message
+// @Description API cập nhật trạng thái đọc tin nhắn
+// @Security BearerAuth
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Param interestID path int true "ID interest"
+// @Success 200 {object} commentdto.UpdateReadMessageResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /messages/{interestID} [patch]
+func (h *CommentHandler) UpdateReadMessage(c *gin.Context) {
+	var req commentdto.GetAllCommentRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := h.uc.UpdateReadMessage(c.Request.Context(), uint(req.InterestID)); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, commentdto.UpdateReadMessageResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Update is read messages successfully",
+		Data:    gin.H{},
+	})
+}

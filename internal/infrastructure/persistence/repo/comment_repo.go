@@ -62,3 +62,14 @@ func (r *CommentRepoDB) Create(ctx context.Context, domainComments *[]comment.Co
 
 	return nil
 }
+
+func (r *CommentRepoDB) UpdateReadMessage(ctx context.Context, interestID uint) error {
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Comment{}).
+		Where("interest_id = ?", interestID).
+		Update("is_read", 1).Error; err != nil {
+		return errors.New("Có lỗi kho thực hiện cập nhật trạng thái đã đọc: " + err.Error())
+	}
+
+	return nil
+}

@@ -9,3 +9,9 @@ type GetCommentResponseWrapper struct {
 type GetCommentResponse struct {
 	Comments []CommentDTO `json:"messages"`
 }
+
+type UpdateReadMessageResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

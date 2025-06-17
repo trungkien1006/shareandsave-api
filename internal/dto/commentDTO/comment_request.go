@@ -15,3 +15,7 @@ func (r *GetAllCommentRequest) SetDefault() {
 		r.Limit = 8
 	}
 }
+
+type UpdateReadMessageCommentRequest struct {
+	InterestID int `uri:"interestID" binding:"required"`
+}

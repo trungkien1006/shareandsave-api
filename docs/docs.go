@@ -1695,6 +1695,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/messages/{interestID}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API cập nhật trạng thái đọc tin nhắn",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Update is read message",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID interest",
+                        "name": "interestID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/commentdto.UpdateReadMessageResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/posts": {
             "get": {
                 "security": [
@@ -2773,6 +2822,18 @@ const docTemplate = `{
                 "data": {
                     "$ref": "#/definitions/commentdto.GetCommentResponse"
                 },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "commentdto.UpdateReadMessageResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
                 "message": {
                     "type": "string"
                 }

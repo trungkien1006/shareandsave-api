@@ -20,3 +20,11 @@ func (uc *UseCase) GetAllComment(ctx context.Context, domainComment *[]comment.C
 
 	return nil
 }
+
+func (uc *UseCase) UpdateReadMessage(ctx context.Context, interestID uint) error {
+	if err := uc.repo.UpdateReadMessage(ctx, interestID); err != nil {
+		return err
+	}
+
+	return nil
+}

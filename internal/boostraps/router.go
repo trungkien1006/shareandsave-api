@@ -221,6 +221,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
+		v1.GET("/messages/:interestID", middlewares.AuthGuard, commentHandler.UpdateReadMessage)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

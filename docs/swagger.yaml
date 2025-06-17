@@ -166,6 +166,14 @@ definitions:
       message:
         type: string
     type: object
+  commentdto.UpdateReadMessageResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   enums.AppError:
     properties:
       code:
@@ -2764,6 +2772,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Get messages
+      tags:
+      - messages
+  /messages/{interestID}:
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật trạng thái đọc tin nhắn
+      parameters:
+      - description: ID interest
+        in: path
+        name: interestID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/commentdto.UpdateReadMessageResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update is read message
       tags:
       - messages
   /posts:
