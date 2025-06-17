@@ -1023,7 +1023,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "items"
+                    "interests"
                 ],
                 "summary": "Get interest by ID",
                 "parameters": [

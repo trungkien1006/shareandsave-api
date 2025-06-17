@@ -89,7 +89,7 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 // @Summary Get interest by ID
 // @Description API lấy thông tin interest theo ID
 // @Security BearerAuth
-// @Tags items
+// @Tags interests
 // @Accept json
 // @Produce json
 // @Param interestID path int true "ID interest"
