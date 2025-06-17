@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/importinvoiceapp"
+	"final_project/internal/application/app/importinvoiceapp"
 	"final_project/internal/domain/filter"
 	importinvoice "final_project/internal/domain/import_invoice"
 	importinvoicedto "final_project/internal/dto/importinvoiceDTO"

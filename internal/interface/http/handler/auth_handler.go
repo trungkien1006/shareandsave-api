@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/authapp"
+	"final_project/internal/application/app/authapp"
 	"final_project/internal/domain/auth"
 	"final_project/internal/domain/user"
 	authdto "final_project/internal/dto/authDTO"

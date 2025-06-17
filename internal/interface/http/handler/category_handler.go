@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/categoryapp"
+	"final_project/internal/application/app/categoryapp"
 	"final_project/internal/domain/category"
 	categorydto "final_project/internal/dto/categoryDTO"
 	"final_project/internal/pkg/enums"

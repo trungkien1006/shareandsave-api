@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/commentapp"
+	"final_project/internal/application/app/commentapp"
 	"final_project/internal/domain/comment"
 	commentdto "final_project/internal/dto/commentDTO"
 	"final_project/internal/pkg/enums"

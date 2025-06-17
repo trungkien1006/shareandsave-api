@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/itemapp"
+	"final_project/internal/application/app/itemapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
 	itemdto "final_project/internal/dto/itemDTO"

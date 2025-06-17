@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/postapp"
+	"final_project/internal/application/app/postapp"
 	"final_project/internal/domain/post"
 	postdto "final_project/internal/dto/postDTO"
 	"final_project/internal/pkg/enums"

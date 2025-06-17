@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/userapp"
+	"final_project/internal/application/app/userapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
 	userdto "final_project/internal/dto/userDTO"

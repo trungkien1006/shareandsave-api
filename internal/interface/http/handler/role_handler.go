@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"final_project/internal/application/roleapp"
+	"final_project/internal/application/app/roleapp"
 	rolepermission "final_project/internal/domain/role_permission"
 	roledto "final_project/internal/dto/roleDTO"
 	"final_project/internal/pkg/enums"

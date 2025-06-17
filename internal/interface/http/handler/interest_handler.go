@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"final_project/internal/application/interestapp"
+	"final_project/internal/application/app/interestapp"
 	"final_project/internal/domain/interest"
 	interestdto "final_project/internal/dto/interestDTO"
 	"final_project/internal/pkg/enums"
