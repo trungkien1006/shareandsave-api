@@ -25,7 +25,7 @@ func (r *GetInterest) SetDefault() {
 }
 
 type GetByID struct {
-	InterestID uint `uri"interestID"`
+	InterestID uint `uri:"interestID"`
 }
 
 type CreateInterest struct {
