@@ -36,6 +36,7 @@ func CreateDomainToDB(domain interest.Interest) Interest {
 func GetDTOToDomain(db Post) interest.PostInterest {
 	domainItems := make([]interest.PostInterestItem, 0)
 	domainInterest := make([]interest.Interest, 0)
+	postUnreadCount := 0
 
 	for _, value := range db.PostItem {
 		domainItems = append(domainItems, interest.PostInterestItem{
@@ -50,29 +51,33 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 	}
 
 	for _, value := range db.Interests {
+		postUnreadCount += len(value.Comments)
+
 		domainInterest = append(domainInterest, interest.Interest{
-			ID:         value.ID,
-			UserID:     value.UserID,
-			UserName:   value.User.FullName,
-			UserAvatar: value.User.Avatar,
-			PostID:     value.PostID,
-			Status:     value.Status,
-			CreatedAt:  value.CreatedAt,
+			ID:                 value.ID,
+			UserID:             value.UserID,
+			UserName:           value.User.FullName,
+			UserAvatar:         value.User.Avatar,
+			PostID:             value.PostID,
+			Status:             value.Status,
+			UnreadMessageCount: uint(len(value.Comments)),
+			CreatedAt:          value.CreatedAt,
 		})
 	}
 
 	return interest.PostInterest{
-		ID:           db.ID,
-		AuthorID:     db.AuthorID,
-		AuthorName:   db.Author.FullName,
-		AuthorAvatar: db.Author.Avatar,
-		Title:        db.Title,
-		Description:  db.Description,
-		Slug:         db.Slug,
-		Type:         db.Type,
-		Items:        domainItems,
-		Interests:    domainInterest,
-		UpdatedAt:    db.UpdatedAt,
-		CreatedAt:    db.CreatedAt,
+		ID:                 db.ID,
+		AuthorID:           db.AuthorID,
+		AuthorName:         db.Author.FullName,
+		AuthorAvatar:       db.Author.Avatar,
+		Title:              db.Title,
+		Description:        db.Description,
+		Slug:               db.Slug,
+		Type:               db.Type,
+		Items:              domainItems,
+		Interests:          domainInterest,
+		UnreadMessageCount: uint(postUnreadCount),
+		UpdatedAt:          db.UpdatedAt,
+		CreatedAt:          db.CreatedAt,
 	}
 }

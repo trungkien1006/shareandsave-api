@@ -3061,6 +3061,9 @@
                 },
                 "totalPage": {
                     "type": "integer"
+                },
+                "unreadMessageCount": {
+                    "type": "integer"
                 }
             }
         },
@@ -3091,6 +3094,9 @@
                     "type": "integer"
                 },
                 "status": {
+                    "type": "integer"
+                },
+                "unreadMessageCount": {
                     "type": "integer"
                 },
                 "userAvatar": {
@@ -3145,6 +3151,9 @@
                 },
                 "type": {
                     "$ref": "#/definitions/enums.PostType"
+                },
+                "unreadMessageCount": {
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

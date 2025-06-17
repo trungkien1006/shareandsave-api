@@ -3068,6 +3068,9 @@ const docTemplate = `{
                 },
                 "totalPage": {
                     "type": "integer"
+                },
+                "unreadMessageCount": {
+                    "type": "integer"
                 }
             }
         },
@@ -3098,6 +3101,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
+                    "type": "integer"
+                },
+                "unreadMessageCount": {
                     "type": "integer"
                 },
                 "userAvatar": {
@@ -3152,6 +3158,9 @@ const docTemplate = `{
                 },
                 "type": {
                     "$ref": "#/definitions/enums.PostType"
+                },
+                "unreadMessageCount": {
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

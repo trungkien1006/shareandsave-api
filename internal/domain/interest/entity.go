@@ -3,13 +3,14 @@ package interest
 import "time"
 
 type Interest struct {
-	ID         uint
-	UserID     uint
-	UserName   string
-	UserAvatar string
-	PostID     uint
-	Status     int
-	CreatedAt  time.Time
+	ID                 uint
+	UserID             uint
+	UserName           string
+	UserAvatar         string
+	PostID             uint
+	Status             int
+	UnreadMessageCount uint
+	CreatedAt          time.Time
 }
 
 type PostInterestItem struct {
@@ -23,18 +24,19 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID           uint
-	AuthorID     uint
-	AuthorName   string
-	AuthorAvatar string
-	Title        string
-	Description  string
-	Slug         string
-	Type         int
-	Items        []PostInterestItem
-	Interests    []Interest
-	UpdatedAt    time.Time
-	CreatedAt    time.Time
+	ID                 uint
+	AuthorID           uint
+	AuthorName         string
+	AuthorAvatar       string
+	Title              string
+	Description        string
+	Slug               string
+	Type               int
+	Items              []PostInterestItem
+	Interests          []Interest
+	UnreadMessageCount uint
+	UpdatedAt          time.Time
+	CreatedAt          time.Time
 }
 
 type GetInterest struct {

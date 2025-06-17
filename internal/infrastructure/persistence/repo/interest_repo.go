@@ -34,6 +34,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("user_id = ?", userID)
 			}).
+			Preload("Interests.Comments", "is_read = 0 AND sender_id != ?", userID).
 			Preload("Author").
 			Preload("Interests.User").
 			Preload("PostItem").
@@ -52,6 +53,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("deleted_at IS NULL")
 			}).
+			Preload("Interests.Comments", "is_read = 0 AND sender_id != ?", userID).
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").
@@ -76,7 +78,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 	//phan trang
 	if filter.Limit != 0 && filter.Page != 0 {
-		query.Offset((filter.Page - 1) * filter.Limit).Limit(filter.Limit)
+		query.Offset((filter.Page - 1) * filter.Limit).Limit(filter.Limit + 1)
 	}
 
 	//sort du lieu
@@ -104,6 +106,31 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 	}
 
 	return totalPage, nil
+}
+
+func (r *InterestRepoDB) GetTotalUnreadMessage(ctx context.Context, userID uint, interestType enums.InterestType) (uint, error) {
+	var (
+		unreadCount int64
+		query       *gorm.DB
+	)
+
+	query = r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Comment{}).
+		Table("comment").
+		Where("comment.deleted_at IS NULL AND comment.sender_id != ? AND comment.receiver_id = ? AND comment.is_read = 0", userID, userID).
+		Joins("JOIN interest ON interest.id = comment.interest_id AND interest.deleted_at IS NULL")
+
+	if interestType == enums.InterestTypeInterested {
+		query.Where("interest.user_id = ?", userID)
+	} else if interestType == enums.InterestTypeFollowedBy {
+		query.Where("interest.user_id != ?", userID)
+	}
+
+	if err := query.Count(&unreadCount).Error; err != nil {
+		return 0, errors.New("Có lỗi khi đếm số tin nhắn chưa đọc: " + err.Error())
+	}
+
+	return uint(unreadCount), nil
 }
 
 func (r *InterestRepoDB) GetDetailByID(ctx context.Context, postInterest *interest.PostInterest, interestID uint) error {

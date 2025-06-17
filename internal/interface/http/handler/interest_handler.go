@@ -63,7 +63,7 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 
 	domainReq = interestdto.GetDTOToDomain(req)
 
-	totalPage, err := h.uc.GetAllInterest(context.Background(), &domainInterest, userID, domainReq)
+	unreadMessageCount, totalPage, err := h.uc.GetAllInterest(context.Background(), &domainInterest, userID, domainReq)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
@@ -80,8 +80,9 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 		"code":    http.StatusOK,
 		"message": "Fetched interests successfully",
 		"data": interestdto.GetInterestResponse{
-			Interests: interestDTORes,
-			TotalPage: totalPage,
+			Interests:          interestDTORes[0:req.Limit],
+			UnreadMessageCount: unreadMessageCount,
+			TotalPage:          totalPage,
 		},
 	})
 }

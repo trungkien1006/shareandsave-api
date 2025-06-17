@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/interest"
 	"final_project/internal/domain/post"
 	"final_project/internal/domain/user"
+	"final_project/internal/pkg/enums"
 )
 
 type UseCase struct {
@@ -22,23 +23,28 @@ func NewUseCase(r interest.Repository, userRepo user.Repository, postRepo post.R
 	}
 }
 
-func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.PostInterest, userID uint, filter interest.GetInterest) (int, error) {
+func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.PostInterest, userID uint, filter interest.GetInterest) (uint, int, error) {
 	isUserExist, err := uc.userRepo.IsExist(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	if !isUserExist {
-		return 0, errors.New("Người dùng không tồn tại")
+		return 0, 0, errors.New("Người dùng không tồn tại")
 	}
 
 	totalPage, err := uc.repo.GetAll(ctx, postInterest, userID, filter)
 
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	return totalPage, nil
+	unreadMessageCount, err := uc.repo.GetTotalUnreadMessage(ctx, userID, enums.InterestType(filter.Type))
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return unreadMessageCount, totalPage, nil
 }
 
 func (uc *UseCase) GetInterestByID(ctx context.Context, postInterest *interest.PostInterest, interestID uint) error {

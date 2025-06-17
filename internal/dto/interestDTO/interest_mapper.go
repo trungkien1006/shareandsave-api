@@ -47,28 +47,30 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 
 	for _, value := range domain.Interests {
 		domainInterest = append(domainInterest, Interest{
-			ID:         value.ID,
-			UserID:     value.UserID,
-			UserName:   value.UserName,
-			UserAvatar: value.UserAvatar,
-			PostID:     value.PostID,
-			Status:     value.Status,
-			CreatedAt:  value.CreatedAt,
+			ID:                 value.ID,
+			UserID:             value.UserID,
+			UserName:           value.UserName,
+			UserAvatar:         value.UserAvatar,
+			PostID:             value.PostID,
+			Status:             value.Status,
+			UnreadMessageCount: value.UnreadMessageCount,
+			CreatedAt:          value.CreatedAt,
 		})
 	}
 
 	return PostInterest{
-		ID:           domain.ID,
-		AuthorID:     domain.AuthorID,
-		AuthorName:   domain.AuthorName,
-		AuthorAvatar: domain.AuthorAvatar,
-		Title:        domain.Title,
-		Description:  domain.Description,
-		Slug:         domain.Slug,
-		Type:         enums.PostType(domain.Type),
-		Items:        domainItems,
-		Interests:    domainInterest,
-		UpdatedAt:    domain.UpdatedAt,
-		CreatedAt:    domain.CreatedAt,
+		ID:                 domain.ID,
+		AuthorID:           domain.AuthorID,
+		AuthorName:         domain.AuthorName,
+		AuthorAvatar:       domain.AuthorAvatar,
+		Title:              domain.Title,
+		Description:        domain.Description,
+		Slug:               domain.Slug,
+		Type:               enums.PostType(domain.Type),
+		Items:              domainItems,
+		Interests:          domainInterest,
+		UnreadMessageCount: domain.UnreadMessageCount,
+		UpdatedAt:          domain.UpdatedAt,
+		CreatedAt:          domain.CreatedAt,
 	}
 }

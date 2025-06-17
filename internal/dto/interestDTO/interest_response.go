@@ -7,8 +7,9 @@ type GetInterestResponseWrapper struct {
 }
 
 type GetInterestResponse struct {
-	Interests []PostInterest `json:"interests"`
-	TotalPage int            `json:"totalPage"`
+	Interests          []PostInterest `json:"interests"`
+	UnreadMessageCount uint           `json:"unreadMessageCount"`
+	TotalPage          int            `json:"totalPage"`
 }
 
 type GetByIDInterestResponseWrapper struct {

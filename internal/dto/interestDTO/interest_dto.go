@@ -6,13 +6,15 @@ import (
 )
 
 type Interest struct {
-	ID         uint      `json:"id"`
-	UserID     uint      `json:"userID"`
-	UserName   string    `json:"userName"`
-	UserAvatar string    `json:"userAvatar"`
-	PostID     uint      `json:"postID"`
-	Status     int       `json:"status"`
-	CreatedAt  time.Time `json:"createdAt"`
+	ID                 uint   `json:"id"`
+	UserID             uint   `json:"userID"`
+	UserName           string `json:"userName"`
+	UserAvatar         string `json:"userAvatar"`
+	PostID             uint   `json:"postID"`
+	Status             int    `json:"status"`
+	UnreadMessageCount uint   `json:"unreadMessageCount"`
+
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type PostInterestItem struct {
@@ -26,16 +28,17 @@ type PostInterestItem struct {
 }
 
 type PostInterest struct {
-	ID           uint               `json:"id"`
-	AuthorID     uint               `json:"authorID"`
-	AuthorName   string             `json:"authorName"`
-	AuthorAvatar string             `json:"authorAvatar"`
-	Title        string             `json:"title"`
-	Description  string             `json:"description"`
-	Slug         string             `json:"slug"`
-	Type         enums.PostType     `json:"type"`
-	Items        []PostInterestItem `json:"items"`
-	Interests    []Interest         `json:"interests"`
-	UpdatedAt    time.Time          `json:"updatedAt"`
-	CreatedAt    time.Time          `json:"createdAt"`
+	ID                 uint               `json:"id"`
+	AuthorID           uint               `json:"authorID"`
+	AuthorName         string             `json:"authorName"`
+	AuthorAvatar       string             `json:"authorAvatar"`
+	Title              string             `json:"title"`
+	Description        string             `json:"description"`
+	Slug               string             `json:"slug"`
+	Type               enums.PostType     `json:"type"`
+	Items              []PostInterestItem `json:"items"`
+	Interests          []Interest         `json:"interests"`
+	UnreadMessageCount uint               `json:"unreadMessageCount"`
+	UpdatedAt          time.Time          `json:"updatedAt"`
+	CreatedAt          time.Time          `json:"createdAt"`
 }
