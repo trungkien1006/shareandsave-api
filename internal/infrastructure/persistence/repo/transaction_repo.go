@@ -113,7 +113,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	tx := r.db.Debug().Begin()
 
 	// Kiểm tra có giao dịch nào chưa hoàn tất hay chưa
-	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).Where("id = ? AND status = 1", dbTransaction.InterestID).Count(&pendingTransactionCount).Error; err != nil {
+	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).Where("interest_id = ? AND status = 1", dbTransaction.InterestID).Count(&pendingTransactionCount).Error; err != nil {
 		return errors.New("Có lỗi khi kiểm tra giao dịch chưa hoàn tất: " + err.Error())
 	}
 
