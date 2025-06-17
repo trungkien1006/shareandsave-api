@@ -34,9 +34,9 @@ func NewStreamConsumer(client *redis.Client, stream, group, consumerName string)
 	}
 }
 
-func (c *StreamConsumer) CreateConsumerGroup() error {
+func (c *StreamConsumer) CreateConsumerGroup() {
 	ctx := context.Background()
-	return c.client.XGroupCreateMkStream(ctx, c.stream, c.group, "0").Err()
+	c.client.XGroupCreateMkStream(ctx, c.stream, c.group, "0")
 }
 
 func (c *StreamConsumer) Consume(handler func(ctx context.Context, data []map[string]string) error) error {

@@ -22,7 +22,6 @@ import (
 	"final_project/internal/interface/http/handler"
 	middlewares "final_project/internal/interface/http/middleware"
 	workerHandler "final_project/internal/interface/worker/handler"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -127,13 +126,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//run chat worker
 	streamConsumer := redisapp.NewStreamConsumer(redisClient, stream, group, consumer)
-	if err := streamConsumer.CreateConsumerGroup(); err != nil {
-		log.Println("Group may already exist:", err)
-	}
+	streamConsumer.CreateConsumerGroup()
 
 	chatHandler := workerHandler.NewChatHandler(streamConsumer, chatUC)
 
-	chatHandler.Run()
+	go chatHandler.Run()
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
