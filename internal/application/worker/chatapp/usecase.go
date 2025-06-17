@@ -25,13 +25,14 @@ func (uc *UseCase) CreateMessage(ctx context.Context, messages []map[string]stri
 		senderID, _ := strconv.Atoi(value["senderID"])
 		receiverID, _ := strconv.Atoi(value["receiverID"])
 		createdAt, _ := time.Parse(timeLayout, value["createdAt"])
+		isRead, _ := strconv.Atoi(value["isRead"])
 
 		domainComment = append(domainComment, comment.Comment{
 			InterestID: uint(interestID),
 			SenderID:   uint(senderID),
 			ReceiverID: uint(receiverID),
 			Content:    value["content"],
-			IsRead:     0,
+			IsRead:     uint(isRead),
 			CreatedAt:  createdAt,
 		})
 	}
