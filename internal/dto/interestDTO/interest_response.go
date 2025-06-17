@@ -41,3 +41,7 @@ type DeleteInterestResponseWrapper struct {
 type DeleteInterestResponse struct {
 	InterestID uint `json:"interestID"`
 }
+
+type GetUnreadMessageResponse struct {
+	UnreadMessageCount uint `json:"unreadMessageCount"`
+}

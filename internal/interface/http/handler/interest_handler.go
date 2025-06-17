@@ -130,6 +130,38 @@ func (h *InterestHandler) GetByID(c *gin.Context) {
 	})
 }
 
+// @Summary Get unread message count
+// @Description API lấy số lượng tin nhắn chưa đọc
+// @Security BearerAuth
+// @Tags interests
+// @Accept json
+// @Produce json
+// @Success 200 {object} interestdto.GetUnreadMessageResponse
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /interests/unread-count [get]
+func (h *InterestHandler) GetAllUnreadMessage(c *gin.Context) {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	unreadMessageCount, err := h.uc.GetUnreadMessageCount(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Get unread message count successfully",
+		"data": interestdto.GetUnreadMessageResponse{
+			UnreadMessageCount: unreadMessageCount,
+		},
+	})
+}
+
 // @Summary Create interest
 // @Description API quan tâm đến bài viết + JWT
 // @Security BearerAuth

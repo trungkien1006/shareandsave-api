@@ -1008,6 +1008,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/interests/unread-count": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy số lượng tin nhắn chưa đọc",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "interests"
+                ],
+                "summary": "Get unread message count",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.GetUnreadMessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/interests/{interestID}": {
             "get": {
                 "security": [
@@ -3085,6 +3125,14 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "interestdto.GetUnreadMessageResponse": {
+            "type": "object",
+            "properties": {
+                "unreadMessageCount": {
+                    "type": "integer"
                 }
             }
         },

@@ -462,6 +462,11 @@ definitions:
       message:
         type: string
     type: object
+  interestdto.GetUnreadMessageResponse:
+    properties:
+      unreadMessageCount:
+        type: integer
+    type: object
   interestdto.Interest:
     properties:
       createdAt:
@@ -2372,6 +2377,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete Interest
+      tags:
+      - interests
+  /interests/unread-count:
+    get:
+      consumes:
+      - application/json
+      description: API lấy số lượng tin nhắn chưa đọc
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interestdto.GetUnreadMessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get unread message count
       tags:
       - interests
   /item-warehouses:

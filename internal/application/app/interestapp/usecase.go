@@ -47,6 +47,15 @@ func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.
 	return unreadMessageCount, totalPage, nil
 }
 
+func (uc *UseCase) GetUnreadMessageCount(ctx context.Context, userID uint) (uint, error) {
+	unreadMessageCount, err := uc.repo.GetTotalUnreadMessage(ctx, userID, enums.InterestTypeAll)
+	if err != nil {
+		return 0, err
+	}
+
+	return unreadMessageCount, nil
+}
+
 func (uc *UseCase) GetInterestByID(ctx context.Context, postInterest *interest.PostInterest, interestID uint) error {
 	err := uc.repo.GetDetailByID(ctx, postInterest, interestID)
 	if err != nil {
