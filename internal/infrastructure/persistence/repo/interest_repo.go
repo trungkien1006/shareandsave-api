@@ -49,12 +49,14 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Table("post").
 			Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description").
 			Preload("Author").
-			Preload("Interests").
+			Preload("Interests", func(db *gorm.DB) *gorm.DB {
+				return db.Where("deleted_at IS NULL")
+			}).
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").
 			Preload("PostItem.Item.Category").
-			Joins("JOIN interest ON interest.post_id = post.id").
+			Joins("JOIN interest ON interest.post_id = post.id AND interest.deleted_at IS NULL").
 			Joins("JOIN user ON interest.user_id = user.id").
 			Where("post.author_id = ? AND post.deleted_at IS NULL", userID).
 			Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description")
