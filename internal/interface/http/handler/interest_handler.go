@@ -80,7 +80,7 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 		"code":    http.StatusOK,
 		"message": "Fetched interests successfully",
 		"data": interestdto.GetInterestResponse{
-			Interests:          interestDTORes[0:req.Limit],
+			Interests:          interestDTORes,
 			UnreadMessageCount: unreadMessageCount,
 			TotalPage:          totalPage,
 		},

@@ -78,7 +78,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 	//phan trang
 	if filter.Limit != 0 && filter.Page != 0 {
-		query.Offset((filter.Page - 1) * filter.Limit).Limit(filter.Limit + 1)
+		query.Offset((filter.Page - 1) * filter.Limit).Limit(filter.Limit)
 	}
 
 	//sort du lieu
