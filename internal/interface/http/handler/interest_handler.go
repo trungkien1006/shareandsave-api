@@ -78,10 +78,50 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched interest successfully",
+		"message": "Fetched interests successfully",
 		"data": interestdto.GetInterestResponse{
 			Interests: interestDTORes,
 			TotalPage: totalPage,
+		},
+	})
+}
+
+// @Summary Get interest by ID
+// @Description API lấy thông tin interest theo ID
+// @Tags items
+// @Accept json
+// @Produce json
+// @Param interestID path int true "ID interest"
+// @Success 200 {object} interestdto.GetByIDInterestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /interests/{interestID} [get]
+func (h *InterestHandler) GetByID(c *gin.Context) {
+	var (
+		req            interestdto.GetByID
+		domainInterest interest.PostInterest
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	err := h.uc.GetInterestByID(context.Background(), &domainInterest, req.InterestID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	var interestDTORes interestdto.PostInterest
+
+	interestDTORes = interestdto.GetDomainToDTO(domainInterest)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Fetched interest successfully",
+		"data": interestdto.GetByIDInterestResponse{
+			Interest: interestDTORes,
 		},
 	})
 }

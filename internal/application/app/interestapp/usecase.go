@@ -41,6 +41,15 @@ func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.
 	return totalPage, nil
 }
 
+func (uc *UseCase) GetInterestByID(ctx context.Context, postInterest *interest.PostInterest, interestID uint) error {
+	err := uc.repo.GetDetailByID(ctx, postInterest, interestID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uc *UseCase) CreateInterest(ctx context.Context, interest interest.Interest) (uint, error) {
 	isUserExist, err := uc.userRepo.IsExist(ctx, interest.UserID)
 	if err != nil {

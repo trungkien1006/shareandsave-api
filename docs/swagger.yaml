@@ -428,6 +428,20 @@ definitions:
       message:
         type: string
     type: object
+  interestdto.GetByIDInterestResponse:
+    properties:
+      interest:
+        $ref: '#/definitions/interestdto.PostInterest'
+    type: object
+  interestdto.GetByIDInterestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/interestdto.GetByIDInterestResponse'
+      message:
+        type: string
+    type: object
   interestdto.GetInterestResponse:
     properties:
       interests:
@@ -2292,6 +2306,35 @@ paths:
       summary: Create interest
       tags:
       - interests
+  /interests/{interestID}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin interest theo ID
+      parameters:
+      - description: ID interest
+        in: path
+        name: interestID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interestdto.GetByIDInterestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get interest by ID
+      tags:
+      - items
   /interests/{postID}:
     delete:
       consumes:

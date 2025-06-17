@@ -11,6 +11,16 @@ type GetInterestResponse struct {
 	TotalPage int            `json:"totalPage"`
 }
 
+type GetByIDInterestResponseWrapper struct {
+	Code    int                     `json:"code"`
+	Message string                  `json:"message"`
+	Data    GetByIDInterestResponse `json:"data"`
+}
+
+type GetByIDInterestResponse struct {
+	Interest PostInterest `json:"interest"`
+}
+
 type CreateInterestResponseWrapper struct {
 	Code    int                    `json:"code"`
 	Message string                 `json:"message"`

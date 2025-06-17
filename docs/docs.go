@@ -1008,6 +1008,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/interests/{interestID}": {
+            "get": {
+                "description": "API lấy thông tin interest theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get interest by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID interest",
+                        "name": "interestID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interestdto.GetByIDInterestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/interests/{postID}": {
             "delete": {
                 "security": [
@@ -2980,6 +3024,28 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/interestdto.DeleteInterestResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "interestdto.GetByIDInterestResponse": {
+            "type": "object",
+            "properties": {
+                "interest": {
+                    "$ref": "#/definitions/interestdto.PostInterest"
+                }
+            }
+        },
+        "interestdto.GetByIDInterestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/interestdto.GetByIDInterestResponse"
                 },
                 "message": {
                     "type": "string"

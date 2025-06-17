@@ -35,3 +35,16 @@ func CommentDBToDomain(db Comment) comment.Comment {
 		CreatedAt:  db.CreatedAt,
 	}
 }
+
+// Domain to DB
+func CommentDomainToDB(domain comment.Comment) Comment {
+	return Comment{
+		ID:         domain.ID,
+		InterestID: domain.InterestID,
+		SenderID:   domain.SenderID,
+		ReceiverID: domain.ReceiverID,
+		Content:    domain.Content,
+		IsRead:     domain.IsRead,
+		CreatedAt:  domain.CreatedAt,
+	}
+}

@@ -106,6 +106,36 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 	return totalPage, nil
 }
 
+func (r *InterestRepoDB) GetDetailByID(ctx context.Context, postInterest *interest.PostInterest, interestID uint) error {
+	var (
+		dbPosts dbmodel.Post
+	)
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Table("post").
+		Select("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description").
+		Preload("Interests", func(db *gorm.DB) *gorm.DB {
+			return db.Where("id = ?", interestID)
+		}).
+		Preload("Author").
+		Preload("Interests.User").
+		Preload("PostItem").
+		Preload("PostItem.Item").
+		Preload("PostItem.Item.Category").
+		Where("interest.id = ? AND interest.deleted_at IS NULL", interestID).
+		Joins("JOIN interest ON interest.post_id = post.id").
+		Joins("JOIN user ON interest.user_id = user.id").
+		Group("post.id, post.title, post.type, post.slug, post.author_id, post.updated_at, post.created_at, post.description").
+		Find(&dbPosts).Error; err != nil {
+		return errors.New("Lỗi khi lọc danh sách quan tâm: " + err.Error())
+	}
+
+	*postInterest = dbmodel.GetDTOToDomain(dbPosts)
+
+	return nil
+}
+
 func (r *InterestRepoDB) Create(ctx context.Context, interest interest.Interest) (uint, error) {
 	var (
 		dbInterest dbmodel.Interest

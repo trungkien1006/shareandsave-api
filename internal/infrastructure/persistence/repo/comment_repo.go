@@ -44,3 +44,21 @@ func (r *CommentRepoDB) GetAll(ctx context.Context, domainComment *[]comment.Com
 
 	return nil
 }
+
+func (r *CommentRepoDB) Create(ctx context.Context, domainComments *[]comment.Comment) error {
+	var dbComments []dbmodel.Comment
+
+	for _, value := range *domainComments {
+		dbComments = append(dbComments, dbmodel.CommentDomainToDB(value))
+	}
+
+	tx := r.db.Debug().WithContext(ctx)
+
+	// Bulk insert (gorm hỗ trợ)
+	err := tx.Model(&dbmodel.Comment{}).Create(&dbComments).Error
+	if err != nil {
+		return errors.New("Có lỗi khi insert batch comment: " + err.Error())
+	}
+
+	return nil
+}

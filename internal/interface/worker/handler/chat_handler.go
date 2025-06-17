@@ -2,12 +2,35 @@ package handler
 
 import (
 	"final_project/internal/application/worker/chatapp"
+	redisapp "final_project/internal/infrastructure/redis"
 )
 
 type ChatHandler struct {
-	uc *chatapp.UseCase
+	uc       *chatapp.UseCase
+	consumer *redisapp.StreamConsumer
 }
 
-func NewChatHandler(uc *chatapp.UseCase) *ChatHandler {
-	return &ChatHandler{uc: uc}
+func NewChatHandler(c *redisapp.StreamConsumer, uc *chatapp.UseCase) *ChatHandler {
+	return &ChatHandler{
+		consumer: c,
+		uc:       uc,
+	}
 }
+
+// func (w *ChatHandler) Run() error {
+// 	// Chạy goroutine scan pending định kỳ
+// 	go func() {
+// 		for {
+// 			time.Sleep(30 * time.Second)
+// 			log.Println("Checking pending messages...")
+// 			w.consumer.RecoverPending(func(data map[string]string) error {
+// 				return w.uc.ProcessOrder(data)
+// 			})
+// 		}
+// 	}()
+
+// 	// Chạy consumer chính
+// 	return w.consumer.Consume(func(data map[string]string) error {
+// 		return w.uc.ProcessOrder(data)
+// 	})
+// }
