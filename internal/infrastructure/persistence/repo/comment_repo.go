@@ -28,7 +28,7 @@ func (r *CommentRepoDB) GetAll(ctx context.Context, domainComment *[]comment.Com
 		Model(&dbmodel.Comment{}).
 		Where("interest_id = ?", req.InterestID).
 		Where("content LIKE ?", "%"+req.Search+"%").
-		Order("created_at DESC")
+		Order("created_at ASC")
 
 	if req.Limit > 0 && req.Page > 0 {
 		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
