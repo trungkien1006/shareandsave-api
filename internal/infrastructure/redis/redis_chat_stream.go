@@ -10,7 +10,7 @@ import (
 
 const (
 	batchSize   = 100
-	batchWindow = 2 * time.Second
+	batchWindow = time.Second
 )
 
 var (
@@ -74,6 +74,7 @@ func (c *StreamConsumer) Consume(handler func(ctx context.Context, data []map[st
 				// Xác nhận ack toàn bộ message đã xử lý thành công
 				for _, msg := range buffer {
 					c.client.XAck(ctx, c.stream, c.group, msg.ID)
+					c.client.XDel(ctx, c.stream, msg.ID)
 				}
 
 				buffer = nil // clear buffer
@@ -134,6 +135,7 @@ func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data [
 		} else {
 			for _, msg := range buffer {
 				c.client.XAck(ctx, c.stream, c.group, msg.ID)
+				c.client.XDel(ctx, c.stream, msg.ID) // 👈 thêm nếu cần
 			}
 		}
 	}
