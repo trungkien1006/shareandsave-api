@@ -34,11 +34,10 @@ func UpdateDTOToDomain(dto UpdateTransactionRequest, userID uint, transactionID 
 	}
 
 	return transaction.Transaction{
-		ID:         transactionID,
-		SenderID:   userID,
-		Status:     int(dto.Status),
-		ReceiverID: userID,
-		Items:      domainItems,
+		ID:       transactionID,
+		SenderID: userID,
+		Status:   int(dto.Status),
+		Items:    domainItems,
 	}
 }
 

@@ -191,25 +191,40 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		dbTransaction dbmodel.Transaction
 	)
 
-	dbTransaction = dbmodel.TransactionDomainToDB(*transaction)
-
 	tx := r.db.Debug().Begin()
 
+	//Get transaction
+	if err := tx.WithContext(ctx).
+		Model(&dbmodel.Transaction{}).
+		Where("id = ? AND sender_id = ?", transaction.ID, transaction.SenderID).
+		Find(&dbTransaction).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Không tìm thấy transaction: " + err.Error())
+	}
+
+	if dbTransaction.SenderID != transaction.SenderID {
+		tx.Rollback()
+		return errors.New("Bạn không có quyền cập nhật transaction này")
+	}
+
+	dbTransaction.Status = transaction.Status
+
+	for _, value := range transaction.Items {
+		dbTransaction.TransactionItems = append(dbTransaction.TransactionItems, dbmodel.TransactionItem{
+			TransactionID: dbTransaction.ID,
+			PostItemID:    value.PostItemID,
+			Quantity:      value.Quantity,
+		})
+	}
+
+	//Nếu hoàn tất transaction sẽ cập nhật danh sách các món đồ của giao dịch
 	if dbTransaction.Status == int(enums.TransactionStatusSuccess) {
 		if len(dbTransaction.TransactionItems) == 0 {
 			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
 				Where("transaction_id = ?", dbTransaction.ID).
 				Find(&dbTransaction.TransactionItems).Error; err != nil {
 				tx.Rollback()
-			}
-		}
-
-		for _, value := range dbTransaction.TransactionItems {
-			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
-				Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
-				Updates(&value).Error; err != nil {
-				tx.Rollback()
-				return errors.New("Có lỗi khi cập nhật đồ của giao dịch: " + err.Error())
+				return errors.New("Có lỗi khi lấy danh sách đồ của giao dịch: " + err.Error())
 			}
 		}
 
@@ -237,6 +252,15 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 			}
 		}
 
+		//Cập nhật số lượng các item
+		for _, value := range dbTransaction.TransactionItems {
+			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
+				Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
+				Updates(&value).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi cập nhật đồ của giao dịch: " + err.Error())
+			}
+		}
 	}
 
 	// Cập nhật giao dịch
