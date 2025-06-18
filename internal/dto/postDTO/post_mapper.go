@@ -100,7 +100,7 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 
 // DTO → Domain
 func CreateDTOToDomain(createPostDTO CreatePostRequest) post.CreatePost {
-	var domainOldItems []post.OldItemsInPost
+	domainOldItems := make([]post.OldItemsInPost, 0)
 
 	for _, value := range createPostDTO.OldItems {
 		domainOldItems = append(domainOldItems, OldItemsDTOToDomain(value))

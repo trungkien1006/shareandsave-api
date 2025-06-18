@@ -4,7 +4,7 @@ import "final_project/internal/domain/transaction"
 
 // DTO to Domain
 func CreateDTOToDomain(dto CreateTransactionRequest, userID uint) transaction.Transaction {
-	var domainItems []transaction.TransactionItem
+	domainItems := make([]transaction.TransactionItem, 0)
 
 	for _, value := range dto.Items {
 		domainItems = append(domainItems, transaction.TransactionItem{

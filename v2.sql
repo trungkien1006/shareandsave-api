@@ -77,6 +77,7 @@ CREATE TABLE `comment` (
   `sender_id` int,
   `receiver_id` int,
   `content` text,
+  `is_read` boolean,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
@@ -109,9 +110,10 @@ CREATE TABLE `appointment` (
   `deleted_at` timestamp
 );
 
-CREATE TABLE `appointment_item_warehouse` (
+CREATE TABLE `appointment_item` (
   `appointment_id` int,
-  `item_warehouse_id` int
+  `item_id` int,
+  `quantity` int
 );
 
 CREATE TABLE `warehouse` (
@@ -279,9 +281,9 @@ ALTER TABLE `transaction_item` ADD FOREIGN KEY (`post_item_id`) REFERENCES `post
 
 ALTER TABLE `appointment` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-ALTER TABLE `appointment_item_warehouse` ADD FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`);
+ALTER TABLE `appointment_item` ADD FOREIGN KEY (`appointment_id`) REFERENCES `appointment` (`id`);
 
-ALTER TABLE `appointment_item_warehouse` ADD FOREIGN KEY (`item_warehouse_id`) REFERENCES `item_warehouse` (`id`);
+ALTER TABLE `appointment_item` ADD FOREIGN KEY (`item_id`) REFERENCES `item_warehouse` (`id`);
 
 ALTER TABLE `item_warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 

@@ -39,10 +39,8 @@ func GetDomainToDTO(domain importinvoice.GetImportInvoice) ImportInvoiceListDTO 
 
 // Domain to DTO
 func ImportInvoiceDomainToDTO(domain importinvoice.ImportInvoice) ImportInvoiceDTO {
-	var (
-		warehouses []warehousedto.DetailWarehouseDTO
-		items      []ItemImportInvoiceDTO
-	)
+	warehouses := make([]warehousedto.DetailWarehouseDTO, 0)
+	items := make([]ItemImportInvoiceDTO, 0)
 
 	for _, value := range domain.ItemImportInvoice {
 		items = append(items, ItemImportInvoiceDTO{

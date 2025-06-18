@@ -4,7 +4,7 @@ import "final_project/internal/domain/warehouse"
 
 // DTO to Domain
 func UpdateWarehouseDTOToDomain(dto UpdateWarehouseRequest) warehouse.DetailWarehouse {
-	var itemWarehouses []warehouse.ItemWareHouse
+	itemWarehouses := make([]warehouse.ItemWareHouse, 0)
 
 	for _, value := range dto.ItemWarehouses {
 		itemWarehouses = append(itemWarehouses, warehouse.ItemWareHouse{

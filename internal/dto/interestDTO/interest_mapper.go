@@ -28,10 +28,8 @@ func GetDTOToDomain(dto GetInterest) interest.GetInterest {
 
 // Domain to DTO
 func GetDomainToDTO(domain interest.PostInterest) PostInterest {
-	var (
-		domainItems    []PostInterestItem
-		domainInterest []Interest
-	)
+	domainItems := make([]PostInterestItem, 0)
+	domainInterest := make([]Interest, 0)
 
 	for _, value := range domain.Items {
 		domainItems = append(domainItems, PostInterestItem{
