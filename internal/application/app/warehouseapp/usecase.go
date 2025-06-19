@@ -95,10 +95,12 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 
 		var itemClaims warehouse.ClaimRequestItem
 
-		//Decode danh sách người dùng chờ nhận đồ
-		err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
-		if err != nil {
-			return errors.New("Có lỗi khi decode JSON: " + err.Error())
+		if itemClaimsReqJson != "" {
+			//Decode danh sách người dùng chờ nhận đồ
+			err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
+			if err != nil {
+				return errors.New("Có lỗi khi decode JSON: " + err.Error())
+			}
 		}
 
 		itemClaims.Users = append(itemClaims.Users, warehouse.ClaimRequestUser{
