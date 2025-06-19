@@ -152,7 +152,6 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 
 // @Summary Get item old stock
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
-// @Security BearerAuth
 // @Tags item warehouses
 // @Accept json
 // @Produce json

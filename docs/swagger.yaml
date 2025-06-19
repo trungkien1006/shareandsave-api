@@ -1961,8 +1961,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
       summary: Get item old stock
       tags:
       - item warehouses
