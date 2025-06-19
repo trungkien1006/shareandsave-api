@@ -88,7 +88,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//warehouse dependency
 	warehouseRepo := persistence.NewWarehouseRepoDB(db)
-	warehouseUC := warehouseapp.NewUseCase(warehouseRepo)
+	warehouseUC := warehouseapp.NewUseCase(warehouseRepo, redisRepo)
 	warehouseHandler := handler.NewWarehouseHandler(warehouseUC)
 
 	//message dependency

@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	GetAll(ctx context.Context, warehouses *[]Warehouse, req filter.FilterRequest) (int, error)
 	GetAllItem(ctx context.Context, warehouses *[]ItemWareHouse, req filter.FilterRequest) (int, error)
+	GetAllOldStockItem(ctx context.Context, items *[]ItemOldStock, req filter.FilterRequest) (int, error)
 	GetItemByCode(ctx context.Context, itemWarehouse *ItemWareHouse, code string) error
 	GetByID(ctx context.Context, warehouse *DetailWarehouse, warehouseID uint) error
 	Update(ctx context.Context, warehouse DetailWarehouse) error

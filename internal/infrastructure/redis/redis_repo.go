@@ -45,3 +45,32 @@ func (r *RedisRepo) DeleteFromRedis(ctx context.Context, key string) error {
 	}
 	return nil
 }
+
+// SetToRedisHash thêm hoặc cập nhật một field vào hash trong Redis
+func (r *RedisRepo) SetToRedisHash(ctx context.Context, hashKey string, field string, value string) error {
+	err := r.client.HSet(ctx, hashKey, field, value).Err()
+	if err != nil {
+		return errors.New("Có lỗi khi thêm dữ liệu vào redis hash: " + err.Error())
+	}
+	return nil
+}
+
+func (r *RedisRepo) GetFromRedisHash(ctx context.Context, hashKey string, field string) (string, error) {
+	val, err := r.client.HGet(ctx, hashKey, field).Result()
+	if err != nil {
+		if err == redis.Nil {
+			// Field không tồn tại
+			return "", nil
+		}
+		return "", errors.New("Có lỗi khi lấy dữ liệu từ redis hash: " + err.Error())
+	}
+	return val, nil
+}
+
+func (r *RedisRepo) DeleteFromRedisHash(ctx context.Context, hashKey string, fields ...string) error {
+	err := r.client.HDel(ctx, hashKey, fields...).Err()
+	if err != nil {
+		return errors.New("Có lỗi khi xóa field khỏi redis hash: " + err.Error())
+	}
+	return nil
+}

@@ -43,3 +43,18 @@ type ItemWareHouse struct {
 	Description  string
 	Status       int
 }
+
+type ItemOldStock struct {
+	ItemID            uint
+	ItemName          string
+	ItemImage         string
+	Description       string
+	CategoryName      string
+	Quantity          uint
+	ClaimItemRequests uint
+}
+
+type ClaimRequest struct {
+	UserID   uint
+	Quantity uint
+}

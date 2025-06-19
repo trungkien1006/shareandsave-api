@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -133,6 +134,71 @@ func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]ware
 
 	for _, value := range dbItemWarehouse {
 		*itemWarehouses = append(*itemWarehouses, dbmodel.ItemWarehouseDBToDomain(value))
+	}
+
+	return totalPages, nil
+}
+
+func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]warehouse.ItemOldStock, req filter.FilterRequest) (int, error) {
+	var (
+		query        *gorm.DB
+		totalRecords int64
+		itemOldStock []dbmodel.ItemOldStock
+	)
+
+	query = r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.ItemOldStock{}).
+		Table("warehouse as w").
+		Select("item.id as item_id, item.name as item_name, item.image as item_image, item.description as description, category.name as category_name, COUNT(iw.id) as quantity").
+		Joins("JOIN item ON item.id = w.item_id").
+		Joins("JOIN category ON category.id = item.category_id").
+		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = w.id").
+		Where("w.classify = ?", enums.ItemClassifyOlItem).
+		Group("item.id, item.name, item.image, item.description, category.name")
+
+	if req.SearchBy != "" && req.SearchValue != "" {
+		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
+
+		if column == "item_name" {
+			column = "item.name"
+		} else if column == "description" {
+			column = "item.description"
+		} else if column == "category_name" {
+			column = "category.name"
+		} else {
+			column = "w." + column
+		}
+
+		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+	}
+
+	if err := query.Count(&totalRecords).Error; err != nil {
+		return 0, err
+	}
+
+	if req.Sort != "" && req.Order != "" {
+		query = query.Order(strcase.ToSnake(req.Sort) + " " + req.Order)
+	}
+
+	if req.Limit > 0 && req.Page > 0 {
+		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
+	}
+
+	if err := query.Find(&itemOldStock).Error; err != nil {
+		return 0, err
+	}
+
+	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
+
+	// mappingOb := make(map[uint]warehouse.ItemOldStock, 0)
+
+	// for _, value := range itemOldStock {
+	// 	mappingOb[value.ItemID] = append(*items, dbmodel.ItemOldStockDBToDomain(value))
+	// }
+
+	for _, value := range itemOldStock {
+		*items = append(*items, dbmodel.ItemOldStockDBToDomain(value))
 	}
 
 	return totalPages, nil

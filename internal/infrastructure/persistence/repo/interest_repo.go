@@ -7,6 +7,7 @@ import (
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"final_project/internal/pkg/enums"
 	"math"
+	"sort"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -34,7 +35,10 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("user_id = ?", userID)
 			}).
-			Preload("Interests.Comments", "is_read = 0 AND sender_id != ?", userID).
+			Preload("Interests.Comments", func(db *gorm.DB) *gorm.DB {
+				// Lấy comment chưa đọc và sort theo thời gian tạo mới nhất
+				return db.Where("is_read = 0 AND sender_id != ?", userID).Order("created_at DESC")
+			}).
 			Preload("Author").
 			Preload("Interests.User").
 			Preload("PostItem").
@@ -53,7 +57,10 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			Preload("Interests", func(db *gorm.DB) *gorm.DB {
 				return db.Where("deleted_at IS NULL")
 			}).
-			Preload("Interests.Comments", "is_read = 0 AND sender_id != ?", userID).
+			Preload("Interests.Comments", func(db *gorm.DB) *gorm.DB {
+				// Lấy comment chưa đọc và sort theo thời gian tạo mới nhất
+				return db.Where("is_read = 0 AND sender_id != ?", userID).Order("created_at DESC")
+			}).
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").
@@ -96,6 +103,20 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 	if err := query.Find(&dbPosts).Error; err != nil {
 		return 0, errors.New("Lỗi khi lọc danh sách quan tâm: " + err.Error())
+	}
+
+	for i := range dbPosts {
+		sort.SliceStable(dbPosts[i].Interests, func(a, b int) bool {
+			aComments := dbPosts[i].Interests[a].Comments
+			bComments := dbPosts[i].Interests[b].Comments
+
+			// Nếu cả hai đều có comment thì so sánh created_at mới nhất
+			if len(aComments) > 0 && len(bComments) > 0 {
+				return aComments[0].CreatedAt.After(bComments[0].CreatedAt)
+			}
+			// Ưu tiên interest có comment hơn
+			return len(aComments) > len(bComments)
+		})
 	}
 
 	//tinh toan total page

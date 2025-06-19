@@ -25,6 +25,15 @@ type Warehouse struct {
 	ItemWarehouses []ItemWarehouse `gorm:"foreignKey:WarehouseID"`
 }
 
+type ItemOldStock struct {
+	ItemID       uint   `gorm:"column:item_id"`
+	ItemName     string `gorm:"column:item_name"`
+	ItemImage    string `gorm:"column:item_image"`
+	Description  string `gorm:"column:description"`
+	CategoryName string `gorm:"column:category_name"`
+	Quantity     uint   `gorm:"column:quantity"`
+}
+
 type DetailWarehouse struct {
 	Warehouse
 	ItemName     string `gorm:"column:item_name"`
@@ -61,6 +70,19 @@ func ItemWarehouseDBToDomain(db ItemWarehouse) warehouse.ItemWareHouse {
 		Code:         db.Code,
 		Description:  db.Description,
 		Status:       db.Status,
+	}
+}
+
+// DB to Domain
+func ItemOldStockDBToDomain(db ItemOldStock) warehouse.ItemOldStock {
+	return warehouse.ItemOldStock{
+		ItemID:            db.ItemID,
+		ItemName:          db.ItemName,
+		ItemImage:         db.ItemImage,
+		Description:       db.Description,
+		CategoryName:      db.CategoryName,
+		Quantity:          db.Quantity,
+		ClaimItemRequests: 0,
 	}
 }
 

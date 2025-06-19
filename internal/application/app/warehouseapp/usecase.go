@@ -2,16 +2,25 @@ package warehouseapp
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"final_project/internal/domain/filter"
+	"final_project/internal/domain/redis"
 	"final_project/internal/domain/warehouse"
+	"final_project/internal/pkg/enums"
+	"strconv"
 )
 
 type UseCase struct {
-	repo warehouse.Repository
+	repo      warehouse.Repository
+	redisRepo redis.Repository
 }
 
-func NewUseCase(r warehouse.Repository) *UseCase {
-	return &UseCase{repo: r}
+func NewUseCase(r warehouse.Repository, redisRepo redis.Repository) *UseCase {
+	return &UseCase{
+		repo:      r,
+		redisRepo: redisRepo,
+	}
 }
 
 func (uc *UseCase) GetAllWarehouse(ctx context.Context, warehouses *[]warehouse.Warehouse, filter filter.FilterRequest) (int, error) {
@@ -30,6 +39,33 @@ func (uc *UseCase) GetAllItemWarehouse(ctx context.Context, warehouses *[]wareho
 	}
 
 	return totalPage, nil
+}
+
+func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter filter.FilterRequest) ([]uint, int, error) {
+	totalPage, err := uc.repo.GetAllOldStockItem(ctx, items, filter)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var claimRequestCounts []uint
+
+	for _, value := range *items {
+		claimRequestStr, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(value.ItemID)))
+		if err != nil {
+			return nil, 0, errors.New("Có lỗi khi truy xuất số thành viên đã đăng kí nhận đồ: " + err.Error())
+		}
+
+		var claimRequests []warehouse.ClaimRequest
+
+		err = json.Unmarshal([]byte(claimRequestStr), &claimRequests)
+		if err != nil {
+			return nil, 0, errors.New("Có lỗi khi giải mã JSON: " + err.Error())
+		}
+
+		claimRequestCounts = append(claimRequestCounts, uint(len(claimRequests)))
+	}
+
+	return claimRequestCounts, totalPage, nil
 }
 
 func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
