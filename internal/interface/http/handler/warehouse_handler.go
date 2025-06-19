@@ -229,7 +229,7 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 // @Success 201 {object} warehousedto.GetItemWarehouseByCodeResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
-// @Router /item-warehouses/claim-request [post]
+// @Router /client/item-warehouses/claim-request [post]
 func (h *WarehouseHandler) CreateClaimRequest(c *gin.Context) {
 	var (
 		req             []warehousedto.CreateClaimRequestRequest
