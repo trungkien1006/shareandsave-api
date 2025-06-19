@@ -1307,6 +1307,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/item-warehouses/claim-request": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lưu thông tin đăng kí nhận đồ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Create claim request",
+                "parameters": [
+                    {
+                        "description": "Claim request creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.CreateClaimRequestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.GetItemWarehouseByCodeResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/item-warehouses/{itemCode}": {
             "get": {
                 "security": [
@@ -4896,6 +4947,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.CreateClaimRequestRequest": {
+            "type": "object",
+            "required": [
+                "itemID",
+                "quantity"
+            ],
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
                     "type": "integer"
                 }
             }

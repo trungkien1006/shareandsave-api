@@ -255,6 +255,19 @@ func (r *WarehouseRepoDB) GetByID(ctx context.Context, warehouse *warehouse.Deta
 	return nil
 }
 
+func (r *WarehouseRepoDB) GetItemWarehouseQuantity(ctx context.Context, itemID uint) (uint, error) {
+	var quantity int64 = 0
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.ItemWarehouse{}).
+		Where("item_id = ?", itemID).
+		Count(&quantity).Error; err != nil {
+		return 0, errors.New("Có lỗi khi truy xuất số lượng đồ đạc còn trong kho: " + err.Error())
+	}
+
+	return uint(quantity), nil
+}
+
 func (r *WarehouseRepoDB) Update(ctx context.Context, warehouse warehouse.DetailWarehouse) error {
 	var dbWarehouse dbmodel.Warehouse
 

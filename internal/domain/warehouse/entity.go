@@ -63,3 +63,8 @@ type ClaimRequestUser struct {
 	ID       uint
 	Quantity uint
 }
+
+type CreateClaimRequestItem struct {
+	ItemID   uint
+	Quantity uint
+}

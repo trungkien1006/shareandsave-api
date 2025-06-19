@@ -11,5 +11,6 @@ type Repository interface {
 	GetAllOldStockItem(ctx context.Context, items *[]ItemOldStock, req filter.FilterRequest) (int, error)
 	GetItemByCode(ctx context.Context, itemWarehouse *ItemWareHouse, code string) error
 	GetByID(ctx context.Context, warehouse *DetailWarehouse, warehouseID uint) error
+	GetItemWarehouseQuantity(ctx context.Context, itemID uint) (uint, error)
 	Update(ctx context.Context, warehouse DetailWarehouse) error
 }

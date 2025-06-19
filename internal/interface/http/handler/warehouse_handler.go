@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/warehouse"
 	warehousedto "final_project/internal/dto/warehouseDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
 	"net/http"
 	"strconv"
 
@@ -215,6 +216,53 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 			ItemOldStocks: itemOldStockDTORes,
 			TotalPage:     totalPage,
 		},
+	})
+}
+
+// @Summary Create claim request
+// @Description API lưu thông tin đăng kí nhận đồ
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Param request body warehousedto.CreateClaimRequestRequest true "Claim request creation payload"
+// @Success 201 {object} warehousedto.GetItemWarehouseByCodeResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /item-warehouses/claim-request [post]
+func (h *WarehouseHandler) CreateClaimRequest(c *gin.Context) {
+	var (
+		req             []warehousedto.CreateClaimRequestRequest
+		domainClaimReqs []warehouse.CreateClaimRequestItem
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	for _, value := range req {
+		domainClaimReqs = append(domainClaimReqs, warehousedto.CreateClaimRequestDTOToDomain(value))
+	}
+
+	if err := h.uc.CreateClaimRequest(c.Request.Context(), domainClaimReqs, userID); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	c.JSON(http.StatusOK, warehousedto.CreateClaimRequestResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Create claim request successfully",
+		Data:    gin.H{},
 	})
 }
 

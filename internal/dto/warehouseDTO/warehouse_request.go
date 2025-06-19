@@ -83,3 +83,8 @@ func (r *GetItemOldStockRequest) SetDefault() {
 		r.Order = "ASC"
 	}
 }
+
+type CreateClaimRequestRequest struct {
+	ItemID   uint `json:"itemID" binding:"required"`
+	Quantity uint `json:"quantity" binding:"required"`
+}

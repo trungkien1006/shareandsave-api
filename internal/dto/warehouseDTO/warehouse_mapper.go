@@ -98,3 +98,11 @@ func DetailWarehouseDomainToDTO(domain warehouse.DetailWarehouse) DetailWarehous
 		CreatedAt:       domain.CreatedAt,
 	}
 }
+
+// DTO to Domain
+func CreateClaimRequestDTOToDomain(dto CreateClaimRequestRequest) warehouse.CreateClaimRequestItem {
+	return warehouse.CreateClaimRequestItem{
+		ItemID:   dto.ItemID,
+		Quantity: dto.Quantity,
+	}
+}

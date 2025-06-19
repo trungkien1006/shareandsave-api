@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"final_project/internal/domain/filter"
+	"final_project/internal/domain/item"
 	"final_project/internal/domain/redis"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
@@ -14,12 +15,14 @@ import (
 type UseCase struct {
 	repo      warehouse.Repository
 	redisRepo redis.Repository
+	itemRepo  item.Repository
 }
 
-func NewUseCase(r warehouse.Repository, redisRepo redis.Repository) *UseCase {
+func NewUseCase(r warehouse.Repository, redisRepo redis.Repository, itemRepo item.Repository) *UseCase {
 	return &UseCase{
 		repo:      r,
 		redisRepo: redisRepo,
+		itemRepo:  itemRepo,
 	}
 }
 
@@ -70,6 +73,72 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 	}
 
 	return claimRequestCounts, totalPage, nil
+}
+
+func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse.CreateClaimRequestItem, userID uint) error {
+	for _, value := range claimReqs {
+		//Kiểm tra món đồ tồn tại
+		itemExisted, err := uc.itemRepo.IsExist(ctx, value.ItemID)
+		if err != nil {
+			return err
+		}
+
+		if !itemExisted {
+			return errors.New("Món đồ không tồn tại: " + err.Error())
+		}
+
+		//Lưu người dùng vào hàng đợi của từng món đồ
+		itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(value.ItemID)))
+		if err != nil {
+			return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
+		}
+
+		var itemClaims warehouse.ClaimRequestItem
+
+		//Decode danh sách người dùng chờ nhận đồ
+		err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
+		if err != nil {
+			return errors.New("Có lỗi khi decode JSON: " + err.Error())
+		}
+
+		itemClaims.Users = append(itemClaims.Users, warehouse.ClaimRequestUser{
+			ID:       userID,
+			Quantity: value.Quantity,
+		})
+
+		//Kiểm tra số lượng đồ còn lại
+		itemClaims.ItemQuantity += value.Quantity
+
+		currentQuantity, err := uc.repo.GetItemWarehouseQuantity(ctx, value.ItemID)
+		if err != nil {
+			return err
+		}
+
+		if currentQuantity < itemClaims.ItemQuantity {
+			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(currentQuantity)))
+		}
+
+		newClaimReqJSON, err := json.Marshal(itemClaims)
+		if err != nil {
+			return errors.New("Có lỗi khi mã hóa JSON: " + err.Error())
+		}
+
+		if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(newClaimReqJSON)); err != nil {
+			return errors.New("Có lỗi khi lưu danh sách thành viên đang chờ nhận đồ: " + err.Error())
+		}
+	}
+
+	//Lưu danh sách đăng kí nhận đồ của user vào key userClaimRequest
+	claimReqsJson, err := json.Marshal(claimReqs)
+	if err != nil {
+		return errors.New("Có lỗi khi mã hóa JSON: " + err.Error())
+	}
+
+	if err := uc.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)), string(claimReqsJson)); err != nil {
+		return errors.New("Có lỗi khi lưu danh sách đăng kí nhận đồ của người dùng: " + err.Error())
+	}
+
+	return nil
 }
 
 func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
