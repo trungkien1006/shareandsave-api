@@ -55,14 +55,18 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 			return nil, 0, errors.New("Có lỗi khi truy xuất số thành viên đã đăng kí nhận đồ: " + err.Error())
 		}
 
-		var claimRequests []warehouse.ClaimRequest
+		if claimRequestStr != "" {
+			var claimRequests []warehouse.ClaimRequest
 
-		err = json.Unmarshal([]byte(claimRequestStr), &claimRequests)
-		if err != nil {
-			return nil, 0, errors.New("Có lỗi khi giải mã JSON: " + err.Error())
+			err = json.Unmarshal([]byte(claimRequestStr), &claimRequests)
+			if err != nil {
+				return nil, 0, errors.New("Có lỗi khi giải mã JSON: " + err.Error())
+			}
+
+			claimRequestCounts = append(claimRequestCounts, uint(len(claimRequests)))
+		} else {
+			claimRequestCounts = append(claimRequestCounts, 0)
 		}
-
-		claimRequestCounts = append(claimRequestCounts, uint(len(claimRequests)))
 	}
 
 	return claimRequestCounts, totalPage, nil
