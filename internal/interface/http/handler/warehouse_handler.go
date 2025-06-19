@@ -225,7 +225,7 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 // @Tags item warehouses
 // @Accept json
 // @Produce json
-// @Param request body warehousedto.CreateClaimRequestRequest true "Claim request creation payload"
+// @Param request body []warehousedto.CreateClaimRequestRequest true "Claim request creation payload"
 // @Success 201 {object} warehousedto.GetItemWarehouseByCodeResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
