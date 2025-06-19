@@ -1921,6 +1921,38 @@ paths:
       summary: Client Get Me
       tags:
       - auth
+  /client/item-warehouses/claim-request:
+    post:
+      consumes:
+      - application/json
+      description: API lưu thông tin đăng kí nhận đồ
+      parameters:
+      - description: Claim request creation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/warehousedto.CreateClaimRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/warehousedto.GetItemWarehouseByCodeResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create claim request
+      tags:
+      - item warehouses
   /client/item-warehouses/old-stock:
     get:
       consumes:
@@ -2594,38 +2626,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Get item warehouse by code
-      tags:
-      - item warehouses
-  /item-warehouses/claim-request:
-    post:
-      consumes:
-      - application/json
-      description: API lưu thông tin đăng kí nhận đồ
-      parameters:
-      - description: Claim request creation payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/warehousedto.CreateClaimRequestRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/warehousedto.GetItemWarehouseByCodeResponseWrapper'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/enums.AppError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
-      summary: Create claim request
       tags:
       - item warehouses
   /items:
