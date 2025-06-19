@@ -53,6 +53,19 @@ func ItemWarehouseDomainToDTO(domain warehouse.ItemWareHouse) ItemWareHouseDTO {
 }
 
 // Domain to DTO
+func ItemOldStockDomainToDTO(domain warehouse.ItemOldStock) ItemOldStockDTO {
+	return ItemOldStockDTO{
+		ItemID:            domain.ItemID,
+		ItemName:          domain.ItemName,
+		ItemImage:         domain.ItemImage,
+		CategoryName:      domain.CategoryName,
+		Description:       domain.Description,
+		Quantity:          domain.Quantity,
+		ClaimItemRequests: domain.ClaimItemRequests,
+	}
+}
+
+// Domain to DTO
 func DetailWarehouseDomainToDTO(domain warehouse.DetailWarehouse) DetailWarehouseDTO {
 	itemWarehouses := make([]ItemWareHouseDTO, 0)
 

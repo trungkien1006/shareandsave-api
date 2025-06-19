@@ -219,6 +219,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/item-warehouses", middlewares.AuthGuard, warehouseHandler.GetAllItem)
 		v1.GET("/item-warehouses/:itemCode", middlewares.AuthGuard, warehouseHandler.GetItemByCode)
 
+		//client item warehouse API
+		v1.GET("/client/item-warehouses/old-stock", middlewares.AuthGuard, warehouseHandler.GetAllItemOldStock)
+
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
 		v1.GET("/messages/:interestID", middlewares.AuthGuard, commentHandler.UpdateReadMessage)

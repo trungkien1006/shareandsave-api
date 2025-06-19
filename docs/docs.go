@@ -326,6 +326,89 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/item-warehouses/old-stock": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Get item old stock",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort column (quantity)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC",
+                        "description": "Sort type: ASC hoặc DESC",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (itemName description categoryName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc:",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.FilterItemOldStockResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/login": {
             "post": {
                 "security": [
@@ -4869,6 +4952,34 @@ const docTemplate = `{
                 }
             }
         },
+        "warehousedto.FilterItemOldStockResponse": {
+            "type": "object",
+            "properties": {
+                "itemOldStocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.ItemOldStockDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.FilterItemOldStockResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/warehousedto.FilterItemOldStockResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "warehousedto.FilterItemWarehouseResponse": {
             "type": "object",
             "properties": {
@@ -4966,6 +5077,32 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "warehousedto.ItemOldStockDTO": {
+            "type": "object",
+            "properties": {
+                "category_name": {
+                    "type": "string"
+                },
+                "claim_item_requests": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "item_id": {
+                    "type": "integer"
+                },
+                "item_image": {
+                    "type": "string"
+                },
+                "item_name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },

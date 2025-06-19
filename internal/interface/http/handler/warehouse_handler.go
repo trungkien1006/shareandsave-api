@@ -150,6 +150,75 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 	})
 }
 
+// @Summary Get item old stock
+// @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record per page" minimum(1) example(10)
+// @Param sort query string false "Sort column (quantity)"
+// @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
+// @Param   searchBy   query    string  false  "Trường lọc (itemName description categoryName)"
+// @Param   searchValue   query    string  false  "Giá trị lọc:"
+// @Success 200 {object} warehousedto.FilterItemOldStockResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/item-warehouses/old-stock [get]
+func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
+	var (
+		req          warehousedto.GetItemOldStockRequest
+		domainItems  []warehouse.ItemOldStock
+		domainFilter filter.FilterRequest
+	)
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	req.SetDefault()
+
+	domainFilter.Page = req.Page
+	domainFilter.Limit = req.Limit
+	domainFilter.Sort = req.Sort
+	domainFilter.Order = req.Order
+	domainFilter.SearchBy = req.SearchBy
+	domainFilter.SearchValue = req.SearchValue
+
+	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter)
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	for key, value := range claimRequestCounts {
+		domainItems[key].ClaimItemRequests = value
+	}
+
+	itemOldStockDTORes := make([]warehousedto.ItemOldStockDTO, 0)
+
+	for _, value := range domainItems {
+		itemOldStockDTORes = append(itemOldStockDTORes, warehousedto.ItemOldStockDomainToDTO(value))
+	}
+
+	c.JSON(http.StatusOK, warehousedto.FilterItemOldStockResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched item old stock successfully",
+		Data: warehousedto.FilterItemOldStockResponse{
+			ItemOldStocks: itemOldStockDTORes,
+			TotalPage:     totalPage,
+		},
+	})
+}
+
 // @Summary Get item warehouse by code
 // @Description API lấy thông tin item warehouse bằng code
 // @Security BearerAuth

@@ -47,3 +47,14 @@ type GetItemWarehouseByCodeResponseWrapper struct {
 type GetItemWarehouseByCodeResponse struct {
 	ItemWarehouse ItemWareHouseDTO `json:"itemWarehouse"`
 }
+
+type FilterItemOldStockResponseWrapper struct {
+	Code    int                        `json:"code"`
+	Message string                     `json:"message"`
+	Data    FilterItemOldStockResponse `json:"data"`
+}
+
+type FilterItemOldStockResponse struct {
+	ItemOldStocks []ItemOldStockDTO `json:"itemOldStocks"`
+	TotalPage     int               `json:"totalPage"`
+}

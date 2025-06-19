@@ -1525,6 +1525,24 @@ definitions:
       stockPlace:
         type: string
     type: object
+  warehousedto.FilterItemOldStockResponse:
+    properties:
+      itemOldStocks:
+        items:
+          $ref: '#/definitions/warehousedto.ItemOldStockDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  warehousedto.FilterItemOldStockResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/warehousedto.FilterItemOldStockResponse'
+      message:
+        type: string
+    type: object
   warehousedto.FilterItemWarehouseResponse:
     properties:
       itemWarehouses:
@@ -1588,6 +1606,23 @@ definitions:
         $ref: '#/definitions/warehousedto.GetWarehouseByIDResponse'
       message:
         type: string
+    type: object
+  warehousedto.ItemOldStockDTO:
+    properties:
+      category_name:
+        type: string
+      claim_item_requests:
+        type: integer
+      description:
+        type: string
+      item_id:
+        type: integer
+      item_image:
+        type: string
+      item_name:
+        type: string
+      quantity:
+        type: integer
     type: object
   warehousedto.ItemWareHouseDTO:
     properties:
@@ -1876,6 +1911,61 @@ paths:
       summary: Client Get Me
       tags:
       - auth
+  /client/item-warehouses/old-stock:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record per page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column (quantity)
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort type: ASC hoặc DESC'
+        example: ASC
+        in: query
+        name: order
+        type: string
+      - description: Trường lọc (itemName description categoryName)
+        in: query
+        name: searchBy
+        type: string
+      - description: 'Giá trị lọc:'
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/warehousedto.FilterItemOldStockResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get item old stock
+      tags:
+      - item warehouses
   /client/login:
     post:
       consumes:

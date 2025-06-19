@@ -61,3 +61,25 @@ func (r *GetItemWarehouseRequest) SetDefault() {
 type GetItemWarehouseByCodeRequest struct {
 	ItemCode string `uri:"itemCode" binding:"required"`
 }
+
+// item_warehouse
+type GetItemOldStockRequest struct {
+	Page        int    `form:"page"`
+	Limit       int    `form:"limit"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=quantity" example:"quantity"`
+	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
+	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=itemName description categoryName"`
+	SearchValue string `form:"searchValue"`
+}
+
+func (r *GetItemOldStockRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 8
+	}
+	if r.Order == "" {
+		r.Order = "ASC"
+	}
+}
