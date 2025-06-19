@@ -351,7 +351,10 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/warehousedto.CreateClaimRequestRequest"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/warehousedto.CreateClaimRequestRequest"
+                            }
                         }
                     }
                 ],

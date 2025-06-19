@@ -1932,7 +1932,9 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/warehousedto.CreateClaimRequestRequest'
+          items:
+            $ref: '#/definitions/warehousedto.CreateClaimRequestRequest'
+          type: array
       produces:
       - application/json
       responses:
