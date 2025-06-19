@@ -54,7 +54,12 @@ type ItemOldStock struct {
 	ClaimItemRequests uint
 }
 
-type ClaimRequest struct {
-	UserID   uint
+type ClaimRequestItem struct {
+	ItemQuantity uint
+	Users        []ClaimRequestUser
+}
+
+type ClaimRequestUser struct {
+	ID       uint
 	Quantity uint
 }
