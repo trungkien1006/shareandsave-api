@@ -86,7 +86,7 @@ func (h *CommentHandler) GetAll(c *gin.Context) {
 // @Failure 404 {object} enums.AppError
 // @Router /messages/{interestID} [patch]
 func (h *CommentHandler) UpdateReadMessage(c *gin.Context) {
-	var req commentdto.GetAllCommentRequest
+	var req commentdto.UpdateReadMessageCommentRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))

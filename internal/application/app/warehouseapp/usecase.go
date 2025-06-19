@@ -56,14 +56,14 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 		}
 
 		if claimRequestStr != "" {
-			var claimRequestItems []warehouse.ClaimRequestItem
+			var claimRequestItems warehouse.ClaimRequestItem
 
 			err = json.Unmarshal([]byte(claimRequestStr), &claimRequestItems)
 			if err != nil {
 				return nil, 0, errors.New("Có lỗi khi giải mã JSON: " + err.Error())
 			}
 
-			// claimRequestCounts = append(claimRequestCounts, uint(len(claimRequestItems.Users)))
+			claimRequestCounts = append(claimRequestCounts, uint(len(claimRequestItems.Users)))
 		} else {
 			claimRequestCounts = append(claimRequestCounts, 0)
 		}
