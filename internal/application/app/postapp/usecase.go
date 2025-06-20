@@ -144,11 +144,9 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 	for key, newItem := range domainPost.NewItems {
 		var checkItem item.Item
 
-		if err := uc.itemRepo.GetByName(ctx, &checkItem, newItem.Name); err != nil {
-			return err
-		}
+		err := uc.itemRepo.GetByName(ctx, &checkItem, newItem.Name)
 
-		if checkItem.ID == 0 {
+		if err != nil {
 			if newItem.Image == "" {
 				base64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
 				if err != nil {

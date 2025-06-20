@@ -231,10 +231,42 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	return nil
 }
 
-func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID uint) error {
+// func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID uint) error {
+// 	//Kiểm trả sản phẩm tồn tại và
+// 	itemExisted, err := uc.itemRepo.IsExist(ctx, itemID)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	if !itemExisted {
+// 		return errors.New("Đồ đạc không tồn tại: id món đồ " + strconv.Itoa(int(itemID)))
+// 	}
+
+// 	//Chỉnh sửa số lượng trong danh sách người đăng kí trong món đồ đó
+// 	itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(itemID)))
+// 	if err != nil {
+// 		return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
+// 	}
+
+// 	if itemClaimsReqJson == "" {
+// 		return errors.New("Danh sách đăng kí đồ rỗng")
+// 	}
+
+// 	var itemClaims warehouse.ClaimRequestItem
+
+// 	err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
+// 	if err != nil {
+// 		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+// 	}
+
+// 	for key, value := range itemClaims.Users {
+// 		if value.ID == userID {
+
+// 		}
+// 	}
+
+// 	return nil
+// }
 
 func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
 	if err := uc.repo.GetItemByCode(ctx, itemWarehouse, code); err != nil {
