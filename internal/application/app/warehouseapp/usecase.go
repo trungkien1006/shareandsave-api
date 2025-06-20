@@ -210,6 +210,24 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 		}
 	}
 
+	newItemClaimRequestJSON, err := json.Marshal(itemClaims)
+	if err != nil {
+		return errors.New("Có lỗi khi encode itemClaimRequest: " + err.Error())
+	}
+
+	newUserClaimRequestJSON, err := json.Marshal(userClaims)
+	if err != nil {
+		return errors.New("Có lỗi khi encode newUserClaimRequest: " + err.Error())
+	}
+
+	if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(domain.ItemID)), string(newItemClaimRequestJSON)); err != nil {
+		return errors.New("Có lỗi khi lưu danh sách người dùng đăng kí đồ: " + err.Error())
+	}
+
+	if err := uc.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(domain.ItemID)), string(newUserClaimRequestJSON)); err != nil {
+		return errors.New("Có lỗi khi lưu danh sách đồ người dùng đăng kí: " + err.Error())
+	}
+
 	return nil
 }
 
