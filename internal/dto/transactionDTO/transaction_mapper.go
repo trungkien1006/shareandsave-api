@@ -38,6 +38,7 @@ func UpdateDTOToDomain(dto UpdateTransactionRequest, userID uint, transactionID 
 		SenderID: userID,
 		Status:   int(dto.Status),
 		Items:    domainItems,
+		Method:   dto.Method,
 	}
 }
 

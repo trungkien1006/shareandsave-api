@@ -39,6 +39,7 @@ type CreateTransactionItem struct {
 }
 
 type UpdateTransactionRequest struct {
+	Method string                  `json:"method"`
 	Status enums.TransactionStatus `json:"status"`
 	Items  []UpdateTransactionItem `json:"items"`
 }

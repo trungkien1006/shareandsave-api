@@ -208,6 +208,7 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 	}
 
 	dbTransaction.Status = transaction.Status
+	dbTransaction.Method = transaction.Method
 
 	for _, value := range transaction.Items {
 		dbTransaction.TransactionItems = append(dbTransaction.TransactionItems, dbmodel.TransactionItem{
