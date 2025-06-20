@@ -53,6 +53,15 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 
 	for _, value := range db.Interests {
 		postUnreadCount += len(value.Comments)
+		newMessage := ""
+		newMessageIsRead := uint(0)
+		messageFromID := uint(0)
+
+		if len(value.NewComment) > 0 {
+			newMessage = value.NewComment[0].Content
+			newMessageIsRead = value.NewComment[0].IsRead
+			messageFromID = value.NewComment[0].SenderID
+		}
 
 		domainInterest = append(domainInterest, interest.Interest{
 			ID:                 value.ID,
@@ -62,9 +71,9 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 			PostID:             value.PostID,
 			Status:             value.Status,
 			UnreadMessageCount: uint(len(value.Comments)),
-			NewMessage:         value.NewComment[0].Content,
-			NewMessageIsRead:   value.NewComment[0].IsRead,
-			MessageFromID:      value.NewComment[0].SenderID,
+			NewMessage:         newMessage,
+			NewMessageIsRead:   newMessageIsRead,
+			MessageFromID:      messageFromID,
 			CreatedAt:          value.CreatedAt,
 		})
 	}
