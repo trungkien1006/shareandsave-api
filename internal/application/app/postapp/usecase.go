@@ -169,6 +169,10 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 				checkItem.Image = strBase64Image
 			}
 
+			checkItem.CategoryID = newItem.CategoryID
+			checkItem.Name = newItem.Name
+			checkItem.Description = ""
+
 			if err := uc.itemRepo.Save(ctx, &checkItem); err != nil {
 				return err
 			}
