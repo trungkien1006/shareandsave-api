@@ -103,9 +103,6 @@ func (r *TransactionRepoDB) GetDetailPendingTransaction(ctx context.Context, tra
 		Preload("TransactionItems.PostItem").
 		Preload("TransactionItems.PostItem.Item").
 		Where("transaction.interest_id = ? AND transaction.status = ?", interestID, enums.TransactionStatusPending).
-		Joins("JOIN user as sender ON sender.id = transaction.sender_id").
-		Joins("JOIN user as receiver ON receiver.id = transaction.receiver_id").
-		Joins("JOIN interest ON interest.id = transaction.interest_id").
 		First(&dbTransaction).Error; err != nil {
 		return errors.New("Có lỗi khi truy xuất chi tiết giao dịch đang chờ: " + err.Error())
 	}
