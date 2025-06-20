@@ -3472,6 +3472,9 @@ const docTemplate = `{
                 "messageFromID": {
                     "type": "integer"
                 },
+                "newMessage": {
+                    "type": "string"
+                },
                 "newMessageIsRead": {
                     "type": "integer"
                 },

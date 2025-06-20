@@ -486,6 +486,8 @@ definitions:
         type: integer
       messageFromID:
         type: integer
+      newMessage:
+        type: string
       newMessageIsRead:
         type: integer
       postID:
