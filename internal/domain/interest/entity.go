@@ -16,6 +16,9 @@ type Interest struct {
 	CreatedAt          time.Time
 }
 
+type PendingTransaction struct {
+}
+
 type PostInterestItem struct {
 	ID              uint
 	ItemID          uint

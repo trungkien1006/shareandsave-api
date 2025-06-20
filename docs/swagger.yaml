@@ -1112,6 +1112,8 @@ definitions:
         items:
           $ref: '#/definitions/transactiondto.UpdateTransactionItem'
         type: array
+      method:
+        type: string
       status:
         $ref: '#/definitions/enums.TransactionStatus'
     type: object

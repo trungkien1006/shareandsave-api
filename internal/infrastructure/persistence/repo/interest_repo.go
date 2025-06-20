@@ -69,7 +69,6 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 				// Lấy comment chưa đọc và sort theo thời gian tạo mới nhất
 				return db.Where("sender_id != ?", userID).Order("created_at DESC").Offset(0).Limit(1)
 			}).
-			// Preload().
 			Preload("Interests.User").
 			Preload("PostItem").
 			Preload("PostItem.Item").

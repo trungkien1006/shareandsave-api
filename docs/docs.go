@@ -4422,6 +4422,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/transactiondto.UpdateTransactionItem"
                     }
                 },
+                "method": {
+                    "type": "string"
+                },
                 "status": {
                     "$ref": "#/definitions/enums.TransactionStatus"
                 }
