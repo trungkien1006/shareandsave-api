@@ -44,8 +44,7 @@ func (r *CategoryRepoDB) GetAllCategories(ctx context.Context, categories *[]cat
 
 func (r *CategoryRepoDB) GetCategoryNameByItemIDs(ctx context.Context, itemIDsMap map[uint]uint, categoryName *[]string) error {
 	var (
-		categoryNames []string
-		itemIDs       []uint
+		itemIDs []uint
 	)
 
 	for _, value := range itemIDsMap {
@@ -58,7 +57,7 @@ func (r *CategoryRepoDB) GetCategoryNameByItemIDs(ctx context.Context, itemIDsMa
 		Joins("JOIN category ON category.id = item.category_id").
 		Where("item.id IN ?", itemIDs).
 		Distinct("category.name").
-		Pluck("category.name", &categoryNames).Error; err != nil {
+		Pluck("category.name", &categoryName).Error; err != nil {
 		return errors.New("Lỗi khi truy vấn tên category theo danh sách item ID: " + err.Error())
 	}
 
