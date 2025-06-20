@@ -89,6 +89,7 @@ CREATE TABLE `transaction` (
   `sender_id` int,
   `receiver_id` int,
   `status` int,
+  `method` string,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp

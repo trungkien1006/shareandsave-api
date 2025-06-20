@@ -58,6 +58,7 @@ func DomainToDTO(domain transaction.Transaction) TransactionDTO {
 		SenderID:   domain.SenderID,
 		ReceiverID: domain.ReceiverID,
 		Status:     domain.Status,
+		Method:     domain.Method,
 		Items:      dtoItems,
 	}
 }
@@ -84,6 +85,7 @@ func DomainToDetailDTO(domain transaction.DetailTransaction) DetailTransactionDT
 		SenderName:   domain.SenderName,
 		ReceiverName: domain.ReceiverName,
 		Status:       domain.Status,
+		Method:       domain.Method,
 		Items:        dtoDetailItems,
 		CreatedAt:    domain.CreatedAt,
 		UpdatedAt:    domain.UpdatedAt,

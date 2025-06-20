@@ -27,7 +27,8 @@ func (r *GetTransactionRequest) SetDefault() {
 
 type CreateTransactionRequest struct {
 	// PostID     uint                    `json:"postID" binding:"required"`
-	InterestID uint `json:"interestID" binding:"required"`
+	InterestID uint   `json:"interestID" binding:"required"`
+	Method     string `json:"method" binding:"required"`
 	// SenderID   uint                    `json:"senderID" binding:"required"`
 	Items []CreateTransactionItem `json:"items" binding:"required"`
 }

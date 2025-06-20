@@ -8,6 +8,7 @@ type TransactionDTO struct {
 	SenderID   uint                 `json:"senderID"`
 	ReceiverID uint                 `json:"receiverID"`
 	Status     int                  `json:"status"`
+	Method     string               `json:"method"`
 	Items      []TransactionItemDTO `json:"items"`
 }
 
@@ -24,6 +25,7 @@ type DetailTransactionDTO struct {
 	SenderName   string                     `json:"senderName"`
 	ReceiverName string                     `json:"receiverName"`
 	Status       int                        `json:"status"`
+	Method       string                     `json:"method"`
 	Items        []DetailTransactionItemDTO `json:"items"`
 	CreatedAt    time.Time                  `json:"createdAt"`
 	UpdatedAt    time.Time                  `json:"updatedAt"`

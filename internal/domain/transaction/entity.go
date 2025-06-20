@@ -12,6 +12,7 @@ type Transaction struct {
 	SenderID   uint
 	ReceiverID uint
 	Status     int
+	Method     string
 	Items      []TransactionItem
 }
 
@@ -40,6 +41,7 @@ type DetailTransaction struct {
 	SenderName   string
 	ReceiverName string
 	Status       int
+	Method       string
 	Items        []DetailTransactionItem
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

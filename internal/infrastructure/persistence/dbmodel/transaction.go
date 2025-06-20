@@ -13,6 +13,7 @@ type Transaction struct {
 	SenderID   uint `gorm:"index"`
 	ReceiverID uint `gorm:"index"`
 	Status     int
+	Method     string `gorm:"size:255"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
@@ -43,6 +44,7 @@ func TransactionDomainToDB(domain transaction.Transaction) Transaction {
 		ReceiverID:       domain.ReceiverID,
 		TransactionItems: dbItem,
 		Status:           domain.Status,
+		Method:           domain.Method,
 	}
 }
 
@@ -65,6 +67,7 @@ func TransactionDBToDomain(db Transaction) transaction.Transaction {
 		ReceiverID: db.ReceiverID,
 		Items:      dbItem,
 		Status:     db.Status,
+		Method:     db.Method,
 	}
 }
 
@@ -91,6 +94,7 @@ func TransactionDBToDetailDomain(db Transaction) transaction.DetailTransaction {
 		ReceiverName: db.Receiver.FullName,
 		Items:        domainItems,
 		Status:       db.Status,
+		Method:       db.Method,
 		CreatedAt:    db.CreatedAt,
 		UpdatedAt:    db.UpdatedAt,
 	}

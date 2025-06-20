@@ -283,6 +283,40 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		}
 	}
 
+	//Nếu hoàn tác transaction sẽ trả lại số lượng của các món đồ
+	if dbTransaction.Status == int(enums.TransactionStatusRollBack) {
+		if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
+			Where("transaction_id = ?", dbTransaction.ID).
+			Find(&dbTransaction.TransactionItems).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi lấy danh sách đồ của giao dịch: " + err.Error())
+		}
+
+		// Kiểm tra món đồ có tồn tại hay không và số lượng so với cho phép trong bài viết
+		for _, value := range dbTransaction.TransactionItems {
+			var postItem dbmodel.PostItem
+
+			if err := tx.WithContext(ctx).
+				Model(&dbmodel.PostItem{}).
+				Clauses(clause.Locking{Strength: "UPDATE"}).
+				Where("id = ?", value.PostItemID).
+				First(&postItem).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi kiểm tra số lượng đồ trong giao dịch: " + err.Error())
+			}
+		}
+
+		// Cập nhật lại số lượng đồ đạc ở post_item
+		for _, value := range dbTransaction.TransactionItems {
+			if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
+				Where("id = ?", value.PostItemID).
+				Update("current_quantity", gorm.Expr("current_quantity + ?", value.Quantity)).Error; err != nil {
+				tx.Rollback()
+				return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
+			}
+		}
+	}
+
 	// Commit transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
