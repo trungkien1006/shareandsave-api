@@ -155,7 +155,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	}
 
 	//Chỉnh sửa số lượng trong danh sách người đăng kí trong món đồ đó
-	itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(domain.ItemID)))
+	itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(domain.ItemID)))
 	if err != nil {
 		return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
 	}
@@ -188,7 +188,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	itemClaims.ItemQuantity = itemClaims.ItemQuantity - uint(oldQuantityOfItem) + domain.NewQuatity
 
 	//Cập nhật số lượng món đồ ở userClaimRequest
-	userClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, strconv.Itoa(int(userID)))
+	userClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)))
 	if err != nil {
 		return errors.New("Có lỗi khi truy xuất danh sách món đồ người dùng đăng kí: " + err.Error())
 	}
