@@ -48,3 +48,7 @@ type UpdateTransactionItem struct {
 	PostItemID uint `json:"postItemID" binding:"required"`
 	Quantity   int  `json:"quantity" binding:"required"`
 }
+
+type GetPendingTransaction struct {
+	InterestID uint `uri:"interestID"`
+}

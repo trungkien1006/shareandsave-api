@@ -30,3 +30,13 @@ type FilterTransactionResponse struct {
 	Transactions []DetailTransactionDTO `json:"transactions"`
 	TotalPage    int                    `json:"totalPage"`
 }
+
+type GetPendingTransactionResponseWrapper struct {
+	Code    int                           `json:"code"`
+	Message string                        `json:"message"`
+	Data    GetPendingTransactionResponse `json:"data"`
+}
+
+type GetPendingTransactionResponse struct {
+	Transaction DetailTransactionDTO `json:"transaction"`
+}

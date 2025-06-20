@@ -88,6 +88,33 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 	return totalPages, nil
 }
 
+func (r *TransactionRepoDB) GetDetailPendingTransaction(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
+	var (
+		dbTransaction dbmodel.Transaction
+	)
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Transaction{}).
+		Table("transaction").
+		Preload("Sender").
+		Preload("Receiver").
+		Preload("TransactionItems").
+		Preload("TransactionItems.PostItem").
+		Preload("TransactionItems.PostItem.Item").
+		Where("transaction.interest_id = ? AND transaction.status = ?", interestID, enums.TransactionStatusPending).
+		Joins("JOIN user as sender ON sender.id = transaction.sender_id").
+		Joins("JOIN user as receiver ON receiver.id = transaction.receiver_id").
+		Joins("JOIN interest ON interest.id = transaction.interest_id").
+		First(&dbTransaction).Error; err != nil {
+		return errors.New("Có lỗi khi truy xuất chi tiết giao dịch đang chờ: " + err.Error())
+	}
+
+	*transaction = dbmodel.TransactionDBToDetailDomain(dbTransaction)
+
+	return nil
+}
+
 func (r *TransactionRepoDB) GetByID(ctx context.Context, transactionID uint, transaction *transaction.Transaction) error {
 	var dbTransaction dbmodel.Transaction
 

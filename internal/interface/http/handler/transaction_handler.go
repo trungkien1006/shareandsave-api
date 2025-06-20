@@ -89,6 +89,50 @@ func (h *TransactionHandler) GetAll(c *gin.Context) {
 	})
 }
 
+// @Summary Get detail pending transaction
+// @Description API lấy chi tiết giao dịch đang chờ
+// @Security BearerAuth
+// @Tags transactions
+// @Accept json
+// @Produce json
+// @Param request body transactiondto.GetPendingTransaction true "Transaction get payload"
+// @Success 201 {object} transactiondto.GetPendingTransactionResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 409 {object} enums.AppError
+// @Router /transactions/{interestID} [get]
+func (h *TransactionHandler) GetDetailPendingTransaction(c *gin.Context) {
+	var (
+		req               transactiondto.GetPendingTransaction
+		domainTransaction transaction.DetailTransaction
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.GetDetailPendingTransaction(c.Request.Context(), &domainTransaction, req.InterestID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	transactionDTORes := transactiondto.DomainToDetailDTO(domainTransaction)
+
+	c.JSON(http.StatusOK, transactiondto.GetPendingTransactionResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched detail pending transaction successfully",
+		Data: transactiondto.GetPendingTransactionResponse{
+			Transaction: transactionDTORes,
+		},
+	})
+}
+
 // @Summary Create transaction
 // @Description API tạo mới một giao dịch và trả về thông tin giao dịch
 // @Security BearerAuth

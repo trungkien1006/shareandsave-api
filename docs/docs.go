@@ -2505,6 +2505,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/transactions/{interestID}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy chi tiết giao dịch đang chờ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "Get detail pending transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction get payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.GetPendingTransaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/transactiondto.GetPendingTransactionResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/transactions/{transactionID}": {
             "patch": {
                 "security": [
@@ -4352,6 +4403,36 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/transactiondto.FilterTransactionResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "transactiondto.GetPendingTransaction": {
+            "type": "object",
+            "properties": {
+                "interestID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "transactiondto.GetPendingTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "transaction": {
+                    "$ref": "#/definitions/transactiondto.DetailTransactionDTO"
+                }
+            }
+        },
+        "transactiondto.GetPendingTransactionResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/transactiondto.GetPendingTransactionResponse"
                 },
                 "message": {
                     "type": "string"

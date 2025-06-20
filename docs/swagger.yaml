@@ -1070,6 +1070,25 @@ definitions:
       message:
         type: string
     type: object
+  transactiondto.GetPendingTransaction:
+    properties:
+      interestID:
+        type: integer
+    type: object
+  transactiondto.GetPendingTransactionResponse:
+    properties:
+      transaction:
+        $ref: '#/definitions/transactiondto.DetailTransactionDTO'
+    type: object
+  transactiondto.GetPendingTransactionResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/transactiondto.GetPendingTransactionResponse'
+      message:
+        type: string
+    type: object
   transactiondto.TransactionDTO:
     properties:
       id:
@@ -3385,6 +3404,38 @@ paths:
       security:
       - BearerAuth: []
       summary: Create transaction
+      tags:
+      - transactions
+  /transactions/{interestID}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy chi tiết giao dịch đang chờ
+      parameters:
+      - description: Transaction get payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transactiondto.GetPendingTransaction'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/transactiondto.GetPendingTransactionResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get detail pending transaction
       tags:
       - transactions
   /transactions/{transactionID}:

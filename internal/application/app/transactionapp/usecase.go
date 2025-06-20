@@ -39,6 +39,14 @@ func (uc *UseCase) GetAllTransaction(ctx context.Context, transactions *[]transa
 	return totalPage, nil
 }
 
+func (uc *UseCase) GetDetailPendingTransaction(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
+	if err := uc.repo.GetDetailPendingTransaction(ctx, transaction, interestID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transaction.Transaction) error {
 	// Kiểm tra phiếu quan tâm có tồn tại hay không
 	interestExisted, err := uc.interestRepo.IsExistByID(ctx, transaction.InterestID)
