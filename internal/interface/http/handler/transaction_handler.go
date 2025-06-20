@@ -95,7 +95,7 @@ func (h *TransactionHandler) GetAll(c *gin.Context) {
 // @Tags transactions
 // @Accept json
 // @Produce json
-// @Param request body transactiondto.GetPendingTransaction true "Transaction get payload"
+// @Param interestID path int true "ID interest"
 // @Success 201 {object} transactiondto.GetPendingTransactionResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 409 {object} enums.AppError

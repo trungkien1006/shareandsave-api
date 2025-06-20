@@ -203,6 +203,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//transaction API
 		v1.GET("/transactions", middlewares.AuthGuard, transactionHandler.GetAll)
+		v1.GET("/transactions/:interestID", middlewares.AuthGuard, transactionHandler.GetDetailPendingTransaction)
 		v1.POST("/transactions", middlewares.AuthGuard, transactionHandler.Create)
 		v1.PATCH("/transactions/:transactionID", middlewares.AuthGuard, transactionHandler.Update)
 
