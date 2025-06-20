@@ -2525,13 +2525,11 @@ const docTemplate = `{
                 "summary": "Get detail pending transaction",
                 "parameters": [
                     {
-                        "description": "Transaction get payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/transactiondto.GetPendingTransaction"
-                        }
+                        "type": "integer",
+                        "description": "ID interest",
+                        "name": "interestID",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -4406,14 +4404,6 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
-                }
-            }
-        },
-        "transactiondto.GetPendingTransaction": {
-            "type": "object",
-            "properties": {
-                "interestID": {
-                    "type": "integer"
                 }
             }
         },

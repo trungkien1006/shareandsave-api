@@ -1070,11 +1070,6 @@ definitions:
       message:
         type: string
     type: object
-  transactiondto.GetPendingTransaction:
-    properties:
-      interestID:
-        type: integer
-    type: object
   transactiondto.GetPendingTransactionResponse:
     properties:
       transaction:
@@ -3412,12 +3407,11 @@ paths:
       - application/json
       description: API lấy chi tiết giao dịch đang chờ
       parameters:
-      - description: Transaction get payload
-        in: body
-        name: request
+      - description: ID interest
+        in: path
+        name: interestID
         required: true
-        schema:
-          $ref: '#/definitions/transactiondto.GetPendingTransaction'
+        type: integer
       produces:
       - application/json
       responses:
