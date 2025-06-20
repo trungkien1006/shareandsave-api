@@ -10,7 +10,7 @@ import (
 
 const (
 	batchSize   = 100
-	batchWindow = time.Second
+	batchWindow = 200 * time.Millisecond
 )
 
 var (
