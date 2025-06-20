@@ -93,3 +93,7 @@ type ModifyClaimRequestRequest struct {
 	ItemID      uint `json:"itemID" binding:"required"`
 	NewQuantity uint `json:"newQuantity" binding:"required"`
 }
+
+type RemoveClaimRequestRequest struct {
+	ItemID uint `uri:"itemID" binding:"required"`
+}

@@ -318,6 +318,29 @@ func (h *WarehouseHandler) ModifyClaimRequest(c *gin.Context) {
 	})
 }
 
+// func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
+// 	var (
+// 		req warehousedto.RemoveClaimRequestRequest
+// 	)
+
+// 	if err := c.ShouldBindUri(&req); err != nil {
+// 		c.JSON(
+// 			http.StatusBadRequest,
+// 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+// 		)
+// 		return
+// 	}
+
+// 	userID, err := helpers.GetUintFromContext(c, "userID")
+// 	if err != nil {
+// 		c.JSON(
+// 			http.StatusBadRequest,
+// 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest),
+// 		)
+// 		return
+// 	}
+// }
+
 // @Summary Get item warehouse by code
 // @Description API lấy thông tin item warehouse bằng code
 // @Security BearerAuth

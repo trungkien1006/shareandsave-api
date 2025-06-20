@@ -231,6 +231,11 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	return nil
 }
 
+func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID uint) error {
+
+	return nil
+}
+
 func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
 	if err := uc.repo.GetItemByCode(ctx, itemWarehouse, code); err != nil {
 		return err
