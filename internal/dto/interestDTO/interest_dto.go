@@ -13,6 +13,8 @@ type Interest struct {
 	PostID             uint   `json:"postID"`
 	Status             int    `json:"status"`
 	UnreadMessageCount uint   `json:"unreadMessageCount"`
+	NewMessageIsRead   uint   `json:"newMessageIsRead"`
+	MessageFromID      uint   `json:"messageFromID"`
 
 	CreatedAt time.Time `json:"createdAt"`
 }

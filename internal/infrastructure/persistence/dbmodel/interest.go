@@ -20,6 +20,7 @@ type Interest struct {
 	Post Post `gorm:"foreignKey:PostID"`
 
 	Comments     []Comment     `gorm:"foreignKey:InterestID"`
+	NewComment   []Comment     `gorm:"foreignKey:InterestID"`
 	Transactions []Transaction `gorm:"foreignKey:InterestID"`
 }
 
@@ -61,6 +62,9 @@ func GetDTOToDomain(db Post) interest.PostInterest {
 			PostID:             value.PostID,
 			Status:             value.Status,
 			UnreadMessageCount: uint(len(value.Comments)),
+			NewMessage:         value.NewComment[0].Content,
+			NewMessageIsRead:   value.NewComment[0].IsRead,
+			MessageFromID:      value.NewComment[0].SenderID,
 			CreatedAt:          value.CreatedAt,
 		})
 	}

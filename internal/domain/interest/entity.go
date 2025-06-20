@@ -10,6 +10,9 @@ type Interest struct {
 	PostID             uint
 	Status             int
 	UnreadMessageCount uint
+	NewMessage         string
+	NewMessageIsRead   uint
+	MessageFromID      uint
 	CreatedAt          time.Time
 }
 

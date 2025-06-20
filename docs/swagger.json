@@ -3099,19 +3099,22 @@
                 0,
                 1,
                 2,
-                3
+                3,
+                4
             ],
             "x-enum-comments": {
                 "TransactionStatusAll": "0 all",
                 "TransactionStatusCancelled": "3 đã hủy bởi 1 trong 2 bên",
                 "TransactionStatusPending": "1 đợi xác nhận từ chủ bài viết",
+                "TransactionStatusRollBack": "4 hoàn tác giao dịch",
                 "TransactionStatusSuccess": "2 thành công"
             },
             "x-enum-varnames": [
                 "TransactionStatusAll",
                 "TransactionStatusPending",
                 "TransactionStatusSuccess",
-                "TransactionStatusCancelled"
+                "TransactionStatusCancelled",
+                "TransactionStatusRollBack"
             ]
         },
         "enums.UserStatus": {
@@ -3457,6 +3460,12 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "messageFromID": {
+                    "type": "integer"
+                },
+                "newMessageIsRead": {
                     "type": "integer"
                 },
                 "postID": {
@@ -4208,7 +4217,8 @@
             "type": "object",
             "required": [
                 "interestID",
-                "items"
+                "items",
+                "method"
             ],
             "properties": {
                 "interestID": {
@@ -4221,6 +4231,9 @@
                     "items": {
                         "$ref": "#/definitions/transactiondto.CreateTransactionItem"
                     }
+                },
+                "method": {
+                    "type": "string"
                 }
             }
         },
@@ -4263,6 +4276,9 @@
                     "items": {
                         "$ref": "#/definitions/transactiondto.DetailTransactionItemDTO"
                     }
+                },
+                "method": {
+                    "type": "string"
                 },
                 "receiverID": {
                     "type": "integer"
@@ -4346,6 +4362,9 @@
                     "items": {
                         "$ref": "#/definitions/transactiondto.TransactionItemDTO"
                     }
+                },
+                "method": {
+                    "type": "string"
                 },
                 "receiverID": {
                     "type": "integer"

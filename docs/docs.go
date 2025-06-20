@@ -3106,19 +3106,22 @@ const docTemplate = `{
                 0,
                 1,
                 2,
-                3
+                3,
+                4
             ],
             "x-enum-comments": {
                 "TransactionStatusAll": "0 all",
                 "TransactionStatusCancelled": "3 đã hủy bởi 1 trong 2 bên",
                 "TransactionStatusPending": "1 đợi xác nhận từ chủ bài viết",
+                "TransactionStatusRollBack": "4 hoàn tác giao dịch",
                 "TransactionStatusSuccess": "2 thành công"
             },
             "x-enum-varnames": [
                 "TransactionStatusAll",
                 "TransactionStatusPending",
                 "TransactionStatusSuccess",
-                "TransactionStatusCancelled"
+                "TransactionStatusCancelled",
+                "TransactionStatusRollBack"
             ]
         },
         "enums.UserStatus": {
@@ -3464,6 +3467,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "messageFromID": {
+                    "type": "integer"
+                },
+                "newMessageIsRead": {
                     "type": "integer"
                 },
                 "postID": {
@@ -4215,7 +4224,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "interestID",
-                "items"
+                "items",
+                "method"
             ],
             "properties": {
                 "interestID": {
@@ -4228,6 +4238,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/transactiondto.CreateTransactionItem"
                     }
+                },
+                "method": {
+                    "type": "string"
                 }
             }
         },
@@ -4270,6 +4283,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/transactiondto.DetailTransactionItemDTO"
                     }
+                },
+                "method": {
+                    "type": "string"
                 },
                 "receiverID": {
                     "type": "integer"
@@ -4353,6 +4369,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/transactiondto.TransactionItemDTO"
                     }
+                },
+                "method": {
+                    "type": "string"
                 },
                 "receiverID": {
                     "type": "integer"

@@ -52,6 +52,8 @@ func GetDomainToDTO(domain interest.PostInterest) PostInterest {
 			PostID:             value.PostID,
 			Status:             value.Status,
 			UnreadMessageCount: value.UnreadMessageCount,
+			NewMessageIsRead:   value.NewMessageIsRead,
+			MessageFromID:      value.MessageFromID,
 			CreatedAt:          value.CreatedAt,
 		})
 	}
