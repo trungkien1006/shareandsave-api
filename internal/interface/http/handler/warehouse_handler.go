@@ -266,6 +266,58 @@ func (h *WarehouseHandler) CreateClaimRequest(c *gin.Context) {
 	})
 }
 
+// @Summary Modify claim request
+// @Description API lưu thông tin đăng kí nhận đồ
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Param request body warehousedto.ModifyClaimRequestRequest true "Claim request modify payload"
+// @Success 201 {object} warehousedto.ModifyClaimRequestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/item-warehouses/claim-request [patch]
+func (h *WarehouseHandler) ModifyClaimRequest(c *gin.Context) {
+	var (
+		req                      warehousedto.ModifyClaimRequestRequest
+		domainModifyClaimRequest warehouse.ModifyClaimRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest),
+		)
+		return
+	}
+
+	domainModifyClaimRequest.ItemID = req.ItemID
+	domainModifyClaimRequest.NewQuatity = req.NewQuantity
+
+	if err := h.uc.ModifyClaimRequest(c.Request.Context(), domainModifyClaimRequest, userID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, warehousedto.ModifyClaimRequestResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Modify claim request successfully",
+		Data:    gin.H{},
+	})
+}
+
 // @Summary Get item warehouse by code
 // @Description API lấy thông tin item warehouse bằng code
 // @Security BearerAuth

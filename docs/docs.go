@@ -378,6 +378,55 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lưu thông tin đăng kí nhận đồ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Modify claim request",
+                "parameters": [
+                    {
+                        "description": "Claim request modify payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.ModifyClaimRequestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.ModifyClaimRequestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         },
         "/client/item-warehouses/old-stock": {
@@ -5196,6 +5245,33 @@ const docTemplate = `{
                 },
                 "warehouseID": {
                     "type": "integer"
+                }
+            }
+        },
+        "warehousedto.ModifyClaimRequestRequest": {
+            "type": "object",
+            "required": [
+                "itemID",
+                "newQuantity"
+            ],
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "newQuantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.ModifyClaimRequestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
                 }
             }
         },

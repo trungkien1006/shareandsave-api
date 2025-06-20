@@ -143,6 +143,76 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 	return nil
 }
 
+func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.ModifyClaimRequest, userID uint) error {
+	//Kiểm trả sản phẩm tồn tại và
+	itemExisted, err := uc.itemRepo.IsExist(ctx, domain.ItemID)
+	if err != nil {
+		return err
+	}
+
+	if !itemExisted {
+		return errors.New("Đồ đạc không tồn tại: id món đồ " + strconv.Itoa(int(domain.ItemID)))
+	}
+
+	//Chỉnh sửa số lượng trong danh sách người đăng kí trong món đồ đó
+	itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(domain.ItemID)))
+	if err != nil {
+		return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
+	}
+
+	if itemClaimsReqJson == "" {
+		return errors.New("Danh sách đăng kí đồ rỗng")
+	}
+
+	var itemClaims warehouse.ClaimRequestItem
+
+	err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
+	if err != nil {
+		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+	}
+
+	//Cập nhật số lượng món đồ ở itemClaimRequest
+	oldQuantityOfItem := 0
+
+	for key, value := range itemClaims.Users {
+		if value.ID == userID {
+			if domain.NewQuatity <= 0 && domain.NewQuatity > itemClaims.ItemQuantity {
+				return errors.New("Số lượng đồ đạc bạn đăng kí nhận không hợp lệ: > số lượng có sẵn hoặc <= 0")
+			}
+
+			oldQuantityOfItem = int(value.Quantity)
+			itemClaims.Users[key].Quantity = domain.NewQuatity
+		}
+	}
+
+	itemClaims.ItemQuantity = itemClaims.ItemQuantity - uint(oldQuantityOfItem) + domain.NewQuatity
+
+	//Cập nhật số lượng món đồ ở userClaimRequest
+	userClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, strconv.Itoa(int(userID)))
+	if err != nil {
+		return errors.New("Có lỗi khi truy xuất danh sách món đồ người dùng đăng kí: " + err.Error())
+	}
+
+	if userClaimsReqJson == "" {
+		return errors.New("Danh sách món đồ của thành viên đăng kí rỗng")
+	}
+
+	var userClaims []warehouse.ClaimRequestUser
+
+	err = json.Unmarshal([]byte(userClaimsReqJson), &userClaims)
+	if err != nil {
+		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+	}
+
+	for key, value := range userClaims {
+		if value.ID == userID {
+			userClaims[key].Quantity = domain.NewQuatity
+		}
+	}
+
+	return nil
+}
+
 func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.ItemWareHouse, code string) error {
 	if err := uc.repo.GetItemByCode(ctx, itemWarehouse, code); err != nil {
 		return err

@@ -72,3 +72,8 @@ type CreateClaimRequestItem struct {
 	ItemID   uint
 	Quantity uint
 }
+
+type ModifyClaimRequest struct {
+	ItemID     uint
+	NewQuatity uint
+}

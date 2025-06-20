@@ -69,7 +69,14 @@ func (c *StreamConsumer) Consume(handler func(ctx context.Context, data []map[st
 			// Gọi handler xử lý cả batch
 			if err := c.handlerBatch(ctx, buffer, handler); err != nil {
 				log.Println("+++Handler batch error:", err)
-				// Có thể retry hoặc xử lý theo logic riêng
+
+				for _, msg := range buffer {
+					c.client.XAck(ctx, c.stream, c.group, msg.ID)
+					c.client.XDel(ctx, c.stream, msg.ID)
+				}
+
+				buffer = nil // clear buffer
+				lastInsert = time.Now()
 			} else {
 				// Xác nhận ack toàn bộ message đã xử lý thành công
 				for _, msg := range buffer {

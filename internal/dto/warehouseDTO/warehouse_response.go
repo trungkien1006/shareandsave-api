@@ -33,6 +33,12 @@ type CreateClaimRequestResponseWrapper struct {
 	Data    interface{} `json:"data"`
 }
 
+type ModifyClaimRequestResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 type FilterItemWarehouseResponseWrapper struct {
 	Code    int                         `json:"code"`
 	Message string                      `json:"message"`

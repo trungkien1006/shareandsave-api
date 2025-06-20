@@ -1653,6 +1653,24 @@ definitions:
       warehouseID:
         type: integer
     type: object
+  warehousedto.ModifyClaimRequestRequest:
+    properties:
+      itemID:
+        type: integer
+      newQuantity:
+        type: integer
+    required:
+    - itemID
+    - newQuantity
+    type: object
+  warehousedto.ModifyClaimRequestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   warehousedto.UpdateItemWarehouse:
     properties:
       description:
@@ -1922,6 +1940,37 @@ paths:
       tags:
       - auth
   /client/item-warehouses/claim-request:
+    patch:
+      consumes:
+      - application/json
+      description: API lưu thông tin đăng kí nhận đồ
+      parameters:
+      - description: Claim request modify payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/warehousedto.ModifyClaimRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/warehousedto.ModifyClaimRequestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Modify claim request
+      tags:
+      - item warehouses
     post:
       consumes:
       - application/json
