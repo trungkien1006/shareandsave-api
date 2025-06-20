@@ -306,7 +306,7 @@ func (r PostRepoDB) GetDetailBySlug(ctx context.Context, post *post.DetailPost, 
 		Preload("PostItem").
 		Preload("PostItem.Item").
 		Preload("PostItem.Item.Category").
-		Where("status = 3").
+		// Where("status = 3").
 		Find(&dbPost).Error; err != nil {
 		return errors.New("Có lỗi khi tìm kiếm bài viết theo Slug: " + err.Error())
 	}
