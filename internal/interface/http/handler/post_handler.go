@@ -404,7 +404,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 
 	post.ID = uint(postID)
 
-	if err := h.uc.UpdatePost(c.Request.Context(), &post); err != nil {
+	if err := h.uc.UpdatePost(c.Request.Context(), &post, req.IsRepost); err != nil {
 		c.JSON(
 			http.StatusConflict,
 			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),

@@ -11,6 +11,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"os"
+	"time"
 )
 
 type UseCase struct {
@@ -216,7 +217,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 	return nil
 }
 
-func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error {
+func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepost bool) error {
 	var updatePost post.Post
 
 	if err := uc.repo.GetByID(ctx, &updatePost, domainPost.ID); err != nil {
@@ -238,6 +239,10 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post) error 
 
 	if domainPost.Description != "" {
 		updatePost.Description = domainPost.Description
+	}
+
+	if isRepost {
+		updatePost.CreatedAt = time.Now()
 	}
 
 	if domainPost.Images != nil {

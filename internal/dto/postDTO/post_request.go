@@ -83,6 +83,7 @@ func (r *GetAdminPostRequest) SetDefault() {
 type UpdatePostRequest struct {
 	Title       string           `json:"title" binding:"omitempty" example:"Tôi muốn tìm đồ thất lạc"`
 	Description string           `json:"description" binding:"omitempty"`
-	Status      enums.PostStatus `json:"status" binding:"omitempty,oneof=1 2 3"`
+	Status      enums.PostStatus `json:"status" binding:"omitempty,oneof=1 2 3 4"`
 	Images      []string         `json:"images" binding:"omitempty" example:"strbase64, strbase64"`
+	IsRepost    bool             `json:"isRepost"`
 }

@@ -7,8 +7,9 @@ const (
 	PostStatusPending                    // 1 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý
 	PostStatusRejected                   // 2 Admin đã từ chối
 	PostStatusApproved                   // 3 Admin duyệt
+	PostStatusSeal                       // 4 Người dùng chốt bài đăng
 )
 
 func (s PostStatus) String() string {
-	return [...]string{"ALL", "PENDING", "REJECTED", "APPROVED"}[s]
+	return [...]string{"ALL", "PENDING", "REJECTED", "APPROVED", "SEAL"}[s]
 }
