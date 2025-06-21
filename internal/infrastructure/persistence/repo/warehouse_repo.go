@@ -315,7 +315,7 @@ func (r *WarehouseRepoDB) GetSKUByItemWarehouseID(ctx context.Context, itemWareh
 	if err := r.db.Debug().WithContext(ctx).
 		Table("item_warehouse as iw").
 		Select("w.sku as sku").
-		Where("id = ?", itemWarehouseID).
+		Where("iw.id = ?", itemWarehouseID).
 		Joins("JOIN warehouse as w ON w.id = iw.warehouse_id").
 		Scan(&sku).Error; err != nil {
 		return sku, errors.New("Có lỗi khi truy xuất sku của món đồ: " + err.Error())
