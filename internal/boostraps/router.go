@@ -249,7 +249,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//setting API
 		v1.GET("/settings", middlewares.AuthGuard, settingHandler.GetAll)
 		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.GetByKey)
-		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.Update)
+		v1.PATCH("/settings/:settingKey", middlewares.AuthGuard, settingHandler.Update)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)
