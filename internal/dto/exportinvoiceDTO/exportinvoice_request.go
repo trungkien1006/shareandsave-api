@@ -1,5 +1,7 @@
 package exportinvoicedto
 
+import "final_project/internal/pkg/enums"
+
 type GetExportInvoiceRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
@@ -22,4 +24,15 @@ func (r *GetExportInvoiceRequest) SetDefault() {
 	if r.Order == "" {
 		r.Order = "ASC"
 	}
+}
+
+type CreateExportInvoiceRequest struct {
+	SenderID          uint                             `json:"senderID" validate:"required"`
+	Classify          enums.ItemClassify               `json:"classify" validate:"required,oneof=1 2" example:"1"`
+	Description       string                           `json:"description"`
+	ItemExportInvoice []CreateItemExportInvoiceRequest `json:"itemExportInvoice" validate:"required"`
+}
+
+type CreateItemExportInvoiceRequest struct {
+	ItemWarehouseID uint `json:"itemWarehouseID" validate:"required"`
 }

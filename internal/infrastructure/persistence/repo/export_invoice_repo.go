@@ -5,7 +5,9 @@ import (
 	"errors"
 	exportinvoice "final_project/internal/domain/export_invoice"
 	"final_project/internal/domain/filter"
+	"final_project/internal/infrastructure/persistence/dbmodel"
 	"math"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -86,4 +88,19 @@ func (r *ExportInvoiceRepoDB) GetAll(ctx context.Context, exportInvoice *[]expor
 	totalPage := int(math.Ceil(float64(totalRecord) / float64(filter.Limit)))
 
 	return uint(totalPage), nil
+}
+
+func (r *ExportInvoiceRepoDB) GetExportInvoiceNum(ctx context.Context) (int, error) {
+	var invoiceNum int64 = 0
+
+	year := time.Now().Year()
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.ExportInvoice{}).
+		Where("YEAR(created_at) = ?", year).
+		Count(&invoiceNum).Error; err != nil {
+		return int(invoiceNum + 1), errors.New("Gặp lỗi khi đếm số phiếu xuất: " + err.Error())
+	}
+
+	return int(invoiceNum + 1), nil
 }

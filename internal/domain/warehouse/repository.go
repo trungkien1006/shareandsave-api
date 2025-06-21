@@ -13,4 +13,6 @@ type Repository interface {
 	GetByID(ctx context.Context, warehouse *DetailWarehouse, warehouseID uint) error
 	GetItemWarehouseQuantity(ctx context.Context, itemID uint) (uint, error)
 	Update(ctx context.Context, warehouse DetailWarehouse) error
+	IsExist(ctx context.Context, itemWarehouseID uint) (bool, error)
+	GetSKUByItemWarehouseID(ctx context.Context, itemWarehouseID uint) (string, error)
 }

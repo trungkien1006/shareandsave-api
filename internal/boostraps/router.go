@@ -87,16 +87,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	importInvoiceUC := importinvoiceapp.NewUseCase(importInvoiceRepo, userRepo, itemRepo, importInvoiceService)
 	importInvoiceHandler := handler.NewImportInvoiceHandler(importInvoiceUC)
 
-	//export invoice dependency
-	// exportInvoiceService := exportinvoice.NewExportInvoiceService()
-	exportInvoiceRepo := persistence.NewExportInvoiceRepoDB(db)
-	exportInvoiceUC := exportinvoiceapp.NewUseCase(exportInvoiceRepo)
-	exportInvoiceHandler := handler.NewExportInvoiceHandler(exportInvoiceUC)
-
 	//warehouse dependency
 	warehouseRepo := persistence.NewWarehouseRepoDB(db)
 	warehouseUC := warehouseapp.NewUseCase(warehouseRepo, redisRepo, itemRepo)
 	warehouseHandler := handler.NewWarehouseHandler(warehouseUC)
+
+	//export invoice dependency
+	// exportInvoiceService := exportinvoice.NewExportInvoiceService()
+	exportInvoiceRepo := persistence.NewExportInvoiceRepoDB(db)
+	exportInvoiceUC := exportinvoiceapp.NewUseCase(exportInvoiceRepo, userRepo, warehouseRepo)
+	exportInvoiceHandler := handler.NewExportInvoiceHandler(exportInvoiceUC)
 
 	//message dependency
 	commentRepo := persistence.NewCommentRepoDB(db)

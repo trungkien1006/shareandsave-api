@@ -222,7 +222,6 @@ CREATE TABLE `item_export_invoice` (
   `invoice_id` int,
   `item_warehouse_id` int,
   `sku` string,
-  `quantity` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp

@@ -82,3 +82,7 @@ func (h *ExportInvoiceHandler) GetAll(c *gin.Context) {
 		},
 	})
 }
+
+func (h *ExportInvoiceHandler) Create(c *gin.Context) {
+
+}

@@ -33,6 +33,5 @@ type ItemExportInvoice struct {
 	InvoiceID       int
 	ItemWarehouseID uint
 	SKU             string
-	Quantity        int8
 	CreatedAt       time.Time
 }

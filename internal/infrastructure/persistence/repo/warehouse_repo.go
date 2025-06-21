@@ -298,3 +298,28 @@ func (r *WarehouseRepoDB) Update(ctx context.Context, warehouse warehouse.Detail
 
 	return nil
 }
+
+func (r *WarehouseRepoDB) IsExist(ctx context.Context, itemWarehouseID uint) (bool, error) {
+	var count int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.ItemWarehouse{}).Where("id = ?", itemWarehouseID).Count(&count).Error; err != nil {
+		return false, errors.New("Có lỗi khi kiểm tra item warehouse tồn tại: " + err.Error())
+	}
+
+	return count > 0, nil
+}
+
+func (r *WarehouseRepoDB) GetSKUByItemWarehouseID(ctx context.Context, itemWarehouseID uint) (string, error) {
+	var sku string = ""
+
+	if err := r.db.Debug().WithContext(ctx).
+		Table("item_warehouse as iw").
+		Select("w.sku as sku").
+		Where("id = ?", itemWarehouseID).
+		Joins("JOIN warehouse as w ON w.id = iw.warehouse_id").
+		Scan(&sku).Error; err != nil {
+		return sku, errors.New("Có lỗi khi truy xuất sku của món đồ: " + err.Error())
+	}
+
+	return sku, nil
+}

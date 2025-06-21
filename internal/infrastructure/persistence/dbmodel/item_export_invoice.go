@@ -11,7 +11,6 @@ type ItemExportInvoice struct {
 	InvoiceID       int    `gorm:"index"`
 	ItemWarehouseID uint   `gorm:"index"`
 	SKU             string `gorm:"unique;size:255"`
-	Quantity        int8
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt `gorm:"index"`
