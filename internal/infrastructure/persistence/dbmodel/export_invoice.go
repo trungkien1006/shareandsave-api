@@ -30,21 +30,20 @@ func ExportInvoiceDomainToDB(domain exportinvoice.ExportInvoice) ExportInvoice {
 
 	for _, value := range domain.ItemExportInvoices {
 		items = append(items, ItemExportInvoice{
-			ID:              value.ID,
-			InvoiceID:       value.InvoiceID,
 			ItemWarehouseID: value.ItemWarehouseID,
 			SKU:             value.SKU,
 		})
 	}
 
 	return ExportInvoice{
-		ID:          domain.ID,
-		InvoiceNum:  domain.InvoiceNum,
-		SenderID:    domain.SenderID,
-		ReceiverID:  domain.ReceiverID,
-		Classify:    domain.Classify,
-		Description: domain.Description,
-		IsLock:      domain.IsLock,
+		ID:                 domain.ID,
+		InvoiceNum:         domain.InvoiceNum,
+		SenderID:           domain.SenderID,
+		ReceiverID:         domain.ReceiverID,
+		Classify:           domain.Classify,
+		Description:        domain.Description,
+		IsLock:             domain.IsLock,
+		ItemExportInvoices: items,
 	}
 }
 
