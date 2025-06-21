@@ -38,7 +38,7 @@ func (r *SettingRepoDB) GetByKey(ctx context.Context, setting *setting.Setting, 
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Setting{}).
-		Where("key = ?", settingKey).
+		Where("`key` = ?", settingKey).
 		First(&dbSetting).Error; err != nil {
 		return errors.New("Có lỗi khi truy xuất cấu hình theo key: " + err.Error())
 	}
@@ -80,7 +80,7 @@ func (r *SettingRepoDB) Update(ctx context.Context, updateSetting setting.Settin
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Setting{}).
-		Where("key = ?", dbSetting.Key).
+		Where("`key` = ?", dbSetting.Key).
 		Update("value", dbSetting.Value).Error; err != nil {
 		return errors.New("Có lỗi khi cập nhật cấu hình: " + err.Error())
 	}
