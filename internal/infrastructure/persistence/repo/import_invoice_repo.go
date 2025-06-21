@@ -39,7 +39,7 @@ func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]impor
 	`).
 		Joins("LEFT JOIN user AS sender ON sender.id = ii.sender_id").
 		Joins("LEFT JOIN user AS receiver ON receiver.id = ii.receiver_id").
-		Joins("LEFT JOIN item_import_invoice AS iii ON iii.invoice_id = ii.id AND iii.status = 1").
+		Joins("LEFT JOIN item_import_invoice AS iii ON iii.invoice_id = ii.id").
 		Group("ii.id, sender.full_name, receiver.full_name, ii.created_at, ii.classify")
 
 	if filter.SearchBy != "" && filter.SearchValue != "" {
