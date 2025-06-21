@@ -1,14 +1,38 @@
 package exportinvoice
 
-import "time"
+import (
+	"time"
+)
+
+type GetExportInvoice struct {
+	ID           uint
+	InvoiceNum   uint
+	SenderName   string
+	ReceiverName string
+	Classify     string
+	ItemCount    int
+	CreatedAt    time.Time
+}
 
 type ExportInvoice struct {
-	ID          string
-	InvoiceNum  int
-	AdminID     uint
-	ReceiverID  uint
-	ItemType    string
-	ReceiveDate time.Time
-	Description string
-	IsLock      bool
+	ID                 uint
+	InvoiceNum         int
+	SenderID           uint
+	SenderName         string
+	ReceiverID         uint
+	ReceiverName       string
+	Classify           int
+	Description        string
+	IsLock             bool
+	CreatedAt          time.Time
+	ItemExportInvoices []ItemExportInvoice
+}
+
+type ItemExportInvoice struct {
+	ID              uint
+	InvoiceID       int
+	ItemWarehouseID uint
+	SKU             string
+	Quantity        int8
+	CreatedAt       time.Time
 }

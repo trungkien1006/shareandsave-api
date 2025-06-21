@@ -11,7 +11,7 @@ type ExportInvoice struct {
 	InvoiceNum  int    `gorm:"unique"`
 	SenderID    uint   `gorm:"index"`
 	ReceiverID  uint   `gorm:"index"`
-	Classify    string `gorm:"size:32"`
+	Classify    int    `gorm:"INT"`
 	Description string `gorm:"type:TEXT"`
 	IsLock      bool
 	CreatedAt   time.Time

@@ -32,6 +32,7 @@ type ItemImportInvoice struct {
 
 type GetImportInvoice struct {
 	ID           uint
+	InvoiceNum   uint
 	SenderName   string
 	ReceiverName string
 	Classify     string

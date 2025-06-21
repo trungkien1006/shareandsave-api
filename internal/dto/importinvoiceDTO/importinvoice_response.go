@@ -10,13 +10,13 @@ type CreateImportInvoiceResponseWrapper struct {
 	Data    CreateImportInvoiceResponse `json:"data"`
 }
 
-type GetmportInvoiceResponse struct {
+type GetImportInvoiceResponse struct {
 	ImInvoices []ImportInvoiceListDTO `json:"importInvoices"`
 	TotalPage  int                    `json:"totalPage"`
 }
 
-type GetmportInvoiceResponseWrapper struct {
-	Code    int                     `json:"code"`
-	Message string                  `json:"message"`
-	Data    GetmportInvoiceResponse `json:"data"`
+type GetImportInvoiceResponseWrapper struct {
+	Code    int                      `json:"code"`
+	Message string                   `json:"message"`
+	Data    GetImportInvoiceResponse `json:"data"`
 }

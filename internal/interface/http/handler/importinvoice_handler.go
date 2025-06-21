@@ -33,7 +33,7 @@ func NewImportInvoiceHandler(uc *importinvoiceapp.UseCase) *ImportInvoiceHandler
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: senderName, receiverName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
-// @Success 200 {object} importinvoicedto.GetmportInvoiceResponseWrapper
+// @Success 200 {object} importinvoicedto.GetImportInvoiceResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /import-invoice [get]
 func (h *ImportInvoiceHandler) GetAllImportInvoice(c *gin.Context) {
@@ -78,8 +78,8 @@ func (h *ImportInvoiceHandler) GetAllImportInvoice(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
-		"message": "Fetched posts successfully",
-		"data": importinvoicedto.GetmportInvoiceResponse{
+		"message": "Fetched import invoices successfully",
+		"data": importinvoicedto.GetImportInvoiceResponse{
 			ImInvoices: imInvoiceDTOs,
 			TotalPage:  totalPage,
 		},

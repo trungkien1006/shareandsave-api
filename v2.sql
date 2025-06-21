@@ -221,6 +221,7 @@ CREATE TABLE `item_export_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_id` int,
   `item_warehouse_id` int,
+  `sku` string,
   `quantity` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,

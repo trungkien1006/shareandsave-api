@@ -30,6 +30,7 @@ func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]impor
 		Table("import_invoice as ii").
 		Select(`
 		ii.id,
+		ii.invoice_num,
 		sender.full_name AS sender_name,
 		receiver.full_name AS receiver_name,
 		SUM(iii.quantity) AS item_count,
@@ -60,7 +61,7 @@ func (r *ImportInvoiceRepoDB) GetAll(ctx context.Context, importInvoice *[]impor
 
 	//lay ra tong so record
 	if err := query.Count(&totalRecord).Error; err != nil {
-		return 0, errors.New("Lỗi khi đếm tổng số record của bài viết: " + err.Error())
+		return 0, errors.New("Lỗi khi đếm tổng số record của phiếu nhập kho: " + err.Error())
 	}
 
 	//phan trang

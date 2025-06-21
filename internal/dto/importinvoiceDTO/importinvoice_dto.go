@@ -7,6 +7,7 @@ import (
 
 type ImportInvoiceListDTO struct {
 	ID           uint      `json:"id"`
+	InvoiceNum   uint      `json:"invoiceNum"`
 	SenderName   string    `json:"senderName"`
 	ReceiverName string    `json:"receiverName"`
 	ItemCount    int       `json:"itemCount"`

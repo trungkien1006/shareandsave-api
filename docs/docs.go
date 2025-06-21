@@ -896,6 +896,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/export-invoice": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API bao gồm cả lọc, phân trang và sắp xếp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "export invoice"
+                ],
+                "summary": "Get export invoice",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "authorName, title, createdAt",
+                        "description": "Sort column",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "ASC, DESC",
+                        "description": "Sort type",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trường lọc (vd: senderName, receiverName)",
+                        "name": "searchBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Giá trị lọc (vd:abc@gmail.com, John Doe)",
+                        "name": "searchValue",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/exportinvoicedto.GetExportInvoiceResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/get-me": {
             "get": {
                 "security": [
@@ -1002,7 +1080,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/importinvoicedto.GetmportInvoiceResponseWrapper"
+                            "$ref": "#/definitions/importinvoicedto.GetImportInvoiceResponseWrapper"
                         }
                     },
                     "400": {
@@ -3194,6 +3272,60 @@ const docTemplate = `{
                 "UserStatusLocked"
             ]
         },
+        "exportinvoicedto.ExportInvoiceListDTO": {
+            "type": "object",
+            "properties": {
+                "classify": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "invoiceNum": {
+                    "type": "integer"
+                },
+                "itemCount": {
+                    "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
+                },
+                "senderName": {
+                    "type": "string"
+                }
+            }
+        },
+        "exportinvoicedto.GetExportInvoiceResponse": {
+            "type": "object",
+            "properties": {
+                "exportInvoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/exportinvoicedto.ExportInvoiceListDTO"
+                    }
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "exportinvoicedto.GetExportInvoiceResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/exportinvoicedto.GetExportInvoiceResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "importinvoicedto.CreateImportInvoiceRequest": {
             "type": "object",
             "required": [
@@ -3269,7 +3401,7 @@ const docTemplate = `{
                 }
             }
         },
-        "importinvoicedto.GetmportInvoiceResponse": {
+        "importinvoicedto.GetImportInvoiceResponse": {
             "type": "object",
             "properties": {
                 "importInvoices": {
@@ -3283,14 +3415,14 @@ const docTemplate = `{
                 }
             }
         },
-        "importinvoicedto.GetmportInvoiceResponseWrapper": {
+        "importinvoicedto.GetImportInvoiceResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/importinvoicedto.GetmportInvoiceResponse"
+                    "$ref": "#/definitions/importinvoicedto.GetImportInvoiceResponse"
                 },
                 "message": {
                     "type": "string"
@@ -3357,6 +3489,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "invoiceNum": {
                     "type": "integer"
                 },
                 "itemCount": {

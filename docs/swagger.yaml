@@ -274,6 +274,41 @@ definitions:
     - UserStatusInactive
     - UserStatusActive
     - UserStatusLocked
+  exportinvoicedto.ExportInvoiceListDTO:
+    properties:
+      classify:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      invoiceNum:
+        type: integer
+      itemCount:
+        type: integer
+      receiverName:
+        type: string
+      senderName:
+        type: string
+    type: object
+  exportinvoicedto.GetExportInvoiceResponse:
+    properties:
+      exportInvoices:
+        items:
+          $ref: '#/definitions/exportinvoicedto.ExportInvoiceListDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  exportinvoicedto.GetExportInvoiceResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/exportinvoicedto.GetExportInvoiceResponse'
+      message:
+        type: string
+    type: object
   importinvoicedto.CreateImportInvoiceRequest:
     properties:
       classify:
@@ -323,7 +358,7 @@ definitions:
     - itemID
     - quantity
     type: object
-  importinvoicedto.GetmportInvoiceResponse:
+  importinvoicedto.GetImportInvoiceResponse:
     properties:
       importInvoices:
         items:
@@ -332,12 +367,12 @@ definitions:
       totalPage:
         type: integer
     type: object
-  importinvoicedto.GetmportInvoiceResponseWrapper:
+  importinvoicedto.GetImportInvoiceResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/importinvoicedto.GetmportInvoiceResponse'
+        $ref: '#/definitions/importinvoicedto.GetImportInvoiceResponse'
       message:
         type: string
     type: object
@@ -381,6 +416,8 @@ definitions:
       createdAt:
         type: string
       id:
+        type: integer
+      invoiceNum:
         type: integer
       itemCount:
         type: integer
@@ -2348,6 +2385,58 @@ paths:
       summary: Update client
       tags:
       - clients
+  /export-invoice:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm cả lọc, phân trang và sắp xếp
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Sort column
+        example: authorName, title, createdAt
+        in: query
+        name: sort
+        type: string
+      - description: Sort type
+        example: ASC, DESC
+        in: query
+        name: order
+        type: string
+      - description: 'Trường lọc (vd: senderName, receiverName)'
+        in: query
+        name: searchBy
+        type: string
+      - description: Giá trị lọc (vd:abc@gmail.com, John Doe)
+        in: query
+        name: searchValue
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/exportinvoicedto.GetExportInvoiceResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get export invoice
+      tags:
+      - export invoice
   /get-me:
     get:
       consumes:
@@ -2415,7 +2504,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/importinvoicedto.GetmportInvoiceResponseWrapper'
+            $ref: '#/definitions/importinvoicedto.GetImportInvoiceResponseWrapper'
         "400":
           description: Bad Request
           schema:

@@ -4,6 +4,7 @@ import (
 	"final_project/internal/application/app/authapp"
 	"final_project/internal/application/app/categoryapp"
 	"final_project/internal/application/app/commentapp"
+	"final_project/internal/application/app/exportinvoiceapp"
 	"final_project/internal/application/app/importinvoiceapp"
 	"final_project/internal/application/app/interestapp"
 	"final_project/internal/application/app/itemapp"
@@ -85,6 +86,12 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	importInvoiceRepo := persistence.NewImportInvoiceRepoDB(db)
 	importInvoiceUC := importinvoiceapp.NewUseCase(importInvoiceRepo, userRepo, itemRepo, importInvoiceService)
 	importInvoiceHandler := handler.NewImportInvoiceHandler(importInvoiceUC)
+
+	//export invoice dependency
+	// exportInvoiceService := exportinvoice.NewExportInvoiceService()
+	exportInvoiceRepo := persistence.NewExportInvoiceRepoDB(db)
+	exportInvoiceUC := exportinvoiceapp.NewUseCase(exportInvoiceRepo)
+	exportInvoiceHandler := handler.NewExportInvoiceHandler(exportInvoiceUC)
 
 	//warehouse dependency
 	warehouseRepo := persistence.NewWarehouseRepoDB(db)
@@ -210,6 +217,10 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//import invoice API
 		v1.POST("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.CreateImportInvoice)
 		v1.GET("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.GetAllImportInvoice)
+
+		//export invoice API
+		// v1.POST("/export-invoice", middlewares.AuthGuard, exportInvoiceHandler.CreateImportInvoice)
+		v1.GET("/export-invoice", middlewares.AuthGuard, exportInvoiceHandler.GetAll)
 
 		//warehouse API
 		v1.GET("/warehouses", middlewares.AuthGuard, warehouseHandler.GetAll)
