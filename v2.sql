@@ -239,7 +239,7 @@ CREATE TABLE `image` (
 
 CREATE TABLE `setting` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `key` varchar(255),
+  `key` varchar(255) UNIQUE,
   `value` mediumtext,
   `created_at` timestamp,
   `updated_at` timestamp,

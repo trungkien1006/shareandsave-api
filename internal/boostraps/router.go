@@ -10,6 +10,7 @@ import (
 	"final_project/internal/application/app/itemapp"
 	"final_project/internal/application/app/postapp"
 	"final_project/internal/application/app/roleapp"
+	"final_project/internal/application/app/settingapp"
 	"final_project/internal/application/app/transactionapp"
 	"final_project/internal/application/app/userapp"
 	"final_project/internal/application/app/warehouseapp"
@@ -102,6 +103,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentRepo := persistence.NewCommentRepoDB(db)
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
+
+	//setting dependency
+	settingRepo := persistence.NewSettingRepoDB(db)
+	settingUC := settingapp.NewUseCase(settingRepo)
+	settingHandler := handler.NewSettingHandler(settingUC)
 
 	//chat dependency
 	chatUC := chatapp.NewUseCase(commentRepo)
@@ -239,6 +245,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
 		v1.PATCH("/messages/:interestID", middlewares.AuthGuard, commentHandler.UpdateReadMessage)
+
+		//setting API
+		v1.GET("/settings", middlewares.AuthGuard, settingHandler.GetAll)
+		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.GetByKey)
+		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.Update)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

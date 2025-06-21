@@ -1097,6 +1097,50 @@ definitions:
       name:
         type: string
     type: object
+  settingdto.GetSettingByKeyResponse:
+    properties:
+      setting:
+        $ref: '#/definitions/settingdto.SettingDTO'
+    type: object
+  settingdto.GetSettingByKeyResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/settingdto.GetSettingByKeyResponse'
+      message:
+        type: string
+    type: object
+  settingdto.GetSettingResponse:
+    properties:
+      settings:
+        items:
+          $ref: '#/definitions/settingdto.SettingDTO'
+        type: array
+    type: object
+  settingdto.GetSettingResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/settingdto.GetSettingResponse'
+      message:
+        type: string
+    type: object
+  settingdto.SettingDTO:
+    properties:
+      id:
+        type: integer
+      key:
+        type: string
+      value:
+        type: string
+    type: object
+  settingdto.UpdateSettingRequest:
+    properties:
+      value:
+        type: string
+    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -3514,6 +3558,92 @@ paths:
       summary: Get roles
       tags:
       - roles
+  /settings:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra tất cả cấu hình
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/settingdto.GetSettingResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get settings
+      tags:
+      - settings
+  /settings/{settingKey}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra cấu hình theo key
+      parameters:
+      - description: Key setting
+        in: path
+        name: settingKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/settingdto.GetSettingByKeyResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get settings
+      tags:
+      - settings
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật giá trị cấu hình
+      parameters:
+      - description: Key setting
+        in: path
+        name: settingKey
+        required: true
+        type: string
+      - description: Update setting info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/settingdto.UpdateSettingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/settingdto.GetSettingByKeyResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Update settings
+      tags:
+      - settings
   /transactions:
     get:
       consumes:
