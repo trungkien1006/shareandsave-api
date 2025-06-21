@@ -34,7 +34,7 @@ func (r *ExportInvoiceRepoDB) GetAll(ctx context.Context, exportInvoice *[]expor
 		ei.invoice_num,
 		sender.full_name AS sender_name,
 		receiver.full_name AS receiver_name,
-		SUM(iei.quantity) AS item_count,
+		COUNT(iei.id) AS item_count,
 		ei.created_at,
 		ei.classify
 	`).
@@ -93,10 +93,11 @@ func (r *ExportInvoiceRepoDB) GetAll(ctx context.Context, exportInvoice *[]expor
 
 func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exportinvoice.ExportInvoice) error {
 	var (
-		dbExportInvoice       dbmodel.ExportInvoice
-		itemWarehouseIDs      []uint
-		itemWarehouseQuantity map[uint]uint
+		dbExportInvoice  dbmodel.ExportInvoice
+		itemWarehouseIDs []uint
 	)
+
+	itemWarehouseQuantity := make(map[uint]uint, 0)
 
 	dbExportInvoice = dbmodel.ExportInvoiceDomainToDB(*exportInvoice)
 
