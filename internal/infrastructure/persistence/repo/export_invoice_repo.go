@@ -127,8 +127,7 @@ func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exporti
 		var warehouse dbmodel.Warehouse
 
 		if err := tx.Debug().WithContext(ctx).
-			Table("item_warehouse").
-			Select("warehouse_id").
+			Model(&dbmodel.Warehouse{}).
 			Where("id = ?", key).
 			First(&warehouse).Error; err != nil {
 			tx.Rollback()
