@@ -3329,7 +3329,7 @@ const docTemplate = `{
             "required": [
                 "classify",
                 "itemExportInvoice",
-                "senderID"
+                "receiverID"
             ],
             "properties": {
                 "classify": {
@@ -3353,7 +3353,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/exportinvoicedto.CreateItemExportInvoiceRequest"
                     }
                 },
-                "senderID": {
+                "receiverID": {
                     "type": "integer"
                 }
             }
@@ -3436,7 +3436,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "classify": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createdAt": {
                     "type": "string"

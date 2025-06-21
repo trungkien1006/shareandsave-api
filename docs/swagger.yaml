@@ -292,12 +292,12 @@ definitions:
         items:
           $ref: '#/definitions/exportinvoicedto.CreateItemExportInvoiceRequest'
         type: array
-      senderID:
+      receiverID:
         type: integer
     required:
     - classify
     - itemExportInvoice
-    - senderID
+    - receiverID
     type: object
   exportinvoicedto.CreateExportInvoiceResponse:
     properties:
@@ -350,7 +350,7 @@ definitions:
   exportinvoicedto.ExportInvoiceListDTO:
     properties:
       classify:
-        type: string
+        type: integer
       createdAt:
         type: string
       id:

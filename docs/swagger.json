@@ -3322,7 +3322,7 @@
             "required": [
                 "classify",
                 "itemExportInvoice",
-                "senderID"
+                "receiverID"
             ],
             "properties": {
                 "classify": {
@@ -3346,7 +3346,7 @@
                         "$ref": "#/definitions/exportinvoicedto.CreateItemExportInvoiceRequest"
                     }
                 },
-                "senderID": {
+                "receiverID": {
                     "type": "integer"
                 }
             }
@@ -3429,7 +3429,7 @@
             "type": "object",
             "properties": {
                 "classify": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createdAt": {
                     "type": "string"
