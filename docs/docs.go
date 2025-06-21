@@ -2488,6 +2488,11 @@ const docTemplate = `{
         },
         "/settings": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy ra tất cả cấu hình",
                 "consumes": [
                     "application/json"
@@ -2523,6 +2528,11 @@ const docTemplate = `{
         },
         "/settings/{settingKey}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy ra cấu hình theo key",
                 "consumes": [
                     "application/json"
@@ -2565,6 +2575,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API cập nhật giá trị cấu hình",
                 "consumes": [
                     "application/json"
