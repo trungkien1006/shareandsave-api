@@ -242,7 +242,16 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 	}
 
 	if isRepost {
-		updatePost.CreatedAt = time.Now()
+		const repostCooldown = 7 * 24 * time.Hour
+
+		if time.Since(updatePost.CreatedAt) >= repostCooldown {
+			// Được phép repost
+			updatePost.CreatedAt = time.Now()
+		} else {
+			remaining := repostCooldown - time.Since(updatePost.CreatedAt)
+			// Chưa đủ thời gian để repost
+			return errors.New("Bạn chỉ có thể repost sau " + string(remaining.Truncate(time.Minute)) + " nữa")
+		}
 	}
 
 	if domainPost.Images != nil {
@@ -262,6 +271,10 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 	}
 
 	updatePost.Status = domainPost.Status
+
+	if domainPost.Status == int8(enums.PostStatusApproved) {
+		updatePost.CreatedAt = time.Now()
+	}
 
 	if err := uc.repo.Update(ctx, &updatePost); err != nil {
 		return err
