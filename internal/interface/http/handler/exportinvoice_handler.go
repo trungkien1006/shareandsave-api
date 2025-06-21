@@ -131,7 +131,7 @@ func (h *ExportInvoiceHandler) Create(c *gin.Context) {
 
 	c.JSON(http.StatusOK, exportinvoicedto.CreateExportInvoiceResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched items successfully",
+		Message: "Created export invoice successfully",
 		Data: exportinvoicedto.CreateExportInvoiceResponse{
 			ExportInvoice: exportinvoiceDTORes,
 		},

@@ -132,7 +132,7 @@ func (h *ImportInvoiceHandler) CreateImportInvoice(c *gin.Context) {
 
 	c.JSON(http.StatusOK, importinvoicedto.CreateImportInvoiceResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched items successfully",
+		Message: "Created import invoice successfully",
 		Data: importinvoicedto.CreateImportInvoiceResponse{
 			ImportInvoice: importinvoiceDTORes,
 		},
