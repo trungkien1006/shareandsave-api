@@ -90,6 +90,39 @@ func (r *ExportInvoiceRepoDB) GetAll(ctx context.Context, exportInvoice *[]expor
 	return uint(totalPage), nil
 }
 
+func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exportinvoice.ExportInvoice) error {
+	var (
+		dbExportInvoice dbmodel.ExportInvoice
+	)
+
+	dbExportInvoice = dbmodel.ExportInvoiceDomainToDB(*exportInvoice)
+
+	tx := r.db.Begin()
+
+	if err := tx.Debug().WithContext(ctx).
+		Model(&dbmodel.ExportInvoice{}).
+		Create(&dbExportInvoice).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi thêm mới phiếu xuất: " + err.Error())
+	}
+
+	// if err := tx.Debug().WithContext(ctx).
+	// 	Model(&dbmodel.Warehouse{}).
+	// 	Create(&DBWarehouse).Error; err != nil {
+	// 	tx.Rollback()
+	// 	return errors.New("Có lỗi khi thêm mới danh sách lô đồ: " + err.Error())
+	// }
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+
+	*exportInvoice = dbmodel.ExportInvoiceDBToDomain(dbExportInvoice)
+
+	return nil
+}
+
 func (r *ExportInvoiceRepoDB) GetExportInvoiceNum(ctx context.Context) (int, error) {
 	var invoiceNum int64 = 0
 

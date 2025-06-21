@@ -219,7 +219,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/import-invoice", middlewares.AuthGuard, importInvoiceHandler.GetAllImportInvoice)
 
 		//export invoice API
-		// v1.POST("/export-invoice", middlewares.AuthGuard, exportInvoiceHandler.CreateImportInvoice)
+		v1.POST("/export-invoice", middlewares.AuthGuard, exportInvoiceHandler.Create)
 		v1.GET("/export-invoice", middlewares.AuthGuard, exportInvoiceHandler.GetAll)
 
 		//warehouse API

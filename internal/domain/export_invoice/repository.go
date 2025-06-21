@@ -8,4 +8,5 @@ import (
 type Repository interface {
 	GetAll(ctx context.Context, exportInvoice *[]GetExportInvoice, filter filter.FilterRequest) (uint, error)
 	GetExportInvoiceNum(ctx context.Context) (int, error)
+	Create(ctx context.Context, exportInvoice *ExportInvoice) error
 }

@@ -972,6 +972,55 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API tạo phiếu xuất kho kèm lưu kho",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "export invoice"
+                ],
+                "summary": "Create export invoice",
+                "parameters": [
+                    {
+                        "description": "export invoice creation payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/exportinvoicedto.CreateExportInvoiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/exportinvoicedto.CreateExportInvoiceResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         },
         "/get-me": {
@@ -3272,6 +3321,114 @@ const docTemplate = `{
                 "UserStatusLocked"
             ]
         },
+        "exportinvoicedto.CreateExportInvoiceRequest": {
+            "type": "object",
+            "required": [
+                "classify",
+                "itemExportInvoice",
+                "senderID"
+            ],
+            "properties": {
+                "classify": {
+                    "enum": [
+                        1,
+                        2
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.ItemClassify"
+                        }
+                    ],
+                    "example": 1
+                },
+                "description": {
+                    "type": "string"
+                },
+                "itemExportInvoice": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/exportinvoicedto.CreateItemExportInvoiceRequest"
+                    }
+                },
+                "senderID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "exportinvoicedto.CreateExportInvoiceResponse": {
+            "type": "object",
+            "properties": {
+                "exportInvoice": {
+                    "$ref": "#/definitions/exportinvoicedto.ExportInvoiceDTO"
+                }
+            }
+        },
+        "exportinvoicedto.CreateExportInvoiceResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/exportinvoicedto.CreateExportInvoiceResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "exportinvoicedto.CreateItemExportInvoiceRequest": {
+            "type": "object",
+            "required": [
+                "itemWarehouseID"
+            ],
+            "properties": {
+                "itemWarehouseID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "exportinvoicedto.ExportInvoiceDTO": {
+            "type": "object",
+            "properties": {
+                "classify": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "invoiceNum": {
+                    "type": "integer"
+                },
+                "isLock": {
+                    "type": "boolean"
+                },
+                "itemExportInvoices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/exportinvoicedto.ItemExportInvoiceDTO"
+                    }
+                },
+                "receiverID": {
+                    "type": "integer"
+                },
+                "receiverName": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "integer"
+                },
+                "senderName": {
+                    "type": "string"
+                }
+            }
+        },
         "exportinvoicedto.ExportInvoiceListDTO": {
             "type": "object",
             "properties": {
@@ -3322,6 +3479,26 @@ const docTemplate = `{
                     "$ref": "#/definitions/exportinvoicedto.GetExportInvoiceResponse"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "exportinvoicedto.ItemExportInvoiceDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "invoiceID": {
+                    "type": "integer"
+                },
+                "itemWarehouseID": {
+                    "type": "integer"
+                },
+                "itemWarehouseName": {
+                    "type": "string"
+                },
+                "sku": {
                     "type": "string"
                 }
             }

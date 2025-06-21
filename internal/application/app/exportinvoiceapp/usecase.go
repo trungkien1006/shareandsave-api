@@ -66,9 +66,9 @@ func (uc *UseCase) Create(ctx context.Context, exportInvoice *exportinvoice.Expo
 		exportInvoice.ItemExportInvoices[key].SKU = sku
 	}
 
-	// if err := uc.repo.CreateImportInvoice(ctx, exportInvoice); err != nil {
-	// 	return err
-	// }
+	if err := uc.repo.Create(ctx, exportInvoice); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -6,6 +6,8 @@ import (
 	"final_project/internal/domain/filter"
 	exportinvoicedto "final_project/internal/dto/exportinvoiceDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
+	"final_project/internal/shared/validator"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -83,6 +85,55 @@ func (h *ExportInvoiceHandler) GetAll(c *gin.Context) {
 	})
 }
 
+// @Summary Create export invoice
+// @Description API tạo phiếu xuất kho kèm lưu kho
+// @Security BearerAuth
+// @Tags export invoice
+// @Accept json
+// @Produce json
+// @Param request body exportinvoicedto.CreateExportInvoiceRequest true "export invoice creation payload"
+// @Success 200 {object} exportinvoicedto.CreateExportInvoiceResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /export-invoice [post]
 func (h *ExportInvoiceHandler) Create(c *gin.Context) {
+	var (
+		req                 exportinvoicedto.CreateExportInvoiceRequest
+		domainExportInvoice exportinvoice.ExportInvoice
+	)
 
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	domainExportInvoice = exportinvoicedto.ExportInvoiceDTOToDomain(req)
+
+	domainExportInvoice.ReceiverID = userID
+
+	if err := h.uc.Create(c.Request.Context(), &domainExportInvoice); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	exportinvoiceDTORes := exportinvoicedto.ExportInvoiceDomainToDTO(domainExportInvoice)
+
+	c.JSON(http.StatusOK, exportinvoicedto.CreateExportInvoiceResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched items successfully",
+		Data: exportinvoicedto.CreateExportInvoiceResponse{
+			ExportInvoice: exportinvoiceDTORes,
+		},
+	})
 }
