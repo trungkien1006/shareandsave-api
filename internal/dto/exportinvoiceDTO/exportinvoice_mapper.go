@@ -56,7 +56,7 @@ func ExportInvoiceDTOToDomain(dto CreateExportInvoiceRequest) exportinvoice.Expo
 
 	return exportinvoice.ExportInvoice{
 		Classify:           int(dto.Classify),
-		SenderID:           dto.SenderID,
+		ReceiverID:         dto.ReceiverID,
 		Description:        dto.Description,
 		ItemExportInvoices: items,
 	}

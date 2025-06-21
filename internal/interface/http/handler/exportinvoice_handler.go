@@ -120,7 +120,7 @@ func (h *ExportInvoiceHandler) Create(c *gin.Context) {
 
 	domainExportInvoice = exportinvoicedto.ExportInvoiceDTOToDomain(req)
 
-	domainExportInvoice.ReceiverID = userID
+	domainExportInvoice.SenderID = userID
 
 	if err := h.uc.Create(c.Request.Context(), &domainExportInvoice); err != nil {
 		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))

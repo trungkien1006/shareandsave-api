@@ -27,7 +27,7 @@ func (r *GetExportInvoiceRequest) SetDefault() {
 }
 
 type CreateExportInvoiceRequest struct {
-	SenderID          uint                             `json:"senderID" validate:"required"`
+	ReceiverID        uint                             `json:"receiverID" validate:"required"`
 	Classify          enums.ItemClassify               `json:"classify" validate:"required,oneof=1 2" example:"1"`
 	Description       string                           `json:"description"`
 	ItemExportInvoice []CreateItemExportInvoiceRequest `json:"itemExportInvoice" validate:"required"`
