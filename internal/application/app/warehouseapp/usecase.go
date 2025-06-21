@@ -273,6 +273,10 @@ func (uc *UseCase) GetItemByCode(ctx context.Context, itemWarehouse *warehouse.I
 		return err
 	}
 
+	if itemWarehouse.ID == 0 {
+		return errors.New("Không tìm thấy món đồ")
+	}
+
 	return nil
 }
 
