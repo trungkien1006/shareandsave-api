@@ -3237,19 +3237,22 @@ const docTemplate = `{
                 0,
                 1,
                 2,
-                3
+                3,
+                4
             ],
             "x-enum-comments": {
                 "PostStatusAll": "0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
                 "PostStatusApproved": "3 Admin duyệt",
                 "PostStatusPending": "1 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
-                "PostStatusRejected": "2 Admin đã từ chối"
+                "PostStatusRejected": "2 Admin đã từ chối",
+                "PostStatusSeal": "4 Người dùng chốt bài đăng"
             },
             "x-enum-varnames": [
                 "PostStatusAll",
                 "PostStatusPending",
                 "PostStatusRejected",
-                "PostStatusApproved"
+                "PostStatusApproved",
+                "PostStatusSeal"
             ]
         },
         "enums.PostType": {
@@ -4503,11 +4506,15 @@ const docTemplate = `{
                         " strbase64"
                     ]
                 },
+                "isRepost": {
+                    "type": "boolean"
+                },
                 "status": {
                     "enum": [
                         1,
                         2,
-                        3
+                        3,
+                        4
                     ],
                     "allOf": [
                         {

@@ -206,17 +206,20 @@ definitions:
     - 1
     - 2
     - 3
+    - 4
     type: integer
     x-enum-comments:
       PostStatusAll: 0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý
       PostStatusApproved: 3 Admin duyệt
       PostStatusPending: 1 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý
       PostStatusRejected: 2 Admin đã từ chối
+      PostStatusSeal: 4 Người dùng chốt bài đăng
     x-enum-varnames:
     - PostStatusAll
     - PostStatusPending
     - PostStatusRejected
     - PostStatusApproved
+    - PostStatusSeal
   enums.PostType:
     enum:
     - 0
@@ -1049,6 +1052,8 @@ definitions:
         items:
           type: string
         type: array
+      isRepost:
+        type: boolean
       status:
         allOf:
         - $ref: '#/definitions/enums.PostStatus'
@@ -1056,6 +1061,7 @@ definitions:
         - 1
         - 2
         - 3
+        - 4
       title:
         example: Tôi muốn tìm đồ thất lạc
         type: string
