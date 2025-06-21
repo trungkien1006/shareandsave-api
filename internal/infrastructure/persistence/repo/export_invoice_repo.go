@@ -6,6 +6,7 @@ import (
 	exportinvoice "final_project/internal/domain/export_invoice"
 	"final_project/internal/domain/filter"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 	"math"
 	"time"
 
@@ -92,7 +93,9 @@ func (r *ExportInvoiceRepoDB) GetAll(ctx context.Context, exportInvoice *[]expor
 
 func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exportinvoice.ExportInvoice) error {
 	var (
-		dbExportInvoice dbmodel.ExportInvoice
+		dbExportInvoice       dbmodel.ExportInvoice
+		itemWarehouseIDs      []uint
+		itemWarehouseQuantity map[uint]uint
 	)
 
 	dbExportInvoice = dbmodel.ExportInvoiceDomainToDB(*exportInvoice)
@@ -104,6 +107,40 @@ func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exporti
 		Create(&dbExportInvoice).Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi thêm mới phiếu xuất: " + err.Error())
+	}
+
+	for _, value := range dbExportInvoice.ItemExportInvoices {
+		itemWarehouseIDs = append(itemWarehouseIDs, value.ItemWarehouseID)
+		itemWarehouseQuantity[value.ItemWarehouseID] = itemWarehouseQuantity[value.ID] + 1
+	}
+
+	if err := tx.Debug().WithContext(ctx).
+		Model(&dbmodel.ItemWarehouse{}).
+		Where("id IN ?", itemWarehouseIDs).
+		Update("status", enums.ItemWarehouseStatusOutStock).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi cập nhật lại trạng thái đồ: " + err.Error())
+	}
+
+	for key, value := range itemWarehouseQuantity {
+		var warehouseID uint
+
+		if err := tx.Debug().WithContext(ctx).
+			Table("item_warehouse").
+			Select("warehouse_id").
+			Where("id = ?", key).
+			Scan(&warehouseID).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi truy xuất id của lô hàng: " + err.Error())
+		}
+
+		if err := tx.Debug().WithContext(ctx).
+			Model(&dbmodel.Warehouse{}).
+			Where("id = ?", warehouseID).
+			Update("quantity", gorm.Expr("quantity - ?", value)).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi cập nhật lại số lượng trong lô hàng: " + err.Error())
+		}
 	}
 
 	// if err := tx.Debug().WithContext(ctx).
