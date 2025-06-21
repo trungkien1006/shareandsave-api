@@ -9,7 +9,7 @@ type ExportInvoiceListDTO struct {
 	ReceiverName string    `json:"receiverName"`
 	ItemCount    int       `json:"itemCount"`
 	CreatedAt    time.Time `json:"createdAt"`
-	Classify     string    `json:"classify"`
+	Classify     int       `json:"classify"`
 }
 
 type ExportInvoiceDTO struct {

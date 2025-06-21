@@ -9,7 +9,7 @@ type GetExportInvoice struct {
 	InvoiceNum   uint
 	SenderName   string
 	ReceiverName string
-	Classify     string
+	Classify     int
 	ItemCount    int
 	CreatedAt    time.Time
 }
