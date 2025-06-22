@@ -139,7 +139,7 @@ func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]ware
 	return totalPages, nil
 }
 
-func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]warehouse.ItemOldStock, req filter.FilterRequest) (int, error) {
+func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]warehouse.ItemOldStock, req warehouse.GetItemOldStockFilter) (int, error) {
 	var (
 		query        *gorm.DB
 		totalRecords int64
@@ -155,22 +155,12 @@ func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]wareh
 		Joins("JOIN category ON category.id = item.category_id").
 		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = w.id").
 		Where("w.classify = ?", enums.ItemClassifyOlItem).
+		Where("category.id = ?", req.CategoryID).
 		Group("item.id, item.name, item.image, item.description, category.name")
 
-	if req.SearchBy != "" && req.SearchValue != "" {
-		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
-
-		if column == "item_name" {
-			column = "item.name"
-		} else if column == "description" {
-			column = "item.description"
-		} else if column == "category_name" {
-			column = "category.name"
-		} else {
-			column = "w." + column
-		}
-
-		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+	if req.Search != "" {
+		query.Where("item.name LIKE ? ", "%"+req.Search+"%").
+			Where("item.description LIKE ? ", "%"+req.Search+"%")
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {

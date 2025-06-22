@@ -64,12 +64,12 @@ type GetItemWarehouseByCodeRequest struct {
 
 // item_warehouse
 type GetItemOldStockRequest struct {
-	Page        int    `form:"page"`
-	Limit       int    `form:"limit"`
-	Sort        string `form:"sort" binding:"omitempty,oneof=quantity" example:"quantity"`
-	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
-	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=itemName description categoryName"`
-	SearchValue string `form:"searchValue"`
+	Page       int    `form:"page"`
+	Limit      int    `form:"limit"`
+	Sort       string `form:"sort" binding:"omitempty,oneof=quantity" example:"quantity"`
+	Order      string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
+	CategoryID string `form:"categoryID"`
+	Search     string `form:"search"`
 }
 
 func (r *GetItemOldStockRequest) SetDefault() {

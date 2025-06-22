@@ -77,3 +77,12 @@ type ModifyClaimRequest struct {
 	ItemID     uint
 	NewQuatity uint
 }
+
+type GetItemOldStockFilter struct {
+	Page       int
+	Limit      int
+	Sort       string
+	Order      string
+	CategoryID string
+	Search     string
+}

@@ -170,7 +170,7 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 	var (
 		req          warehousedto.GetItemOldStockRequest
 		domainItems  []warehouse.ItemOldStock
-		domainFilter filter.FilterRequest
+		domainFilter warehouse.GetItemOldStockFilter
 	)
 
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -187,8 +187,8 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 	domainFilter.Limit = req.Limit
 	domainFilter.Sort = req.Sort
 	domainFilter.Order = req.Order
-	domainFilter.SearchBy = req.SearchBy
-	domainFilter.SearchValue = req.SearchValue
+	domainFilter.Search = req.Search
+	domainFilter.CategoryID = req.CategoryID
 
 	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter)
 	if err != nil {
