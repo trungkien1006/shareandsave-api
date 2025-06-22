@@ -334,7 +334,7 @@ func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
 		req warehousedto.RemoveClaimRequestRequest
 	)
 
-	if err := c.ShouldBindUri(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
