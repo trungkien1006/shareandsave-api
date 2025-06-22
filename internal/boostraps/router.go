@@ -241,6 +241,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/client/item-warehouses/old-stock", warehouseHandler.GetAllItemOldStock)
 		v1.POST("/client/item-warehouses/claim-request", middlewares.AuthGuard, warehouseHandler.CreateClaimRequest)
 		v1.PATCH("/client/item-warehouses/claim-request", middlewares.AuthGuard, warehouseHandler.ModifyClaimRequest)
+		v1.DELETE("/client/item-warehouses/claim-request", middlewares.AuthGuard, warehouseHandler.RemoveClaimRequest)
 
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
