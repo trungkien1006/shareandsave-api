@@ -155,6 +155,7 @@ func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]wareh
 		Joins("JOIN category ON category.id = item.category_id").
 		Joins("JOIN warehouse as w ON w.id = iw.warehouse_id").
 		Where("w.classify = ?", enums.ItemClassifyOlItem).
+		Where("iw.status = ?", enums.ItemWarehouseStatusInStock).
 		Group("item.id, item.name, item.image, item.description, category.name")
 
 	if req.Search != "" {
