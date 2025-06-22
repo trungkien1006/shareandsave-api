@@ -125,5 +125,6 @@ type PostFilterRequest struct {
 	Sort   string
 	Order  string
 	Type   int
+	Status int
 	Search string
 }

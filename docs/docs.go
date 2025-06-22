@@ -687,8 +687,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "example": "1, 2, 3, 4",
+                        "type": "integer",
                         "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
                         "in": "query"
@@ -2158,8 +2157,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "example": "1, 2, 3, 4",
+                        "type": "integer",
                         "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
                         "in": "query"
@@ -2292,10 +2290,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "example": "1, 2, 3, 4",
+                        "type": "integer",
                         "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Pending:1, Rejected:2, Approved:3, Seal:4",
+                        "name": "status",
                         "in": "query"
                     },
                     {

@@ -86,3 +86,8 @@ type GetItemOldStockFilter struct {
 	CategoryID int
 	Search     string
 }
+
+type ItemQuantity struct {
+	ItemID   uint
+	Quantity uint
+}

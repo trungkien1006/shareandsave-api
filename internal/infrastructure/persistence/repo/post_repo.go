@@ -214,6 +214,10 @@ func (r *PostRepoDB) GetAllUserPost(ctx context.Context, posts *[]post.PostWithC
 			author.full_name, author.avatar
 		`)
 
+	if filter.Status != 0 {
+		query.Where("post.status = ?", filter.Status)
+	}
+
 	if filter.Search != "" {
 		tagJSON, _ := json.Marshal(filter.Search)
 

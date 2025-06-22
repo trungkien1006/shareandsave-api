@@ -2389,10 +2389,9 @@ paths:
         name: order
         type: string
       - description: GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4
-        example: 1, 2, 3, 4
         in: query
         name: type
-        type: string
+        type: integer
       - description: Giá trị lọc (author_name, title, tag, content)
         in: query
         name: search
@@ -3351,10 +3350,9 @@ paths:
         name: status
         type: string
       - description: GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4
-        example: 1, 2, 3, 4
         in: query
         name: type
-        type: string
+        type: integer
       - description: 'Trường lọc (vd: email, fullName)'
         in: query
         name: searchBy
@@ -3498,10 +3496,13 @@ paths:
         name: order
         type: string
       - description: GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4
-        example: 1, 2, 3, 4
         in: query
         name: type
-        type: string
+        type: integer
+      - description: Pending:1, Rejected:2, Approved:3, Seal:4
+        in: query
+        name: status
+        type: integer
       - description: Giá trị lọc (author_name, title, tag, content)
         in: query
         name: search

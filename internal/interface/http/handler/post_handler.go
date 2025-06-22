@@ -31,7 +31,7 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Param sort query string false "Sort column" example(authorName, title, createdAt)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
 // @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
-// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} postdto.GetAdminPostResponseWrapper
@@ -104,7 +104,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column" example(authorName, title, createdAt)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
 // @Param   search   query    string  false  "Giá trị lọc (author_name, title, tag, content)"
 // @Success 200 {object} postdto.GetPostResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -169,7 +169,8 @@ func (h *PostHandler) GetAllPost(c *gin.Context) {
 // @Param limit query int false "Number record of page" minimum(1) example(10)
 // @Param sort query string false "Sort column" example(authorName, title, createdAt)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param type query string false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
+// @Param status query int false "Pending:1, Rejected:2, Approved:3, Seal:4" example(1, 2, 3, 4)
 // @Param   search   query    string  false  "Giá trị lọc (author_name, title, tag, content)"
 // @Success 200 {object} postdto.GetPostResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -202,6 +203,7 @@ func (h *PostHandler) GetAllUserPost(c *gin.Context) {
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
 	domainReq.Type = int(req.Type)
+	domainReq.Status = int(req.Status)
 	domainReq.Search = req.Search
 
 	totalPage, err := h.uc.GetAllUserPost(c.Request.Context(), &posts, userID, domainReq)

@@ -316,3 +316,7 @@ func (r *WarehouseRepoDB) GetSKUByItemWarehouseID(ctx context.Context, itemWareh
 
 	return sku, nil
 }
+
+func (r *WarehouseRepoDB) GetItemsQuantity(ctx context.Context, itemIDs []uint, result []warehouse.ItemQuantity) error {
+	return nil
+}
