@@ -74,3 +74,11 @@ func (r *RedisRepo) DeleteFromRedisHash(ctx context.Context, hashKey string, fie
 	}
 	return nil
 }
+
+func (r *RedisRepo) GetRedisHashLength(ctx context.Context, hashKey string) (int64, error) {
+	length, err := r.client.HLen(ctx, hashKey).Result()
+	if err != nil {
+		return 0, errors.New("Có lỗi khi kiểm tra độ dài redis hash: " + err.Error())
+	}
+	return length, nil
+}

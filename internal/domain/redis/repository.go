@@ -12,4 +12,5 @@ type Repository interface {
 	SetToRedisHash(ctx context.Context, hashKey string, field string, value string) error
 	GetFromRedisHash(ctx context.Context, hashKey string, field string) (string, error)
 	DeleteFromRedisHash(ctx context.Context, hashKey string, fields ...string) error
+	GetRedisHashLength(ctx context.Context, hashKey string) (int64, error)
 }

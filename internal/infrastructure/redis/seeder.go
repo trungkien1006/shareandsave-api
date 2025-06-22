@@ -44,8 +44,20 @@ func (s *RedisSeeder) seedItemOldStock(ctx context.Context) {
 
 	fmt.Println("Seeding redis item old stocks...")
 
-	if err := s.whRepo.GetItemsQuantity(ctx, &itemOldStocks); err != nil {
+	itemClaimsCounts, err := s.repo.GetRedisHashLength(ctx, enums.ItemClaimRequest)
+	if err != nil {
 		fmt.Println(err)
+		return
+	}
+
+	if itemClaimsCounts > 0 {
+		fmt.Println(err)
+		return
+	}
+
+	if err := s.whRepo.GetItemsQuantity(ctx, &itemOldStocks); err != nil {
+		fmt.Println("Đã có dữ liệu rồi!")
+		fmt.Println("Seeding redis item old stocks done.")
 		return
 	}
 
