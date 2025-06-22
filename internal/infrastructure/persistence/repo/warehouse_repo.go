@@ -332,3 +332,15 @@ func (r *WarehouseRepoDB) GetItemsQuantity(ctx context.Context, result *[]wareho
 
 	return nil
 }
+
+func (r *WarehouseRepoDB) GetItemIDByItemWarehouseID(ctx context.Context, itemWarehouseID uint, itemID *int) error {
+	if err := r.db.Debug().WithContext(ctx).
+		Table("item_warehouse as iw").
+		Select("iw.item_id").
+		Where("iw.id = ?", itemWarehouseID).
+		Scan(itemID).Error; err != nil {
+		return errors.New("Có lỗi khi truy vấn item id: " + err.Error())
+	}
+
+	return nil
+}

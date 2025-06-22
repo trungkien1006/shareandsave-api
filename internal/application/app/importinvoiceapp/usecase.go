@@ -2,28 +2,33 @@ package importinvoiceapp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"final_project/internal/domain/filter"
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/item"
+	"final_project/internal/domain/redis"
 	"final_project/internal/domain/user"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
+	"strconv"
 )
 
 type UseCase struct {
-	repo     importinvoice.Repository
-	service  *importinvoice.ImportInvoiceService
-	userRepo user.Repository
-	itemRepo item.Repository
+	repo      importinvoice.Repository
+	service   *importinvoice.ImportInvoiceService
+	userRepo  user.Repository
+	itemRepo  item.Repository
+	redisRepo redis.Repository
 }
 
-func NewUseCase(r importinvoice.Repository, userRepo user.Repository, itemRepo item.Repository, service *importinvoice.ImportInvoiceService) *UseCase {
+func NewUseCase(r importinvoice.Repository, userRepo user.Repository, itemRepo item.Repository, service *importinvoice.ImportInvoiceService, redisRepo redis.Repository) *UseCase {
 	return &UseCase{
-		repo:     r,
-		userRepo: userRepo,
-		itemRepo: itemRepo,
-		service:  service,
+		repo:      r,
+		userRepo:  userRepo,
+		itemRepo:  itemRepo,
+		service:   service,
+		redisRepo: redisRepo,
 	}
 }
 
@@ -131,6 +136,32 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 
 	if err := uc.repo.CreateImportInvoice(ctx, importInvoice); err != nil {
 		return err
+	}
+
+	//Update quantity item in redis
+	for _, value := range importInvoice.ItemImportInvoice {
+		itemClaimJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)))
+		if err != nil {
+			return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map: " + err.Error())
+		}
+
+		var itemClaim warehouse.ClaimRequestItem
+
+		err = json.Unmarshal([]byte(itemClaimJSON), &itemClaim)
+		if err != nil {
+			return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map, decode JSON error: " + err.Error())
+		}
+
+		itemClaim.ItemQuantity += uint(value.Quantity)
+
+		newItemClaimJSON, err := json.Marshal(itemClaim)
+		if err != nil {
+			return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map, encode JSON error: " + err.Error())
+		}
+
+		if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(newItemClaimJSON)); err != nil {
+			return err
+		}
 	}
 
 	return nil
