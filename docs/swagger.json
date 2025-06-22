@@ -372,13 +372,62 @@
                     }
                 }
             },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API hoàn tác đăng kí nhận đồ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Remove claim request",
+                "parameters": [
+                    {
+                        "description": "Claim request remove payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.RemoveClaimRequestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.RemoveClaimRequestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "API lưu thông tin đăng kí nhận đồ",
+                "description": "API chỉnh sửa thông tin đăng kí nhận đồ",
                 "consumes": [
                     "application/json"
                 ],
@@ -5886,6 +5935,29 @@
             }
         },
         "warehousedto.ModifyClaimRequestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "warehousedto.RemoveClaimRequestRequest": {
+            "type": "object",
+            "required": [
+                "itemID"
+            ],
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "warehousedto.RemoveClaimRequestResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {

@@ -281,6 +281,7 @@ func (s *Seeder) seedCategory() error {
 		{Name: "Vật dụng cá nhân"},
 		{Name: "Giấy tờ tùy thân"},
 		{Name: "Tài liệu học tập"},
+		{Name: "Dụng cụ học tập"},
 	}
 
 	for i := range categorys {

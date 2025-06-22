@@ -267,7 +267,7 @@ func (h *WarehouseHandler) CreateClaimRequest(c *gin.Context) {
 }
 
 // @Summary Modify claim request
-// @Description API lưu thông tin đăng kí nhận đồ
+// @Description API chỉnh sửa thông tin đăng kí nhận đồ
 // @Security BearerAuth
 // @Tags item warehouses
 // @Accept json
@@ -318,28 +318,53 @@ func (h *WarehouseHandler) ModifyClaimRequest(c *gin.Context) {
 	})
 }
 
-// func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
-// 	var (
-// 		req warehousedto.RemoveClaimRequestRequest
-// 	)
+// @Summary Remove claim request
+// @Description API hoàn tác đăng kí nhận đồ
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Param request body warehousedto.RemoveClaimRequestRequest true "Claim request remove payload"
+// @Success 201 {object} warehousedto.RemoveClaimRequestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/item-warehouses/claim-request [delete]
+func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
+	var (
+		req warehousedto.RemoveClaimRequestRequest
+	)
 
-// 	if err := c.ShouldBindUri(&req); err != nil {
-// 		c.JSON(
-// 			http.StatusBadRequest,
-// 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
-// 		)
-// 		return
-// 	}
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
 
-// 	userID, err := helpers.GetUintFromContext(c, "userID")
-// 	if err != nil {
-// 		c.JSON(
-// 			http.StatusBadRequest,
-// 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest),
-// 		)
-// 		return
-// 	}
-// }
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest),
+		)
+		return
+	}
+
+	if err := h.uc.RemoveClaimRequest(c.Request.Context(), req.ItemID, userID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, warehousedto.RemoveClaimRequestResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Removed claim request successfully",
+		Data:    gin.H{},
+	})
+}
 
 // @Summary Get item warehouse by code
 // @Description API lấy thông tin item warehouse bằng code

@@ -1873,6 +1873,21 @@ definitions:
       message:
         type: string
     type: object
+  warehousedto.RemoveClaimRequestRequest:
+    properties:
+      itemID:
+        type: integer
+    required:
+    - itemID
+    type: object
+  warehousedto.RemoveClaimRequestResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   warehousedto.UpdateItemWarehouse:
     properties:
       description:
@@ -2142,10 +2157,41 @@ paths:
       tags:
       - auth
   /client/item-warehouses/claim-request:
+    delete:
+      consumes:
+      - application/json
+      description: API hoàn tác đăng kí nhận đồ
+      parameters:
+      - description: Claim request remove payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/warehousedto.RemoveClaimRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/warehousedto.RemoveClaimRequestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Remove claim request
+      tags:
+      - item warehouses
     patch:
       consumes:
       - application/json
-      description: API lưu thông tin đăng kí nhận đồ
+      description: API chỉnh sửa thông tin đăng kí nhận đồ
       parameters:
       - description: Claim request modify payload
         in: body
