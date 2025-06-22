@@ -160,8 +160,8 @@ func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 // @Param limit query int false "Number record per page" minimum(1) example(10)
 // @Param sort query string false "Sort column (quantity)"
 // @Param order query string false "Sort type: ASC hoặc DESC" enum(ASC,DESC) example(ASC)
-// @Param   searchBy   query    string  false  "Trường lọc (itemName description categoryName)"
-// @Param   searchValue   query    string  false  "Giá trị lọc:"
+// @Param   categoryID   query    int  false  "Phân loại đồ"
+// @Param   search   query    string  false  "Lọc"
 // @Success 200 {object} warehousedto.FilterItemOldStockResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError

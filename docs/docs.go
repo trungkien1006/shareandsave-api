@@ -473,15 +473,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "Trường lọc (itemName description categoryName)",
-                        "name": "searchBy",
+                        "type": "integer",
+                        "description": "Phân loại đồ",
+                        "name": "categoryID",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Giá trị lọc:",
-                        "name": "searchValue",
+                        "description": "Lọc",
+                        "name": "search",
                         "in": "query"
                     }
                 ],

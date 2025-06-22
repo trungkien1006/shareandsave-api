@@ -2233,13 +2233,13 @@ paths:
         in: query
         name: order
         type: string
-      - description: Trường lọc (itemName description categoryName)
+      - description: Phân loại đồ
         in: query
-        name: searchBy
-        type: string
-      - description: 'Giá trị lọc:'
+        name: categoryID
+        type: integer
+      - description: Lọc
         in: query
-        name: searchValue
+        name: search
         type: string
       produces:
       - application/json

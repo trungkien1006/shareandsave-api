@@ -68,7 +68,7 @@ type GetItemOldStockRequest struct {
 	Limit      int    `form:"limit"`
 	Sort       string `form:"sort" binding:"omitempty,oneof=quantity" example:"quantity"`
 	Order      string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"`
-	CategoryID string `form:"categoryID"`
+	CategoryID int    `form:"categoryID"`
 	Search     string `form:"search"`
 }
 

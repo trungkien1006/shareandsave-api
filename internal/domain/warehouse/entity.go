@@ -83,6 +83,6 @@ type GetItemOldStockFilter struct {
 	Limit      int
 	Sort       string
 	Order      string
-	CategoryID string
+	CategoryID int
 	Search     string
 }
