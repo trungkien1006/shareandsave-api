@@ -41,7 +41,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			}).
 			Preload("Interests.NewComment", func(db *gorm.DB) *gorm.DB {
 				// Lấy comment chưa đọc và sort theo thời gian tạo mới nhất
-				return db.Where("sender_id != ?", userID).Order("created_at DESC").Offset(0).Limit(1)
+				return db.Order("created_at DESC").Offset(0).Limit(1)
 			}).
 			Preload("Author").
 			Preload("Interests.User").
@@ -67,7 +67,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 			}).
 			Preload("Interests.NewComment", func(db *gorm.DB) *gorm.DB {
 				// Lấy comment chưa đọc và sort theo thời gian tạo mới nhất
-				return db.Where("sender_id != ?", userID).Order("created_at DESC").Offset(0).Limit(1)
+				return db.Order("created_at DESC").Offset(0).Limit(1)
 			}).
 			Preload("Interests.User").
 			Preload("PostItem").
