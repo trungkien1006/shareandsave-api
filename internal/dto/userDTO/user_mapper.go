@@ -59,6 +59,7 @@ func DomainClientToDTO(u user.User) ClientDTO {
 		Status:      u.Status,
 		GoodPoint:   u.GoodPoint,
 		Major:       u.Major,
+		CreatedAt:   u.CreatedAt,
 	}
 }
 
@@ -90,5 +91,6 @@ func DomainAdminToDTO(u user.User) AdminDTO {
 		Status:      u.Status,
 		GoodPoint:   u.GoodPoint,
 		Major:       u.Major,
+		CreatedAt:   u.CreatedAt,
 	}
 }

@@ -1,5 +1,7 @@
 package user
 
+import "time"
+
 type User struct {
 	ID          uint
 	RoleID      uint
@@ -15,6 +17,7 @@ type User struct {
 	GoodPoint   int
 	Major       string
 	Permissions []Permission `gorm:"-"`
+	CreatedAt   time.Time
 }
 
 type Permission struct {

@@ -65,6 +65,7 @@ func ToDomainUser(dbUser User) user.User {
 		GoodPoint:   dbUser.GoodPoint,
 		Major:       dbUser.Major,
 		Permissions: permissions,
+		CreatedAt:   dbUser.CreatedAt,
 	}
 }
 
@@ -82,5 +83,6 @@ func ToDBUser(u user.User) User {
 		Status:      u.Status,
 		GoodPoint:   u.GoodPoint,
 		Major:       u.Major,
+		CreatedAt:   u.CreatedAt,
 	}
 }

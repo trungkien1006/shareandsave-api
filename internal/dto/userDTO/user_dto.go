@@ -1,5 +1,7 @@
 package userdto
 
+import "time"
+
 type CommonUserDTO struct {
 	ID          uint   `json:"id"`
 	RoleID      uint   `json:"roleID"`
@@ -24,29 +26,31 @@ type Permission struct {
 }
 
 type ClientDTO struct {
-	ID          uint   `json:"id"`
-	Email       string `json:"email"`
-	Fullname    string `json:"fullName"`
-	Avatar      string `json:"avatar,omitempty"`
-	PhoneNumber string `json:"phoneNumber,omitempty"`
-	Address     string `json:"address,omitempty"`
-	Status      int8   `json:"status"`
-	GoodPoint   int    `json:"goodPoint"`
-	Major       string `json:"major,omitempty"`
+	ID          uint      `json:"id"`
+	Email       string    `json:"email"`
+	Fullname    string    `json:"fullName"`
+	Avatar      string    `json:"avatar,omitempty"`
+	PhoneNumber string    `json:"phoneNumber,omitempty"`
+	Address     string    `json:"address,omitempty"`
+	Status      int8      `json:"status"`
+	GoodPoint   int       `json:"goodPoint"`
+	Major       string    `json:"major,omitempty"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type AdminDTO struct {
-	ID          uint   `json:"id"`
-	RoleID      uint   `json:"roleID"`
-	RoleName    string `json:"roleName"`
-	Email       string `json:"email"`
-	Fullname    string `json:"fullName"`
-	Avatar      string `json:"avatar,omitempty"`
-	PhoneNumber string `json:"phoneNumber,omitempty"`
-	Address     string `json:"address,omitempty"`
-	Status      int8   `json:"status"`
-	GoodPoint   int    `json:"goodPoint"`
-	Major       string `json:"major,omitempty"`
+	ID          uint      `json:"id"`
+	RoleID      uint      `json:"roleID"`
+	RoleName    string    `json:"roleName"`
+	Email       string    `json:"email"`
+	Fullname    string    `json:"fullName"`
+	Avatar      string    `json:"avatar,omitempty"`
+	PhoneNumber string    `json:"phoneNumber,omitempty"`
+	Address     string    `json:"address,omitempty"`
+	Status      int8      `json:"status"`
+	GoodPoint   int       `json:"goodPoint"`
+	Major       string    `json:"major,omitempty"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type UpdateUserDTO struct {
