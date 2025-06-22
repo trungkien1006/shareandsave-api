@@ -323,6 +323,7 @@ func (r *WarehouseRepoDB) GetItemsQuantity(ctx context.Context, result *[]wareho
 		Table("item_warehouse AS iw").
 		Select("iw.item_id AS item_id, COUNT(iw.id) AS quantity").
 		Group("iw.item_id").
+		Where("iw.status = ?", enums.ItemWarehouseStatusInStock).
 		Scan(&result).Error; err != nil {
 		return errors.New("Có lỗi khi truy xuất số lượng đồ tồn kho: " + err.Error())
 	}
