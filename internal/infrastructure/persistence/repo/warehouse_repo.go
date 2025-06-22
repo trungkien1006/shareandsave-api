@@ -149,11 +149,11 @@ func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]wareh
 	query = r.db.Debug().
 		WithContext(ctx).
 		Model(&dbmodel.ItemOldStock{}).
-		Table("warehouse as w").
+		Table("item_warehouse as iw").
 		Select("item.id as item_id, item.name as item_name, item.image as item_image, item.description as description, category.name as category_name, COUNT(iw.id) as quantity").
-		Joins("JOIN item ON item.id = w.item_id").
+		Joins("JOIN item ON item.id = iw.item_id").
 		Joins("JOIN category ON category.id = item.category_id").
-		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = w.id").
+		Joins("JOIN warehouse as w ON w.id = iw.warehouse_id").
 		Where("w.classify = ?", enums.ItemClassifyOlItem).
 		Group("item.id, item.name, item.image, item.description, category.name")
 
