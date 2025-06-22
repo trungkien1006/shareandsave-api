@@ -261,7 +261,7 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 
 	for key, value := range itemClaims.Users {
 		if value.ID == userID {
-			itemClaims.ItemQuantity -= value.Quantity
+			itemClaims.ItemQuantity += value.Quantity
 
 			itemClaims.Users = append(itemClaims.Users[:key], itemClaims.Users[key+1:]...)
 
