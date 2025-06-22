@@ -124,14 +124,26 @@ func (r *ExportInvoiceRepoDB) Create(ctx context.Context, exportInvoice *exporti
 	}
 
 	for key, value := range itemWarehouseQuantity {
-		var warehouse dbmodel.Warehouse
+		var (
+			warehouse   dbmodel.Warehouse
+			warehouseID int
+		)
+
+		if err := tx.
+			Table("item_warehouse").
+			Select("warehouse_id").
+			Where("id = ?", key).
+			Scan(&warehouseID).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi truy xuất id của lô hàng: " + err.Error())
+		}
 
 		if err := tx.Debug().WithContext(ctx).
 			Model(&dbmodel.Warehouse{}).
-			Where("id = ?", key).
+			Where("id = ?", warehouseID).
 			First(&warehouse).Error; err != nil {
 			tx.Rollback()
-			return errors.New("Có lỗi khi truy xuất id của lô hàng: " + err.Error())
+			return errors.New("Có lỗi khi truy xuất lô hàng: " + err.Error())
 		}
 
 		if warehouse.Quantity < int(value) {
