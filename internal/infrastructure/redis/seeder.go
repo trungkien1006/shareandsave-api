@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
+	"final_project/internal/domain/warehouse"
+	"final_project/internal/pkg/enums"
 	"fmt"
 	"strconv"
 )
@@ -12,12 +14,14 @@ import (
 type RedisSeeder struct {
 	repo        redis.Repository
 	rolePerRepo rolepermission.Repository
+	whRepo      warehouse.Repository
 }
 
-func NewRedisSeeder(repo redis.Repository, rolePerRepo rolepermission.Repository) *RedisSeeder {
+func NewRedisSeeder(repo redis.Repository, rolePerRepo rolepermission.Repository, whRepo warehouse.Repository) *RedisSeeder {
 	return &RedisSeeder{
 		repo:        repo,
 		rolePerRepo: rolePerRepo,
+		whRepo:      whRepo,
 	}
 }
 
@@ -27,9 +31,43 @@ func (s *RedisSeeder) SeedInitialData() error {
 	fmt.Println("Seeding Redis initial data...")
 
 	s.seedRolePermission(ctx)
+	s.seedItemOldStock(ctx)
 
 	fmt.Println("Seeding Redis done.")
 	return nil
+}
+
+func (s *RedisSeeder) seedItemOldStock(ctx context.Context) {
+	var (
+		itemOldStocks []warehouse.ItemQuantity
+	)
+
+	fmt.Println("Seeding redis item old stocks...")
+
+	if err := s.whRepo.GetItemsQuantity(ctx, &itemOldStocks); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for _, value := range itemOldStocks {
+		itemClaims := warehouse.ClaimRequestItem{
+			ItemQuantity: uint(value.Quantity),
+			Users:        make([]warehouse.ClaimRequestUser, 0),
+		}
+
+		itemClaimsJSON, err := json.Marshal(itemClaims)
+		if err != nil {
+			fmt.Println("Có lỗi khi encode JSON: " + err.Error())
+			return
+		}
+
+		if err := s.repo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(itemClaimsJSON)); err != nil {
+			fmt.Println("Có lỗi khi lưu item vào redis hash: " + err.Error())
+			return
+		}
+	}
+
+	fmt.Println("Seeding redis item old stocks done.")
 }
 
 func (s *RedisSeeder) seedRolePermission(ctx context.Context) {
@@ -37,7 +75,7 @@ func (s *RedisSeeder) seedRolePermission(ctx context.Context) {
 		rolePerCodes []rolepermission.RolePermissionList
 	)
 
-	fmt.Println("Seeding role permissions...")
+	fmt.Println("Seeding redis role permissions...")
 
 	if err := s.rolePerRepo.GetAllRolePermisson(ctx, &rolePerCodes); err != nil {
 		fmt.Println("Có lỗi khi lấy danh sách quyền theo role")
@@ -57,5 +95,5 @@ func (s *RedisSeeder) seedRolePermission(ctx context.Context) {
 		}
 	}
 
-	fmt.Println("Seeding role permissions done.")
+	fmt.Println("Seeding redis role permissions done.")
 }

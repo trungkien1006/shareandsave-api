@@ -88,6 +88,6 @@ type GetItemOldStockFilter struct {
 }
 
 type ItemQuantity struct {
-	ItemID   uint
-	Quantity uint
+	ItemID   uint  `gorm:"column:item_id"`
+	Quantity int64 `gorm:"column:quantity"`
 }

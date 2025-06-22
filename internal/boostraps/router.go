@@ -121,6 +121,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	redisSeed := redisapp.NewRedisSeeder(
 		redisRepo,
 		rolePerRepo,
+		warehouseRepo,
 	)
 
 	seed := seeder.NewSeeder(
