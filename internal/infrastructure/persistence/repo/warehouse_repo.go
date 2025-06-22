@@ -155,12 +155,15 @@ func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]wareh
 		Joins("JOIN category ON category.id = item.category_id").
 		Joins("JOIN item_warehouse as iw ON iw.warehouse_id = w.id").
 		Where("w.classify = ?", enums.ItemClassifyOlItem).
-		Where("category.id = ?", req.CategoryID).
 		Group("item.id, item.name, item.image, item.description, category.name")
 
 	if req.Search != "" {
 		query.Where("item.name LIKE ? ", "%"+req.Search+"%").
 			Where("item.description LIKE ? ", "%"+req.Search+"%")
+	}
+
+	if req.CategoryID != 0 {
+		query.Where("category.id = ?", req.CategoryID)
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {
