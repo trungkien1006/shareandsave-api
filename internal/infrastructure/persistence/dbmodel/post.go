@@ -191,6 +191,7 @@ func AdminPostDomainToDB(domainPost post.Post) Post {
 		Info:        domainPost.Info,
 		Status:      domainPost.Status,
 		Image:       domainPost.Images,
+		CreatedAt:   domainPost.CreatedAt,
 	}
 }
 
