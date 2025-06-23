@@ -408,7 +408,7 @@ func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
 	})
 }
 
-// @Summary Remove claim request
+// @Summary Remove all claim request
 // @Description API xóa đăng kí nhận đồ
 // @Security BearerAuth
 // @Tags item warehouses

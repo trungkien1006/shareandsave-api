@@ -433,7 +433,7 @@ const docTemplate = `{
                 "tags": [
                     "item warehouses"
                 ],
-                "summary": "Remove claim request",
+                "summary": "Remove all claim request",
                 "responses": {
                     "201": {
                         "description": "Created",

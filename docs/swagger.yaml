@@ -2204,7 +2204,7 @@ paths:
             $ref: '#/definitions/enums.AppError'
       security:
       - BearerAuth: []
-      summary: Remove claim request
+      summary: Remove all claim request
       tags:
       - item warehouses
     get:
