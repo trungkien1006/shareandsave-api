@@ -5946,22 +5946,22 @@ const docTemplate = `{
         "warehousedto.ItemOldStockDTO": {
             "type": "object",
             "properties": {
-                "category_name": {
+                "categoryName": {
                     "type": "string"
                 },
-                "claim_item_requests": {
+                "claimItemRequests": {
                     "type": "integer"
                 },
                 "description": {
                     "type": "string"
                 },
-                "item_id": {
+                "itemID": {
                     "type": "integer"
                 },
-                "item_image": {
+                "itemImage": {
                     "type": "string"
                 },
-                "item_name": {
+                "itemName": {
                     "type": "string"
                 },
                 "quantity": {

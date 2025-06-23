@@ -227,6 +227,30 @@ CREATE TABLE `item_export_invoice` (
   `deleted_at` timestamp
 );
 
+CREATE TABLE `leave_requests` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `leave_type` int NOT NULL,
+  `reason` text NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `total_days` float NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `updated_at` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `deleted_at` timestamp
+);
+
+CREATE TABLE `item_leave_requests` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `leave_requests_id` int NOT NULL,
+  `item_id` int NOT NULL,
+  `actual_quantity` int,
+  `missing_quantity` int,
+  `created_at` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `updated_at` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `deleted_at` timestamp
+);
+
 CREATE TABLE `image` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `target` varchar(32),
@@ -249,6 +273,12 @@ CREATE TABLE `setting` (
 ALTER TABLE `warehouse` ADD FOREIGN KEY (`import_invoice_id`) REFERENCES `import_invoice` (`id`);
 
 ALTER TABLE `warehouse` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
+
+ALTER TABLE `leave_requests` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `item_leave_requests` ADD FOREIGN KEY (`leave_requests_id`) REFERENCES `leave_requests` (`id`);
+
+ALTER TABLE `item_leave_requests` ADD FOREIGN KEY (`item_id`) REFERENCES `item` (`id`);
 
 ALTER TABLE `user` ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 

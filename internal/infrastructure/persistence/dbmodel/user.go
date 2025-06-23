@@ -28,6 +28,7 @@ type User struct {
 	Role Role `gorm:"foreignKey:RoleID"`
 
 	// 1-n: User có nhiều post, interest, comment, transaction, appointment, notification
+	LeaveRequests     []LeaveRequest `gorm:"foreignKey:UserID"`
 	Posts             []Post         `gorm:"foreignKey:AuthorID"`
 	Interests         []Interest     `gorm:"foreignKey:UserID"`
 	CommentsSent      []Comment      `gorm:"foreignKey:SenderID"`

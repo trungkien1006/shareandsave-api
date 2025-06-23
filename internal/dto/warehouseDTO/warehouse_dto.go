@@ -45,13 +45,13 @@ type ItemWareHouseDTO struct {
 }
 
 type ItemOldStockDTO struct {
-	ItemID            uint   `json:"item_id"`
-	ItemName          string `json:"item_name"`
-	ItemImage         string `json:"item_image"`
+	ItemID            uint   `json:"itemID"`
+	ItemName          string `json:"itemName"`
+	ItemImage         string `json:"itemImage"`
 	Description       string `json:"description"`
-	CategoryName      string `json:"category_name"`
+	CategoryName      string `json:"categoryName"`
 	Quantity          uint   `json:"quantity"`
-	ClaimItemRequests uint   `json:"claim_item_requests"`
+	ClaimItemRequests uint   `json:"claimItemRequests"`
 }
 
 type MyClaimRequestDTO struct {

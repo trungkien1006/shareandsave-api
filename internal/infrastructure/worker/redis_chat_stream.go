@@ -1,4 +1,4 @@
-package redisapp
+package worker
 
 import (
 	"context"
@@ -107,7 +107,7 @@ func (c *StreamConsumer) handlerBatch(ctx context.Context, msgs []redis.XMessage
 	return nil
 }
 
-func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data []map[string]string) error) {
+func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data []map[string]string) error) error {
 	var (
 		streams []redis.XMessage
 	)
@@ -125,7 +125,7 @@ func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data [
 
 	if err != nil {
 		log.Println("+++XPendingExt error:", err)
-		return
+		return err
 	}
 
 	for _, pending := range res {
@@ -146,6 +146,8 @@ func (c *StreamConsumer) RecoverPending(handler func(ctx context.Context, data [
 			}
 		}
 	}
+
+	return nil
 }
 
 func ValuesToString(msg redis.XMessage) map[string]string {

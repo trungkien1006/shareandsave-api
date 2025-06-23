@@ -31,3 +31,8 @@ func IsPast(dateStr string) (bool, error) {
 	// So sánh với thời gian hiện tại
 	return inputTime.Before(now), nil
 }
+
+func ParseToTime(input string) (time.Time, error) {
+	layout := "2006-01-02 15:04:05 -0700 MST"
+	return time.Parse(layout, input)
+}

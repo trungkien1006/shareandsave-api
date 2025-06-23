@@ -7,6 +7,7 @@ import (
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
+	"final_project/internal/domain/setting"
 	"final_project/internal/domain/user"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
@@ -27,9 +28,10 @@ type Seeder struct {
 	postService      *post.PostService
 	imInvoiceRepo    importinvoice.Repository
 	imInvoiceService *importinvoice.ImportInvoiceService
+	settingRepo      setting.Repository
 }
 
-func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService, imInvoiceRepo importinvoice.Repository, imInvoiceService *importinvoice.ImportInvoiceService) *Seeder {
+func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, userRepo user.Repository, categoryRepo category.Repository, postRepo post.Repository, postService *post.PostService, imInvoiceRepo importinvoice.Repository, imInvoiceService *importinvoice.ImportInvoiceService, settingRepo setting.Repository) *Seeder {
 	return &Seeder{
 		rolePerRepo:      rolePerRepo,
 		itemRepo:         itemRepo,
@@ -39,6 +41,7 @@ func NewSeeder(rolePerRepo rolepermission.Repository, itemRepo item.Repository, 
 		postService:      postService,
 		imInvoiceRepo:    imInvoiceRepo,
 		imInvoiceService: imInvoiceService,
+		settingRepo:      settingRepo,
 	}
 }
 
@@ -74,6 +77,59 @@ func (s *Seeder) Seed() error {
 	// if err := s.seedImportInvoice(); err != nil {
 	// 	return err
 	// }
+
+	return nil
+}
+
+func (s *Seeder) seedSetting() error {
+	ctx := context.Background()
+
+	fmt.Println("Start seed setting...")
+
+	// Load múi giờ Việt Nam
+	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	if err != nil {
+		panic(err)
+	}
+
+	// Lấy thời gian hiện tại theo múi giờ này
+	now := time.Now().In(loc)
+
+	startTime := time.Date(
+		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+		8, 0, 0, 0, // Giờ, phút, giây, nano giây
+		loc, // Múi giờ Việt Nam
+	)
+
+	endTime := time.Date(
+		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+		16, 0, 0, 0, // Giờ, phút, giây, nano giây
+		loc, // Múi giờ Việt Nam
+	)
+
+	var settings = []setting.Setting{
+		{
+			Key:   "appointmentPerDay",
+			Value: "50",
+		},
+		{
+			Key:   "startTime",
+			Value: startTime.String(),
+		},
+		{
+			Key:   "endTime",
+			Value: endTime.String(),
+		},
+	}
+
+	for _, value := range settings {
+		if err := s.settingRepo.Create(ctx, value); err != nil {
+			fmt.Println("Finish seed setting..." + err.Error())
+			return err
+		}
+	}
+
+	fmt.Println("Finish seed setting...")
 
 	return nil
 }

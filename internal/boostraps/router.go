@@ -1,6 +1,7 @@
 package boostraps
 
 import (
+	"context"
 	"final_project/internal/application/app/authapp"
 	"final_project/internal/application/app/categoryapp"
 	"final_project/internal/application/app/commentapp"
@@ -21,6 +22,7 @@ import (
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	redisapp "final_project/internal/infrastructure/redis"
 	"final_project/internal/infrastructure/seeder"
+	"final_project/internal/infrastructure/worker"
 	"final_project/internal/interface/http/handler"
 	middlewares "final_project/internal/interface/http/middleware"
 	workerHandler "final_project/internal/interface/worker/handler"
@@ -38,6 +40,8 @@ import (
 
 func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	r := gin.Default()
+
+	ctx := context.Background()
 
 	stream := "chatstream"
 	group := "chatgroup"
@@ -133,18 +137,19 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		postService,
 		importInvoiceRepo,
 		importInvoiceService,
+		settingRepo,
 	)
 
 	seed.Seed()
 	redisSeed.SeedInitialData()
 
 	//run chat worker
-	streamConsumer := redisapp.NewStreamConsumer(redisClient, stream, group, consumer)
+	streamConsumer := worker.NewStreamConsumer(redisClient, stream, group, consumer)
 	streamConsumer.CreateConsumerGroup()
 
 	chatHandler := workerHandler.NewChatHandler(streamConsumer, chatUC)
 
-	go chatHandler.Run()
+	go chatHandler.Run(ctx)
 
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
