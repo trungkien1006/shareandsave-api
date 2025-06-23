@@ -9,13 +9,8 @@ import (
 	"final_project/internal/domain/setting"
 	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
-	"final_project/internal/pkg/helpers"
-	"fmt"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/rickar/cal/v2"
 )
 
 type AppointmentCronJob struct {
@@ -37,27 +32,27 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 	// endTime           time.Time
 	)
 
-	settingValues := make(map[string]setting.Setting, 0)
+	// settingValues := make(map[string]setting.Setting, 0)
 
-	settingKeys := []string{
-		"appointmentPerMorning",
-		"appointmentPerAfternoon",
-		"startMorningTime",
-		"endMorningTime",
-		"startAfternoonTime",
-		"endAfternoonTime",
-	}
+	// settingKeys := []string{
+	// 	"appointmentPerMorning",
+	// 	"appointmentPerAfternoon",
+	// 	"startMorningTime",
+	// 	"endMorningTime",
+	// 	"startAfternoonTime",
+	// 	"endAfternoonTime",
+	// }
 
-	for _, value := range settingKeys {
-		var tempSetting setting.Setting
+	// for _, value := range settingKeys {
+	// 	var tempSetting setting.Setting
 
-		err := c.settingRepo.GetByKey(ctx, &tempSetting, value)
-		if err != nil {
-			return err
-		}
+	// 	err := c.settingRepo.GetByKey(ctx, &tempSetting, value)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		settingValues[value] = tempSetting
-	}
+	// 	settingValues[value] = tempSetting
+	// }
 
 	// appointmentPerDay, err = strconv.Atoi(appointmentPerDaySetting.Value)
 	// if err != nil {
@@ -79,35 +74,35 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 	// }
 
 	// Xử lí kiểm tra ngày hợp lệ
-	loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
-	today := time.Now().In(loc)
+	// loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
+	// today := time.Now().In(loc)
 
-	for i := 1; i < 15; i++ {
-		tomorrow := today.AddDate(0, 0, 1)
+	// for i := 1; i < 15; i++ {
+	// 	tomorrow := today.AddDate(0, 0, 1)
 
-		// Tạo lịch Việt Nam cho năm hiện tại
-		year := tomorrow.Year()
-		calendar := helpers.VietnamHolidayCalendar(year)
+	// 	// Tạo lịch Việt Nam cho năm hiện tại
+	// 	year := tomorrow.Year()
+	// 	calendar := helpers.VietnamHolidayCalendar(year)
 
-		// Thêm tên mô tả nếu cần
-		calendar.Name = "Lịch Việt Nam"
-		calendar.Description = "Lịch làm việc và nghỉ lễ theo Bộ luật Lao động"
+	// 	// Thêm tên mô tả nếu cần
+	// 	calendar.Name = "Lịch Việt Nam"
+	// 	calendar.Description = "Lịch làm việc và nghỉ lễ theo Bộ luật Lao động"
 
-		// Kiểm tra ngày hôm nay
-		actual, observed, _ := calendar.IsHoliday(tomorrow)
+	// 	// Kiểm tra ngày hôm nay
+	// 	actual, observed, _ := calendar.IsHoliday(tomorrow)
 
-		if calendar.IsWorkday(tomorrow) {
-			fmt.Println(tomorrow.String() + " là ngày làm việc")
+	// 	if calendar.IsWorkday(tomorrow) {
+	// 		fmt.Println(tomorrow.String() + " là ngày làm việc")
 
-			break
-		} else if cal.IsWeekend(tomorrow) {
-			fmt.Println(tomorrow.String() + " là ngày cuối tuần")
-		} else if actual || observed {
-			fmt.Println(tomorrow.String() + " là ngày lễ")
-		} else {
-			fmt.Println("📅 Không rõ trạng thái " + tomorrow.String())
-		}
-	}
+	// 		break
+	// 	} else if cal.IsWeekend(tomorrow) {
+	// 		fmt.Println(tomorrow.String() + " là ngày cuối tuần")
+	// 	} else if actual || observed {
+	// 		fmt.Println(tomorrow.String() + " là ngày lễ")
+	// 	} else {
+	// 		fmt.Println("📅 Không rõ trạng thái " + tomorrow.String())
+	// 	}
+	// }
 
 	if err := c.createAppointment(ctx); err != nil {
 		return err
