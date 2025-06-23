@@ -123,7 +123,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id AND author.deleted_at IS NULL").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id AND interest.deleted_at IS NULL").
 		Joins("LEFT JOIN post_item ON post_item.post_id = post.id").
-		Where("post.status = ? AND post.status = ?", enums.PostStatusApproved, enums.PostStatusSeal).
+		Where("post.status = ? OR post.status = ?", enums.PostStatusApproved, enums.PostStatusSeal).
 		Group(`
 			post.id, post.author_id, post.type, post.slug, post.title, post.description,
 			post.content, post.info, post.status, post.image, post.tag,
