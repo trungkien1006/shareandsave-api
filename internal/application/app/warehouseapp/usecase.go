@@ -129,40 +129,38 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 			return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
 		}
 
-		var itemClaims warehouse.ClaimRequestItem
-
 		if itemClaimsReqJson != "" {
+			var itemClaims warehouse.ClaimRequestItem
+
 			//Decode danh sách người dùng chờ nhận đồ
 			err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
 			if err != nil {
 				return errors.New("Có lỗi khi decode JSON: " + err.Error())
 			}
-		}
 
-		itemClaims.Users = append(itemClaims.Users, warehouse.ClaimRequestUser{
-			ID:       userID,
-			Quantity: value.Quantity,
-		})
+			// //Kiểm tra số lượng đồ còn lại
+			// currentQuantity, err := uc.repo.GetItemWarehouseQuantity(ctx, value.ItemID)
+			// if err != nil {
+			// 	return err
+			// }
 
-		//Kiểm tra số lượng đồ còn lại
-		currentQuantity, err := uc.repo.GetItemWarehouseQuantity(ctx, value.ItemID)
-		if err != nil {
-			return err
-		}
+			if value.Quantity > itemClaims.ItemQuantity {
+				return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(itemClaims.ItemQuantity)) + ", số lượng bạn muốn nhận là " + strconv.Itoa(int(value.Quantity)))
+			}
 
-		if currentQuantity < itemClaims.ItemQuantity {
-			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(currentQuantity)) + ", số lượng bạn muốn nhận là " + strconv.Itoa(int(itemClaims.ItemQuantity)))
-		}
+			itemClaims.Users = append(itemClaims.Users, warehouse.ClaimRequestUser{
+				ID:       userID,
+				Quantity: value.Quantity,
+			})
 
-		itemClaims.ItemQuantity += value.Quantity
+			newClaimReqJSON, err := json.Marshal(itemClaims)
+			if err != nil {
+				return errors.New("Có lỗi khi mã hóa JSON: " + err.Error())
+			}
 
-		newClaimReqJSON, err := json.Marshal(itemClaims)
-		if err != nil {
-			return errors.New("Có lỗi khi mã hóa JSON: " + err.Error())
-		}
-
-		if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(newClaimReqJSON)); err != nil {
-			return errors.New("Có lỗi khi lưu danh sách thành viên đang chờ nhận đồ: " + err.Error())
+			if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(newClaimReqJSON)); err != nil {
+				return errors.New("Có lỗi khi lưu danh sách thành viên đang chờ nhận đồ: " + err.Error())
+			}
 		}
 	}
 
