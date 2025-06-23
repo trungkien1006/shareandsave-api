@@ -44,7 +44,7 @@ func (uc *UseCase) GetAllItemWarehouse(ctx context.Context, warehouses *[]wareho
 	return totalPage, nil
 }
 
-func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter, userID uint) ([]uint, int, error) {
+func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter) ([]uint, int, error) {
 	totalPage, err := uc.repo.GetAllOldStockItem(ctx, items, filter)
 	if err != nil {
 		return nil, 0, err

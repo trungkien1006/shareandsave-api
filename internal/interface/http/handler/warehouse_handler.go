@@ -88,7 +88,6 @@ func (h *WarehouseHandler) GetAll(c *gin.Context) {
 
 // @Summary Get item warehouse
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
-// @Security BearerAuth
 // @Tags item warehouses
 // @Accept json
 // @Produce json
@@ -101,6 +100,7 @@ func (h *WarehouseHandler) GetAll(c *gin.Context) {
 // @Success 200 {object} warehousedto.FilterItemWarehouseResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
+// @Security BearerAuth
 // @Router /item-warehouses [get]
 func (h *WarehouseHandler) GetAllItem(c *gin.Context) {
 	var (
@@ -181,12 +181,6 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 		return
 	}
 
-	userID, err := helpers.GetUintFromContext(c, "userID")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
-		return
-	}
-
 	req.SetDefault()
 
 	domainFilter.Page = req.Page
@@ -196,7 +190,7 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 	domainFilter.Search = req.Search
 	domainFilter.CategoryID = req.CategoryID
 
-	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter, userID)
+	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter)
 	if err != nil {
 		c.JSON(
 			http.StatusNotFound,
@@ -227,13 +221,13 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 
 // @Summary Get my claim requests
 // @Description API lấy danh sách các món đồ đã đăng kí nhận
-// @Security BearerAuth
 // @Tags item warehouses
 // @Accept json
 // @Produce json
 // @Success 200 {object} warehousedto.GetMyClaimRequestResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
+// @Security BearerAuth
 // @Router /client/item-warehouses/claim-request [get]
 func (h *WarehouseHandler) GetMyClaimRequest(c *gin.Context) {
 	domainUserClaimReq := make([]warehouse.MyClaimRequest, 0)
