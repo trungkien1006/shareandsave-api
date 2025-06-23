@@ -249,7 +249,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 		return errors.New("Danh sách món đồ của thành viên đăng kí rỗng")
 	}
 
-	var userClaims []warehouse.ClaimRequestUser
+	var userClaims []warehouse.CreateClaimRequestItem
 
 	err = json.Unmarshal([]byte(userClaimsReqJson), &userClaims)
 	if err != nil {
@@ -257,7 +257,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	}
 
 	for key, value := range userClaims {
-		if value.ID == domain.ItemID {
+		if value.ItemID == domain.ItemID {
 			userClaims[key].Quantity = domain.NewQuatity
 
 			break
