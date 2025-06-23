@@ -362,7 +362,7 @@ func (r *PostRepoDB) Update(ctx context.Context, post *post.Post) error {
 	if err := r.db.Debug().
 		WithContext(ctx).
 		Model(&dbmodel.Post{}).
-		Omit("CreatedAt").
+		// Omit("CreatedAt").
 		Omit("DeleteAt").
 		Where("id = ?", post.ID).
 		Updates(&dbPost).Error; err != nil {
