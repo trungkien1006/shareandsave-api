@@ -135,7 +135,7 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 			//Decode danh sách người dùng chờ nhận đồ
 			err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
 			if err != nil {
-				return errors.New("Có lỗi khi decode JSON: " + err.Error())
+				return errors.New("Có lỗi khi decode JSON 1: " + err.Error())
 			}
 
 			// //Kiểm tra số lượng đồ còn lại
@@ -174,7 +174,7 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 
 	err = json.Unmarshal([]byte(userClaimsReqsJson), &userClaimReqs)
 	if err != nil {
-		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+		return errors.New("Có lỗi khi decode JSON 2: " + err.Error())
 	}
 
 	for _, value := range claimReqs {
