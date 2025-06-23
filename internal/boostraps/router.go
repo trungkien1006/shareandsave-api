@@ -146,11 +146,17 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//run chat worker
 	streamConsumer := worker.NewStreamConsumer(redisClient, stream, group, consumer)
 	streamConsumer.CreateConsumerGroup()
-
 	chatHandler := workerHandler.NewChatHandler(streamConsumer, chatUC)
 
 	go chatHandler.Run(ctx)
 
+	//run auto appointment worker
+	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo)
+	appointmentHandler := workerHandler.NewAppointmentHandler(nil, appointmentCronJob)
+
+	go appointmentHandler.Run(ctx)
+
+	//init router
 	r.Use(func(c *gin.Context) {
 		// Thêm header CORS cho mỗi request
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")                                       // Cho phép tất cả các origin

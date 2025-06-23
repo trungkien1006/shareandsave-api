@@ -3,17 +3,20 @@ package handler
 import (
 	"context"
 	"final_project/internal/application/worker/appointmentapp"
+	"final_project/internal/infrastructure/worker"
 	"log"
 	"time"
 )
 
 type AppointmentHandler struct {
-	uc *appointmentapp.UseCase
+	uc      *appointmentapp.UseCase
+	cronjob *worker.AppointmentCronJob
 }
 
-func NewAppointmentHandler(uc *appointmentapp.UseCase) *AppointmentHandler {
+func NewAppointmentHandler(uc *appointmentapp.UseCase, cronjob *worker.AppointmentCronJob) *AppointmentHandler {
 	return &AppointmentHandler{
-		uc: uc,
+		uc:      uc,
+		cronjob: cronjob,
 	}
 }
 
@@ -28,6 +31,7 @@ func (w *AppointmentHandler) Run(ctx context.Context) {
 		// w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
 		// 	return w.uc.CreateMessage(ctx, data)
 		// })
+		w.cronjob.ScheduleAppointment(ctx)
 
 		for {
 			select {
@@ -36,12 +40,7 @@ func (w *AppointmentHandler) Run(ctx context.Context) {
 				return
 			case <-ticker.C:
 				log.Println("Checking appointment...")
-				// err := w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
-				// 	return w.uc.CreateMessage(ctx, data)
-				// })
-				// if err != nil {
-				// 	log.Printf("RecoverPending error: %v\n", err)
-				// }
+				w.cronjob.ScheduleAppointment(ctx)
 			}
 		}
 	}()

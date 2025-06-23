@@ -109,6 +109,10 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 		}
 	}
 
+	if err := c.createAppointment(ctx); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -136,7 +140,7 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
 		itemID, _ := strconv.Atoi(itemIDStr)
 
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
-		for key, user := range itemClaimReq.Users {
+		for idx, user := range itemClaimReq.Users {
 			if itemClaimReq.ItemQuantity >= user.Quantity {
 				userClaimResult[user.ID] = append(userClaimResult[user.ID], appointment.AppointmentItem{
 					ItemID:          uint(itemID), //item id
@@ -144,7 +148,7 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
 					MissingQuantity: 0,
 				})
 
-				itemClaimReq.Users = append(itemClaimReq.Users[:key], itemClaimReq.Users[key+1:]...)
+				itemClaimReq.Users = append(itemClaimReq.Users[:idx], itemClaimReq.Users[idx+1:]...)
 
 				itemClaimReq.ItemQuantity -= user.Quantity
 			} else {
@@ -154,10 +158,20 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
 					MissingQuantity: int(user.Quantity - itemClaimReq.ItemQuantity),
 				})
 
-				itemClaimReq.Users[key].Quantity = 0
+				itemClaimReq.Users[idx].Quantity = 0
 
 				break
 			}
+		}
+
+		newItemClaimReqJSON, err := json.Marshal(itemClaimReq)
+		if err != nil {
+			return err
+		}
+
+		//Lưu danh sách người dùng đăng kí mới vào redis
+		if err := c.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+key, string(newItemClaimReqJSON)); err != nil {
+			return err
 		}
 	}
 
