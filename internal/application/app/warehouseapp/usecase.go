@@ -145,8 +145,6 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 		})
 
 		//Kiểm tra số lượng đồ còn lại
-		itemClaims.ItemQuantity += value.Quantity
-
 		currentQuantity, err := uc.repo.GetItemWarehouseQuantity(ctx, value.ItemID)
 		if err != nil {
 			return err
@@ -155,6 +153,8 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 		if currentQuantity < itemClaims.ItemQuantity {
 			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(currentQuantity)) + ", số lượng bạn muốn nhận là " + strconv.Itoa(int(itemClaims.ItemQuantity)))
 		}
+
+		itemClaims.ItemQuantity += value.Quantity
 
 		newClaimReqJSON, err := json.Marshal(itemClaims)
 		if err != nil {
