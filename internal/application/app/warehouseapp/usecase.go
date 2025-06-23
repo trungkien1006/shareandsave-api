@@ -257,7 +257,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	}
 
 	for key, value := range userClaims {
-		if value.ID == userID {
+		if value.ID == domain.ItemID {
 			userClaims[key].Quantity = domain.NewQuatity
 
 			break
