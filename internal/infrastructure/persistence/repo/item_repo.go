@@ -87,7 +87,7 @@ func (r *ItemRepoDB) GetAll(ctx context.Context, items *[]item.Item, req filter.
 func (r *ItemRepoDB) GetByID(ctx context.Context, item *item.Item, id uint) error {
 	var DBItem dbmodel.Item
 
-	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Preload("category").First(&DBItem, id).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Preload("Category").First(&DBItem, id).Error; err != nil {
 		return errors.New("Có lỗi khi truy suất đồ đạc theo id: " + err.Error())
 	}
 
