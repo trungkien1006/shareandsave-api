@@ -112,7 +112,11 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 }
 
 func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
-	var itemClaimReqs map[string]string
+	var (
+		itemClaimReqs map[string]string
+	)
+
+	newItemClaimReqs := make(map[string]warehouse.ClaimRequestItem, 0)
 
 	userClaimResult := make(map[uint][]appointment.AppointmentItem, 0)
 
@@ -159,7 +163,11 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
 			}
 		}
 
-		newItemClaimReqJSON, err := json.Marshal(itemClaimReq)
+		newItemClaimReqs[key] = itemClaimReq
+	}
+
+	for key, value := range newItemClaimReqs {
+		newItemClaimReqJSON, err := json.Marshal(value)
 		if err != nil {
 			return err
 		}
