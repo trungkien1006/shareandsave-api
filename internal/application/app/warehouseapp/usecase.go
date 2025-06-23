@@ -153,7 +153,7 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 		}
 
 		if currentQuantity < itemClaims.ItemQuantity {
-			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(currentQuantity)))
+			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(currentQuantity)) + ", số lượng bạn muốn nhận là " + strconv.Itoa(int(itemClaims.ItemQuantity)))
 		}
 
 		newClaimReqJSON, err := json.Marshal(itemClaims)
