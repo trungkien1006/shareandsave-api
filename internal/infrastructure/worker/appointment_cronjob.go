@@ -173,7 +173,7 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
 		}
 
 		//Lưu danh sách người dùng đăng kí mới vào redis
-		if err := c.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+key, string(newItemClaimReqJSON)); err != nil {
+		if err := c.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, key, string(newItemClaimReqJSON)); err != nil {
 			return err
 		}
 	}
