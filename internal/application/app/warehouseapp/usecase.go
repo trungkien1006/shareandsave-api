@@ -234,6 +234,8 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 			}
 
 			itemClaims.Users[key].Quantity = domain.NewQuatity
+
+			break
 		}
 	}
 
@@ -257,6 +259,8 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	for key, value := range userClaims {
 		if value.ID == userID {
 			userClaims[key].Quantity = domain.NewQuatity
+
+			break
 		}
 	}
 
@@ -309,10 +313,9 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 		return errors.New("Có lỗi khi decode JSON: " + err.Error())
 	}
 
-	for key, value := range itemClaims.Users {
-		if value.ID == userID {
-			itemClaims.Users = append(itemClaims.Users[:key], itemClaims.Users[key+1:]...)
-
+	for i := 0; i < len(itemClaims.Users); i++ {
+		if itemClaims.Users[i].ID == userID {
+			itemClaims.Users = append(itemClaims.Users[:i], itemClaims.Users[i+1:]...)
 			break
 		}
 	}
@@ -343,10 +346,9 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 		return errors.New("Có lỗi khi decode JSON: " + err.Error())
 	}
 
-	for key, value := range userClaims {
-		if value.ID == itemID {
-			userClaims = append(userClaims[:key], userClaims[key+1:]...)
-
+	for i := 0; i < len(userClaims); i++ {
+		if userClaims[i].ID == itemID {
+			userClaims = append(userClaims[:i], userClaims[i+1:]...)
 			break
 		}
 	}
