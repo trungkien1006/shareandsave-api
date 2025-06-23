@@ -278,7 +278,7 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 		return errors.New("Có lỗi khi lưu danh sách người dùng đăng kí đồ: " + err.Error())
 	}
 
-	if err := uc.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(domain.ItemID)), string(newUserClaimRequestJSON)); err != nil {
+	if err := uc.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)), string(newUserClaimRequestJSON)); err != nil {
 		return errors.New("Có lỗi khi lưu danh sách đồ người dùng đăng kí: " + err.Error())
 	}
 
