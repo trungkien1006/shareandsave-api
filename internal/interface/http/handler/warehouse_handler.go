@@ -366,17 +366,17 @@ func (h *WarehouseHandler) ModifyClaimRequest(c *gin.Context) {
 // @Tags item warehouses
 // @Accept json
 // @Produce json
-// @Param request body warehousedto.RemoveClaimRequestRequest true "Claim request remove payload"
+// @Param itemID path int true "ID item"
 // @Success 201 {object} warehousedto.RemoveClaimRequestResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
-// @Router /client/item-warehouses/claim-request [delete]
+// @Router /client/item-warehouses/claim-request/{itemID} [delete]
 func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
 	var (
 		req warehousedto.RemoveClaimRequestRequest
 	)
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(
 			http.StatusBadRequest,
 			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
@@ -404,6 +404,41 @@ func (h *WarehouseHandler) RemoveClaimRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, warehousedto.RemoveClaimRequestResponseWrapper{
 		Code:    http.StatusCreated,
 		Message: "Removed claim request successfully",
+		Data:    gin.H{},
+	})
+}
+
+// @Summary Remove claim request
+// @Description API xóa đăng kí nhận đồ
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Success 201 {object} warehousedto.RemoveClaimRequestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/item-warehouses/claim-request [delete]
+func (h *WarehouseHandler) RemoveAllClaimRequest(c *gin.Context) {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest),
+		)
+		return
+	}
+
+	if err := h.uc.RemoveAllClaimRequest(c.Request.Context(), userID); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, warehousedto.RemoveClaimRequestResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Removed all claim request successfully",
 		Data:    gin.H{},
 	})
 }

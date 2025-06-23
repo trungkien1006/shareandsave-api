@@ -1906,13 +1906,6 @@ definitions:
       quantity:
         type: integer
     type: object
-  warehousedto.RemoveClaimRequestRequest:
-    properties:
-      itemID:
-        type: integer
-    required:
-    - itemID
-    type: object
   warehousedto.RemoveClaimRequestResponseWrapper:
     properties:
       code:
@@ -2193,14 +2186,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: API hoàn tác đăng kí nhận đồ
-      parameters:
-      - description: Claim request remove payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/warehousedto.RemoveClaimRequestRequest'
+      description: API xóa đăng kí nhận đồ
       produces:
       - application/json
       responses:
@@ -2307,6 +2293,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Create claim request
+      tags:
+      - item warehouses
+  /client/item-warehouses/claim-request/{itemID}:
+    delete:
+      consumes:
+      - application/json
+      description: API hoàn tác đăng kí nhận đồ
+      parameters:
+      - description: ID item
+        in: path
+        name: itemID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/warehousedto.RemoveClaimRequestResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Remove claim request
       tags:
       - item warehouses
   /client/item-warehouses/old-stock:

@@ -285,6 +285,64 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	return nil
 }
 
+func (uc *UseCase) RemoveAllClaimRequest(ctx context.Context, userID uint) error {
+	userClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)))
+	if err != nil {
+		return errors.New("Có lỗi khi truy xuất danh sách món đồ thành viên đã đăng kí nhận: " + err.Error())
+	}
+
+	if userClaimsReqJson == "" {
+		return errors.New("Danh sách đăng kí đồ của thành viên rỗng")
+	}
+
+	var userClaims []warehouse.CreateClaimRequestItem
+
+	err = json.Unmarshal([]byte(userClaimsReqJson), &userClaims)
+	if err != nil {
+		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+	}
+
+	for _, value := range userClaims {
+		itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)))
+		if err != nil {
+			return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
+		}
+
+		if itemClaimsReqJson == "" {
+			return errors.New("Danh sách đăng kí đồ rỗng")
+		}
+
+		var itemClaims warehouse.ClaimRequestItem
+
+		err = json.Unmarshal([]byte(itemClaimsReqJson), &itemClaims)
+		if err != nil {
+			return errors.New("Có lỗi khi decode JSON: " + err.Error())
+		}
+
+		for i := 0; i < len(itemClaims.Users); i++ {
+			if itemClaims.Users[i].ID == userID {
+				itemClaims.Users = append(itemClaims.Users[:i], itemClaims.Users[i+1:]...)
+				break
+			}
+		}
+
+		newItemClaims, err := json.Marshal(itemClaims)
+		if err != nil {
+			return errors.New("Có lỗi khi encode JSON: " + err.Error())
+		}
+
+		if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)), string(newItemClaims)); err != nil {
+			return errors.New("Có lỗi khi xóa danh sách người dùng đăng kí món đồ: " + err.Error())
+		}
+	}
+
+	if err := uc.redisRepo.DeleteFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID))); err != nil {
+		return errors.New("Có lỗi khi xóa danh sách đăng kí món đồ của người dùng : " + err.Error())
+	}
+
+	return nil
+}
+
 func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID uint) error {
 	//Kiểm trả sản phẩm tồn tại và
 	itemExisted, err := uc.itemRepo.IsExist(ctx, itemID)

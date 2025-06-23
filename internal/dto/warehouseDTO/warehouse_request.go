@@ -95,5 +95,5 @@ type ModifyClaimRequestRequest struct {
 }
 
 type RemoveClaimRequestRequest struct {
-	ItemID uint `json:"itemID" binding:"required"`
+	ItemID uint `uri:"itemID" binding:"required"`
 }

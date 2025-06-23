@@ -423,7 +423,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "API hoàn tác đăng kí nhận đồ",
+                "description": "API xóa đăng kí nhận đồ",
                 "consumes": [
                     "application/json"
                 ],
@@ -434,17 +434,6 @@ const docTemplate = `{
                     "item warehouses"
                 ],
                 "summary": "Remove claim request",
-                "parameters": [
-                    {
-                        "description": "Claim request remove payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/warehousedto.RemoveClaimRequestRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -499,6 +488,55 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/warehousedto.ModifyClaimRequestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/client/item-warehouses/claim-request/{itemID}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API hoàn tác đăng kí nhận đồ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Remove claim request",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID item",
+                        "name": "itemID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.RemoveClaimRequestResponseWrapper"
                         }
                     },
                     "400": {
@@ -6041,17 +6079,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
-        "warehousedto.RemoveClaimRequestRequest": {
-            "type": "object",
-            "required": [
-                "itemID"
-            ],
-            "properties": {
-                "itemID": {
                     "type": "integer"
                 }
             }
