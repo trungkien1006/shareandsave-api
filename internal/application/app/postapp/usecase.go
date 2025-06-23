@@ -11,6 +11,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -250,7 +251,7 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		} else {
 			remaining := repostCooldown - time.Since(updatePost.CreatedAt)
 			// Chưa đủ thời gian để repost
-			return errors.New("Bạn chỉ có thể repost sau " + string(remaining.Truncate(time.Minute)) + " nữa")
+			return errors.New("Bạn chỉ có thể repost sau " + strconv.Itoa(int(remaining.Truncate(time.Minute))) + " nữa")
 		}
 	}
 

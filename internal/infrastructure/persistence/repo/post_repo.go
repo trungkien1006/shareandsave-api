@@ -6,6 +6,7 @@ import (
 	"errors"
 	"final_project/internal/domain/post"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 	"math"
 
 	"github.com/iancoleman/strcase"
@@ -122,7 +123,7 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 		Joins("LEFT JOIN user AS author ON author.id = post.author_id AND author.deleted_at IS NULL").
 		Joins("LEFT JOIN interest ON interest.post_id = post.id AND interest.deleted_at IS NULL").
 		Joins("LEFT JOIN post_item ON post_item.post_id = post.id").
-		Where("post.status = 3").
+		Where("post.status = ? AND post.status = ?", enums.PostStatusApproved, enums.PostStatusSeal).
 		Group(`
 			post.id, post.author_id, post.type, post.slug, post.title, post.description,
 			post.content, post.info, post.status, post.image, post.tag,

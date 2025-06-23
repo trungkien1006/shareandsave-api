@@ -29,7 +29,8 @@ func GormConnection() *gorm.DB {
 	fmt.Println("MYSQL_PASSWORD:", devPassword)
 	fmt.Println("MYSQL_NAME:", devDbName)
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Asia%%2FHo_Chi_Minh",
 		devUser,
 		devPassword,
 		devHostName,
