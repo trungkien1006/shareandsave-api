@@ -76,7 +76,7 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 }
 
 func (uc *UseCase) GetMyClaimRequest(ctx context.Context, claimRequests *[]warehouse.MyClaimRequest, userID uint) error {
-	userClaimRequestJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, strconv.Itoa(int(userID)))
+	userClaimRequestJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)))
 	if err != nil {
 		return errors.New("Có lỗi khi truy xuất danh sách đồ đã đăng kí của thành viên: " + err.Error())
 	}
