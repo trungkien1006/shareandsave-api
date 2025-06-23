@@ -227,20 +227,15 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 	}
 
 	//Cập nhật số lượng món đồ ở itemClaimRequest
-	oldQuantityOfItem := 0
-
 	for key, value := range itemClaims.Users {
 		if value.ID == userID {
 			if domain.NewQuatity <= 0 && domain.NewQuatity > itemClaims.ItemQuantity {
 				return errors.New("Số lượng đồ đạc bạn đăng kí nhận không hợp lệ: > số lượng có sẵn hoặc <= 0")
 			}
 
-			oldQuantityOfItem = int(value.Quantity)
 			itemClaims.Users[key].Quantity = domain.NewQuatity
 		}
 	}
-
-	itemClaims.ItemQuantity = itemClaims.ItemQuantity - uint(oldQuantityOfItem) + domain.NewQuatity
 
 	//Cập nhật số lượng món đồ ở userClaimRequest
 	userClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)))
@@ -316,8 +311,6 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 
 	for key, value := range itemClaims.Users {
 		if value.ID == userID {
-			itemClaims.ItemQuantity += value.Quantity
-
 			itemClaims.Users = append(itemClaims.Users[:key], itemClaims.Users[key+1:]...)
 
 			break
