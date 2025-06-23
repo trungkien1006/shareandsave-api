@@ -339,7 +339,7 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 		return errors.New("Danh sách đăng kí đồ của thành viên rỗng")
 	}
 
-	var userClaims []warehouse.ClaimRequestUser
+	var userClaims []warehouse.CreateClaimRequestItem
 
 	err = json.Unmarshal([]byte(userClaimsReqJson), &userClaims)
 	if err != nil {
@@ -347,7 +347,7 @@ func (uc *UseCase) RemoveClaimRequest(ctx context.Context, itemID uint, userID u
 	}
 
 	for i := 0; i < len(userClaims); i++ {
-		if userClaims[i].ID == itemID {
+		if userClaims[i].ItemID == itemID {
 			userClaims = append(userClaims[:i], userClaims[i+1:]...)
 			break
 		}
