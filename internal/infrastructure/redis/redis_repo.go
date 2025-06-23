@@ -82,3 +82,11 @@ func (r *RedisRepo) GetRedisHashLength(ctx context.Context, hashKey string) (int
 	}
 	return length, nil
 }
+
+func (r *RedisRepo) GetAllFromRedisHash(ctx context.Context, hashKey string) (map[string]string, error) {
+	result, err := r.client.HGetAll(ctx, hashKey).Result()
+	if err != nil {
+		return nil, errors.New("Có lỗi khi lấy tất cả dữ liệu từ redis hash: " + err.Error())
+	}
+	return result, nil
+}

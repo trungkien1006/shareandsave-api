@@ -2,16 +2,31 @@ package worker
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"final_project/internal/domain/appointment"
+	"final_project/internal/domain/redis"
 	"final_project/internal/domain/setting"
+	"final_project/internal/domain/warehouse"
+	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/rickar/cal/v2"
 )
 
 type AppointmentCronJob struct {
 	settingRepo setting.Repository
+	redisRepo   redis.Repository
 }
 
-func NewAppointmentCronJob(settingRepo setting.Repository) *AppointmentCronJob {
+func NewAppointmentCronJob(settingRepo setting.Repository, redisRepo redis.Repository) *AppointmentCronJob {
 	return &AppointmentCronJob{
 		settingRepo: settingRepo,
+		redisRepo:   redisRepo,
 	}
 }
 
@@ -63,37 +78,148 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 	// 	fmt.Println("Kết quả:", endTime.String())
 	// }
 
-	//Xử lí kiểm tra ngày hợp lệ
-	// loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
-	// t := time.Now().In(loc)
+	// Xử lí kiểm tra ngày hợp lệ
+	loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
+	today := time.Now().In(loc)
 
-	// Tạo BusinessCalendar
-	// c := cal.NewBusinessCalendar()
-	// c.Name = "MyCompany Calendar"
-	// c.Description = "Lịch làm việc và nghỉ lễ"
+	for i := 1; i < 15; i++ {
+		tomorrow := today.AddDate(0, 0, 1)
 
-	// // Thêm ngày lễ (ở đây lấy ví dụ Mỹ, bạn có thể tự định nghĩa ngày lễ VN)
-	// c.AddHoliday(
-	// 	us.NewYear,
-	// 	us.MemorialDay,
-	// 	us.IndependenceDay,
-	// 	us.LaborDay,
-	// 	us.ThanksgivingDay,
-	// 	us.ChristmasDay,
-	// )
+		// Tạo lịch Việt Nam cho năm hiện tại
+		year := tomorrow.Year()
+		calendar := helpers.VietnamHolidayCalendar(year)
 
-	// // Thiết lập tuần làm việc (thứ 2–6)
-	// c.SetWorkday(time.Saturday, false)
-	// c.SetWorkday(time.Sunday, false)
+		// Thêm tên mô tả nếu cần
+		calendar.Name = "Lịch Việt Nam"
+		calendar.Description = "Lịch làm việc và nghỉ lễ theo Bộ luật Lao động"
 
-	// // Kiểm tra ngày hôm nay có phải là ngày làm việc?
-	// if c.IsWorkday(t) {
-	// 	fmt.Println("✅ Hôm nay là ngày làm việc")
-	// } else if cal.IsWeekend(t) {
-	// 	fmt.Println("⛱ Cuối tuần")
-	// } else if c.IsHoliday(t) {
-	// 	fmt.Println("🎉 Hôm nay là ngày lễ")
-	// }
+		// Kiểm tra ngày hôm nay
+		actual, observed, _ := calendar.IsHoliday(tomorrow)
+
+		if calendar.IsWorkday(tomorrow) {
+			fmt.Println(tomorrow.String() + " là ngày làm việc")
+
+			break
+		} else if cal.IsWeekend(tomorrow) {
+			fmt.Println(tomorrow.String() + " là ngày cuối tuần")
+		} else if actual || observed {
+			fmt.Println(tomorrow.String() + " là ngày lễ")
+		} else {
+			fmt.Println("📅 Không rõ trạng thái " + tomorrow.String())
+		}
+	}
+
+	return nil
+}
+
+func (c *AppointmentCronJob) createAppointment(ctx context.Context) error {
+	var itemClaimReqs map[string]string
+
+	userClaimResult := make(map[uint][]appointment.AppointmentItem, 0)
+
+	itemClaimReqs, err := c.redisRepo.GetAllFromRedisHash(ctx, enums.ItemClaimRequest)
+	if err != nil {
+		return err
+	}
+
+	//Lọc qua danh sách các item
+	for key, value := range itemClaimReqs {
+		var itemClaimReq warehouse.ClaimRequestItem
+
+		err := json.Unmarshal([]byte(value), &itemClaimReq)
+		if err != nil {
+			return err
+		}
+
+		itemIDStr := strings.Split(key, ":")[1]
+
+		itemID, _ := strconv.Atoi(itemIDStr)
+
+		//Lọc qua từng user đã đăng kí nhận đồ trong item
+		for key, user := range itemClaimReq.Users {
+			if itemClaimReq.ItemQuantity >= user.Quantity {
+				userClaimResult[user.ID] = append(userClaimResult[user.ID], appointment.AppointmentItem{
+					ItemID:          uint(itemID), //item id
+					ActualQuantity:  int(user.Quantity),
+					MissingQuantity: 0,
+				})
+
+				itemClaimReq.Users = append(itemClaimReq.Users[:key], itemClaimReq.Users[key+1:]...)
+
+				itemClaimReq.ItemQuantity -= user.Quantity
+			} else {
+				userClaimResult[user.ID] = append(userClaimResult[user.ID], appointment.AppointmentItem{
+					ItemID:          uint(itemID), //item id
+					ActualQuantity:  int(itemClaimReq.ItemQuantity),
+					MissingQuantity: int(user.Quantity - itemClaimReq.ItemQuantity),
+				})
+
+				itemClaimReq.Users[key].Quantity = 0
+
+				break
+			}
+		}
+	}
+
+	//Lọc qua danh sách các user đã được thông qua đăng kí nhận đồ và cập nhật số lượng đồ
+	for key, value := range userClaimResult {
+		//Lấy ra danh sách các item của user đã đăng kí dưới dạng JSON
+		userClaimReqJSON, err := c.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)))
+		if err != nil {
+			return err
+		}
+
+		if userClaimReqJSON == "" {
+			break
+		}
+
+		var (
+			userClaimReqs []warehouse.CreateClaimRequestItem
+		)
+
+		userClaimReqMap := make(map[uint]uint, 0)
+
+		//Decode JSON thành mảng các món đồ đã đăng kí của user
+		err = json.Unmarshal([]byte(userClaimReqJSON), &userClaimReqs)
+		if err != nil {
+			return errors.New("Có lỗi khi thực hiện decode JSON: " + err.Error())
+		}
+
+		//Lặp qua danh sách các món đồ user đã đăng kí --> Map thành danh sách số lượng các sản phẩm user đã xin, key là id của item
+		for _, user := range userClaimReqs {
+			userClaimReqMap[user.ItemID] = user.Quantity
+		}
+
+		//Lặp qua danh sách các item_appointment và cập nhật lại số lượng trong map số lượng hiện tại
+		for _, item := range value {
+			if item.MissingQuantity == 0 {
+				delete(userClaimReqMap, item.ItemID)
+			} else {
+				userClaimReqMap[item.ItemID] = uint(item.MissingQuantity)
+			}
+		}
+
+		currentUserClaimReqs := make([]warehouse.CreateClaimRequestItem, 0)
+
+		//Lặp qua map và lưu lại danh sách các món đồ user chưa được nhận
+		for idx, quantity := range userClaimReqMap {
+			currentUserClaimReqs = append(currentUserClaimReqs, warehouse.CreateClaimRequestItem{
+				ItemID:   idx,
+				Quantity: quantity,
+			})
+		}
+
+		//Encode mảng các món đồ của user đăng kí hiện tại(sau khi tính toán)
+		currentUserClaimReqsJSON, err := json.Marshal(currentUserClaimReqs)
+		if err != nil {
+			return errors.New("Có lỗi khi thực hiện encode JSON: " + err.Error())
+		}
+
+		//Lưu vào redis
+		if err := c.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)), string(currentUserClaimReqsJSON)); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

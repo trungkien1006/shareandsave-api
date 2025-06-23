@@ -124,7 +124,7 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 		}
 
 		//Lưu người dùng vào hàng đợi của từng món đồ
-		itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(value.ItemID)))
+		itemClaimsReqJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)))
 		if err != nil {
 			return errors.New("Có lỗi khi truy xuất danh sách người dùng đăng kí món đồ: " + err.Error())
 		}
@@ -167,9 +167,28 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 	}
 
 	//Lưu danh sách đăng kí nhận đồ của user vào key userClaimRequest
-	claimReqsJson, err := json.Marshal(claimReqs)
+	userClaimsReqsJson, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)))
 	if err != nil {
-		return errors.New("Có lỗi khi mã hóa JSON: " + err.Error())
+		return errors.New("Có lỗi khi truy xuất danh sách đăng kí món đồ của người dùng: " + err.Error())
+	}
+
+	var userClaimReqs []warehouse.CreateClaimRequestItem
+
+	err = json.Unmarshal([]byte(userClaimsReqsJson), &userClaimReqs)
+	if err != nil {
+		return errors.New("Có lỗi khi decode JSON: " + err.Error())
+	}
+
+	for _, value := range claimReqs {
+		userClaimReqs = append(userClaimReqs, warehouse.CreateClaimRequestItem{
+			ItemID:   value.ItemID,
+			Quantity: value.Quantity,
+		})
+	}
+
+	claimReqsJson, err := json.Marshal(userClaimReqs)
+	if err != nil {
+		return errors.New("Có lỗi khi encode JSON: " + err.Error())
 	}
 
 	if err := uc.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(userID)), string(claimReqsJson)); err != nil {
