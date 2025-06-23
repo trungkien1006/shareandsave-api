@@ -54,6 +54,14 @@ type ItemOldStock struct {
 	ClaimItemRequests uint
 }
 
+type MyClaimRequest struct {
+	ItemID       uint
+	ItemName     string
+	ItemImage    string
+	CategoryName string
+	Quantity     uint
+}
+
 type ClaimRequestItem struct {
 	ItemQuantity uint
 	Users        []ClaimRequestUser

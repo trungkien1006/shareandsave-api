@@ -76,3 +76,13 @@ type FilterItemOldStockResponse struct {
 	ItemOldStocks []ItemOldStockDTO `json:"itemOldStocks"`
 	TotalPage     int               `json:"totalPage"`
 }
+
+type GetMyClaimRequestResponseWrapper struct {
+	Code    int                       `json:"code"`
+	Message string                    `json:"message"`
+	Data    GetMyClaimRequestResponse `json:"data"`
+}
+
+type GetMyClaimRequestResponse struct {
+	ClaimRequests []MyClaimRequestDTO `json:"claimRequests"`
+}

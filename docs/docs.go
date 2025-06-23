@@ -327,6 +327,44 @@ const docTemplate = `{
             }
         },
         "/client/item-warehouses/claim-request": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy danh sách các món đồ đã đăng kí nhận",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item warehouses"
+                ],
+                "summary": "Get my claim requests",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/warehousedto.GetMyClaimRequestResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -3438,7 +3476,7 @@ const docTemplate = `{
                 4
             ],
             "x-enum-comments": {
-                "PostStatusAll": "0 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
+                "PostStatusAll": "0",
                 "PostStatusApproved": "3 Admin duyệt",
                 "PostStatusPending": "1 Người dùng đã gửi yêu cầu duyệt bài và đang chờ xử lý",
                 "PostStatusRejected": "2 Admin đã từ chối",
@@ -5117,6 +5155,9 @@ const docTemplate = `{
                 "avatar": {
                     "type": "string"
                 },
+                "createdAt": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -5197,6 +5238,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "avatar": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "email": {
@@ -5852,6 +5896,31 @@ const docTemplate = `{
                 }
             }
         },
+        "warehousedto.GetMyClaimRequestResponse": {
+            "type": "object",
+            "properties": {
+                "claimRequests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/warehousedto.MyClaimRequestDTO"
+                    }
+                }
+            }
+        },
+        "warehousedto.GetMyClaimRequestResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/warehousedto.GetMyClaimRequestResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "warehousedto.GetWarehouseByIDResponse": {
             "type": "object",
             "properties": {
@@ -5953,6 +6022,26 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "warehousedto.MyClaimRequestDTO": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemImage": {
+                    "type": "string"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },

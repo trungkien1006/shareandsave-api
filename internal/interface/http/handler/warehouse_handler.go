@@ -181,6 +181,12 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 		return
 	}
 
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
 	req.SetDefault()
 
 	domainFilter.Page = req.Page
@@ -190,7 +196,7 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 	domainFilter.Search = req.Search
 	domainFilter.CategoryID = req.CategoryID
 
-	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter)
+	claimRequestCounts, totalPage, err := h.uc.GetAllItemOldStock(c.Request.Context(), &domainItems, domainFilter, userID)
 	if err != nil {
 		c.JSON(
 			http.StatusNotFound,
@@ -215,6 +221,48 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 		Data: warehousedto.FilterItemOldStockResponse{
 			ItemOldStocks: itemOldStockDTORes,
 			TotalPage:     totalPage,
+		},
+	})
+}
+
+// @Summary Get my claim requests
+// @Description API lấy danh sách các món đồ đã đăng kí nhận
+// @Security BearerAuth
+// @Tags item warehouses
+// @Accept json
+// @Produce json
+// @Success 200 {object} warehousedto.GetMyClaimRequestResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/item-warehouses/claim-request [get]
+func (h *WarehouseHandler) GetMyClaimRequest(c *gin.Context) {
+	domainUserClaimReq := make([]warehouse.MyClaimRequest, 0)
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.GetMyClaimRequest(c.Request.Context(), &domainUserClaimReq, userID); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound),
+		)
+		return
+	}
+
+	userClaimsRequestDTORes := make([]warehousedto.MyClaimRequestDTO, 0)
+
+	for _, value := range domainUserClaimReq {
+		userClaimsRequestDTORes = append(userClaimsRequestDTORes, warehousedto.MyClaimRequestDomainToDTO(value))
+	}
+
+	c.JSON(http.StatusOK, warehousedto.GetMyClaimRequestResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched claim requests successfully",
+		Data: warehousedto.GetMyClaimRequestResponse{
+			ClaimRequests: userClaimsRequestDTORes,
 		},
 	})
 }

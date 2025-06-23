@@ -106,3 +106,14 @@ func CreateClaimRequestDTOToDomain(dto CreateClaimRequestRequest) warehouse.Crea
 		Quantity: dto.Quantity,
 	}
 }
+
+// Domain to DTO
+func MyClaimRequestDomainToDTO(domain warehouse.MyClaimRequest) MyClaimRequestDTO {
+	return MyClaimRequestDTO{
+		ItemID:       domain.ItemID,
+		ItemName:     domain.ItemName,
+		ItemImage:    domain.ItemImage,
+		CategoryName: domain.CategoryName,
+		Quantity:     domain.Quantity,
+	}
+}

@@ -44,7 +44,7 @@ func (uc *UseCase) GetAllItemWarehouse(ctx context.Context, warehouses *[]wareho
 	return totalPage, nil
 }
 
-func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter) ([]uint, int, error) {
+func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter, userID uint) ([]uint, int, error) {
 	totalPage, err := uc.repo.GetAllOldStockItem(ctx, items, filter)
 	if err != nil {
 		return nil, 0, err
@@ -73,6 +73,42 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 	}
 
 	return claimRequestCounts, totalPage, nil
+}
+
+func (uc *UseCase) GetMyClaimRequest(ctx context.Context, claimRequests *[]warehouse.MyClaimRequest, userID uint) error {
+	userClaimRequestJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, strconv.Itoa(int(userID)))
+	if err != nil {
+		return errors.New("Có lỗi khi truy xuất danh sách đồ đã đăng kí của thành viên: " + err.Error())
+	}
+
+	if userClaimRequestJSON != "" {
+		var (
+			userClaimRequests []warehouse.MyClaimRequest
+		)
+
+		err = json.Unmarshal([]byte(userClaimRequestJSON), &userClaimRequests)
+		if err != nil {
+			return errors.New("Có lỗi khi giải mã JSON: " + err.Error())
+		}
+
+		for _, value := range userClaimRequests {
+			var item item.Item
+
+			if err := uc.itemRepo.GetByID(ctx, &item, value.ItemID); err != nil {
+				return err
+			}
+
+			*claimRequests = append(*claimRequests, warehouse.MyClaimRequest{
+				ItemID:       item.ID,
+				ItemName:     item.Name,
+				ItemImage:    item.Image,
+				CategoryName: item.CategoryName,
+				Quantity:     value.Quantity,
+			})
+		}
+	}
+
+	return nil
 }
 
 func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse.CreateClaimRequestItem, userID uint) error {

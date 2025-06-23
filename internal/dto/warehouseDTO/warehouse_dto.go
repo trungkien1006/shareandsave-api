@@ -53,3 +53,11 @@ type ItemOldStockDTO struct {
 	Quantity          uint   `json:"quantity"`
 	ClaimItemRequests uint   `json:"claim_item_requests"`
 }
+
+type MyClaimRequestDTO struct {
+	ItemID       uint   `json:"itemID"`
+	ItemName     string `json:"itemName"`
+	ItemImage    string `json:"itemImage"`
+	CategoryName string `json:"categoryName"`
+	Quantity     uint   `json:"quantity"`
+}
