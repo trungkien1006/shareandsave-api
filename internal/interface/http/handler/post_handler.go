@@ -417,5 +417,6 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Updated post successfully",
+		"data":    gin.H{},
 	})
 }
