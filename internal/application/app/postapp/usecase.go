@@ -129,21 +129,15 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 		}
 
 		if oldItem.Image == "" {
-			strBase64Image, err := helpers.ProcessImageBase64(item.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+			domainPost.OldItems[key].Image = item.Image
+		} else {
+			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 
 			if err != nil {
 				return err
 			}
 
 			domainPost.OldItems[key].Image = strBase64Image
-		} else {
-			// strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
-
-			// if err != nil {
-			// 	return err
-			// }
-
-			domainPost.OldItems[key].Image = oldItem.Image
 		}
 
 		itemIDs[oldItem.ItemID] = oldItem.ItemID
