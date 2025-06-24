@@ -2746,7 +2746,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "patch": {
+            "delete": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -2777,6 +2777,56 @@ const docTemplate = `{
                         "description": "Deleted post successfully",
                         "schema": {
                             "$ref": "#/definitions/postdto.DeletePostResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API cập nhật bài viết kết hợp với patch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update posts",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID post",
+                        "name": "postID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update post info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/postdto.UpdatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated post successfully",
+                        "schema": {
+                            "$ref": "#/definitions/postdto.UpdatePostResponseWrapper"
                         }
                     },
                     "400": {

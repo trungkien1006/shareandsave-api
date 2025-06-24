@@ -3763,6 +3763,32 @@ paths:
       tags:
       - posts
   /posts/{postID}:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa bài viết
+      parameters:
+      - description: ID post
+        in: path
+        name: postID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted post successfully
+          schema:
+            $ref: '#/definitions/postdto.DeletePostResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Delete posts
+      tags:
+      - posts
     get:
       consumes:
       - application/json
@@ -3794,27 +3820,33 @@ paths:
     patch:
       consumes:
       - application/json
-      description: API xóa bài viết
+      description: API cập nhật bài viết kết hợp với patch
       parameters:
       - description: ID post
         in: path
         name: postID
         required: true
         type: integer
+      - description: Update post info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/postdto.UpdatePostRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Deleted post successfully
+          description: Updated post successfully
           schema:
-            $ref: '#/definitions/postdto.DeletePostResponseWrapper'
+            $ref: '#/definitions/postdto.UpdatePostResponseWrapper'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
       security:
       - BearerAuth: []
-      summary: Delete posts
+      summary: Update posts
       tags:
       - posts
   /posts/my-post:

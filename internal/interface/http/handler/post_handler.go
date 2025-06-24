@@ -431,7 +431,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 // @Param postID path int true "ID post"
 // @Success 200 {object} postdto.DeletePostResponseWrapper "Deleted post successfully"
 // @Failure 400 {object} enums.AppError
-// @Router /posts/{postID} [patch]
+// @Router /posts/{postID} [delete]
 func (h *PostHandler) DeletePost(c *gin.Context) {
 	postID, err := strconv.Atoi(c.Param("postID"))
 	if err != nil {
