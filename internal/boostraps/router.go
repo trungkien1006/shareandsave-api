@@ -269,6 +269,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//appointment API
 		v1.GET("/appointments", middlewares.AuthGuard, appointmentHandler.GetAll)
 
+		//client appointment API
+		v1.GET("/client/appointments", middlewares.AuthGuard, appointmentHandler.ClientGetAll)
+
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)
 		v1.PATCH("/messages/:interestID", middlewares.AuthGuard, commentHandler.UpdateReadMessage)
@@ -278,14 +281,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.GetByKey)
 		v1.PATCH("/settings/:settingKey", middlewares.AuthGuard, settingHandler.Update)
 
-		//auth API
-		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)
+		//client auth API
 		v1.GET("/client/get-me", middlewares.AuthGuard, authHandler.ClientGetMe)
 		v1.POST("/client/login", authHandler.UserLogin)
-		v1.POST("/login", authHandler.AdminLogin)
-		v1.POST("/refresh-token", authHandler.GetAccessToken)
-		v1.POST("/logout", middlewares.AuthGuard, authHandler.AdminLogout)
 		v1.POST("/client/logout", middlewares.AuthGuard, authHandler.ClientLogout)
+
+		//auth API
+		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)
+		v1.POST("/login", authHandler.AdminLogin)
+		v1.POST("/logout", middlewares.AuthGuard, authHandler.AdminLogout)
+		v1.POST("/refresh-token", authHandler.GetAccessToken)
 	}
 
 	// r.Static("/public/images", "./public/images")
