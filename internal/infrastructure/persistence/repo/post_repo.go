@@ -390,6 +390,39 @@ func (r *PostRepoDB) IsExist(ctx context.Context, postID uint) (bool, error) {
 	return count > 0, nil
 }
 
+func (r *PostRepoDB) Delete(ctx context.Context, postID uint) error {
+	var transactionCount int64
+
+	tx := r.db.Debug().WithContext(ctx).Begin()
+
+	if err := tx.
+		Table("interest as i").
+		Select("COUNT(t.id) as transaction_count").
+		Where("i.post_id = ?", postID).
+		Joins("JOIN transaction as t ON t.interest_id = i.id").
+		Scan(&transactionCount).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi kiểm tra giao dịch tồn tại trong bài viết: " + err.Error())
+	}
+
+	if transactionCount > 0 {
+		tx.Rollback()
+		return errors.New("Bài viết có phát sinh giao dịch, không thể xóa")
+	}
+
+	if err := tx.Where("id = ?", postID).Delete(&dbmodel.Post{}).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi xóa bài viết: " + err.Error())
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+
+	return nil
+}
+
 // func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postItemID uint, quantity int) error {
 
 // 	return nil

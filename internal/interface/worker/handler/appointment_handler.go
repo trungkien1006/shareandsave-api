@@ -22,7 +22,7 @@ func NewAppointmentHandler(uc *appointmentapp.UseCase, cronjob *worker.Appointme
 }
 
 func (w *AppointmentHandler) Run(ctx context.Context) {
-	w.cronjob.ScheduleAppointment(ctx)
+	// w.cronjob.ScheduleAppointment(ctx)
 	// Chạy goroutine scan pending định kỳ
 	c := cron.New()
 

@@ -48,3 +48,9 @@ type GetDetailPostResponseWrapper struct {
 	Message string                `json:"message"`
 	Data    GetDetailPostResponse `json:"data"`
 }
+
+type DeletePostResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

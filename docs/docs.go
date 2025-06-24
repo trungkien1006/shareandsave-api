@@ -2747,7 +2747,12 @@ const docTemplate = `{
                 }
             },
             "patch": {
-                "description": "API cập nhật bài viết kết hợp với patch",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API xóa bài viết",
                 "consumes": [
                     "application/json"
                 ],
@@ -2757,7 +2762,7 @@ const docTemplate = `{
                 "tags": [
                     "posts"
                 ],
-                "summary": "Update posts",
+                "summary": "Delete posts",
                 "parameters": [
                     {
                         "type": "integer",
@@ -2765,22 +2770,13 @@ const docTemplate = `{
                         "name": "postID",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Update post info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/postdto.UpdatePostRequest"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated post successfully",
+                        "description": "Deleted post successfully",
                         "schema": {
-                            "$ref": "#/definitions/postdto.UpdatePostResponseWrapper"
+                            "$ref": "#/definitions/postdto.DeletePostResponseWrapper"
                         }
                     },
                     "400": {
@@ -4866,6 +4862,18 @@ const docTemplate = `{
             }
         },
         "postdto.CreatePostResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "postdto.DeletePostResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {

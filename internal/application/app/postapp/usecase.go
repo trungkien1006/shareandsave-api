@@ -283,3 +283,20 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 
 	return nil
 }
+
+func (uc *UseCase) DeletePost(ctx context.Context, postID uint) error {
+	isExisted, err := uc.repo.IsExist(ctx, postID)
+	if err != nil {
+		return err
+	}
+
+	if !isExisted {
+		return errors.New("Id bài viết không tồn tại")
+	}
+
+	if err := uc.repo.Delete(ctx, postID); err != nil {
+		return err
+	}
+
+	return nil
+}

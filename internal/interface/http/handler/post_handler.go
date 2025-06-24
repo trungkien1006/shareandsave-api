@@ -109,7 +109,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 // @Success 200 {object} postdto.GetPostResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /client/posts [get]
-func (h *PostHandler) GetAllPost(c *gin.Context) {
+func (h *PostHandler) ClientGetAllPost(c *gin.Context) {
 	var (
 		req       postdto.GetPostRequest
 		posts     []post.PostWithCount
@@ -345,7 +345,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	userID, err := helpers.GetUintFromContext(c, "userID")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
 
@@ -372,6 +372,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 // @Summary Update posts
 // @Description API cập nhật bài viết kết hợp với patch
+// @Security BearerAuth
 // @Tags posts
 // @Accept json
 // @Produce json
@@ -417,6 +418,38 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Updated post successfully",
+		"data":    gin.H{},
+	})
+}
+
+// @Summary Delete posts
+// @Description API xóa bài viết
+// @Security BearerAuth
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param postID path int true "ID post"
+// @Success 200 {object} postdto.DeletePostResponseWrapper "Deleted post successfully"
+// @Failure 400 {object} enums.AppError
+// @Router /posts/{postID} [patch]
+func (h *PostHandler) DeletePost(c *gin.Context) {
+	postID, err := strconv.Atoi(c.Param("postID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.DeletePost(c.Request.Context(), uint(postID)); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "Deleted post successfully",
 		"data":    gin.H{},
 	})
 }

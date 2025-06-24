@@ -947,6 +947,14 @@ definitions:
       message:
         type: string
     type: object
+  postdto.DeletePostResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   postdto.DetailPostDTO:
     properties:
       authorAvatar:
@@ -3786,31 +3794,27 @@ paths:
     patch:
       consumes:
       - application/json
-      description: API cập nhật bài viết kết hợp với patch
+      description: API xóa bài viết
       parameters:
       - description: ID post
         in: path
         name: postID
         required: true
         type: integer
-      - description: Update post info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/postdto.UpdatePostRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Updated post successfully
+          description: Deleted post successfully
           schema:
-            $ref: '#/definitions/postdto.UpdatePostResponseWrapper'
+            $ref: '#/definitions/postdto.DeletePostResponseWrapper'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Update posts
+      security:
+      - BearerAuth: []
+      summary: Delete posts
       tags:
       - posts
   /posts/my-post:

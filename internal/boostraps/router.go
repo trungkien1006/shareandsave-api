@@ -212,7 +212,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.DELETE("/items/:itemID", itemHandler.DeleteItem)
 
 		//client post API
-		v1.GET("/client/posts", postHandler.GetAllPost)
+		v1.GET("/client/posts", postHandler.ClientGetAllPost)
 		v1.GET("/client/posts/:postID", postHandler.GetPostByID)
 
 		//my post API
@@ -223,7 +223,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/posts/:postID", postHandler.GetPostByID)
 		v1.GET("/posts/slug/:postSlug", postHandler.GetPostBySlug)
 		v1.POST("/posts", middlewares.AuthGuard, postHandler.CreatePost)
-		v1.PATCH("/posts/:postID", postHandler.UpdatePost)
+		v1.PATCH("/posts/:postID", middlewares.AuthGuard, postHandler.UpdatePost)
+		v1.DELETE("/posts/:postID", middlewares.AuthGuard, postHandler.DeletePost)
 
 		//category API
 		v1.GET("/categories", categoryHandler.GetAll)
