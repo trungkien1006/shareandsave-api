@@ -60,5 +60,9 @@ func (uc *UseCase) Update(ctx context.Context, domainAppointment appointment.App
 
 	updateAppointment.ID = appointmentID
 
+	if err := uc.appointmentRepo.Update(ctx, updateAppointment); err != nil {
+		return err
+	}
+
 	return nil
 }
