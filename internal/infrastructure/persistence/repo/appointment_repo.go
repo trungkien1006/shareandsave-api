@@ -98,6 +98,21 @@ func (r *AppointmentRepoDB) GetByID(ctx context.Context, appointment *appointmen
 	return nil
 }
 
+func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appointment.Appointment) error {
+	var dbAppointment dbmodel.Appointment
+
+	dbAppointment = dbmodel.AppointmentDomainToDB(domainAppointment)
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Appointment{}).
+		Where("id = ?", dbAppointment.ID).
+		Updates(&dbAppointment).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[uint]appointment.Appointment) error {
 	var (
 		dbAppointments []dbmodel.Appointment

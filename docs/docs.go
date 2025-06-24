@@ -375,6 +375,62 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API cập nhật appointment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Update appointment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID appointment",
+                        "name": "appointmentID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update appointment info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointmentdto.UpdateAppointmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated appointment successfully",
+                        "schema": {
+                            "$ref": "#/definitions/appointmentdto.UpdateAppointmentResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         },
         "/categories": {
@@ -3516,6 +3572,32 @@ const docTemplate = `{
                 }
             }
         },
+        "appointmentdto.UpdateAppointmentRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/enums.AppointmentStatus"
+                }
+            }
+        },
+        "appointmentdto.UpdateAppointmentResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "authdto.AdminGetMeResponse": {
             "type": "object",
             "properties": {
@@ -3799,6 +3881,24 @@ const docTemplate = `{
                     "example": "Name is require"
                 }
             }
+        },
+        "enums.AppointmentStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "AppointmentStatusAll": "0",
+                "AppointmentStatusCanceled": "2 Phiếu hẹn bị hủy",
+                "AppointmentStatusSended": "1 Phiếu hẹn gửi thành công"
+            },
+            "x-enum-varnames": [
+                "AppointmentStatusAll",
+                "AppointmentStatusSended",
+                "AppointmentStatusCanceled"
+            ]
         },
         "enums.ItemClassify": {
             "type": "integer",

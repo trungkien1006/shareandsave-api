@@ -155,6 +155,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 // @Router /items/{itemID} [patch]
 func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	var req itemdto.UpdateItemRequest
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
@@ -175,10 +176,12 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 		Description: req.Description,
 		Image:       req.Image,
 	}
+
 	if err := h.uc.UpdateItem(c.Request.Context(), itm); err != nil {
-		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
+
 	c.JSON(http.StatusOK, itemdto.UpdateItemResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Item updated successfully",

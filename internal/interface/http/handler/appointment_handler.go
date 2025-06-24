@@ -7,6 +7,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -179,10 +180,48 @@ func (h *AppointmentHandler) GetByID(c *gin.Context) {
 	})
 }
 
-// func (h *AppointmentHandler) Update(c *gin.Context) {
-// 	var (
-// 		req appointmentdto.UpdateAppointmentRequest
-// 		domainAppointment appointment.Appointment
-// 	)
+// @Summary Update appointment
+// @Description API cập nhật appointment
+// @Security BearerAuth
+// @Tags appointments
+// @Accept json
+// @Produce json
+// @Param appointmentID path int true "ID appointment"
+// @Param request body appointmentdto.UpdateAppointmentRequest true "Update appointment info"
+// @Success 200 {object} appointmentdto.UpdateAppointmentResponseWrapper "Updated appointment successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /appointments/{appointmentID} [patch]
+func (h *AppointmentHandler) Update(c *gin.Context) {
+	var (
+		req               appointmentdto.UpdateAppointmentRequest
+		domainAppointment appointment.Appointment
+	)
 
-// }
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	appointmentID, err := strconv.Atoi(c.Param("appointmentID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	domainAppointment = appointmentdto.UpdateAppointmentDTOToDomain(req)
+
+	if err := h.uc.Update(c.Request.Context(), domainAppointment, uint(appointmentID)); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, appointmentdto.UpdateAppointmentResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated appointment successfully",
+		Data:    gin.H{},
+	})
+}

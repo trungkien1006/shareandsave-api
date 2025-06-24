@@ -2,7 +2,9 @@ package appointmentapp
 
 import (
 	"context"
+	"errors"
 	"final_project/internal/domain/appointment"
+	"time"
 )
 
 type UseCase struct {
@@ -26,6 +28,37 @@ func (uc *UseCase) GetByID(ctx context.Context, appointment *appointment.Appoint
 	if err := uc.appointmentRepo.GetByID(ctx, appointment, appointmentID); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (uc *UseCase) Update(ctx context.Context, domainAppointment appointment.Appointment, appointmentID uint) error {
+	var updateAppointment appointment.Appointment
+
+	if err := uc.appointmentRepo.GetByID(ctx, &updateAppointment, appointmentID); err != nil {
+		return err
+	}
+
+	if domainAppointment.Status != 0 {
+		updateAppointment.Status = domainAppointment.Status
+	}
+
+	if domainAppointment.EndTime.Before(domainAppointment.StartTime) {
+		return errors.New("Thời gian kết thúc không được < thời gian bắt đầu")
+	}
+
+	if domainAppointment.StartTime.Sub(domainAppointment.EndTime) > time.Hour {
+		return errors.New("Thời gian kết thúc và bắt đầu chỉ được cách nhau 1 tiếng")
+	}
+
+	if !domainAppointment.StartTime.IsZero() && !domainAppointment.EndTime.IsZero() {
+		updateAppointment.StartTime = domainAppointment.StartTime
+		updateAppointment.EndTime = domainAppointment.EndTime
+	} else if !domainAppointment.StartTime.IsZero() || !domainAppointment.EndTime.IsZero() {
+		return errors.New("Muốn cập nhật thời gian phải gửi cả thời gian bắt đầu và kết thúc")
+	}
+
+	updateAppointment.ID = appointmentID
 
 	return nil
 }

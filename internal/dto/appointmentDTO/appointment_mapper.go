@@ -30,3 +30,12 @@ func AppointmentDomainToDTO(domain appointment.Appointment) AppointmentDTO {
 		CreatedAt:        domain.CreatedAt,
 	}
 }
+
+// DTO to Domain
+func UpdateAppointmentDTOToDomain(dto UpdateAppointmentRequest) appointment.Appointment {
+	return appointment.Appointment{
+		StartTime: dto.StartTime,
+		EndTime:   dto.EndTime,
+		Status:    int(dto.Status),
+	}
+}

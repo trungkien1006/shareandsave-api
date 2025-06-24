@@ -72,6 +72,23 @@ definitions:
       message:
         type: string
     type: object
+  appointmentdto.UpdateAppointmentRequest:
+    properties:
+      endTime:
+        type: string
+      startTime:
+        type: string
+      status:
+        $ref: '#/definitions/enums.AppointmentStatus'
+    type: object
+  appointmentdto.UpdateAppointmentResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   authdto.AdminGetMeResponse:
     properties:
       user:
@@ -258,6 +275,20 @@ definitions:
         example: Name is require
         type: string
     type: object
+  enums.AppointmentStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      AppointmentStatusAll: "0"
+      AppointmentStatusCanceled: 2 Phiếu hẹn bị hủy
+      AppointmentStatusSended: 1 Phiếu hẹn gửi thành công
+    x-enum-varnames:
+    - AppointmentStatusAll
+    - AppointmentStatusSended
+    - AppointmentStatusCanceled
   enums.ItemClassify:
     enum:
     - 0
@@ -2286,6 +2317,42 @@ paths:
       security:
       - BearerAuth: []
       summary: Get appointment by ID
+      tags:
+      - appointments
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật appointment
+      parameters:
+      - description: ID appointment
+        in: path
+        name: appointmentID
+        required: true
+        type: integer
+      - description: Update appointment info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/appointmentdto.UpdateAppointmentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated appointment successfully
+          schema:
+            $ref: '#/definitions/appointmentdto.UpdateAppointmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update appointment
       tags:
       - appointments
   /categories:

@@ -20,3 +20,9 @@ type GetAppointmentByIDResponseWrapper struct {
 type GetAppointmentByIDResponse struct {
 	Appointment AppointmentDTO `json:"appointment"`
 }
+
+type UpdateAppointmentResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
