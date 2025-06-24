@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"final_project/internal/application/worker/appointmentapp"
+	"final_project/internal/application/app/appointmentapp"
 	"final_project/internal/infrastructure/worker"
 	"log"
 

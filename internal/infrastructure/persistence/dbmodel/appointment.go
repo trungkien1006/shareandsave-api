@@ -42,3 +42,28 @@ func AppointmentDomainToDB(domain appointment.Appointment) Appointment {
 		AppointmentItem: appointmentItems,
 	}
 }
+
+// DB to Domain
+func AppointmentDBToDomain(db Appointment) appointment.Appointment {
+	var items []appointment.AppointmentItem
+
+	for _, value := range db.AppointmentItem {
+		items = append(items, appointment.AppointmentItem{
+			ID:              value.ID,
+			AppointmentID:   value.AppointmentID,
+			ItemID:          value.ItemID,
+			ActualQuantity:  value.ActualQuantity,
+			MissingQuantity: value.MissingQuantity,
+		})
+	}
+
+	return appointment.Appointment{
+		ID:               db.ID,
+		UserID:           db.UserID,
+		StartTime:        db.StartTime,
+		EndTime:          db.EndTime,
+		Status:           db.Status,
+		AppointmentItems: items,
+		CreatedAt:        db.CreatedAt,
+	}
+}

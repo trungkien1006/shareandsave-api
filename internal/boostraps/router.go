@@ -2,6 +2,7 @@ package boostraps
 
 import (
 	"context"
+	"final_project/internal/application/app/appointmentapp"
 	"final_project/internal/application/app/authapp"
 	"final_project/internal/application/app/categoryapp"
 	"final_project/internal/application/app/commentapp"
@@ -55,6 +56,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//appointment dependency
 	appointmentRepo := persistence.NewAppointmentRepoDB(db)
+	appointmentUC := appointmentapp.NewUseCase(appointmentRepo)
+	appointmentHandler := handler.NewAppointmentHandler(appointmentUC)
 
 	//role permission dependency
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
@@ -158,9 +161,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//run auto appointment worker
 	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo, leaverequestsRepo, appointmentRepo)
-	appointmentHandler := workerHandler.NewAppointmentHandler(nil, appointmentCronJob)
+	appointmentWorkerHandler := workerHandler.NewAppointmentHandler(nil, appointmentCronJob)
 
-	go appointmentHandler.Run(ctx)
+	go appointmentWorkerHandler.Run(ctx)
 
 	//init router
 	r.Use(func(c *gin.Context) {
@@ -262,6 +265,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.PATCH("/client/item-warehouses/claim-request", middlewares.AuthGuard, warehouseHandler.ModifyClaimRequest)
 		v1.DELETE("/client/item-warehouses/claim-request/:itemID", middlewares.AuthGuard, warehouseHandler.RemoveClaimRequest)
 		v1.DELETE("/client/item-warehouses/claim-request", middlewares.AuthGuard, warehouseHandler.RemoveAllClaimRequest)
+
+		//appointment API
+		v1.GET("/appointments", middlewares.AuthGuard, appointmentHandler.GetAll)
 
 		//message API
 		v1.GET("/messages", middlewares.AuthGuard, commentHandler.GetAll)

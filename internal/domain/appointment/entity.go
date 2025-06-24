@@ -9,6 +9,7 @@ type Appointment struct {
 	EndTime          time.Time
 	Status           int
 	AppointmentItems []AppointmentItem
+	CreatedAt        time.Time
 }
 
 type AppointmentItem struct {
@@ -17,4 +18,13 @@ type AppointmentItem struct {
 	ItemID          uint
 	ActualQuantity  int
 	MissingQuantity int
+}
+
+type FilterAllAppointment struct {
+	Page        int
+	Limit       int
+	Sort        string
+	Order       string
+	SearchBy    string
+	SearchValue string
 }

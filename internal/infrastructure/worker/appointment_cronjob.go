@@ -260,7 +260,7 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 	}
 
 	if len(userAppointment) > 0 {
-		if err := c.appointmentRepo.Create(ctx, userAppointment); err != nil {
+		if err := c.appointmentRepo.CreateBatch(ctx, userAppointment); err != nil {
 			return err
 		}
 
