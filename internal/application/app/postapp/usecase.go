@@ -137,13 +137,13 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 
 			domainPost.OldItems[key].Image = strBase64Image
 		} else {
-			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+			// strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 
-			if err != nil {
-				return err
-			}
+			// if err != nil {
+			// 	return err
+			// }
 
-			domainPost.OldItems[key].Image = strBase64Image
+			domainPost.OldItems[key].Image = oldItem.Image
 		}
 
 		itemIDs[oldItem.ItemID] = oldItem.ItemID
