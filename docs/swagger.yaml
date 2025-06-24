@@ -2283,6 +2283,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get appointment by ID
       tags:
       - appointments

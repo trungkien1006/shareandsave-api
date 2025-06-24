@@ -330,6 +330,11 @@ const docTemplate = `{
         },
         "/appointments/{appointmentID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy thông tin item theo ID",
                 "consumes": [
                     "application/json"

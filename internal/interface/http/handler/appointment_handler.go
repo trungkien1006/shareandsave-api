@@ -143,6 +143,7 @@ func (h *AppointmentHandler) ClientGetAll(c *gin.Context) {
 
 // @Summary Get appointment by ID
 // @Description API lấy thông tin item theo ID
+// @Security BearerAuth
 // @Tags appointments
 // @Accept json
 // @Produce json
