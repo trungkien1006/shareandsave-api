@@ -35,6 +35,7 @@ func AppointmentDomainToDB(domain appointment.Appointment) Appointment {
 	}
 
 	return Appointment{
+		ID:              domain.ID,
 		UserID:          domain.UserID,
 		StartTime:       domain.StartTime,
 		EndTime:         domain.EndTime,
