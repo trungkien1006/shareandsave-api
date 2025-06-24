@@ -53,6 +53,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//leave requests dependency
 	leaverequestsRepo := persistence.NewLeaveRequestsRepoDB(db)
 
+	//appointment dependency
+	appointmentRepo := persistence.NewAppointmentRepoDB(db)
+
 	//role permission dependency
 	rolePerRepo := persistence.NewRolePerRepoDB(db)
 	roleUC := roleapp.NewUseCase(rolePerRepo)
@@ -154,7 +157,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	go chatHandler.Run(ctx)
 
 	//run auto appointment worker
-	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo, leaverequestsRepo)
+	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo, leaverequestsRepo, appointmentRepo)
 	appointmentHandler := workerHandler.NewAppointmentHandler(nil, appointmentCronJob)
 
 	go appointmentHandler.Run(ctx)

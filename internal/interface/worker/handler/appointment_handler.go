@@ -5,7 +5,8 @@ import (
 	"final_project/internal/application/worker/appointmentapp"
 	"final_project/internal/infrastructure/worker"
 	"log"
-	"time"
+
+	"github.com/robfig/cron/v3"
 )
 
 type AppointmentHandler struct {
@@ -21,27 +22,26 @@ func NewAppointmentHandler(uc *appointmentapp.UseCase, cronjob *worker.Appointme
 }
 
 func (w *AppointmentHandler) Run(ctx context.Context) {
+	w.cronjob.ScheduleAppointment(ctx)
 	// Chạy goroutine scan pending định kỳ
-	go func() {
-		ticker := time.NewTicker(30 * time.Minute)
-		defer ticker.Stop()
+	c := cron.New()
 
-		// Chạy lần đầu luôn (không cần đợi 30 phút)
-		log.Println("Checking appointment...")
-		// w.consumer.RecoverPending(func(ctx context.Context, data []map[string]string) error {
-		// 	return w.uc.CreateMessage(ctx, data)
-		// })
+	// Schedule vào 11h đêm mỗi ngày
+	_, err := c.AddFunc("0 23 * * *", func() {
+		log.Println("Running appointment scheduler at 11PM")
 		w.cronjob.ScheduleAppointment(ctx)
+	})
 
-		for {
-			select {
-			case <-ctx.Done():
-				log.Println("Stop create appointment.")
-				return
-			case <-ticker.C:
-				log.Println("Checking appointment...")
-				w.cronjob.ScheduleAppointment(ctx)
-			}
-		}
+	if err != nil {
+		log.Fatalf("Failed to schedule cron job: %v", err)
+	}
+
+	c.Start()
+
+	// Dừng cron khi context kết thúc
+	go func() {
+		<-ctx.Done()
+		log.Println("Stop cron scheduler")
+		c.Stop()
 	}()
 }

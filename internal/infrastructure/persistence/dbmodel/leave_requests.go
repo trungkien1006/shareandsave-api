@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type LeaveRequest struct {
+type LeaveRequests struct {
 	ID        int       `gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID    int       `gorm:"not null" json:"user_id"`
 	LeaveType int       `gorm:"type:INT;not null" json:"leave_type"`

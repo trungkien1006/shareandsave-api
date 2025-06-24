@@ -19,7 +19,7 @@ func NewLeaveRequestsRepoDB(db *gorm.DB) *LeaveRequestsRepoDB {
 func (r *LeaveRequestsRepoDB) IsInLeaveRequest(ctx context.Context, day time.Time) (bool, error) {
 	var count int64
 	err := r.db.WithContext(ctx).
-		Model(&dbmodel.LeaveRequest{}).
+		Model(&dbmodel.LeaveRequests{}).
 		Where("start_date <= ? AND end_date >= ?", day, day).
 		Count(&count).Error
 

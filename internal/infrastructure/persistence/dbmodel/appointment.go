@@ -23,10 +23,10 @@ type Appointment struct {
 }
 
 // Domain to DB
-func AppointmentDomainToDB(domain appointment.Appointment, domainItems []appointment.AppointmentItem) Appointment {
+func AppointmentDomainToDB(domain appointment.Appointment) Appointment {
 	appointmentItems := make([]AppointmentItem, 0)
 
-	for _, value := range domainItems {
+	for _, value := range domain.AppointmentItems {
 		appointmentItems = append(appointmentItems, AppointmentItem{
 			ItemID:          value.ItemID,
 			ActualQuantity:  value.ActualQuantity,
