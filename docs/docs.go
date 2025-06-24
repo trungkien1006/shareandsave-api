@@ -328,6 +328,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/appointments/{appointmentID}": {
+            "get": {
+                "description": "API lấy thông tin item theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Get appointment by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID appointment",
+                        "name": "appointmentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/appointmentdto.GetAppointmentByIDResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/categories": {
             "get": {
                 "description": "API lấy ra tất cả danh mục đồ đạc",
@@ -3414,6 +3458,28 @@ const docTemplate = `{
                 },
                 "missingQuantity": {
                     "type": "integer"
+                }
+            }
+        },
+        "appointmentdto.GetAppointmentByIDResponse": {
+            "type": "object",
+            "properties": {
+                "appointment": {
+                    "$ref": "#/definitions/appointmentdto.AppointmentDTO"
+                }
+            }
+        },
+        "appointmentdto.GetAppointmentByIDResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/appointmentdto.GetAppointmentByIDResponse"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

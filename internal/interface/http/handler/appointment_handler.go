@@ -140,3 +140,48 @@ func (h *AppointmentHandler) ClientGetAll(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Get appointment by ID
+// @Description API lấy thông tin item theo ID
+// @Tags appointments
+// @Accept json
+// @Produce json
+// @Param appointmentID path int true "ID appointment"
+// @Success 200 {object} appointmentdto.GetAppointmentByIDResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /appointments/{appointmentID} [get]
+func (h *AppointmentHandler) GetByID(c *gin.Context) {
+	var (
+		req               appointmentdto.GetAppointmentByIDRequest
+		domainAppointment appointment.Appointment
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := h.uc.GetByID(c.Request.Context(), &domainAppointment, req.AppointmentID); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	appointmentDTORes := appointmentdto.AppointmentDomainToDTO(domainAppointment)
+
+	c.JSON(http.StatusOK, appointmentdto.GetAppointmentByIDResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Get appointment by id successfully",
+		Data: appointmentdto.GetAppointmentByIDResponse{
+			Appointment: appointmentDTORes,
+		},
+	})
+}
+
+// func (h *AppointmentHandler) Update(c *gin.Context) {
+// 	var (
+// 		req appointmentdto.UpdateAppointmentRequest
+// 		domainAppointment appointment.Appointment
+// 	)
+
+// }

@@ -1,5 +1,10 @@
 package appointmentdto
 
+import (
+	"final_project/internal/pkg/enums"
+	"time"
+)
+
 type GetAllAppointmentRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
@@ -40,4 +45,14 @@ func (r *GetAllMyAppointmentRequest) SetDefault() {
 	if r.Order == "" {
 		r.Order = "ASC"
 	}
+}
+
+type GetAppointmentByIDRequest struct {
+	AppointmentID uint `uri:"appointmentID"`
+}
+
+type UpdateAppointmentRequest struct {
+	StartTime time.Time               `json:"startTime"`
+	EndTime   time.Time               `json:"endTime"`
+	Status    enums.AppointmentStatus `json:"status"`
 }

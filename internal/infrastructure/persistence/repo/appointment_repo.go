@@ -76,6 +76,28 @@ func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointm
 	return totalPages, nil
 }
 
+func (r *AppointmentRepoDB) GetByID(ctx context.Context, appointment *appointment.Appointment, appointmentID uint) error {
+	var dbAppointment dbmodel.Appointment
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Appointment{}).
+		Table("appointment as a").
+		Joins("JOIN user ON user.id = a.user_id").
+		Where("a.id = ? ", appointmentID).
+		Preload("User").
+		Preload("AppointmentItem").
+		Preload("AppointmentItem.Item").
+		Preload("AppointmentItem.Item.Category").
+		First(&dbAppointment).Error; err != nil {
+		return errors.New("Có lỗi khi truy vấn phiếu hẹn bằng id: " + err.Error())
+	}
+
+	*appointment = dbmodel.AppointmentDBToDomain(dbAppointment)
+
+	return nil
+}
+
 func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[uint]appointment.Appointment) error {
 	var (
 		dbAppointments []dbmodel.Appointment

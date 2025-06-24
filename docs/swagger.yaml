@@ -40,6 +40,20 @@ definitions:
       missingQuantity:
         type: integer
     type: object
+  appointmentdto.GetAppointmentByIDResponse:
+    properties:
+      appointment:
+        $ref: '#/definitions/appointmentdto.AppointmentDTO'
+    type: object
+  appointmentdto.GetAppointmentByIDResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/appointmentdto.GetAppointmentByIDResponse'
+      message:
+        type: string
+    type: object
   appointmentdto.GetAppointmentResponse:
     properties:
       appointments:
@@ -2241,6 +2255,35 @@ paths:
       security:
       - BearerAuth: []
       summary: Get appointments
+      tags:
+      - appointments
+  /appointments/{appointmentID}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy thông tin item theo ID
+      parameters:
+      - description: ID appointment
+        in: path
+        name: appointmentID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/appointmentdto.GetAppointmentByIDResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get appointment by ID
       tags:
       - appointments
   /categories:

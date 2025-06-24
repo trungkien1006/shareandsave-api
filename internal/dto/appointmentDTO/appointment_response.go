@@ -10,3 +10,13 @@ type GetAppointmentResponse struct {
 	Appointments []AppointmentDTO `json:"appointments"`
 	TotalPage    int              `json:"totalPage"`
 }
+
+type GetAppointmentByIDResponseWrapper struct {
+	Code    int                        `json:"code"`
+	Message string                     `json:"message"`
+	Data    GetAppointmentByIDResponse `json:"data"`
+}
+
+type GetAppointmentByIDResponse struct {
+	Appointment AppointmentDTO `json:"appointment"`
+}

@@ -21,3 +21,11 @@ func (uc *UseCase) GetAll(ctx context.Context, appointments *[]appointment.Appoi
 
 	return totalPage, nil
 }
+
+func (uc *UseCase) GetByID(ctx context.Context, appointment *appointment.Appointment, appointmentID uint) error {
+	if err := uc.appointmentRepo.GetByID(ctx, appointment, appointmentID); err != nil {
+		return err
+	}
+
+	return nil
+}
