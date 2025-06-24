@@ -95,13 +95,25 @@ func (s *Seeder) seedSetting() error {
 	// Lấy thời gian hiện tại theo múi giờ này
 	now := time.Now().In(loc)
 
-	startTime := time.Date(
+	startMorningTime := time.Date(
 		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
 		8, 0, 0, 0, // Giờ, phút, giây, nano giây
 		loc, // Múi giờ Việt Nam
 	)
 
-	endTime := time.Date(
+	endMorningTime := time.Date(
+		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+		16, 0, 0, 0, // Giờ, phút, giây, nano giây
+		loc, // Múi giờ Việt Nam
+	)
+
+	startAfternoonTime := time.Date(
+		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+		8, 0, 0, 0, // Giờ, phút, giây, nano giây
+		loc, // Múi giờ Việt Nam
+	)
+
+	endAfternoonTime := time.Date(
 		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
 		16, 0, 0, 0, // Giờ, phút, giây, nano giây
 		loc, // Múi giờ Việt Nam
@@ -109,16 +121,28 @@ func (s *Seeder) seedSetting() error {
 
 	var settings = []setting.Setting{
 		{
-			Key:   "appointmentPerDay",
-			Value: "50",
+			Key:   "appointmentPerMorning",
+			Value: "10",
 		},
 		{
-			Key:   "startTime",
-			Value: startTime.String(),
+			Key:   "appointmentPerAfternoon",
+			Value: "10",
 		},
 		{
-			Key:   "endTime",
-			Value: endTime.String(),
+			Key:   "startMorningTime",
+			Value: startMorningTime.String(),
+		},
+		{
+			Key:   "endMorningTime",
+			Value: endMorningTime.String(),
+		},
+		{
+			Key:   "startAfternoonTime",
+			Value: startAfternoonTime.String(),
+		},
+		{
+			Key:   "endAfternoonTime",
+			Value: endAfternoonTime.String(),
 		},
 	}
 

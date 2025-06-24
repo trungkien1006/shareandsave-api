@@ -104,7 +104,8 @@ CREATE TABLE `transaction_item` (
 CREATE TABLE `appointment` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int,
-  `scheduled_time` datetime,
+  `start_time` timestamp,
+  `end_time` timestamp,
   `status` int,
   `created_at` timestamp,
   `updated_at` timestamp,

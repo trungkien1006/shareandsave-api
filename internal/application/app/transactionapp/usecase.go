@@ -71,7 +71,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 	var updateTransaction transaction.Transaction
 
 	// Kiểm tra nếu không truyền lên gì cả
-	if domainTransaction.Status == 0 && domainTransaction.Items == nil {
+	if domainTransaction.Status == 0 && domainTransaction.Items == nil && domainTransaction.Method == "" {
 		return errors.New("Không có trường nào để cập nhật")
 	}
 

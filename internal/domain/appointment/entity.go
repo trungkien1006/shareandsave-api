@@ -5,7 +5,8 @@ import "time"
 type Appointment struct {
 	ID               uint
 	UserID           uint
-	ScheduledTime    time.Time
+	StartTime        time.Time
+	EndTime          time.Time
 	Status           int
 	AppointmentItems []AppointmentItem
 }

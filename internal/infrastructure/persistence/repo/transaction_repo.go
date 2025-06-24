@@ -281,7 +281,7 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		for _, value := range dbTransaction.TransactionItems {
 			if err := tx.WithContext(ctx).Model(&dbmodel.TransactionItem{}).
 				Where("transaction_id = ? AND post_item_id = ?", value.TransactionID, value.PostItemID).
-				Updates(&value).Error; err != nil {
+				Update("quantity", value.Quantity).Error; err != nil {
 				tx.Rollback()
 				return errors.New("Có lỗi khi cập nhật đồ của giao dịch: " + err.Error())
 			}
