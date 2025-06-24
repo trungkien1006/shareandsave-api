@@ -3305,6 +3305,9 @@ const docTemplate = `{
                 },
                 "userID": {
                     "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
                 }
             }
         },
@@ -3317,11 +3320,20 @@ const docTemplate = `{
                 "appointmentID": {
                     "type": "integer"
                 },
+                "categoryName": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "itemID": {
                     "type": "integer"
+                },
+                "itemImage": {
+                    "type": "string"
+                },
+                "itemName": {
+                    "type": "string"
                 },
                 "missingQuantity": {
                     "type": "integer"

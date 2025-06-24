@@ -31,7 +31,9 @@ func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointm
 		Table("appointment as a").
 		Joins("JOIN user ON user.id = a.user_id").
 		Preload("User").
-		Preload("AppointmentItem")
+		Preload("AppointmentItem").
+		Preload("AppointmentItem.Item").
+		Preload("AppointmentItem.Item.Category")
 
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"

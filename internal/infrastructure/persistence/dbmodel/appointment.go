@@ -52,6 +52,9 @@ func AppointmentDBToDomain(db Appointment) appointment.Appointment {
 			ID:              value.ID,
 			AppointmentID:   value.AppointmentID,
 			ItemID:          value.ItemID,
+			ItemName:        value.Item.Name,
+			ItemImage:       value.Item.Image,
+			CategoryName:    value.Item.Category.Name,
 			ActualQuantity:  value.ActualQuantity,
 			MissingQuantity: value.MissingQuantity,
 		})
@@ -60,6 +63,7 @@ func AppointmentDBToDomain(db Appointment) appointment.Appointment {
 	return appointment.Appointment{
 		ID:               db.ID,
 		UserID:           db.UserID,
+		UserName:         db.User.FullName,
 		StartTime:        db.StartTime,
 		EndTime:          db.EndTime,
 		Status:           db.Status,

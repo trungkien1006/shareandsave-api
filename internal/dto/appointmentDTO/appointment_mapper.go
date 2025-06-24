@@ -11,6 +11,9 @@ func AppointmentDomainToDTO(domain appointment.Appointment) AppointmentDTO {
 			ID:              value.ID,
 			AppointmentID:   value.AppointmentID,
 			ItemID:          value.ItemID,
+			ItemName:        value.ItemName,
+			ItemImage:       value.ItemImage,
+			CategoryName:    value.CategoryName,
 			ActualQuantity:  value.ActualQuantity,
 			MissingQuantity: value.MissingQuantity,
 		})
@@ -19,6 +22,7 @@ func AppointmentDomainToDTO(domain appointment.Appointment) AppointmentDTO {
 	return AppointmentDTO{
 		ID:               domain.ID,
 		UserID:           domain.UserID,
+		UserName:         domain.UserName,
 		StartTime:        domain.StartTime,
 		EndTime:          domain.EndTime,
 		Status:           domain.Status,

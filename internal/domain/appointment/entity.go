@@ -5,6 +5,7 @@ import "time"
 type Appointment struct {
 	ID               uint
 	UserID           uint
+	UserName         string
 	StartTime        time.Time
 	EndTime          time.Time
 	Status           int
@@ -16,6 +17,9 @@ type AppointmentItem struct {
 	ID              uint
 	AppointmentID   uint
 	ItemID          uint
+	ItemName        string
+	ItemImage       string
+	CategoryName    string
 	ActualQuantity  int
 	MissingQuantity int
 }

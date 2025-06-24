@@ -18,6 +18,8 @@ definitions:
         type: integer
       userID:
         type: integer
+      userName:
+        type: string
     type: object
   appointmentdto.AppointmentItemDTO:
     properties:
@@ -25,10 +27,16 @@ definitions:
         type: integer
       appointmentID:
         type: integer
+      categoryName:
+        type: string
       id:
         type: integer
       itemID:
         type: integer
+      itemImage:
+        type: string
+      itemName:
+        type: string
       missingQuantity:
         type: integer
     type: object

@@ -5,6 +5,7 @@ import "time"
 type AppointmentDTO struct {
 	ID               uint                 `json:"id"`
 	UserID           uint                 `json:"userID"`
+	UserName         string               `json:"userName"`
 	StartTime        time.Time            `json:"startTime"`
 	EndTime          time.Time            `json:"endTime"`
 	Status           int                  `json:"status"`
@@ -13,9 +14,12 @@ type AppointmentDTO struct {
 }
 
 type AppointmentItemDTO struct {
-	ID              uint `json:"id"`
-	AppointmentID   uint `json:"appointmentID"`
-	ItemID          uint `json:"itemID"`
-	ActualQuantity  int  `json:"actualQuantity"`
-	MissingQuantity int  `json:"missingQuantity"`
+	ID              uint   `json:"id"`
+	AppointmentID   uint   `json:"appointmentID"`
+	ItemID          uint   `json:"itemID"`
+	ItemName        string `json:"itemName"`
+	ItemImage       string `json:"itemImage"`
+	CategoryName    string `json:"categoryName"`
+	ActualQuantity  int    `json:"actualQuantity"`
+	MissingQuantity int    `json:"missingQuantity"`
 }
