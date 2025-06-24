@@ -18,7 +18,7 @@ func NewAppointmentRepoDB(db *gorm.DB) *AppointmentRepoDB {
 	return &AppointmentRepoDB{db: db}
 }
 
-func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointment.Appointment, req appointment.FilterAllAppointment) (int, error) {
+func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointment.Appointment, req appointment.FilterAllAppointment, userID uint) (int, error) {
 	var (
 		query          *gorm.DB
 		totalRecords   int64
@@ -35,6 +35,10 @@ func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointm
 		Preload("AppointmentItem.Item").
 		Preload("AppointmentItem.Item.Category")
 
+	if userID != 0 {
+		query.Where("a.user_id = ? ", userID)
+	}
+
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
 
@@ -45,7 +49,6 @@ func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointm
 		}
 
 		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
-
 	}
 
 	if err := query.Count(&totalRecords).Error; err != nil {
