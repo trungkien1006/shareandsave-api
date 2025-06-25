@@ -109,6 +109,12 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time)
 }
 
 func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentDay time.Time, settings map[string]string) error {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("panic in createAppointment: %v", r)
+		}
+	}()
+
 	var (
 		itemClaimReqs map[string]string
 		numPerHour    int = 0
