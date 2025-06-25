@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rickar/cal/v2"
@@ -194,10 +195,12 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 
 		log.Println("Error: " + key)
 
-		// itemIDStr := strings.Split(key, ":")[1]
+		itemIDStr := strings.Split(key, ":")[1]
 		// itemIDStr := "4"
 
-		// itemID, _ := strconv.Atoi(itemIDStr)
+		itemID, _ := strconv.Atoi(itemIDStr)
+
+		log.Println("Error: " + string(itemID))
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
