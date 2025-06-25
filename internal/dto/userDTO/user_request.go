@@ -5,7 +5,7 @@ import "final_project/internal/pkg/enums"
 type GetClientRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
-	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt goodPoint"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt goodPoint fullName email"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
 	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=fullName email phoneNumber status"`
 	SearchValue string `form:"searchValue"`
@@ -29,7 +29,7 @@ func (r *GetClientRequest) SetDefault() {
 type GetAdminRequest struct {
 	Page        int    `form:"page"`
 	Limit       int    `form:"limit"`
-	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt goodPoint"`
+	Sort        string `form:"sort" binding:"omitempty,oneof=createdAt goodPoint fullName email"`
 	Order       string `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
 	SearchBy    string `form:"searchBy" binding:"omitempty,oneof=fullName email phoneNumber status roleName"`
 	SearchValue string `form:"searchValue"`

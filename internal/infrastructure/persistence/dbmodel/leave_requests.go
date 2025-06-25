@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	leaverequests "final_project/internal/domain/leave_requests"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,4 +22,13 @@ type LeaveRequests struct {
 
 	// Khóa ngoại - quan hệ 1-1 tới User
 	User User `gorm:"foreignKey:UserID;references:ID" json:"user,omitempty"`
+}
+
+// DB to Domain
+func LeaveReqDBToDomain(db LeaveRequests) leaverequests.LeaveRequest {
+	return leaverequests.LeaveRequest{
+		ID:       db.ID,
+		UserID:   db.UserID,
+		UserName: db.User.FullName,
+	}
 }
