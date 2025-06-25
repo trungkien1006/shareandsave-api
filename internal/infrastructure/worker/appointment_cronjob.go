@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rickar/cal/v2"
@@ -194,15 +195,17 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 
 		log.Println("Error: " + key)
 
-		// itemIDStr := strings.Split(key, ":")[1]
-		itemIDStr := "4"
+		itemIDStr := strings.Split(key, ":")[1]
+		// itemIDStr := "4"
 
 		itemID, _ := strconv.Atoi(itemIDStr)
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
+		tempitemClaimReqUsers := itemClaimReq.Users
+
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
-		for idx, user := range itemClaimReq.Users {
+		for idx, user := range tempitemClaimReqUsers {
 
 			if tempItemQuantity >= user.Quantity {
 				userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
