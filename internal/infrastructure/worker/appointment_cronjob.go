@@ -198,9 +198,9 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		itemIDStr := strings.Split(key, ":")[1]
 		// itemIDStr := "4"
 
-		itemID, _ := strconv.Atoi(itemIDStr)
+		// _, _ := strconv.Atoi(itemIDStr)
 
-		log.Println("Error: " + string(itemID))
+		log.Println("Error: " + itemIDStr)
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
