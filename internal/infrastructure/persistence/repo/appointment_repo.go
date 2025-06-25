@@ -113,6 +113,8 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 	return nil
 }
 
+// func (r *AppointmentRepoDB)
+
 func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[uint]appointment.Appointment) error {
 	var (
 		dbAppointments []dbmodel.Appointment
