@@ -198,6 +198,8 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
+		var tempItemClaimReqs warehouse.ClaimRequestItem
+
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
 		for idx, user := range itemClaimReq.Users {
 			if tempItemQuantity >= user.Quantity {
@@ -218,14 +220,18 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 				itemClaimReq.Users[idx].Quantity = user.Quantity - tempItemQuantity
 
 				if idx > 0 {
-					itemClaimReq.Users = itemClaimReq.Users[idx-1:]
+					tempItemClaimReqs.ItemQuantity = tempItemQuantity
+
+					for i := idx; i < len(itemClaimReq.Users); i++ {
+						tempItemClaimReqs.Users = append(tempItemClaimReqs.Users, itemClaimReq.Users[idx])
+					}
 				}
 
 				break
 			}
 		}
 
-		newItemClaimReqs[key] = itemClaimReq
+		newItemClaimReqs[key] = tempItemClaimReqs
 	}
 
 	tempNumPerHour := numPerHour
