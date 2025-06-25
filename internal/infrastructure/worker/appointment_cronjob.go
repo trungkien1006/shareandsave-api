@@ -3,7 +3,6 @@ package worker
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"final_project/internal/domain/appointment"
 	leaverequests "final_project/internal/domain/leave_requests"
 	"final_project/internal/domain/redis"
@@ -198,35 +197,33 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		itemIDStr := strings.Split(key, ":")[1]
 		// itemIDStr := "4"
 
-		// _, _ := strconv.Atoi(itemIDStr)
-
-		log.Println("Error: " + itemIDStr)
+		itemID, _ := strconv.Atoi(itemIDStr)
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
 		tempitemClaimReqUsers := itemClaimReq.Users
 
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
-		for _, user := range tempitemClaimReqUsers {
+		for idx, user := range tempitemClaimReqUsers {
 
 			if tempItemQuantity >= user.Quantity {
-				// userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
-				// 	ItemID:          uint(itemID), //item id
-				// 	ActualQuantity:  int(user.Quantity),
-				// 	MissingQuantity: 0,
-				// })
+				userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
+					ItemID:          uint(itemID), //item id
+					ActualQuantity:  int(user.Quantity),
+					MissingQuantity: 0,
+				})
 
 				// itemClaimReq.Users = append(itemClaimReq.Users[:idx], itemClaimReq.Users[idx+1:]...)
 
-				// tempItemQuantity -= user.Quantity
+				tempItemQuantity -= user.Quantity
 			} else {
-				// userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
-				// 	ItemID:          uint(itemID), //item id
-				// 	ActualQuantity:  int(tempItemQuantity),
-				// 	MissingQuantity: int(user.Quantity - tempItemQuantity),
-				// })
+				userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
+					ItemID:          uint(itemID), //item id
+					ActualQuantity:  int(tempItemQuantity),
+					MissingQuantity: int(user.Quantity - tempItemQuantity),
+				})
 
-				// itemClaimReq.Users[idx].Quantity = user.Quantity - tempItemQuantity
+				itemClaimReq.Users[idx].Quantity = user.Quantity - tempItemQuantity
 
 				break
 			}
@@ -281,83 +278,83 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		tempNumPerHour--
 	}
 
-	if len(userAppointment) > 0 {
-		if err := c.appointmentRepo.CreateBatch(ctx, userAppointment); err != nil {
-			return err
-		}
+	// if len(userAppointment) > 0 {
+	// 	if err := c.appointmentRepo.CreateBatch(ctx, userAppointment); err != nil {
+	// 		return err
+	// 	}
 
-		for key, value := range newItemClaimReqs {
-			newItemClaimReqJSON, err := json.Marshal(value)
-			if err != nil {
-				return err
-			}
+	// 	for key, value := range newItemClaimReqs {
+	// 		newItemClaimReqJSON, err := json.Marshal(value)
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
-			//Lưu danh sách người dùng đăng kí mới vào redis
-			if err := c.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, key, string(newItemClaimReqJSON)); err != nil {
-				return err
-			}
-		}
+	// 		//Lưu danh sách người dùng đăng kí mới vào redis
+	// 		if err := c.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, key, string(newItemClaimReqJSON)); err != nil {
+	// 			return err
+	// 		}
+	// 	}
 
-		// Lọc qua danh sách các user đã được thông qua đăng kí nhận đồ và cập nhật số lượng đồ
-		for key, value := range userAppointmentItem {
-			//Lấy ra danh sách các item của user đã đăng kí dưới dạng JSON
-			userClaimReqJSON, err := c.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)))
-			if err != nil {
-				return err
-			}
+	// 	// Lọc qua danh sách các user đã được thông qua đăng kí nhận đồ và cập nhật số lượng đồ
+	// 	for key, value := range userAppointmentItem {
+	// 		//Lấy ra danh sách các item của user đã đăng kí dưới dạng JSON
+	// 		userClaimReqJSON, err := c.redisRepo.GetFromRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)))
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
-			if userClaimReqJSON == "" {
-				break
-			}
+	// 		if userClaimReqJSON == "" {
+	// 			break
+	// 		}
 
-			var (
-				userClaimReqs []warehouse.CreateClaimRequestItem
-			)
+	// 		var (
+	// 			userClaimReqs []warehouse.CreateClaimRequestItem
+	// 		)
 
-			userClaimReqMap := make(map[uint]uint, 0)
+	// 		userClaimReqMap := make(map[uint]uint, 0)
 
-			//Decode JSON thành mảng các món đồ đã đăng kí của user
-			err = json.Unmarshal([]byte(userClaimReqJSON), &userClaimReqs)
-			if err != nil {
-				return errors.New("Có lỗi khi thực hiện decode JSON: " + err.Error())
-			}
+	// 		//Decode JSON thành mảng các món đồ đã đăng kí của user
+	// 		err = json.Unmarshal([]byte(userClaimReqJSON), &userClaimReqs)
+	// 		if err != nil {
+	// 			return errors.New("Có lỗi khi thực hiện decode JSON: " + err.Error())
+	// 		}
 
-			//Lặp qua danh sách các món đồ user đã đăng kí --> Map thành danh sách số lượng các sản phẩm user đã xin, key là id của item
-			for _, user := range userClaimReqs {
-				userClaimReqMap[user.ItemID] = user.Quantity
-			}
+	// 		//Lặp qua danh sách các món đồ user đã đăng kí --> Map thành danh sách số lượng các sản phẩm user đã xin, key là id của item
+	// 		for _, user := range userClaimReqs {
+	// 			userClaimReqMap[user.ItemID] = user.Quantity
+	// 		}
 
-			//Lặp qua danh sách các item_appointment và cập nhật lại số lượng trong map số lượng hiện tại
-			for _, item := range value {
-				if item.MissingQuantity == 0 {
-					delete(userClaimReqMap, item.ItemID)
-				} else {
-					userClaimReqMap[item.ItemID] = uint(item.MissingQuantity)
-				}
-			}
+	// 		//Lặp qua danh sách các item_appointment và cập nhật lại số lượng trong map số lượng hiện tại
+	// 		for _, item := range value {
+	// 			if item.MissingQuantity == 0 {
+	// 				delete(userClaimReqMap, item.ItemID)
+	// 			} else {
+	// 				userClaimReqMap[item.ItemID] = uint(item.MissingQuantity)
+	// 			}
+	// 		}
 
-			currentUserClaimReqs := make([]warehouse.CreateClaimRequestItem, 0)
+	// 		currentUserClaimReqs := make([]warehouse.CreateClaimRequestItem, 0)
 
-			//Lặp qua map và lưu lại danh sách các món đồ user chưa được nhận
-			for idx, quantity := range userClaimReqMap {
-				currentUserClaimReqs = append(currentUserClaimReqs, warehouse.CreateClaimRequestItem{
-					ItemID:   idx,
-					Quantity: quantity,
-				})
-			}
+	// 		//Lặp qua map và lưu lại danh sách các món đồ user chưa được nhận
+	// 		for idx, quantity := range userClaimReqMap {
+	// 			currentUserClaimReqs = append(currentUserClaimReqs, warehouse.CreateClaimRequestItem{
+	// 				ItemID:   idx,
+	// 				Quantity: quantity,
+	// 			})
+	// 		}
 
-			//Encode mảng các món đồ của user đăng kí hiện tại(sau khi tính toán)
-			currentUserClaimReqsJSON, err := json.Marshal(currentUserClaimReqs)
-			if err != nil {
-				return errors.New("Có lỗi khi thực hiện encode JSON: " + err.Error())
-			}
+	// 		//Encode mảng các món đồ của user đăng kí hiện tại(sau khi tính toán)
+	// 		currentUserClaimReqsJSON, err := json.Marshal(currentUserClaimReqs)
+	// 		if err != nil {
+	// 			return errors.New("Có lỗi khi thực hiện encode JSON: " + err.Error())
+	// 		}
 
-			//Lưu vào redis
-			if err := c.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)), string(currentUserClaimReqsJSON)); err != nil {
-				return err
-			}
-		}
-	}
+	// 		//Lưu vào redis
+	// 		if err := c.redisRepo.SetToRedisHash(ctx, enums.UserClaimRequest, "user:"+strconv.Itoa(int(key)), string(currentUserClaimReqsJSON)); err != nil {
+	// 			return err
+	// 		}
+	// 	}
+	// }
 
 	return nil
 }
