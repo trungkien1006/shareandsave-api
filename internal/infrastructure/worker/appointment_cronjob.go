@@ -14,7 +14,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/rickar/cal/v2"
@@ -195,36 +194,36 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 
 		log.Println("Error: " + key)
 
-		itemIDStr := strings.Split(key, ":")[1]
+		// itemIDStr := strings.Split(key, ":")[1]
 		// itemIDStr := "4"
 
-		itemID, _ := strconv.Atoi(itemIDStr)
+		// itemID, _ := strconv.Atoi(itemIDStr)
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
 		tempitemClaimReqUsers := itemClaimReq.Users
 
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
-		for idx, user := range tempitemClaimReqUsers {
+		for _, user := range tempitemClaimReqUsers {
 
 			if tempItemQuantity >= user.Quantity {
-				userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
-					ItemID:          uint(itemID), //item id
-					ActualQuantity:  int(user.Quantity),
-					MissingQuantity: 0,
-				})
+				// userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
+				// 	ItemID:          uint(itemID), //item id
+				// 	ActualQuantity:  int(user.Quantity),
+				// 	MissingQuantity: 0,
+				// })
 
-				itemClaimReq.Users = append(itemClaimReq.Users[:idx], itemClaimReq.Users[idx+1:]...)
+				// itemClaimReq.Users = append(itemClaimReq.Users[:idx], itemClaimReq.Users[idx+1:]...)
 
-				tempItemQuantity -= user.Quantity
+				// tempItemQuantity -= user.Quantity
 			} else {
-				userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
-					ItemID:          uint(itemID), //item id
-					ActualQuantity:  int(tempItemQuantity),
-					MissingQuantity: int(user.Quantity - tempItemQuantity),
-				})
+				// userAppointmentItem[user.ID] = append(userAppointmentItem[user.ID], appointment.AppointmentItem{
+				// 	ItemID:          uint(itemID), //item id
+				// 	ActualQuantity:  int(tempItemQuantity),
+				// 	MissingQuantity: int(user.Quantity - tempItemQuantity),
+				// })
 
-				itemClaimReq.Users[idx].Quantity = user.Quantity - tempItemQuantity
+				// itemClaimReq.Users[idx].Quantity = user.Quantity - tempItemQuantity
 
 				break
 			}
