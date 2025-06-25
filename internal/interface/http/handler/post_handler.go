@@ -31,6 +31,7 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Param sort query string false "Sort column" example(authorName, title, createdAt)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
 // @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
+// @Param postOf query int false "Post of (1: client, 2: admin)"
 // @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
 // @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
@@ -65,6 +66,7 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 	domainReq.Sort = req.Sort
 	domainReq.Order = req.Order
 	domainReq.Status = int(req.Status)
+	domainReq.PostOf = req.PostOf
 	domainReq.Type = int(req.Type)
 	domainReq.SearchBy = req.SearchBy
 	domainReq.SearchValue = req.SearchValue

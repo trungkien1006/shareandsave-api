@@ -2493,6 +2493,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "Post of (1: client, 2: admin)",
+                        "name": "postOf",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
                         "name": "type",
                         "in": "query"
@@ -6486,6 +6492,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "code": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {

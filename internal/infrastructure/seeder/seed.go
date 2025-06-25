@@ -144,6 +144,10 @@ func (s *Seeder) seedSetting() error {
 			Key:   "endAfternoonTime",
 			Value: endAfternoonTime.String(),
 		},
+		{
+			Key:   "domain",
+			Value: "http://34.142.168.171:8000/",
+		},
 	}
 
 	for _, value := range settings {

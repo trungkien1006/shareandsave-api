@@ -49,6 +49,7 @@ func ItemWarehouseDomainToDTO(domain warehouse.ItemWareHouse) ItemWareHouseDTO {
 		Code:         domain.Code,
 		Description:  domain.Description,
 		Status:       domain.Status,
+		CreatedAt:    domain.CreatedAt,
 	}
 }
 

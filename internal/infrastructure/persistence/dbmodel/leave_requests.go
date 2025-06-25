@@ -2,6 +2,7 @@ package dbmodel
 
 import (
 	leaverequests "final_project/internal/domain/leave_requests"
+	"final_project/internal/pkg/enums"
 	"time"
 
 	"gorm.io/gorm"
@@ -27,8 +28,28 @@ type LeaveRequests struct {
 // DB to Domain
 func LeaveReqDBToDomain(db LeaveRequests) leaverequests.LeaveRequest {
 	return leaverequests.LeaveRequest{
-		ID:       db.ID,
-		UserID:   db.UserID,
-		UserName: db.User.FullName,
+		ID:        db.ID,
+		UserID:    db.UserID,
+		UserName:  db.User.FullName,
+		LeaveType: enums.LeaveRequestType(db.LeaveType),
+		Reason:    db.Reason,
+		StartDate: db.StartDate,
+		EndDate:   db.EndDate,
+		TotalDays: db.TotalDays,
+		CreatedAt: db.CreatedAt,
+	}
+}
+
+// Domain to DB
+func LeaveReqDomainToDB(domain leaverequests.LeaveRequest) LeaveRequests {
+	return LeaveRequests{
+		ID:        domain.ID,
+		UserID:    domain.UserID,
+		LeaveType: int(domain.LeaveType),
+		Reason:    domain.Reason,
+		StartDate: domain.StartDate,
+		EndDate:   domain.EndDate,
+		TotalDays: domain.TotalDays,
+		CreatedAt: domain.CreatedAt,
 	}
 }

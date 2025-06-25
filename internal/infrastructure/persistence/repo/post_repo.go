@@ -21,7 +21,7 @@ func NewPostRepoDB(db *gorm.DB) *PostRepoDB {
 	return &PostRepoDB{db: db}
 }
 
-func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest, userID uint) (int, error) {
+func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest, userID uint, clientID uint) (int, error) {
 	var (
 		query  *gorm.DB
 		dbPost []dbmodel.AdminPost
@@ -45,6 +45,14 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 			) AS is_interested`,
 			userID,
 		)
+
+	if filter.PostOf != 0 {
+		if filter.PostOf == 1 {
+			query.Where("author.role_id = ?", clientID)
+		} else {
+			query.Where("author.role_id != ?", clientID)
+		}
+	}
 
 	if filter.SearchBy != "" && filter.SearchValue != "" {
 		column := strcase.ToSnake(filter.SearchBy) // "fullName" -> "full_name"

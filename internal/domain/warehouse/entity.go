@@ -42,6 +42,7 @@ type ItemWareHouse struct {
 	Code         string
 	Description  string
 	Status       int
+	CreatedAt    time.Time
 }
 
 type ItemOldStock struct {

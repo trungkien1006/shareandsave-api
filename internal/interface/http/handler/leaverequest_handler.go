@@ -14,9 +14,9 @@ func NewLeaveRequestsHandler(uc *leaverequestapp.UseCase) *LeaveRequestsHandler 
 
 // func (h *LeaveRequestsHandler) GetAll(c *gin.Context) {
 // 	var (
-// 		req            leaverequestdto.GetAllLeaveRequestRequest
-// 		domainLeaveReq leaverequests.LeaveRequest
-// 		domainFilter   filter.FilterRequest
+// 		req             leaverequestdto.GetAllLeaveRequestRequest
+// 		domainLeaveReqs []leaverequests.LeaveRequest
+// 		domainFilter    filter.FilterRequest
 // 	)
 
 // 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -32,4 +32,25 @@ func NewLeaveRequestsHandler(uc *leaverequestapp.UseCase) *LeaveRequestsHandler 
 // 	domainFilter.Order = req.Order
 // 	domainFilter.SearchBy = req.SearchBy
 // 	domainFilter.SearchValue = req.SearchValue
+
+// 	totalPage, err := h.uc.GetAllLeaveRequest(c.Request.Context(), &domainLeaveReqs, domainFilter)
+// 	if err != nil {
+// 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+// 		return
+// 	}
+
+// 	leaveRequestDTORes := make([]leaverequestdto.LeaveRequestDTO, 0)
+
+// 	for _, value := range domainLeaveReqs {
+// 		leaveRequestDTORes = append(leaveRequestDTORes, leaverequestdto.LeaveRequestDomainToDTO(value))
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"code":    http.StatusOK,
+// 		"message": "Fetched leave requests successfully",
+// 		"data": leaverequestdto.GetLeaveRequestResponse{
+// 			LeaveRequests: leaveRequestDTORes,
+// 			TotalPage:     totalPage,
+// 		},
+// 	})
 // }

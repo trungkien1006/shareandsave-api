@@ -135,13 +135,13 @@ func (uc *UseCase) Login(ctx context.Context, domainAuthLogin auth.AuthLogin, JW
 func (uc *UseCase) Logout(ctx context.Context, userID uint, device string, isAdmin bool) error {
 	// Xóa key user:{userID}:{device}
 	if err := uc.redisRepo.DeleteFromRedis(ctx, "user:"+strconv.Itoa(int(userID))+":"+device); err != nil {
-		return err
+		return nil
 	}
 
 	if isAdmin {
 		// Xóa key permission:user:{userID}
 		if err := uc.redisRepo.DeleteFromRedis(ctx, "permission:user:"+strconv.Itoa(int(userID))); err != nil {
-			return err
+			return nil
 		}
 	}
 

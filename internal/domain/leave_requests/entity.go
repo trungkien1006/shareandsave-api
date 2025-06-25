@@ -1,12 +1,15 @@
 package leaverequests
 
-import "time"
+import (
+	"final_project/internal/pkg/enums"
+	"time"
+)
 
 type LeaveRequest struct {
 	ID        int
 	UserID    int
 	UserName  string
-	LeaveType int
+	LeaveType enums.LeaveRequestType
 	Reason    string
 	StartDate time.Time
 	EndDate   time.Time

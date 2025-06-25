@@ -88,12 +88,12 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time)
 		if calendar.IsWorkday(tomorrow) {
 			fmt.Println(tomorrow.String() + " là ngày làm việc")
 
-			isInLeaveTime, err := c.leaveReqRepo.IsInLeaveRequest(ctx, tomorrow)
+			haveAppointment, err := c.appointmentRepo.IsInDay(ctx, tomorrow)
 			if err != nil {
-				return today, err
+				return tomorrow, err
 			}
 
-			if !isInLeaveTime {
+			if !haveAppointment {
 				return tomorrow, nil
 			}
 		} else if cal.IsWeekend(tomorrow) {

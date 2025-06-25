@@ -1973,6 +1973,8 @@ definitions:
         type: string
       code:
         type: string
+      createdAt:
+        type: string
       description:
         type: string
       id:
@@ -3703,6 +3705,10 @@ paths:
         in: query
         name: status
         type: string
+      - description: 'Post of (1: client, 2: admin)'
+        in: query
+        name: postOf
+        type: integer
       - description: GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4
         in: query
         name: type

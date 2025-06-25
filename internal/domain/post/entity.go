@@ -114,6 +114,7 @@ type AdminPostFilterRequest struct {
 	Sort        string
 	Order       string
 	Status      int
+	PostOf      int
 	Type        int
 	SearchBy    string
 	SearchValue string

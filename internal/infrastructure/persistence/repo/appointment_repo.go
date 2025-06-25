@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/appointment"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -113,7 +114,20 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 	return nil
 }
 
-// func (r *AppointmentRepoDB)
+func (r *AppointmentRepoDB) IsInDay(ctx context.Context, day time.Time) (bool, error) {
+	var count int64
+
+	err := r.db.WithContext(ctx).
+		Model(&dbmodel.Appointment{}).
+		Where("start_time <= ? AND end_time >= ?", day, day).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
 
 func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[uint]appointment.Appointment) error {
 	var (

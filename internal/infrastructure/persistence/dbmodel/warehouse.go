@@ -70,6 +70,7 @@ func ItemWarehouseDBToDomain(db ItemWarehouse) warehouse.ItemWareHouse {
 		Code:         db.Code,
 		Description:  db.Description,
 		Status:       db.Status,
+		CreatedAt:    db.CreatedAt,
 	}
 }
 

@@ -31,15 +31,15 @@ type CreatePostRequest struct {
 }
 
 type GetAdminPostRequest struct {
-	Page   int              `form:"page"`
-	Limit  int              `form:"limit"`
-	Sort   string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
-	Order  string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	Status enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2 3"`
-	// PostOf      int              `form:"postOf" binding:"omitempty,oneof=0 1 2"`
-	Type        enums.PostType `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
-	SearchBy    string         `form:"searchBy" binding:"omitempty,oneof=title authorName"`
-	SearchValue string         `form:"searchValue"`
+	Page        int              `form:"page"`
+	Limit       int              `form:"limit"`
+	Sort        string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
+	Order       string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
+	Status      enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2 3"`
+	PostOf      int              `form:"postOf" binding:"omitempty,oneof=0 1 2"`
+	Type        enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
+	SearchBy    string           `form:"searchBy" binding:"omitempty,oneof=title authorName"`
+	SearchValue string           `form:"searchValue"`
 }
 
 type GetPostRequest struct {

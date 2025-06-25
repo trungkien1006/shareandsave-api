@@ -10,6 +10,7 @@ import (
 	"final_project/internal/domain/user"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -22,9 +23,17 @@ type UseCase struct {
 	roleRepo     rolepermission.Repository
 	itemRepo     item.Repository
 	categoryRepo category.Repository
+	clientID     uint
 }
 
 func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository, categoryRepo category.Repository) *UseCase {
+	ctx := context.Background()
+
+	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
+	if err != nil {
+		fmt.Println("Có lỗi khi set clientID cho user usecase: " + err.Error())
+	}
+
 	return &UseCase{
 		repo:         r,
 		service:      service,
@@ -32,11 +41,12 @@ func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermis
 		roleRepo:     roleRepo,
 		itemRepo:     itemRepo,
 		categoryRepo: categoryRepo,
+		clientID:     uint(clientID),
 	}
 }
 
 func (uc *UseCase) GetAllAdminPost(ctx context.Context, posts *[]post.Post, filter post.AdminPostFilterRequest, userID uint) (int, error) {
-	totalPage, err := uc.repo.AdminGetAll(ctx, posts, filter, userID)
+	totalPage, err := uc.repo.AdminGetAll(ctx, posts, filter, userID, uc.clientID)
 
 	if err != nil {
 		return 0, err
