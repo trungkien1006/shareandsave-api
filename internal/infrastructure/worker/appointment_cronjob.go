@@ -12,6 +12,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -191,6 +192,8 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		if err != nil {
 			return err
 		}
+
+		log.Println("Error: " + key)
 
 		itemIDStr := strings.Split(key, ":")[1]
 
