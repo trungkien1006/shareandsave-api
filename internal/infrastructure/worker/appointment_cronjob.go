@@ -124,9 +124,17 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		// endAfternoonTime        time.Time
 	)
 
-	appointmentDay, _ = c.checkValidDay(ctx, appointmentDay)
+	var err error
 
-	numPerHour, _ = strconv.Atoi(settings["numPerHour"])
+	appointmentDay, err = c.checkValidDay(ctx, appointmentDay)
+	if err != nil {
+		return err
+	}
+
+	numPerHour, err = strconv.Atoi(settings["numPerHour"])
+	if err != nil {
+		return err
+	}
 
 	startMorningTime, err := helpers.ParseToTime(settings["startMorningTime"])
 	if err != nil {
