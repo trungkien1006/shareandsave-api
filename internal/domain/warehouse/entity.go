@@ -20,6 +20,7 @@ type Warehouse struct {
 type DetailWarehouse struct {
 	ID              uint
 	ItemID          uint
+	MaxClaim        int
 	ImportInvoiceID uint
 	SenderName      string
 	ReceiverName    string
@@ -37,6 +38,7 @@ type ItemWareHouse struct {
 	ID           uint
 	ItemID       uint
 	ItemName     string
+	MaxClaim     int
 	CategoryName string
 	WarehouseID  uint
 	Code         string
@@ -53,6 +55,7 @@ type ItemOldStock struct {
 	CategoryName      string
 	Quantity          uint
 	ClaimItemRequests uint
+	MaxClaim          uint
 }
 
 type MyClaimRequest struct {
@@ -65,6 +68,7 @@ type MyClaimRequest struct {
 
 type ClaimRequestItem struct {
 	ItemQuantity uint
+	MaxClaim     uint
 	Users        []ClaimRequestUser
 }
 
@@ -97,6 +101,7 @@ type GetItemOldStockFilter struct {
 }
 
 type ItemQuantity struct {
+	MaxClaim uint  `gorm:"column:max_claim"`
 	ItemID   uint  `gorm:"column:item_id"`
 	Quantity int64 `gorm:"column:quantity"`
 }

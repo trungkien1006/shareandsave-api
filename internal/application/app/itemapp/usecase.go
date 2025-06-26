@@ -2,20 +2,25 @@ package itemapp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/item"
+	"final_project/internal/domain/redis"
+	"final_project/internal/domain/warehouse"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"os"
+	"strconv"
 )
 
 type UseCase struct {
-	repo item.Repository
+	repo      item.Repository
+	redisRepo redis.Repository
 }
 
-func NewUseCase(r item.Repository) *UseCase {
-	return &UseCase{repo: r}
+func NewUseCase(r item.Repository, redisRepo redis.Repository) *UseCase {
+	return &UseCase{repo: r, redisRepo: redisRepo}
 }
 
 func (uc *UseCase) GetAllItem(ctx context.Context, items *[]item.Item, domainReq filter.FilterRequest) (int, error) {
@@ -75,6 +80,31 @@ func (uc *UseCase) UpdateItem(ctx context.Context, domainItem *item.Item) error 
 
 	if domainItem.MaxClaim != 0 {
 		updateItem.MaxClaim = domainItem.MaxClaim
+
+		itemClaimJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(domainItem.ID)))
+		if err != nil {
+			return errors.New("Có lỗi khi lấy dữ liệu từ Redis: " + err.Error())
+		}
+
+		if itemClaimJSON != "" {
+			var itemClaims warehouse.ClaimRequestItem
+
+			err = json.Unmarshal([]byte(itemClaimJSON), &itemClaims)
+			if err != nil {
+				return errors.New("Có lỗi khi decode JSON error: " + err.Error())
+			}
+
+			itemClaims.MaxClaim = uint(domainItem.MaxClaim)
+
+			newItemClaimJSON, err := json.Marshal(itemClaims)
+			if err != nil {
+				return errors.New("Có lỗi khi encode JSON error: " + err.Error())
+			}
+
+			if err := uc.redisRepo.SetToRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(domainItem.ID)), string(newItemClaimJSON)); err != nil {
+				return err
+			}
+		}
 	}
 
 	updateItem.ID = domainItem.ID

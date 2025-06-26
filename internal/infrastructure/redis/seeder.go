@@ -64,6 +64,7 @@ func (s *RedisSeeder) seedItemOldStock(ctx context.Context) {
 	for _, value := range itemOldStocks {
 		itemClaims := warehouse.ClaimRequestItem{
 			ItemQuantity: uint(value.Quantity),
+			MaxClaim:     uint(value.MaxClaim),
 			Users:        make([]warehouse.ClaimRequestUser, 0),
 		}
 

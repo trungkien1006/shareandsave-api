@@ -80,6 +80,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 		}
 
 		importInvoice.ItemImportInvoice[key].ItemName = item.Name
+		importInvoice.ItemImportInvoice[key].MaxClaim = item.MaxClaim
 	}
 
 	// Gom nhóm các món đồ thành 1 lô và tạo danh sách các món đồ thuộc lô
@@ -95,6 +96,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 
 			wh.ItemID = value.ItemID
 			wh.ItemName = value.ItemName
+			wh.MaxClaim = value.MaxClaim
 			wh.SKU = uc.service.GenerateSKU(int(value.ItemID))
 			wh.Classify = importInvoice.Classify
 			wh.Description = ""
@@ -115,6 +117,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 			itemWHs = append(itemWHs, warehouse.ItemWareHouse{
 				ItemID:      value.ItemID,
 				ItemName:    value.ItemName,
+				MaxClaim:    value.MaxClaim,
 				Description: value.Description,
 				Code:        itemCode,
 				Status:      int(enums.ItemWarehouseStatusInStock),
@@ -147,12 +150,15 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 
 		var itemClaim warehouse.ClaimRequestItem
 
-		err = json.Unmarshal([]byte(itemClaimJSON), &itemClaim)
-		if err != nil {
-			return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map, decode JSON error: " + err.Error())
+		if itemClaimJSON == "" {
+			err = json.Unmarshal([]byte(itemClaimJSON), &itemClaim)
+			if err != nil {
+				return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map, decode JSON error: " + err.Error())
+			}
 		}
 
 		itemClaim.ItemQuantity += uint(value.Quantity)
+		itemClaim.MaxClaim = uint(value.MaxClaim)
 
 		newItemClaimJSON, err := json.Marshal(itemClaim)
 		if err != nil {

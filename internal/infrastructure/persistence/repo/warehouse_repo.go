@@ -321,8 +321,9 @@ func (r *WarehouseRepoDB) GetSKUByItemWarehouseID(ctx context.Context, itemWareh
 func (r *WarehouseRepoDB) GetItemsQuantity(ctx context.Context, result *[]warehouse.ItemQuantity) error {
 	if err := r.db.Debug().WithContext(ctx).
 		Table("item_warehouse AS iw").
-		Select("iw.item_id AS item_id, COUNT(iw.id) AS quantity").
+		Select("iw.item_id AS item_id, item.max_claim as max_claim, COUNT(iw.id) AS quantity").
 		Joins("JOIN warehouse as w ON w.id = iw.warehouse_id").
+		Joins("JOIN item ON item.id = iw.item_id").
 		Where("w.classify = ?", enums.ItemClassifyOlItem).
 		Where("iw.status = ?", enums.ItemWarehouseStatusInStock).
 		Group("iw.item_id").

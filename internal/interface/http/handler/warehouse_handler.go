@@ -200,7 +200,8 @@ func (h *WarehouseHandler) GetAllItemOldStock(c *gin.Context) {
 	}
 
 	for key, value := range claimRequestCounts {
-		domainItems[key].ClaimItemRequests = value
+		domainItems[key].ClaimItemRequests = uint(len(value.Users))
+		domainItems[key].MaxClaim = uint(value.MaxClaim)
 	}
 
 	itemOldStockDTORes := make([]warehousedto.ItemOldStockDTO, 0)

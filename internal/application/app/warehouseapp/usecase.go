@@ -44,13 +44,13 @@ func (uc *UseCase) GetAllItemWarehouse(ctx context.Context, warehouses *[]wareho
 	return totalPage, nil
 }
 
-func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter) ([]uint, int, error) {
+func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.ItemOldStock, filter warehouse.GetItemOldStockFilter) ([]warehouse.ClaimRequestItem, int, error) {
 	totalPage, err := uc.repo.GetAllOldStockItem(ctx, items, filter)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	var claimRequestCounts []uint
+	var claimRequestCounts []warehouse.ClaimRequestItem
 
 	for _, value := range *items {
 		claimRequestStr, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(value.ItemID)))
@@ -66,9 +66,9 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 				return nil, 0, errors.New("Có lỗi khi giải mã JSON: " + err.Error())
 			}
 
-			claimRequestCounts = append(claimRequestCounts, uint(len(claimRequestItems.Users)))
+			claimRequestCounts = append(claimRequestCounts, claimRequestItems)
 		} else {
-			claimRequestCounts = append(claimRequestCounts, 0)
+			claimRequestCounts = append(claimRequestCounts, warehouse.ClaimRequestItem{})
 		}
 	}
 
@@ -147,6 +147,10 @@ func (uc *UseCase) CreateClaimRequest(ctx context.Context, claimReqs []warehouse
 
 		if value.Quantity > itemClaims.ItemQuantity {
 			return errors.New("Số lượng đồ đạc còn lại không đủ cho yêu cầu nhận: số lượng còn lại là " + strconv.Itoa(int(itemClaims.ItemQuantity)) + ", số lượng bạn muốn nhận là " + strconv.Itoa(int(value.Quantity)))
+		}
+
+		if value.Quantity > itemClaims.MaxClaim {
+			return errors.New("Số lượng đồ đạc bạn đăng kí nhận không hợp lệ: số lượng tối đa có thể nhận là " + strconv.Itoa(int(itemClaims.MaxClaim)) + " hoặc <= 0")
 		}
 
 		itemClaims.Users = append(itemClaims.Users, warehouse.ClaimRequestUser{
@@ -231,6 +235,10 @@ func (uc *UseCase) ModifyClaimRequest(ctx context.Context, domain warehouse.Modi
 		if value.ID == userID {
 			if domain.NewQuatity <= 0 && domain.NewQuatity > itemClaims.ItemQuantity {
 				return errors.New("Số lượng đồ đạc bạn đăng kí nhận không hợp lệ: > số lượng có sẵn hoặc <= 0")
+			}
+
+			if domain.NewQuatity > itemClaims.MaxClaim {
+				return errors.New("Số lượng đồ đạc bạn đăng kí nhận không hợp lệ: số lượng tối đa có thể nhận là " + strconv.Itoa(int(itemClaims.MaxClaim)) + " hoặc <= 0")
 			}
 
 			itemClaims.Users[key].Quantity = domain.NewQuatity

@@ -63,6 +63,7 @@ func ItemOldStockDomainToDTO(domain warehouse.ItemOldStock) ItemOldStockDTO {
 		Description:       domain.Description,
 		Quantity:          domain.Quantity,
 		ClaimItemRequests: domain.ClaimItemRequests,
+		MaxClaim:          domain.MaxClaim,
 	}
 }
 

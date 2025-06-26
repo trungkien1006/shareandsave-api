@@ -26,6 +26,7 @@ type ItemImportInvoice struct {
 	InvoiceID   int
 	ItemID      uint
 	ItemName    string
+	MaxClaim    int
 	Quantity    int8
 	Description string
 }

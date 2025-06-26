@@ -53,6 +53,7 @@ type ItemOldStockDTO struct {
 	CategoryName      string `json:"categoryName"`
 	Quantity          uint   `json:"quantity"`
 	ClaimItemRequests uint   `json:"claimItemRequests"`
+	MaxClaim          uint   `json:"maxClaim"`
 }
 
 type MyClaimRequestDTO struct {
