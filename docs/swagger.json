@@ -5395,6 +5395,9 @@
         "postdto.InterestDTO": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -5403,6 +5406,9 @@
                 },
                 "status": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 },
                 "userAvatar": {
                     "type": "string"

@@ -38,12 +38,14 @@ type DetailPostItemDTO struct {
 }
 
 type InterestDTO struct {
-	ID         uint   `json:"id"`
-	UserID     uint   `json:"userID"`
-	UserName   string `json:"userName"`
-	UserAvatar string `json:"userAvatar"`
-	PostID     uint   `json:"postID"`
-	Status     int    `json:"status"`
+	ID         uint      `json:"id"`
+	UserID     uint      `json:"userID"`
+	UserName   string    `json:"userName"`
+	UserAvatar string    `json:"userAvatar"`
+	PostID     uint      `json:"postID"`
+	Status     int       `json:"status"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
 type DetailPostDTO struct {

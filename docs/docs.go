@@ -5402,6 +5402,9 @@ const docTemplate = `{
         "postdto.InterestDTO": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -5410,6 +5413,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
                 },
                 "userAvatar": {
                     "type": "string"

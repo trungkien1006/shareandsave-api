@@ -54,6 +54,8 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 			UserAvatar: value.UserAvatar,
 			PostID:     value.PostID,
 			Status:     value.Status,
+			CreatedAt:  value.CreatedAt,
+			UpdatedAt:  value.UpdatedAt,
 		})
 	}
 

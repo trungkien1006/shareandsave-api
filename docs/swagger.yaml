@@ -1125,12 +1125,16 @@ definitions:
     type: object
   postdto.InterestDTO:
     properties:
+      createdAt:
+        type: string
       id:
         type: integer
       postID:
         type: integer
       status:
         type: integer
+      updatedAt:
+        type: string
       userAvatar:
         type: string
       userID:

@@ -134,6 +134,8 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 			UserAvatar: value.User.Avatar,
 			PostID:     value.PostID,
 			Status:     value.Status,
+			CreatedAt:  value.CreatedAt,
+			UpdatedAt:  value.UpdatedAt,
 		})
 	}
 

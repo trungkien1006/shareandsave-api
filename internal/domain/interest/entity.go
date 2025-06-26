@@ -14,6 +14,7 @@ type Interest struct {
 	NewMessageIsRead   uint
 	MessageFromID      uint
 	CreatedAt          time.Time
+	UpdatedAt          time.Time
 }
 
 type PendingTransaction struct {
