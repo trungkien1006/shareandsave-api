@@ -84,9 +84,7 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, categorydto.CreateCategoryResponseWrapper{
 		Code:    http.StatusCreated,
 		Message: "Created category successfully",
-		Data: categorydto.CreateCategoryResponse{
-			Category: categorydto.CateDomainToDTO(domainCategory),
-		},
+		Data:    gin.H{},
 	})
 }
 
@@ -133,6 +131,39 @@ func (h *CategoryHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, categorydto.UpdateCategoryResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Updated category successfully",
+		Data:    gin.H{},
+	})
+}
+
+// @Summary Delete category
+// @Description API xóa một danh mục đồ đạc
+// @Security BearerAuth
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param categoryID path int true "Category ID"
+// @Success 200 {object} categorydto.UpdateCategoryResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /categories/{categoryID} [delete]
+func (h *CategoryHandler) Delete(c *gin.Context) {
+	categoryID, err := strconv.Atoi(c.Param("categoryID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.DeleteCategory(c.Request.Context(), uint(categoryID)); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, categorydto.UpdateCategoryResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Deleted category successfully",
 		Data:    gin.H{},
 	})
 }

@@ -12,14 +12,10 @@ type GetCategoryResponseWrapper struct {
 	Data    GetCategoryResponse `json:"data"`
 }
 
-type CreateCategoryResponse struct {
-	Category CategoryDTO `json:"category"`
-}
-
 type CreateCategoryResponseWrapper struct {
-	Code    int                    `json:"code"`
-	Message string                 `json:"message"`
-	Data    CreateCategoryResponse `json:"data"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type UpdateCategoryResponseWrapper struct {

@@ -36,3 +36,11 @@ func (uc *UseCase) UpdateCategory(ctx context.Context, category *category.Catego
 
 	return nil
 }
+
+func (uc *UseCase) DeleteCategory(ctx context.Context, categoryID uint) error {
+	if err := uc.repo.Delete(ctx, categoryID); err != nil {
+		return err
+	}
+
+	return nil
+}

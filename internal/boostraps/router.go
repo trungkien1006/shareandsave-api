@@ -230,6 +230,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/categories", categoryHandler.GetAll)
 		v1.POST("/categories", middlewares.AuthGuard, categoryHandler.Create)
 		v1.PATCH("/categories/:categoryID", middlewares.AuthGuard, categoryHandler.Update)
+		v1.DELETE("/categories/:categoryID", middlewares.AuthGuard, categoryHandler.Delete)
 
 		//interest API
 		v1.GET("/interests", middlewares.AuthGuard, interestHandler.GetAll)

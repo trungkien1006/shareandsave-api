@@ -213,17 +213,11 @@ definitions:
     required:
     - name
     type: object
-  categorydto.CreateCategoryResponse:
-    properties:
-      category:
-        $ref: '#/definitions/categorydto.CategoryDTO'
-    type: object
   categorydto.CreateCategoryResponseWrapper:
     properties:
       code:
         type: integer
-      data:
-        $ref: '#/definitions/categorydto.CreateCategoryResponse'
+      data: {}
       message:
         type: string
     type: object
@@ -2456,6 +2450,36 @@ paths:
       tags:
       - categories
   /categories/{categoryID}:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa một danh mục đồ đạc
+      parameters:
+      - description: Category ID
+        in: path
+        name: categoryID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categorydto.UpdateCategoryResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Delete category
+      tags:
+      - categories
     patch:
       consumes:
       - application/json

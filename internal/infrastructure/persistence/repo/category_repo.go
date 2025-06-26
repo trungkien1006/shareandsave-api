@@ -38,6 +38,24 @@ func (r *CategoryRepoDB) Update(ctx context.Context, category *category.Category
 	return nil
 }
 
+func (r *CategoryRepoDB) Delete(ctx context.Context, categoryID uint) error {
+	var itemCount int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("category_id = ?", categoryID).Count(&itemCount).Error; err != nil {
+		return errors.New("Có lỗi khi kiểm tra số lượng item: " + err.Error())
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa loại đồ đạc vì còn item liên quan")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Category{}).Where("id = ?", categoryID).Delete(&dbmodel.Category{}).Error; err != nil {
+		return errors.New("Có lỗi khi xóa loại đồ đạc: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *CategoryRepoDB) GetAllCategories(ctx context.Context, categories *[]category.Category) error {
 	var dbCategories []dbmodel.Category
 
