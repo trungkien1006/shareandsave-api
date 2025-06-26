@@ -13,7 +13,7 @@ type Item struct {
 	Name        string `gorm:"unique;size:255"`
 	Description string `gorm:"type:TEXT"`
 	Image       string `gorm:"type:LONGTEXT"`
-	MaxCount    uint   `gorm:"type:INT"`
+	MaxClaim    uint   `gorm:"type:INT"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
