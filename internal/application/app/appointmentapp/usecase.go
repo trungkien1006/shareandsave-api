@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"final_project/internal/domain/appointment"
+	"strconv"
 	"time"
 )
 
@@ -78,6 +79,10 @@ func (uc *UseCase) Update(ctx context.Context, domainAppointment appointment.App
 
 func (uc *UseCase) UpdateBatch(ctx context.Context, domainAppointment []appointment.Appointment, appointmentID []uint) error {
 	updateAppointment := make([]appointment.Appointment, 0)
+
+	if len(domainAppointment) != len(appointmentID) {
+		return errors.New("Số lượng appointment và ID không khớp: " + strconv.Itoa(len(domainAppointment)) + " != " + strconv.Itoa(len(appointmentID)))
+	}
 
 	for key, value := range domainAppointment {
 		if err := uc.appointmentRepo.GetByID(ctx, &updateAppointment[key], appointmentID[key]); err != nil {
