@@ -20,3 +20,19 @@ func (uc *UseCase) GetAllCategories(ctx context.Context, categories *[]category.
 
 	return nil
 }
+
+func (uc *UseCase) CreateCategory(ctx context.Context, category *category.Category) error {
+	if err := uc.repo.Save(ctx, category); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) UpdateCategory(ctx context.Context, category *category.Category) error {
+	if err := uc.repo.Update(ctx, category); err != nil {
+		return err
+	}
+
+	return nil
+}

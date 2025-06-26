@@ -9,3 +9,10 @@ func CateDomainToDTO(domainCate category.Category) CategoryDTO {
 		Name: domainCate.Name,
 	}
 }
+
+// DTO -> Domain
+func CreateCateDTOToDomain(dtoCate CreateCategoryRequest) category.Category {
+	return category.Category{
+		Name: dtoCate.Name,
+	}
+}

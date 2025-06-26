@@ -6,6 +6,7 @@ import (
 	categorydto "final_project/internal/dto/categoryDTO"
 	"final_project/internal/pkg/enums"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,5 +49,90 @@ func (h *CategoryHandler) GetAll(c *gin.Context) {
 		Data: categorydto.GetCategoryResponse{
 			Categories: categoriesDTO,
 		},
+	})
+}
+
+// @Summary Create category
+// @Description API tạo mới một danh mục đồ đạc
+// @Security BearerAuth
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param category body categorydto.CreateCategoryRequest true "Category data"
+// @Success 201 {object} categorydto.CreateCategoryResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 409 {object} enums.AppError
+// @Router /categories [post]
+func (h *CategoryHandler) Create(c *gin.Context) {
+	var (
+		req            categorydto.CreateCategoryRequest
+		domainCategory category.Category
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	domainCategory = categorydto.CreateCateDTOToDomain(req)
+
+	if err := h.uc.CreateCategory(c.Request.Context(), &domainCategory); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusCreated, categorydto.CreateCategoryResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Created category successfully",
+		Data: categorydto.CreateCategoryResponse{
+			Category: categorydto.CateDomainToDTO(domainCategory),
+		},
+	})
+}
+
+// @Summary Update category
+// @Description API cập nhật một danh mục đồ đạc
+// @Security BearerAuth
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param categoryID path int true "Category ID"
+// @Param category body categorydto.UpdateCategoryRequest true "Category data"
+// @Success 200 {object} categorydto.UpdateCategoryResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /categories/{categoryID} [patch]
+func (h *CategoryHandler) Update(c *gin.Context) {
+	var (
+		req            categorydto.UpdateCategoryRequest
+		domainCategory category.Category
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	categoryID, err := strconv.Atoi(c.Param("categoryID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	domainCategory.ID = uint(categoryID)
+	domainCategory.Name = req.Name
+
+	if err := h.uc.UpdateCategory(c.Request.Context(), &domainCategory); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, categorydto.UpdateCategoryResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated category successfully",
+		Data:    gin.H{},
 	})
 }

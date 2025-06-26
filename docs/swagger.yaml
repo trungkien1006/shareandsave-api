@@ -206,6 +206,27 @@ definitions:
       name:
         type: string
     type: object
+  categorydto.CreateCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  categorydto.CreateCategoryResponse:
+    properties:
+      category:
+        $ref: '#/definitions/categorydto.CategoryDTO'
+    type: object
+  categorydto.CreateCategoryResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/categorydto.CreateCategoryResponse'
+      message:
+        type: string
+    type: object
   categorydto.GetCategoryResponse:
     properties:
       categories:
@@ -219,6 +240,21 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/categorydto.GetCategoryResponse'
+      message:
+        type: string
+    type: object
+  categorydto.UpdateCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  categorydto.UpdateCategoryResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
       message:
         type: string
     type: object
@@ -2386,6 +2422,74 @@ paths:
           schema:
             $ref: '#/definitions/enums.AppError'
       summary: Get categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: API tạo mới một danh mục đồ đạc
+      parameters:
+      - description: Category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/categorydto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/categorydto.CreateCategoryResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create category
+      tags:
+      - categories
+  /categories/{categoryID}:
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật một danh mục đồ đạc
+      parameters:
+      - description: Category ID
+        in: path
+        name: categoryID
+        required: true
+        type: integer
+      - description: Category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/categorydto.UpdateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categorydto.UpdateCategoryResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update category
       tags:
       - categories
   /client/appointments:

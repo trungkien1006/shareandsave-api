@@ -28,6 +28,16 @@ func (r *CategoryRepoDB) Save(ctx context.Context, category *category.Category) 
 	return nil
 }
 
+func (r *CategoryRepoDB) Update(ctx context.Context, category *category.Category) error {
+	dbCategory := dbmodel.DomainToDB(*category)
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Category{}).Where("id = ?", category.ID).Updates(&dbCategory).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật loại đồ đạc: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *CategoryRepoDB) GetAllCategories(ctx context.Context, categories *[]category.Category) error {
 	var dbCategories []dbmodel.Category
 
