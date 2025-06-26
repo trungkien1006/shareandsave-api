@@ -42,6 +42,7 @@ func ItemDBToDomain(a Item) item.Item {
 		Name:         a.Name,
 		Description:  a.Description,
 		Image:        a.Image,
+		MaxClaim:     int(a.MaxClaim),
 		CategoryID:   a.CategoryID,
 		CategoryName: a.Category.Name,
 		CreatedAt:    a.CreatedAt,

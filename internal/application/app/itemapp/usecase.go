@@ -69,6 +69,14 @@ func (uc *UseCase) UpdateItem(ctx context.Context, domainItem *item.Item) error 
 		updateItem.Description = domainItem.Description
 	}
 
+	if domainItem.CategoryID != 0 {
+		updateItem.CategoryID = domainItem.CategoryID
+	}
+
+	if domainItem.MaxClaim != 0 {
+		updateItem.MaxClaim = domainItem.MaxClaim
+	}
+
 	updateItem.ID = domainItem.ID
 
 	if domainItem.Image != "" {

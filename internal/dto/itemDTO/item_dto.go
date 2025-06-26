@@ -12,6 +12,7 @@ type ItemDTO struct {
 	Name         string    `json:"name"`
 	Description  string    `json:"description"`
 	Image        string    `json:"image"`
+	MaxClaim     int       `json:"maxClaim"`
 	CreatedAt    time.Time `json:"createdAt"`
 }
 
@@ -23,6 +24,7 @@ func ToItemDTO(item item.Item) ItemDTO {
 		Name:         item.Name,
 		Description:  item.Description,
 		Image:        item.Image,
+		MaxClaim:     item.MaxClaim,
 		CreatedAt:    item.CreatedAt,
 	}
 }

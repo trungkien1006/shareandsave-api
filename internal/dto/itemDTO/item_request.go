@@ -34,6 +34,7 @@ type CreateItemRequest struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
+	MaxClaim    int    `json:"maxClaim" binding:"required"` // Số lượng tối đa có thể claim
 }
 
 type UpdateItemRequest struct {
@@ -41,6 +42,7 @@ type UpdateItemRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
+	MaxClaim    int    `json:"maxClaim"` // Số lượng tối đa có thể claim
 }
 
 // Request dùng để delete item theo ID

@@ -201,6 +201,9 @@ definitions:
     type: object
   categorydto.CategoryDTO:
     properties:
+      createdAt:
+        description: Assuming CreatedAt is a string for simplicity, adjust as needed
+        type: string
       id:
         type: integer
       name:
@@ -817,10 +820,14 @@ definitions:
         type: string
       image:
         type: string
+      maxClaim:
+        description: Số lượng tối đa có thể claim
+        type: integer
       name:
         type: string
     required:
     - categoryID
+    - maxClaim
     - name
     type: object
   itemdto.CreateItemResponse:
@@ -890,6 +897,8 @@ definitions:
         type: integer
       image:
         type: string
+      maxClaim:
+        type: integer
       name:
         type: string
     type: object
@@ -901,6 +910,9 @@ definitions:
         type: string
       image:
         type: string
+      maxClaim:
+        description: Số lượng tối đa có thể claim
+        type: integer
       name:
         type: string
     type: object

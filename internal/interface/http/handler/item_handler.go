@@ -128,6 +128,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,
+		MaxClaim:    req.MaxClaim,
 	}
 	if err := h.uc.CreateItem(c.Request.Context(), &itm); err != nil {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
@@ -175,6 +176,7 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 		Name:        req.Name,
 		Description: req.Description,
 		Image:       req.Image,
+		MaxClaim:    req.MaxClaim,
 	}
 
 	if err := h.uc.UpdateItem(c.Request.Context(), itm); err != nil {

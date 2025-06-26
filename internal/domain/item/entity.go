@@ -9,5 +9,6 @@ type Item struct {
 	Name         string
 	Description  string
 	Image        string
+	MaxClaim     int
 	CreatedAt    time.Time
 }

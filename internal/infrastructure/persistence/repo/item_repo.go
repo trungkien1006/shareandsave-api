@@ -108,12 +108,6 @@ func (r *ItemRepoDB) GetByName(ctx context.Context, item *item.Item, name string
 	return nil
 }
 
-// func (r *ItemRepoDB) GetCategoryNameByItemID(ctx context.Context, itemID uint) (string, error) {
-// 	var item
-
-// 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Item{}).Where("id = ?", itemID).Preload("Category").Find
-// }
-
 func (r *ItemRepoDB) IsExist(ctx context.Context, itemID uint) (bool, error) {
 	var count int64
 
@@ -142,6 +136,64 @@ func (r *ItemRepoDB) Update(ctx context.Context, i *item.Item) error {
 }
 
 func (r *ItemRepoDB) Delete(ctx context.Context, i *item.Item) error {
+	var itemCount int64
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.AppointmentItem{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong phiếu hẹn")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.TransactionItem{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong giao dịch")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.ItemImportInvoice{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong phiếu nhập kho")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.ItemExportInvoice{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong phiếu xuất kho")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.PostItem{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong bài viết")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.Warehouse{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong kho")
+	}
+
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.ItemWarehouse{}).Where("item_id = ?", i.ID).Count(&itemCount).Error; err != nil {
+		return err
+	}
+
+	if itemCount > 0 {
+		return errors.New("Không thể xóa item đang được sử dụng trong chi tiết kho")
+	}
+
 	return r.db.Debug().WithContext(ctx).Delete(i).Error
 }
 

@@ -3975,6 +3975,10 @@ const docTemplate = `{
         "categorydto.CategoryDTO": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "description": "Assuming CreatedAt is a string for simplicity, adjust as needed",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -4881,6 +4885,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "categoryID",
+                "maxClaim",
                 "name"
             ],
             "properties": {
@@ -4892,6 +4897,10 @@ const docTemplate = `{
                 },
                 "image": {
                     "type": "string"
+                },
+                "maxClaim": {
+                    "description": "Số lượng tối đa có thể claim",
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -5002,6 +5011,9 @@ const docTemplate = `{
                 "image": {
                     "type": "string"
                 },
+                "maxClaim": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -5018,6 +5030,10 @@ const docTemplate = `{
                 },
                 "image": {
                     "type": "string"
+                },
+                "maxClaim": {
+                    "description": "Số lượng tối đa có thể claim",
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
