@@ -20,8 +20,9 @@ type Category struct {
 // DB -> Domain
 func DBToDomain(db Category) category.Category {
 	return category.Category{
-		ID:   db.ID,
-		Name: db.Name,
+		ID:        db.ID,
+		Name:      db.Name,
+		CreatedAt: db.CreatedAt,
 	}
 }
 
