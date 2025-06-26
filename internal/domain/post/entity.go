@@ -33,6 +33,7 @@ type CreatePost struct {
 	Info        string
 	Description string
 	Status      int8
+	IsFeatured  int8
 	Images      []string
 	Tag         []string
 	Items       []item.Item
@@ -52,6 +53,7 @@ type Post struct {
 	Description  string
 	Info         string
 	Status       int8
+	IsFeatured   int8
 	Images       []string
 	CreatedAt    time.Time
 	IsInterested bool `gorm:"-"`
@@ -80,6 +82,7 @@ type DetailPost struct {
 	Content      string
 	Info         string
 	Status       int8
+	IsFeatured   int8
 	Images       []string
 	CreatedAt    time.Time
 	Tag          []string
@@ -106,6 +109,7 @@ type PostWithCount struct {
 	ItemCount        uint
 	CurrentItemCount uint
 	IsInterest       int
+	IsFeatured       int8
 }
 
 type AdminPostFilterRequest struct {

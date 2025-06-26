@@ -1205,7 +1205,7 @@
                     },
                     {
                         "type": "string",
-                        "example": "authorName, title, createdAt",
+                        "example": "authorName, title, createdAt, isFeatured",
                         "description": "Sort column",
                         "name": "sort",
                         "in": "query"
@@ -1225,7 +1225,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "Giá trị lọc (author_name, title, tag, content)",
+                        "description": "Giá trị lọc (authorName, title, tag, content)",
                         "name": "search",
                         "in": "query"
                     }
@@ -2668,8 +2668,7 @@
                     },
                     {
                         "type": "string",
-                        "example": "authorName, title, createdAt",
-                        "description": "Sort column",
+                        "description": "Sort column (authorName title createdAt isFeatured)",
                         "name": "sort",
                         "in": "query"
                     },
@@ -2682,8 +2681,8 @@
                     },
                     {
                         "type": "string",
-                        "example": "1, 2, 3",
-                        "description": "Pending:1, Rejected:2, Approved:3",
+                        "example": "1, 2, 3, 4",
+                        "description": "Pending:1, Rejected:2, Approved:3, Seal:4",
                         "name": "status",
                         "in": "query"
                     },
@@ -2695,13 +2694,13 @@
                     },
                     {
                         "type": "integer",
-                        "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4",
+                        "description": "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, WantOldItem:4, Campaign:5, Other:6",
                         "name": "type",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Trường lọc (vd: email, fullName)",
+                        "description": "Trường lọc (title authorName isFeatured)",
                         "name": "searchBy",
                         "in": "query"
                     },
@@ -4268,20 +4267,26 @@
                 1,
                 2,
                 3,
-                4
+                4,
+                5,
+                6
             ],
             "x-enum-comments": {
                 "PostTypeAll": "0 all",
+                "PostTypeCampaign": "5 chiến dịch",
                 "PostTypeFoundItem": "2 nhặt được đồ",
                 "PostTypeGiveAwayOldItem": "1 tặng đồ cũ",
-                "PostTypeOther": "4 khác",
-                "PostTypeSeekLoseItem": "3 tìm kiếm đồ"
+                "PostTypeOther": "6 khác",
+                "PostTypeSeekLoseItem": "3 tìm kiếm đồ",
+                "PostTypeWantOldItem": "4 muốn nhận đồ cũ"
             },
             "x-enum-varnames": [
                 "PostTypeAll",
                 "PostTypeGiveAwayOldItem",
                 "PostTypeFoundItem",
                 "PostTypeSeekLoseItem",
+                "PostTypeWantOldItem",
+                "PostTypeCampaign",
                 "PostTypeOther"
             ]
         },
@@ -5127,6 +5132,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "isFeatured": {
+                    "type": "integer"
+                },
                 "isInterest": {
                     "type": "boolean"
                 },
@@ -5162,6 +5170,10 @@
                 },
                 "info": {
                     "type": "string"
+                },
+                "isFeatured": {
+                    "description": "true: featured, false: not featured",
+                    "type": "boolean"
                 },
                 "newItems": {
                     "type": "array",
@@ -5258,6 +5270,9 @@
                     "items": {
                         "$ref": "#/definitions/postdto.InterestDTO"
                     }
+                },
+                "isFeatured": {
+                    "type": "integer"
                 },
                 "items": {
                     "type": "array",
@@ -5500,6 +5515,9 @@
                 "interestCount": {
                     "type": "integer"
                 },
+                "isFeatured": {
+                    "type": "integer"
+                },
                 "isInterest": {
                     "type": "integer"
                 },
@@ -5541,6 +5559,10 @@
                         "strbase64",
                         " strbase64"
                     ]
+                },
+                "isFeatured": {
+                    "description": "true: featured, false: not featured",
+                    "type": "integer"
                 },
                 "isRepost": {
                     "type": "boolean"

@@ -28,12 +28,12 @@ func NewPostHandler(uc *postapp.UseCase) *PostHandler {
 // @Produce json
 // @Param page query int false "Current page" minimum(1) example(1)
 // @Param limit query int false "Number record of page" minimum(1) example(10)
-// @Param sort query string false "Sort column" example(authorName, title, createdAt)
+// @Param sort query string false "Sort column (authorName title createdAt isFeatured)"
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param status query string false "Pending:1, Rejected:2, Approved:3" example(1, 2, 3)
+// @Param status query string false "Pending:1, Rejected:2, Approved:3, Seal:4" example(1, 2, 3, 4)
 // @Param postOf query int false "Post of (1: client, 2: admin)"
-// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
-// @Param   searchBy   query    string  false  "Trường lọc (vd: email, fullName)"
+// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, WantOldItem:4, Campaign:5, Other:6" example(1, 2, 3, 4, 5, 6)
+// @Param   searchBy   query    string  false  "Trường lọc (title authorName isFeatured)"
 // @Param   searchValue   query    string  false  "Giá trị lọc (vd:abc@gmail.com, John Doe)"
 // @Success 200 {object} postdto.GetAdminPostResponseWrapper
 // @Failure 400 {object} enums.AppError
@@ -104,10 +104,10 @@ func (h *PostHandler) GetAllAdminPost(c *gin.Context) {
 // @Produce json
 // @Param page query int false "Current page" minimum(1) example(1)
 // @Param limit query int false "Number record of page" minimum(1) example(10)
-// @Param sort query string false "Sort column" example(authorName, title, createdAt)
+// @Param sort query string false "Sort column" example(authorName, title, createdAt, isFeatured)
 // @Param order query string false "Sort type" enum(ASC,DESC) example(ASC, DESC)
-// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4)
-// @Param   search   query    string  false  "Giá trị lọc (author_name, title, tag, content)"
+// @Param type query int false "GiveAwayOldItem:1, FoundItem:2, SeekLoseItem:3, Other:4" example(1, 2, 3, 4, 5, 6)
+// @Param   search   query    string  false  "Giá trị lọc (authorName, title, tag, content)"
 // @Success 200 {object} postdto.GetPostResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Router /client/posts [get]
@@ -355,7 +355,6 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	domainPost.AuthorID = uint(userID)
 
 	err = h.uc.CreatePost(c.Request.Context(), &domainPost)
-
 	if err != nil {
 		c.JSON(
 			http.StatusConflict,

@@ -120,6 +120,12 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 	domainPost.Slug = uc.service.GenerateSlug(domainPost.Title)
 	domainPost.AuthorName = author.FullName
 
+	if domainPost.IsFeatured != 0 {
+		domainPost.IsFeatured = 1
+	} else {
+		domainPost.IsFeatured = 0
+	}
+
 	//resize ảnh
 	for index, image := range domainPost.Images {
 		formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
@@ -250,6 +256,12 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 
 	if domainPost.Description != "" {
 		updatePost.Description = domainPost.Description
+	}
+
+	if domainPost.IsFeatured == 1 {
+		updatePost.IsFeatured = 1
+	} else {
+		updatePost.IsFeatured = 0
 	}
 
 	if isRepost {

@@ -20,6 +20,7 @@ type Post struct {
 	Status      int8        `gorm:"type:TINYINT"`
 	Image       StringArray `gorm:"type:JSON"`
 	Tag         StringArray `gorm:"type:JSON"`
+	IsFeatured  int8        `gorm:"type:TINYINT"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
@@ -60,6 +61,7 @@ func AdminPostDBToDomain(dbPost AdminPost) post.Post {
 		CreatedAt:    dbPost.CreatedAt,
 		Images:       dbPost.Image,
 		IsInterested: dbPost.IsInterest,
+		IsFeatured:   dbPost.IsFeatured,
 	}
 }
 
@@ -75,6 +77,7 @@ func PostDBToDomain(dbPost Post) post.Post {
 		Status:       dbPost.Status,
 		CreatedAt:    dbPost.CreatedAt,
 		Images:       dbPost.Image,
+		IsFeatured:   dbPost.IsFeatured,
 	}
 }
 
@@ -116,6 +119,7 @@ func PostWithCountDBToDomain(db PostWithCounts) post.PostWithCount {
 		InterestCount:    uint(len(db.Interests)),
 		ItemCount:        uint(itemCount),
 		CurrentItemCount: uint(currentItemCount),
+		IsFeatured:       db.IsFeatured,
 	}
 }
 
@@ -177,6 +181,7 @@ func DetailPostDBToDomain(db Post) post.DetailPost {
 		Tag:          domainTag,
 		Interest:     domainInterest,
 		Items:        domainPostItem,
+		IsFeatured:   db.IsFeatured,
 	}
 }
 
@@ -194,6 +199,7 @@ func AdminPostDomainToDB(domainPost post.Post) Post {
 		Status:      domainPost.Status,
 		Image:       domainPost.Images,
 		CreatedAt:   domainPost.CreatedAt,
+		IsFeatured:  domainPost.IsFeatured,
 	}
 }
 
@@ -232,6 +238,7 @@ func CreatePostDomainToDB(domainPost post.CreatePost) Post {
 		Image:       domainPost.Images,
 		Tag:         domainPost.Tag,
 		PostItem:    postItems,
+		IsFeatured:  domainPost.IsFeatured,
 	}
 }
 

@@ -36,6 +36,7 @@ func PostWithCountDomainToDTO(domain post.PostWithCount) PostWithCountDTO {
 		InterestCount:    domain.InterestCount,
 		ItemCount:        domain.ItemCount,
 		CurrentItemCount: domain.CurrentItemCount,
+		IsFeatured:       domain.IsFeatured,
 	}
 }
 
@@ -97,6 +98,7 @@ func DetailPostDomainToDTO(domain post.DetailPost) DetailPostDTO {
 		Tag:          DTOTag,
 		Interest:     DTOInterest,
 		Items:        DTOPostItem,
+		IsFeatured:   domain.IsFeatured,
 	}
 }
 
@@ -200,6 +202,7 @@ func UpdateDTOToDomain(updatePostDTO UpdatePostRequest) post.Post {
 		Description: updatePostDTO.Description,
 		Status:      int8(updatePostDTO.Status),
 		Images:      updatePostDTO.Images,
+		IsFeatured:  updatePostDTO.IsFeatured,
 	}
 }
 
@@ -212,6 +215,7 @@ func DomainAdminPostToDTO(domainPost post.Post) AdminPostDTO {
 		Title:      domainPost.Title,
 		Status:     domainPost.Status,
 		CreatedAt:  domainPost.CreatedAt,
+		IsFeatured: domainPost.IsFeatured,
 		IsInterest: domainPost.IsInterested,
 	}
 }

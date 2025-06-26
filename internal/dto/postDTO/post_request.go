@@ -25,6 +25,7 @@ type CreatePostRequest struct {
 	Title       string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
 	Info        string         `json:"info"`
 	Description string         `json:"description"`
+	IsFeatured  bool           `json:"isFeatured"` // true: featured, false: not featured
 	Images      []string       `json:"images" example:"strbase64, strbase64"`
 	OldItems    []OldItemsPost `json:"oldItems"`
 	NewItems    []NewItemsPost `json:"newItems"`
@@ -33,12 +34,12 @@ type CreatePostRequest struct {
 type GetAdminPostRequest struct {
 	Page        int              `form:"page"`
 	Limit       int              `form:"limit"`
-	Sort        string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
+	Sort        string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt isFeatured"`
 	Order       string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
 	Status      enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2 3"`
 	PostOf      int              `form:"postOf" binding:"omitempty,oneof=0 1 2"`
-	Type        enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
-	SearchBy    string           `form:"searchBy" binding:"omitempty,oneof=title authorName"`
+	Type        enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4 5 6"`
+	SearchBy    string           `form:"searchBy" binding:"omitempty,oneof=title authorName isFeatured"`
 	SearchValue string           `form:"searchValue"`
 }
 
@@ -47,7 +48,7 @@ type GetPostRequest struct {
 	Limit  int              `form:"limit"`
 	Sort   string           `form:"sort" binding:"omitempty,oneof=authorName title createdAt"`
 	Order  string           `form:"order" binding:"omitempty,oneof=ASC DESC" example:"ASC"` // Default: ASC
-	Type   enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4"`
+	Type   enums.PostType   `form:"type" binding:"omitempty,oneof=0 1 2 3 4 5 6"`
 	Status enums.PostStatus `form:"status" binding:"omitempty,oneof=0 1 2 3 4"`
 	Search string           `form:"search"`
 }
@@ -88,4 +89,5 @@ type UpdatePostRequest struct {
 	Status      enums.PostStatus `json:"status" binding:"omitempty,oneof=1 2 3 4"`
 	Images      []string         `json:"images" binding:"omitempty" example:"strbase64, strbase64"`
 	IsRepost    bool             `json:"isRepost"`
+	IsFeatured  int8             `json:"isFeatured"` // true: featured, false: not featured
 }

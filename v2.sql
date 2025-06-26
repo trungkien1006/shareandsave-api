@@ -48,6 +48,7 @@ CREATE TABLE `post` (
   `image` json DEFAULT null,
   `tag` json DEFAULT null,
   `status` tinyint,
+  `is_featured` tinyint,
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp

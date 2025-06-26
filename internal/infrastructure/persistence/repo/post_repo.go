@@ -38,6 +38,7 @@ func (r *PostRepoDB) AdminGetAll(ctx context.Context, posts *[]post.Post, filter
 			post.status,
 			post.created_at,
 			post.image,
+			post.is_featured,
 			author.full_name AS author_name,
 			author.avatar AS author_avatar,
 			EXISTS (
@@ -137,7 +138,8 @@ func (r *PostRepoDB) GetAll(ctx context.Context, posts *[]post.PostWithCount, fi
 			post.content, post.info, post.status, post.image, post.tag,
 			post.created_at, post.updated_at, post.deleted_at,
 			author.full_name, author.avatar
-		`)
+		`).
+		Order("is_featured DESC")
 
 	if filter.Search != "" {
 		tagJSON, _ := json.Marshal(filter.Search)
@@ -430,8 +432,3 @@ func (r *PostRepoDB) Delete(ctx context.Context, postID uint) error {
 
 	return nil
 }
-
-// func (r *PostRepoDB) CheckPostItemQuantityOver(ctx context.Context, postItemID uint, quantity int) error {
-
-// 	return nil
-// }
