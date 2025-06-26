@@ -76,7 +76,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//item dependency
 	itemRepo := persistence.NewItemRepoDB(db)
-	itemUC := itemapp.NewUseCase(itemRepo)
+	itemUC := itemapp.NewUseCase(itemRepo, redisRepo)
 	itemHandler := handler.NewItemHandler(itemUC)
 
 	//post dependency
