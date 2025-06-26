@@ -114,6 +114,26 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 	return nil
 }
 
+// UpdateBatch cập nhật nhiều appointment cùng lúc (theo ID)
+func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appointment.Appointment) error {
+	tx := r.db.WithContext(ctx).Begin()
+
+	for _, domainAppointment := range appointments {
+		dbAppointment := dbmodel.AppointmentDomainToDB(domainAppointment)
+		if err := tx.Model(&dbmodel.Appointment{}).
+			Where("id = ?", dbAppointment.ID).
+			Updates(&dbAppointment).Error; err != nil {
+			tx.Rollback()
+			return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+	return nil
+}
+
 func (r *AppointmentRepoDB) IsInDay(ctx context.Context, day time.Time) (bool, error) {
 	var count int64
 

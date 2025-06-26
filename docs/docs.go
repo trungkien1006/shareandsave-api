@@ -326,6 +326,55 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API cập nhật danh sách appointment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Update batch appointment",
+                "parameters": [
+                    {
+                        "description": "Update batch appointment info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointmentdto.UpdateBatchAppointmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated batch appointment successfully",
+                        "schema": {
+                            "$ref": "#/definitions/appointmentdto.UpdateAppointmentResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
             }
         },
         "/appointments/{appointmentID}": {
@@ -3804,6 +3853,27 @@ const docTemplate = `{
                 }
             }
         },
+        "appointmentdto.UpdateBatchAppointmentRequest": {
+            "type": "object",
+            "required": [
+                "appointmentIDs",
+                "appointments"
+            ],
+            "properties": {
+                "appointmentIDs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "appointments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appointmentdto.UpdateAppointmentRequest"
+                    }
+                }
+            }
+        },
         "authdto.AdminGetMeResponse": {
             "type": "object",
             "properties": {
@@ -6695,6 +6765,9 @@ const docTemplate = `{
                 },
                 "itemName": {
                     "type": "string"
+                },
+                "maxClaim": {
+                    "type": "integer"
                 },
                 "quantity": {
                     "type": "integer"

@@ -52,7 +52,12 @@ type GetAppointmentByIDRequest struct {
 }
 
 type UpdateAppointmentRequest struct {
-	StartTime time.Time               `json:"startTime"`
-	EndTime   time.Time               `json:"endTime"`
-	Status    enums.AppointmentStatus `json:"status"`
+	StartTime time.Time               `json:"startTime" binding:"required"`
+	EndTime   time.Time               `json:"endTime" binding:"required"`
+	Status    enums.AppointmentStatus `json:"status" binding:"required"`
+}
+
+type UpdateBatchAppointmentRequest struct {
+	AppointmentIDs []uint                     `json:"appointmentIDs" binding:"required"`
+	Appointments   []UpdateAppointmentRequest `json:"appointments" binding:"required"`
 }

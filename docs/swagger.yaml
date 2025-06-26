@@ -89,6 +89,20 @@ definitions:
       message:
         type: string
     type: object
+  appointmentdto.UpdateBatchAppointmentRequest:
+    properties:
+      appointmentIDs:
+        items:
+          type: integer
+        type: array
+      appointments:
+        items:
+          $ref: '#/definitions/appointmentdto.UpdateAppointmentRequest'
+        type: array
+    required:
+    - appointmentIDs
+    - appointments
+    type: object
   authdto.AdminGetMeResponse:
     properties:
       user:
@@ -2006,6 +2020,8 @@ definitions:
         type: string
       itemName:
         type: string
+      maxClaim:
+        type: integer
       quantity:
         type: integer
     type: object
@@ -2338,6 +2354,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Get appointments
+      tags:
+      - appointments
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật danh sách appointment
+      parameters:
+      - description: Update batch appointment info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/appointmentdto.UpdateBatchAppointmentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated batch appointment successfully
+          schema:
+            $ref: '#/definitions/appointmentdto.UpdateAppointmentResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update batch appointment
       tags:
       - appointments
   /appointments/{appointmentID}:

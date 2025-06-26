@@ -225,3 +225,41 @@ func (h *AppointmentHandler) Update(c *gin.Context) {
 		Data:    gin.H{},
 	})
 }
+
+// @Summary Update batch appointment
+// @Description API cập nhật danh sách appointment
+// @Security BearerAuth
+// @Tags appointments
+// @Accept json
+// @Produce json
+// @Param request body appointmentdto.UpdateBatchAppointmentRequest true "Update batch appointment info"
+// @Success 200 {object} appointmentdto.UpdateAppointmentResponseWrapper "Updated batch appointment successfully"
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /appointments [patch]
+func (h *AppointmentHandler) UpdateBatch(c *gin.Context) {
+	var (
+		req               appointmentdto.UpdateBatchAppointmentRequest
+		domainAppointment []appointment.Appointment
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	for _, value := range req.Appointments {
+		domainAppointment = append(domainAppointment, appointmentdto.UpdateAppointmentDTOToDomain(value))
+	}
+
+	if err := h.uc.UpdateBatch(c.Request.Context(), domainAppointment, req.AppointmentIDs); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, appointmentdto.UpdateAppointmentResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated batch appointment successfully",
+		Data:    gin.H{},
+	})
+}

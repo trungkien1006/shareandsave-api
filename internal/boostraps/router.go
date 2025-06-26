@@ -273,6 +273,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//appointment API
 		v1.GET("/appointments", middlewares.AuthGuard, appointmentHandler.GetAll)
 		v1.GET("/appointments/:appointmentID", middlewares.AuthGuard, appointmentHandler.GetByID)
+		v1.PATCH("/appointments", middlewares.AuthGuard, appointmentHandler.UpdateBatch)
 		v1.PATCH("/appointments/:appointmentID", middlewares.AuthGuard, appointmentHandler.Update)
 
 		//client appointment API
