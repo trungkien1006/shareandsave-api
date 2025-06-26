@@ -85,7 +85,9 @@ func (uc *UseCase) UpdateBatch(ctx context.Context, domainAppointment []appointm
 	}
 
 	for key, value := range domainAppointment {
-		if err := uc.appointmentRepo.GetByID(ctx, &updateAppointment[key], appointmentID[key]); err != nil {
+		var tempUpdateAppointment appointment.Appointment
+
+		if err := uc.appointmentRepo.GetByID(ctx, &tempUpdateAppointment, appointmentID[key]); err != nil {
 			return err
 		}
 
@@ -107,17 +109,17 @@ func (uc *UseCase) UpdateBatch(ctx context.Context, domainAppointment []appointm
 				return errors.New("Thời gian bắt đầu hoặc kết thúc không được ở quá khứ")
 			}
 
-			updateAppointment[key].StartTime = value.StartTime
-			updateAppointment[key].EndTime = value.EndTime
+			tempUpdateAppointment.StartTime = value.StartTime
+			tempUpdateAppointment.EndTime = value.EndTime
 		} else if !value.StartTime.IsZero() || !value.EndTime.IsZero() {
 			return errors.New("Muốn cập nhật thời gian phải gửi cả thời gian bắt đầu và kết thúc")
 		}
 
 		if value.Status != 0 {
-			updateAppointment[key].Status = value.Status
+			tempUpdateAppointment.Status = value.Status
 		}
 
-		updateAppointment[key].ID = appointmentID[key]
+		updateAppointment = append(updateAppointment, tempUpdateAppointment)
 	}
 
 	if err := uc.appointmentRepo.UpdateBatch(ctx, updateAppointment); err != nil {
