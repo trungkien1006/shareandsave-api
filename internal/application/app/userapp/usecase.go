@@ -8,6 +8,7 @@ import (
 	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	usergooddeed "final_project/internal/domain/user_good_deed"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
@@ -18,14 +19,15 @@ import (
 )
 
 type UseCase struct {
-	repo         user.Repository
-	roleRepo     rolepermission.Repository
-	clientID     uint
-	superAdminID uint
-	redisRepo    redis.Repository
+	repo             user.Repository
+	roleRepo         rolepermission.Repository
+	clientID         uint
+	superAdminID     uint
+	redisRepo        redis.Repository
+	userGoodDeedRepo usergooddeed.Repository
 }
 
-func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Repository) *UseCase {
+func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Repository, userGoodDeedRepo usergooddeed.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -39,12 +41,21 @@ func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo
 	}
 
 	return &UseCase{
-		repo:         r,
-		roleRepo:     roleRepo,
-		clientID:     uint(clientID),
-		superAdminID: supderAdminID,
-		redisRepo:    redisRepo,
+		repo:             r,
+		roleRepo:         roleRepo,
+		clientID:         uint(clientID),
+		superAdminID:     supderAdminID,
+		redisRepo:        redisRepo,
+		userGoodDeedRepo: userGoodDeedRepo,
 	}
+}
+
+func (uc *UseCase) GetUserGoodDeed(ctx context.Context, userGoodDeeds *[]usergooddeed.UserGoodDeedDetail, userID int) error {
+	if err := uc.userGoodDeedRepo.GetUserGoodDeed(ctx, userGoodDeeds, userID); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (uc *UseCase) GetAllClient(ctx context.Context, users *[]user.User, domainReq filter.FilterRequest) (int, error) {

@@ -4,8 +4,10 @@ import (
 	"final_project/internal/application/app/userapp"
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/user"
+	usergooddeed "final_project/internal/domain/user_good_deed"
 	userdto "final_project/internal/dto/userDTO"
 	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/helpers"
 	"net/http"
 	"strconv"
 
@@ -20,8 +22,53 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 	return &UserHandler{uc: uc}
 }
 
+// @Summary Get user good deeds
+// @Description Get all good deeds of a user by user ID
+// @Security BearerAuth
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} userdto.GetUserGoodDeedResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /client/users/{userID}/good-deeds [get]
+func (h *UserHandler) GetUserGoodDeed(c *gin.Context) {
+	var goodDeeds []usergooddeed.UserGoodDeedDetail
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.GetUserGoodDeed(c.Request.Context(), &goodDeeds, int(userID)); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_USER_NOT_FOUND"),
+		)
+		return
+	}
+
+	goodDeedsDTORes := make([]userdto.UserGoodDeedDetail, 0)
+
+	for _, goodDeed := range goodDeeds {
+		goodDeedsDTORes = append(goodDeedsDTORes, userdto.DomainUserGoodDeedToDTO(goodDeed))
+	}
+
+	c.JSON(http.StatusOK, userdto.GetUserGoodDeedResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched user good deeds successfully",
+		Data: userdto.GetUserGoodDeedResponse{
+			GoodDeeds: goodDeedsDTORes,
+		},
+	})
+}
+
 // @Summary Get admins
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
+// @Security BearerAuth
 // @Tags admins
 // @Accept json
 // @Produce json
@@ -193,6 +240,7 @@ func (h *UserHandler) GetClientByID(c *gin.Context) {
 
 // @Summary Get admin by ID
 // @Description API get admin by id
+// @Security BearerAuth
 // @Tags admins
 // @Accept json
 // @Produce json
@@ -236,6 +284,7 @@ func (h *UserHandler) GetAdminByID(c *gin.Context) {
 
 // @Summary Create admin
 // @Description API thêm người dùng
+// @Security BearerAuth
 // @Tags admins
 // @Accept json
 // @Produce json
@@ -289,6 +338,7 @@ func (h *UserHandler) CreateAdmin(c *gin.Context) {
 
 // @Summary Create client
 // @Description API thêm người dùng
+// @Security BearerAuth
 // @Tags clients
 // @Accept json
 // @Produce json
@@ -401,6 +451,7 @@ func (h *UserHandler) UpdateClient(c *gin.Context) {
 
 // @Summary Update admin
 // @Description API cập nhật người dùng
+// @Security BearerAuth
 // @Tags admins
 // @Accept json
 // @Produce json
@@ -491,6 +542,7 @@ func (h *UserHandler) DeleteClient(c *gin.Context) {
 
 // @Summary Delete admin
 // @Description API delete admin by id
+// @Security BearerAuth
 // @Tags admins
 // @Accept json
 // @Produce json

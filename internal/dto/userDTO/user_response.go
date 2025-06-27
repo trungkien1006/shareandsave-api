@@ -99,3 +99,13 @@ type DeleteAdminResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type GetUserGoodDeedResponseWrapper struct {
+	Code    int                     `json:"code"`
+	Message string                  `json:"message"`
+	Data    GetUserGoodDeedResponse `json:"data"`
+}
+
+type GetUserGoodDeedResponse struct {
+	GoodDeeds []UserGoodDeedDetail `json:"goodDeeds"`
+}

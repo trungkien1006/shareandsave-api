@@ -1,6 +1,9 @@
 package userdto
 
-import "time"
+import (
+	"final_project/internal/domain/transaction"
+	"time"
+)
 
 type CommonUserDTO struct {
 	ID          uint   `json:"id"`
@@ -62,4 +65,15 @@ type UpdateUserDTO struct {
 	Status      int8   `json:"status"`
 	GoodPoint   int    `json:"goodPoint"`
 	Major       string `json:"major,omitempty"`
+}
+
+type UserGoodDeedDetail struct {
+	ID            uint                                `json:"id"`
+	UserID        uint                                `json:"userID"`
+	UserName      string                              `json:"userName"`
+	GoodDeedType  int                                 `json:"goodDeedType"`
+	GoodPoint     int                                 `json:"goodPoint"`
+	TransactionID uint                                `json:"transactionID"`
+	CreatedAt     time.Time                           `json:"createdAt"`
+	Items         []transaction.DetailTransactionItem `json:"items"`
 }

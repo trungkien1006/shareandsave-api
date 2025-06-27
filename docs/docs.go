@@ -24,6 +24,11 @@ const docTemplate = `{
     "paths": {
         "/admins": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
                 "consumes": [
                     "application/json"
@@ -94,6 +99,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API thêm người dùng",
                 "consumes": [
                     "application/json"
@@ -134,6 +144,11 @@ const docTemplate = `{
         },
         "/admins/{adminID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API get admin by id",
                 "consumes": [
                     "application/json"
@@ -170,6 +185,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API delete admin by id",
                 "consumes": [
                     "application/json"
@@ -206,6 +226,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API cập nhật người dùng",
                 "consumes": [
                     "application/json"
@@ -1253,6 +1278,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/users/{userID}/good-deeds": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all good deeds of a user by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user good deeds",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetUserGoodDeedResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/clients": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -1325,6 +1390,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API thêm người dùng",
                 "consumes": [
                     "application/json"
@@ -5710,6 +5780,26 @@ const docTemplate = `{
                 }
             }
         },
+        "transaction.DetailTransactionItem": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemImage": {
+                    "type": "string"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "postItemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "transactiondto.CreateTransactionItem": {
             "type": "object",
             "required": [
@@ -6404,6 +6494,31 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.GetUserGoodDeedResponse": {
+            "type": "object",
+            "properties": {
+                "goodDeeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.UserGoodDeedDetail"
+                    }
+                }
+            }
+        },
+        "userdto.GetUserGoodDeedResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.GetUserGoodDeedResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "userdto.Permission": {
             "type": "object",
             "properties": {
@@ -6555,6 +6670,38 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "userdto.UserGoodDeedDetail": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "goodDeedType": {
+                    "type": "integer"
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transaction.DetailTransactionItem"
+                    }
+                },
+                "transactionID": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
                 }
             }
         },

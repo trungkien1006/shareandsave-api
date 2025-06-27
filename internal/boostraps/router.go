@@ -71,7 +71,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
-	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo)
+	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo, userGoodDeedRepo)
 	userHandler := handler.NewUserHandler(userUC)
 
 	//item dependency
@@ -190,6 +190,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
 
+		//client user API
+		v1.GET("/client/users/:userID/good-deeds", middlewares.AuthGuard, userHandler.GetUserGoodDeed)
+
 		//client API
 		v1.GET("/clients", userHandler.GetAllClient)
 		v1.GET("/clients/:clientID", userHandler.GetClientByID)
@@ -198,11 +201,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.DELETE("/clients/:clientID", userHandler.DeleteClient)
 
 		//admin API
-		v1.GET("/admins", userHandler.GetAllAdmin)
-		v1.GET("/admins/:adminID", userHandler.GetAdminByID)
-		v1.POST("/admins", userHandler.CreateAdmin)
-		v1.PATCH("/admins/:adminID", userHandler.UpdateAdmin)
-		v1.DELETE("/admins/:adminID", userHandler.DeleteAdmin)
+		v1.GET("/admins", middlewares.AuthGuard, userHandler.GetAllAdmin)
+		v1.GET("/admins/:adminID", middlewares.AuthGuard, userHandler.GetAdminByID)
+		v1.POST("/admins", middlewares.AuthGuard, userHandler.CreateAdmin)
+		v1.PATCH("/admins/:adminID", middlewares.AuthGuard, userHandler.UpdateAdmin)
+		v1.DELETE("/admins/:adminID", middlewares.AuthGuard, userHandler.DeleteAdmin)
 
 		//item API
 		v1.GET("/items", itemHandler.GetAllItem)

@@ -1,8 +1,11 @@
 package userdto
 
-import "final_project/internal/domain/user"
+import (
+	"final_project/internal/domain/user"
+	usergooddeed "final_project/internal/domain/user_good_deed"
+)
 
-//Domain -> DTO
+// Domain -> DTO
 func DomainCommonUserToDTO(u user.User) CommonUserDTO {
 	return CommonUserDTO{
 		ID:          u.ID,
@@ -19,7 +22,7 @@ func DomainCommonUserToDTO(u user.User) CommonUserDTO {
 	}
 }
 
-//Domain -> DTO
+// Domain -> DTO
 func DomainAdminUserToDTO(u user.User) AdminUserDTO {
 	permissions := make([]Permission, 0)
 
@@ -47,7 +50,7 @@ func DomainAdminUserToDTO(u user.User) AdminUserDTO {
 	}
 }
 
-//Domain -> DTO
+// Domain -> DTO
 func DomainClientToDTO(u user.User) ClientDTO {
 	return ClientDTO{
 		ID:          u.ID,
@@ -63,7 +66,7 @@ func DomainClientToDTO(u user.User) ClientDTO {
 	}
 }
 
-//Domain -> DTO
+// Domain -> DTO
 func DomainUpdateUserToDTO(u user.User) UpdateUserDTO {
 	return UpdateUserDTO{
 		ID:          u.ID,
@@ -77,7 +80,7 @@ func DomainUpdateUserToDTO(u user.User) UpdateUserDTO {
 	}
 }
 
-//Domain -> DTO
+// Domain -> DTO
 func DomainAdminToDTO(u user.User) AdminDTO {
 	return AdminDTO{
 		ID:          u.ID,
@@ -92,5 +95,19 @@ func DomainAdminToDTO(u user.User) AdminDTO {
 		GoodPoint:   u.GoodPoint,
 		Major:       u.Major,
 		CreatedAt:   u.CreatedAt,
+	}
+}
+
+// Domain -> DTO
+func DomainUserGoodDeedToDTO(ug usergooddeed.UserGoodDeedDetail) UserGoodDeedDetail {
+	return UserGoodDeedDetail{
+		ID:            ug.ID,
+		UserID:        ug.UserID,
+		UserName:      ug.UserName,
+		GoodDeedType:  ug.GoodDeedType,
+		GoodPoint:     ug.GoodPoint,
+		TransactionID: ug.TransactionID,
+		CreatedAt:     ug.CreatedAt,
+		Items:         ug.Items,
 	}
 }

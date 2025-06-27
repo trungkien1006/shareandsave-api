@@ -1330,6 +1330,19 @@ definitions:
       value:
         type: string
     type: object
+  transaction.DetailTransactionItem:
+    properties:
+      itemID:
+        type: integer
+      itemImage:
+        type: string
+      itemName:
+        type: string
+      postItemID:
+        type: integer
+      quantity:
+        type: integer
+    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -1787,6 +1800,22 @@ definitions:
       message:
         type: string
     type: object
+  userdto.GetUserGoodDeedResponse:
+    properties:
+      goodDeeds:
+        items:
+          $ref: '#/definitions/userdto.UserGoodDeedDetail'
+        type: array
+    type: object
+  userdto.GetUserGoodDeedResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetUserGoodDeedResponse'
+      message:
+        type: string
+    type: object
   userdto.Permission:
     properties:
       code:
@@ -1888,6 +1917,27 @@ definitions:
         type: string
       status:
         type: integer
+    type: object
+  userdto.UserGoodDeedDetail:
+    properties:
+      createdAt:
+        type: string
+      goodDeedType:
+        type: integer
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/transaction.DetailTransactionItem'
+        type: array
+      transactionID:
+        type: integer
+      userID:
+        type: integer
+      userName:
+        type: string
     type: object
   warehousedto.CreateClaimRequestRequest:
     properties:
@@ -2220,6 +2270,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get admins
       tags:
       - admins
@@ -2245,6 +2297,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Create admin
       tags:
       - admins
@@ -2270,6 +2324,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Delete admin
       tags:
       - admins
@@ -2294,6 +2350,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get admin by ID
       tags:
       - admins
@@ -2324,6 +2382,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Update admin
       tags:
       - admins
@@ -2975,6 +3035,31 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /client/users/{userID}/good-deeds:
+    get:
+      consumes:
+      - application/json
+      description: Get all good deeds of a user by user ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetUserGoodDeedResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get user good deeds
+      tags:
+      - users
   /clients:
     get:
       consumes:
@@ -3046,6 +3131,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Create client
       tags:
       - clients
