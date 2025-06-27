@@ -53,6 +53,15 @@ func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo
 	}
 }
 
+func (uc *UseCase) GetAllUserRank(ctx context.Context, users *[]user.UserRank, filter filter.FilterRequest) (int, error) {
+	totalPage, err := uc.repo.GetAllUserRank(ctx, users, filter, uc.clientID)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalPage, nil
+}
+
 func (uc *UseCase) GetUserGoodDeed(ctx context.Context, userGoodDeeds *[]usergooddeed.UserGoodDeedDetail, userID int) error {
 	if err := uc.userGoodDeedRepo.GetUserGoodDeed(ctx, userGoodDeeds, userID); err != nil {
 		return err
@@ -90,6 +99,14 @@ func (uc *UseCase) CreateGoodDeed(ctx context.Context, goodDeed *usergooddeed.Us
 	user.GoodPoint = goodDeed.GoodPoint
 
 	if err := uc.repo.Update(ctx, &user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) DeleteGoodDeed(ctx context.Context, goodDeedID uint) error {
+	if err := uc.userGoodDeedRepo.DeleteGoodDeedByID(ctx, goodDeedID); err != nil {
 		return err
 	}
 

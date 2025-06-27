@@ -117,3 +117,21 @@ type CreateGoodDeedRequest struct {
 	GoodDeedType  int  `json:"goodDeedType" binding:"required,oneof=1 2 3"` // 1: donate, 2: volunteer, 3: other
 	TransactionID uint `json:"transactionID"`
 }
+
+type GetUserRankRequest struct {
+	Page  int `form:"page"`
+	Limit int `form:"limit"`
+}
+
+func (r *GetUserRankRequest) SetDefault() {
+	if r.Page == 0 {
+		r.Page = 1
+	}
+	if r.Limit == 0 {
+		r.Limit = 12
+	}
+}
+
+type DeleteGoodDeedRequest struct {
+	GoodDeedID int `uri:"goodDeedID" binding:"required"`
+}

@@ -23,3 +23,17 @@ type User struct {
 type Permission struct {
 	Code string
 }
+
+type UserRank struct {
+	UserID     uint
+	UserName   string
+	UserAvatar string
+	Major      string
+	GoodPoint  int
+	GoodDeeds  []UserGoodDeed `gorm:"-"`
+}
+
+type UserGoodDeed struct {
+	GoodDeedType  int
+	GoodDeedCount int
+}

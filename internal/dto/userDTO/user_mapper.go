@@ -111,3 +111,29 @@ func DomainUserGoodDeedToDTO(ug usergooddeed.UserGoodDeedDetail) UserGoodDeedDet
 		Items:         ug.Items,
 	}
 }
+
+// Domain to DTO
+func UserGoodDeedDomainToDTO(domain user.UserRank) UserRankDTO {
+	userGoodDeeds := make([]UserGoodDeedDTO, 0)
+	userGoodDeedMap := make(map[int]int, 0)
+
+	for _, value := range domain.GoodDeeds {
+		userGoodDeedMap[value.GoodDeedType] += 1
+	}
+
+	for key, value := range userGoodDeedMap {
+		userGoodDeeds = append(userGoodDeeds, UserGoodDeedDTO{
+			GoodDeedType:  key,
+			GoodDeedCount: value,
+		})
+	}
+
+	return UserRankDTO{
+		UserID:     domain.UserID,
+		UserName:   domain.UserName,
+		UserAvatar: domain.UserAvatar,
+		Major:      domain.Major,
+		GoodPoint:  domain.GoodPoint,
+		GoodDeeds:  userGoodDeeds,
+	}
+}

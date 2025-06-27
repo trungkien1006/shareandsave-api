@@ -22,6 +22,58 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 	return &UserHandler{uc: uc}
 }
 
+// @Summary Get users rank
+// @Description API bao gồm phân trang
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param page query int false "Current page" minimum(1) example(1)
+// @Param limit query int false "Number record of page" minimum(1) example(10)
+// @Success 200 {object} userdto.GetUserRankResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /client/users/ranks [get]
+func (h *UserHandler) GetUserRanks(c *gin.Context) {
+	var (
+		req             userdto.GetUserRankRequest
+		domainUserRanks []user.UserRank
+		domainFilter    filter.FilterRequest
+	)
+
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	req.SetDefault()
+
+	domainFilter.Page = req.Page
+	domainFilter.Limit = req.Limit
+
+	totalPage, err := h.uc.GetAllUserRank(c.Request.Context(), &domainUserRanks, domainFilter)
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	userRankDTO := make([]userdto.UserRankDTO, 0)
+
+	for _, value := range domainUserRanks {
+		userRankDTO = append(userRankDTO, userdto.UserGoodDeedDomainToDTO(value))
+	}
+
+	c.JSON(http.StatusOK, userdto.GetUserRankResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched users rank successfully",
+		Data: userdto.GetUserRankResponse{
+			UserRanks: userRankDTO,
+			TotalPage: totalPage,
+		},
+	})
+}
+
 // @Summary Get user good deeds
 // @Description Get all good deeds of a user by user ID
 // @Security BearerAuth
@@ -107,6 +159,28 @@ func (h *UserHandler) CreateGoodDeed(c *gin.Context) {
 		Message: "Created user good deed successfully",
 		Data:    gin.H{},
 	})
+}
+
+func (h *UserHandler) DeleteGoodDeed(c *gin.Context) {
+	var (
+		req userdto.DeleteGoodDeedRequest
+	)
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.DeleteGoodDeed(c.Request.Context(), uint(req.GoodDeedID)); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
 }
 
 // @Summary Get admins
@@ -546,6 +620,7 @@ func (h *UserHandler) UpdateAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Updated admin successfully",
+		"data":    gin.H{},
 	})
 }
 
@@ -580,6 +655,7 @@ func (h *UserHandler) DeleteClient(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Deleted client successfully",
+		"data":    gin.H{},
 	})
 }
 
@@ -615,5 +691,6 @@ func (h *UserHandler) DeleteAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "Deleted admin successfully",
+		"data":    gin.H{},
 	})
 }

@@ -1318,6 +1318,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/users/ranks": {
+            "get": {
+                "description": "API bao gồm phân trang",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get users rank",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Current page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 10,
+                        "description": "Number record of page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetUserRankResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/clients": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -6606,6 +6653,34 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.GetUserRankResponse": {
+            "type": "object",
+            "properties": {
+                "totalPage": {
+                    "type": "integer"
+                },
+                "userRanks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.UserRankDTO"
+                    }
+                }
+            }
+        },
+        "userdto.GetUserRankResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.GetUserRankResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "userdto.Permission": {
             "type": "object",
             "properties": {
@@ -6760,6 +6835,17 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.UserGoodDeedDTO": {
+            "type": "object",
+            "properties": {
+                "goodDeedCount": {
+                    "type": "integer"
+                },
+                "goodDeedType": {
+                    "type": "integer"
+                }
+            }
+        },
         "userdto.UserGoodDeedDetail": {
             "type": "object",
             "properties": {
@@ -6783,6 +6869,32 @@ const docTemplate = `{
                 },
                 "transactionID": {
                     "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.UserRankDTO": {
+            "type": "object",
+            "properties": {
+                "goodDeeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.UserGoodDeedDTO"
+                    }
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "major": {
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "type": "string"
                 },
                 "userID": {
                     "type": "integer"

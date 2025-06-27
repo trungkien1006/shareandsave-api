@@ -21,6 +21,41 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 	return &UserRepoDB{db: db}
 }
 
+func (r *UserRepoDB) GetAllUserRank(ctx context.Context, users *[]user.UserRank, req filter.FilterRequest, clientID uint) (int, error) {
+	var (
+		dbUsers      []dbmodel.User
+		query        *gorm.DB
+		totalRecords int64
+	)
+
+	query = r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).
+		Preload("UserGoodDeeds").
+		Where("role_id = ?", clientID)
+
+	if err := query.Count(&totalRecords).Error; err != nil {
+		return 0, err
+	}
+
+	query.Order("good_point DESC")
+
+	if req.Limit > 0 && req.Page > 0 {
+		query.Offset((req.Page - 1) * req.Limit).Limit(req.Limit)
+	}
+
+	if err := query.Find(&dbUsers).Error; err != nil {
+		return 0, errors.New("Có lỗi khi truy vấn danh sách xếp hạng: " + err.Error())
+	}
+
+	for _, value := range dbUsers {
+		*users = append(*users, dbmodel.UserGoodDeedDBToDomain(value))
+	}
+
+	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
+
+	return totalPages, nil
+}
+
 func (r *UserRepoDB) GetAll(ctx context.Context, users *[]user.User, req filter.FilterRequest, clientID uint, superAdminID uint) (int, error) {
 	var (
 		query  *gorm.DB

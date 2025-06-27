@@ -1841,6 +1841,24 @@ definitions:
       message:
         type: string
     type: object
+  userdto.GetUserRankResponse:
+    properties:
+      totalPage:
+        type: integer
+      userRanks:
+        items:
+          $ref: '#/definitions/userdto.UserRankDTO'
+        type: array
+    type: object
+  userdto.GetUserRankResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetUserRankResponse'
+      message:
+        type: string
+    type: object
   userdto.Permission:
     properties:
       code:
@@ -1943,6 +1961,13 @@ definitions:
       status:
         type: integer
     type: object
+  userdto.UserGoodDeedDTO:
+    properties:
+      goodDeedCount:
+        type: integer
+      goodDeedType:
+        type: integer
+    type: object
   userdto.UserGoodDeedDetail:
     properties:
       createdAt:
@@ -1959,6 +1984,23 @@ definitions:
         type: array
       transactionID:
         type: integer
+      userID:
+        type: integer
+      userName:
+        type: string
+    type: object
+  userdto.UserRankDTO:
+    properties:
+      goodDeeds:
+        items:
+          $ref: '#/definitions/userdto.UserGoodDeedDTO'
+        type: array
+      goodPoint:
+        type: integer
+      major:
+        type: string
+      userAvatar:
+        type: string
       userID:
         type: integer
       userName:
@@ -3083,6 +3125,38 @@ paths:
       security:
       - BearerAuth: []
       summary: Get user good deeds
+      tags:
+      - users
+  /client/users/ranks:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm phân trang
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record of page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetUserRankResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get users rank
       tags:
       - users
   /clients:

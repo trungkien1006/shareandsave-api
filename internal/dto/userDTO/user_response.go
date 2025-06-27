@@ -115,3 +115,14 @@ type CreateUserGoodDeedResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type GetUserRankResponseWrapper struct {
+	Code    int                 `json:"code"`
+	Message string              `json:"message"`
+	Data    GetUserRankResponse `json:"data"`
+}
+
+type GetUserRankResponse struct {
+	UserRanks []UserRankDTO `json:"userRanks"`
+	TotalPage int           `json:"totalPage"`
+}

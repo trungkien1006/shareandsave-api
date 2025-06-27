@@ -77,3 +77,17 @@ type UserGoodDeedDetail struct {
 	CreatedAt     time.Time                           `json:"createdAt"`
 	Items         []transaction.DetailTransactionItem `json:"items"`
 }
+
+type UserRankDTO struct {
+	UserID     uint              `json:"userID"`
+	UserName   string            `json:"userName"`
+	UserAvatar string            `json:"userAvatar"`
+	Major      string            `json:"major"`
+	GoodPoint  int               `json:"goodPoint"`
+	GoodDeeds  []UserGoodDeedDTO `json:"goodDeeds"`
+}
+
+type UserGoodDeedDTO struct {
+	GoodDeedType  int `json:"goodDeedType"`
+	GoodDeedCount int `json:"goodDeedCount"`
+}

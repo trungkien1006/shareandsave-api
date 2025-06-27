@@ -59,3 +59,11 @@ func (r *UserGoodDeedRepoDB) DeleteGoodDeed(ctx context.Context, transactionID u
 
 	return nil
 }
+
+func (r *UserGoodDeedRepoDB) DeleteGoodDeedByID(ctx context.Context, goodDeedID uint) error {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.UserGoodDeed{}).Where("id = ?", goodDeedID).Delete(&dbmodel.UserGoodDeed{}).Error; err != nil {
+		return errors.New("Có lỗi khi xóa việc tốt: " + err.Error())
+	}
+
+	return nil
+}

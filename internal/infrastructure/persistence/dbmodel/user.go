@@ -28,16 +28,16 @@ type User struct {
 	Role Role `gorm:"foreignKey:RoleID"`
 
 	// 1-n: User có nhiều post, interest, comment, transaction, appointment, notification
-	LeaveRequests     []LeaveRequests `gorm:"foreignKey:UserID"`
-	Posts             []Post          `gorm:"foreignKey:AuthorID"`
-	Interests         []Interest      `gorm:"foreignKey:UserID"`
-	CommentsSent      []Comment       `gorm:"foreignKey:SenderID"`
-	CommentsRecv      []Comment       `gorm:"foreignKey:ReceiverID"`
-	TransactionsSent  []Transaction   `gorm:"foreignKey:SenderID"`
-	TransactionsRecv  []Transaction   `gorm:"foreignKey:ReceiverID"`
-	Appointments      []Appointment   `gorm:"foreignKey:UserID"`
-	NotificationsSent []Notification  `gorm:"foreignKey:SenderID"`
-	NotificationsRecv []Notification  `gorm:"foreignKey:ReceiverID"`
+	UserGoodDeeds     []UserGoodDeed `gorm:"foreignKey:UserID"`
+	Posts             []Post         `gorm:"foreignKey:AuthorID"`
+	Interests         []Interest     `gorm:"foreignKey:UserID"`
+	CommentsSent      []Comment      `gorm:"foreignKey:SenderID"`
+	CommentsRecv      []Comment      `gorm:"foreignKey:ReceiverID"`
+	TransactionsSent  []Transaction  `gorm:"foreignKey:SenderID"`
+	TransactionsRecv  []Transaction  `gorm:"foreignKey:ReceiverID"`
+	Appointments      []Appointment  `gorm:"foreignKey:UserID"`
+	NotificationsSent []Notification `gorm:"foreignKey:SenderID"`
+	NotificationsRecv []Notification `gorm:"foreignKey:ReceiverID"`
 }
 
 func ToDomainUser(dbUser User) user.User {
@@ -85,5 +85,31 @@ func ToDBUser(u user.User) User {
 		GoodPoint:   u.GoodPoint,
 		Major:       u.Major,
 		CreatedAt:   u.CreatedAt,
+	}
+}
+
+// DB to Domain
+func UserGoodDeedDBToDomain(db User) user.UserRank {
+	userGoodDeeds := make([]user.UserGoodDeed, 0)
+	userGoodDeedMap := make(map[int]int, 0)
+
+	for _, value := range db.UserGoodDeeds {
+		userGoodDeedMap[value.GoodDeedType] += 1
+	}
+
+	for key, value := range userGoodDeedMap {
+		userGoodDeeds = append(userGoodDeeds, user.UserGoodDeed{
+			GoodDeedType:  key,
+			GoodDeedCount: value,
+		})
+	}
+
+	return user.UserRank{
+		UserID:     db.ID,
+		UserName:   db.FullName,
+		UserAvatar: db.Avatar,
+		Major:      db.Major,
+		GoodPoint:  db.GoodPoint,
+		GoodDeeds:  userGoodDeeds,
 	}
 }
