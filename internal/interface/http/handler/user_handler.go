@@ -31,7 +31,7 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 // @Success 200 {object} userdto.GetUserGoodDeedResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
-// @Router /client/users/{userID}/good-deeds [get]
+// @Router /client/users/my-good-deeds [get]
 func (h *UserHandler) GetUserGoodDeed(c *gin.Context) {
 	var goodDeeds []usergooddeed.UserGoodDeedDetail
 

@@ -3035,7 +3035,7 @@ paths:
       summary: Get posts client
       tags:
       - posts
-  /client/users/{userID}/good-deeds:
+  /client/users/my-good-deeds:
     get:
       consumes:
       - application/json

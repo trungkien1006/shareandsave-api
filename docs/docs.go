@@ -1278,7 +1278,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/client/users/{userID}/good-deeds": {
+        "/client/users/my-good-deeds": {
             "get": {
                 "security": [
                     {
