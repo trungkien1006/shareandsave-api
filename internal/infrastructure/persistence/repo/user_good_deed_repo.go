@@ -34,7 +34,7 @@ func (r *UserGoodDeedRepoDB) GetUserGoodDeed(ctx context.Context, userGoodDeeds 
 	}
 
 	for _, dbGoodDeed := range dbGoodDeeds {
-		*userGoodDeeds = append(*userGoodDeeds, dbmodel.GoodDeedDBToDomain(dbGoodDeed))
+		*userGoodDeeds = append(*userGoodDeeds, dbmodel.GoodDeedDBToDomainDetail(dbGoodDeed))
 	}
 
 	return nil
@@ -48,6 +48,21 @@ func (r *UserGoodDeedRepoDB) CreateGoodDeed(ctx context.Context, goodDeed *userg
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.UserGoodDeed{}).Create(&dbGoodDeed).Error; err != nil {
 		return errors.New("Có lỗi khi tạo việc tốt: " + err.Error())
 	}
+
+	return nil
+}
+
+func (r *UserGoodDeedRepoDB) GetByID(ctx context.Context, goodDeed *usergooddeed.UserGoodDeed, goodDeedID uint) error {
+	var dbGoodDeed dbmodel.UserGoodDeed
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.UserGoodDeed{}).
+		Where("id = ?", goodDeedID).
+		First(&dbGoodDeed).Error; err != nil {
+		return errors.New("Có lỗi khi truy xuất việc tốt theo id: " + err.Error())
+	}
+
+	*goodDeed = dbmodel.GoodDeedDBToDomain(dbGoodDeed)
 
 	return nil
 }

@@ -126,3 +126,9 @@ type GetUserRankResponse struct {
 	UserRanks []UserRankDTO `json:"userRanks"`
 	TotalPage int           `json:"totalPage"`
 }
+
+type DeleteUserGoodDeedResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

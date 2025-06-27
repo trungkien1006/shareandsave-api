@@ -5,6 +5,6 @@ var (
 	UserImageHeight = 200
 	ItemImageWidth  = 300
 	ItemImageHeight = 300
-	PostImageWidth  = 400
+	PostImageWidth  = 300
 	PostImageHeight = 200
 )

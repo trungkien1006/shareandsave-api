@@ -93,12 +93,20 @@ func (uc *UseCase) CreateGoodDeed(ctx context.Context, goodDeed *usergooddeed.Us
 	}
 
 	// Cập nhật điểm tốt cho người dùng
-	var user user.User
+	var updateUser user.User
 
-	user.ID = goodDeed.UserID
-	user.GoodPoint = goodDeed.GoodPoint
+	if err := uc.repo.GetUserByID(ctx, &updateUser, int(goodDeed.UserID), uc.clientID, 0); err != nil {
+		return err
+	}
 
-	if err := uc.repo.Update(ctx, &user); err != nil {
+	if updateUser.ID == 0 {
+		return errors.New(enums.ErrUserNotExist)
+	}
+
+	updateUser.ID = goodDeed.UserID
+	updateUser.GoodPoint = updateUser.GoodPoint + goodDeed.GoodPoint
+
+	if err := uc.repo.Update(ctx, &updateUser); err != nil {
 		return err
 	}
 
@@ -106,7 +114,32 @@ func (uc *UseCase) CreateGoodDeed(ctx context.Context, goodDeed *usergooddeed.Us
 }
 
 func (uc *UseCase) DeleteGoodDeed(ctx context.Context, goodDeedID uint) error {
+	var (
+		goodDeed usergooddeed.UserGoodDeed
+	)
+
+	if err := uc.userGoodDeedRepo.GetByID(ctx, &goodDeed, goodDeedID); err != nil {
+		return err
+	}
+
 	if err := uc.userGoodDeedRepo.DeleteGoodDeedByID(ctx, goodDeedID); err != nil {
+		return err
+	}
+
+	var updateUser user.User
+
+	if err := uc.repo.GetUserByID(ctx, &updateUser, int(goodDeed.UserID), uc.clientID, 0); err != nil {
+		return err
+	}
+
+	if updateUser.ID == 0 {
+		return errors.New(enums.ErrUserNotExist)
+	}
+
+	updateUser.ID = goodDeed.UserID
+	updateUser.GoodPoint = updateUser.GoodPoint - goodDeed.GoodPoint
+
+	if err := uc.repo.Update(ctx, &updateUser); err != nil {
 		return err
 	}
 

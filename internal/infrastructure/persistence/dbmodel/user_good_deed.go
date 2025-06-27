@@ -35,7 +35,7 @@ func GoodDeedDomainToDB(domain usergooddeed.UserGoodDeed) UserGoodDeed {
 }
 
 // DB to Domain
-func GoodDeedDBToDomain(db UserGoodDeed) usergooddeed.UserGoodDeedDetail {
+func GoodDeedDBToDomainDetail(db UserGoodDeed) usergooddeed.UserGoodDeedDetail {
 	items := make([]transaction.DetailTransactionItem, 0)
 
 	for _, item := range db.Transaction.TransactionItems {
@@ -57,5 +57,18 @@ func GoodDeedDBToDomain(db UserGoodDeed) usergooddeed.UserGoodDeedDetail {
 		TransactionID: db.TransactionID,
 		CreatedAt:     db.CreatedAt,
 		Items:         items,
+	}
+}
+
+// DB to Domain
+func GoodDeedDBToDomain(db UserGoodDeed) usergooddeed.UserGoodDeed {
+	return usergooddeed.UserGoodDeed{
+		ID:            db.ID,
+		UserID:        db.UserID,
+		UserName:      db.User.FullName,
+		GoodDeedType:  db.GoodDeedType,
+		GoodPoint:     db.GoodPoint,
+		TransactionID: db.TransactionID,
+		CreatedAt:     db.CreatedAt,
 	}
 }

@@ -3693,6 +3693,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/good-deeds/{goodDeedID}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API delete user good deed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete a good deed",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID good deed",
+                        "name": "goodDeedID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.DeleteUserGoodDeedResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/warehouses": {
             "get": {
                 "security": [
@@ -6517,6 +6560,18 @@ const docTemplate = `{
             }
         },
         "userdto.DeleteClientResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.DeleteUserGoodDeedResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {

@@ -1761,6 +1761,14 @@ definitions:
       message:
         type: string
     type: object
+  userdto.DeleteUserGoodDeedResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   userdto.GetAdminByIDResponse:
     properties:
       admin:
@@ -4674,6 +4682,33 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a good deed
+      tags:
+      - users
+  /users/good-deeds/{goodDeedID}:
+    delete:
+      consumes:
+      - application/json
+      description: API delete user good deed
+      parameters:
+      - description: ID good deed
+        in: path
+        name: goodDeedID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.DeleteUserGoodDeedResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Delete a good deed
       tags:
       - users
   /warehouses:

@@ -148,8 +148,8 @@ func (h *UserHandler) CreateGoodDeed(c *gin.Context) {
 
 	if err := h.uc.CreateGoodDeed(c.Request.Context(), &goodDeed); err != nil {
 		c.JSON(
-			http.StatusInternalServerError,
-			enums.NewAppError(http.StatusInternalServerError, err.Error(), "ERR_CREATE_GOOD_DEED"),
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
 		)
 		return
 	}
@@ -161,6 +161,16 @@ func (h *UserHandler) CreateGoodDeed(c *gin.Context) {
 	})
 }
 
+// @Summary Delete a good deed
+// @Description API delete user good deed
+// @Security BearerAuth
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param goodDeedID path int true "ID good deed"
+// @Success 200 {object} userdto.DeleteUserGoodDeedResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /users/good-deeds/{goodDeedID} [delete]
 func (h *UserHandler) DeleteGoodDeed(c *gin.Context) {
 	var (
 		req userdto.DeleteGoodDeedRequest
@@ -181,6 +191,12 @@ func (h *UserHandler) DeleteGoodDeed(c *gin.Context) {
 		)
 		return
 	}
+
+	c.JSON(http.StatusOK, userdto.DeleteUserGoodDeedResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Deleted user good deeds successfully",
+		Data:    gin.H{},
+	})
 }
 
 // @Summary Get admins

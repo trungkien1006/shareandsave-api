@@ -12,8 +12,8 @@ const (
 func (s GoodDeedType) String() string {
 	return [...]string{
 		"ALL",
-		"GIVE_AWAY_OLD_ITEM",
-		"GIVE_LOSE_ITEM",
-		"CAMPAGIN",
+		"goodPointGiveOldItem",
+		"goodPointGiveLoseItem",
+		"goodPointJoinCampaign",
 	}[s]
 }
