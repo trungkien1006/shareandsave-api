@@ -143,7 +143,7 @@ func (h *UserHandler) CreateGoodDeed(c *gin.Context) {
 	goodDeed := usergooddeed.UserGoodDeed{
 		UserID:        req.UserID,
 		GoodDeedType:  req.GoodDeedType,
-		TransactionID: req.TransactionID,
+		TransactionID: &req.TransactionID,
 	}
 
 	if err := h.uc.CreateGoodDeed(c.Request.Context(), &goodDeed); err != nil {

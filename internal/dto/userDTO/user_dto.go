@@ -73,7 +73,7 @@ type UserGoodDeedDetail struct {
 	UserName      string                              `json:"userName"`
 	GoodDeedType  int                                 `json:"goodDeedType"`
 	GoodPoint     int                                 `json:"goodPoint"`
-	TransactionID uint                                `json:"transactionID"`
+	TransactionID *uint                               `json:"transactionID"`
 	CreatedAt     time.Time                           `json:"createdAt"`
 	Items         []transaction.DetailTransactionItem `json:"items"`
 }

@@ -194,7 +194,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			UserID:        updateTransaction.SenderID,
 			GoodDeedType:  goodDeedType,
 			GoodPoint:     user.GoodPoint,
-			TransactionID: updateTransaction.ID,
+			TransactionID: &updateTransaction.ID,
 			CreatedAt:     time.Now(),
 		}
 

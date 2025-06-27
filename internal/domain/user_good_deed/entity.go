@@ -11,7 +11,7 @@ type UserGoodDeed struct {
 	UserName      string
 	GoodDeedType  int
 	GoodPoint     int
-	TransactionID uint
+	TransactionID *uint
 	CreatedAt     time.Time
 }
 
@@ -21,7 +21,7 @@ type UserGoodDeedDetail struct {
 	UserName      string
 	GoodDeedType  int
 	GoodPoint     int
-	TransactionID uint
+	TransactionID *uint
 	CreatedAt     time.Time
 	Items         []transaction.DetailTransactionItem
 }

@@ -45,6 +45,10 @@ func (r *UserGoodDeedRepoDB) CreateGoodDeed(ctx context.Context, goodDeed *userg
 
 	dbGoodDeed = dbmodel.GoodDeedDomainToDB(*goodDeed)
 
+	if *dbGoodDeed.TransactionID == 0 {
+		dbGoodDeed.TransactionID = nil
+	}
+
 	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.UserGoodDeed{}).Create(&dbGoodDeed).Error; err != nil {
 		return errors.New("Có lỗi khi tạo việc tốt: " + err.Error())
 	}

@@ -9,11 +9,11 @@ import (
 )
 
 type UserGoodDeed struct {
-	ID            uint `gorm:"primaryKey;autoIncrement"`
-	UserID        uint `gorm:"index"` // Có thể null
-	GoodDeedType  int  `gorm:"type:int"`
-	GoodPoint     int  `gorm:"type:int"` // Điểm tốt, có thể null
-	TransactionID uint `gorm:"index"`    // Có thể null
+	ID            uint  `gorm:"primaryKey;autoIncrement"`
+	UserID        uint  `gorm:"index"` // Có thể null
+	GoodDeedType  int   `gorm:"type:int"`
+	GoodPoint     int   `gorm:"type:int"` // Điểm tốt, có thể null
+	TransactionID *uint `gorm:"index"`    // Có thể null
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
