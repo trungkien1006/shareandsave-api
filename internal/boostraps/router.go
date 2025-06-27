@@ -20,6 +20,7 @@ import (
 	"final_project/internal/domain/auth"
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
+	emailrepo "final_project/internal/infrastructure/email"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	redisapp "final_project/internal/infrastructure/redis"
 	"final_project/internal/infrastructure/seeder"
@@ -43,6 +44,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	r := gin.Default()
 
 	ctx := context.Background()
+
+	smtpRepo := emailrepo.NewSMTPEmailSender(
+		"smtp.gmail.com",
+		587,
+		"trannguyentrungkien1006@gmail.com",
+		"vlmt ihzv xyla fzyz", // nên dùng biến môi trường
+		"Share&Save - Chia sẻ tạo nên giá trị mới",
+	)
+
+	// sendEmailUC := emailapp.NewSendEmailUseCase(smtpRepo)
 
 	stream := "chatstream"
 	group := "chatgroup"
@@ -128,7 +139,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//auth dependency
 	authService := auth.NewAuthService()
 	authRepo := persistence.NewAuthRepoDB(db)
-	authUC := authapp.NewUseCase(authRepo, authService, redisRepo, rolePerRepo, userRepo)
+	authUC := authapp.NewUseCase(authRepo, authService, redisRepo, rolePerRepo, userRepo, smtpRepo)
 	authHandler := handler.NewAuthHandler(authUC)
 
 	redisSeed := redisapp.NewRedisSeeder(
@@ -301,6 +312,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.POST("/client/login", authHandler.UserLogin)
 		v1.POST("/client/logout", middlewares.AuthGuard, authHandler.ClientLogout)
 		v1.POST("/client/signup", authHandler.ClientSignUp)
+		v1.POST("/client/send-otp", authHandler.ClientSendOTP)
+		v1.POST("/client/verify-otp", authHandler.ClientVerifyOTP)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

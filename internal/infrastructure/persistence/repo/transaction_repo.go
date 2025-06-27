@@ -105,7 +105,7 @@ func (r *TransactionRepoDB) GetDetailTransactionByInterestID(ctx context.Context
 		Where("transaction.interest_id = ?", interestID).
 		Order("created_at DESC").
 		First(&dbTransaction).Error; err != nil {
-		return errors.New("Có lỗi khi truy xuất chi tiết giao dịch đang chờ: " + err.Error())
+		return errors.New("Có lỗi khi truy xuất chi tiết giao dịch: " + err.Error())
 	}
 
 	*transaction = dbmodel.TransactionDBToDetailDomain(dbTransaction)

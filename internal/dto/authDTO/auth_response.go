@@ -67,3 +67,19 @@ type SignUpResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type SendOTPResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type VerifyOTPResponseWrapper struct {
+	Code    int               `json:"code"`
+	Message string            `json:"message"`
+	Data    VerifyOTPResponse `json:"data"`
+}
+
+type VerifyOTPResponse struct {
+	VerifyToken string `json:"verifyToken"`
+}

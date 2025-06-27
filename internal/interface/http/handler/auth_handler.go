@@ -22,7 +22,84 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
-// @Summary Admin Signup
+// @Summary Client send OTP
+// @Description API gửi OTP
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param sendOTP body authdto.SendOTPRequest true "Gửi OTP"
+// @Success 200 {object} authdto.SendOTPResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/send-otp [post]
+func (h *AuthHandler) ClientSendOTP(c *gin.Context) {
+	var (
+		req authdto.SendOTPRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := h.uc.SendOTP(c.Request.Context(), req); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusCreated,
+		"message": "Sended OTP successfully",
+		"data":    gin.H{},
+	})
+}
+
+// @Summary Client verify OTP
+// @Description API xác thực OTP
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param sendOTP body authdto.VerifyOTPRequest true "Xác thực OTP"
+// @Success 200 {object} authdto.VerifyOTPResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/verify-otp [post]
+func (h *AuthHandler) ClientVerifyOTP(c *gin.Context) {
+	var (
+		req authdto.VerifyOTPRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	verifyToken, err := h.uc.VerifyOTP(c.Request.Context(), req)
+	if err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, authdto.VerifyOTPResponseWrapper{
+		Code:    http.StatusCreated,
+		Message: "Verified OTP successfully",
+		Data: authdto.VerifyOTPResponse{
+			VerifyToken: verifyToken,
+		},
+	})
+}
+
+// @Summary Client Signup
 // @Description API đăng kí
 // @Tags auth
 // @Accept json

@@ -30,6 +30,8 @@ func (r *AuthRepoDB) SignUp(ctx context.Context, user *user.User) error {
 		return errors.New("Có lỗi khi đăng kí người dùng mới: " + err.Error())
 	}
 
+	*user = dbmodel.ToDomainUser(dbUser)
+
 	return nil
 }
 

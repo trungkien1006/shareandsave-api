@@ -213,6 +213,27 @@ definitions:
       message:
         type: string
     type: object
+  authdto.SendOTPRequest:
+    properties:
+      email:
+        type: string
+      purpose:
+        enum:
+        - activeAccount
+        - resetPassword
+        type: string
+    required:
+    - email
+    - purpose
+    type: object
+  authdto.SendOTPResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   authdto.SignUpRequest:
     properties:
       email:
@@ -227,18 +248,51 @@ definitions:
         type: string
       rePassword:
         type: string
+      verifyToken:
+        type: string
     required:
     - email
     - fullName
     - password
     - phoneNumber
     - rePassword
+    - verifyToken
     type: object
   authdto.SignUpResponseWrapper:
     properties:
       code:
         type: integer
       data: {}
+      message:
+        type: string
+    type: object
+  authdto.VerifyOTPRequest:
+    properties:
+      email:
+        type: string
+      otp:
+        type: string
+      purpose:
+        enum:
+        - activeAccount
+        - resetPassword
+        type: string
+    required:
+    - email
+    - otp
+    - purpose
+    type: object
+  authdto.VerifyOTPResponse:
+    properties:
+      verifyToken:
+        type: string
+    type: object
+  authdto.VerifyOTPResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/authdto.VerifyOTPResponse'
       message:
         type: string
     type: object
@@ -3145,6 +3199,36 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /client/send-otp:
+    post:
+      consumes:
+      - application/json
+      description: API gửi OTP
+      parameters:
+      - description: Gửi OTP
+        in: body
+        name: sendOTP
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.SendOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.SendOTPResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Client send OTP
+      tags:
+      - auth
   /client/signup:
     post:
       consumes:
@@ -3172,7 +3256,7 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Admin Signup
+      summary: Client Signup
       tags:
       - auth
   /client/users/my-good-deeds:
@@ -3234,6 +3318,36 @@ paths:
       summary: Get users rank
       tags:
       - users
+  /client/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: API xác thực OTP
+      parameters:
+      - description: Xác thực OTP
+        in: body
+        name: sendOTP
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.VerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authdto.VerifyOTPResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Client verify OTP
+      tags:
+      - auth
   /clients:
     get:
       consumes:

@@ -13,6 +13,7 @@ type Repository interface {
 	GetMe(ctx context.Context, domainUser *User, userID int, clientID uint, isAdmin bool) error
 	GetCommonUserByID(ctx context.Context, domainUser *User, userID int) error
 	GetByEmailPhoneNumber(ctx context.Context, user *User, email string, phoneNumber string) error
+	GetByEmail(ctx context.Context, user *User, email string) error
 	Save(ctx context.Context, user *User) error
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, domainUser *User) error

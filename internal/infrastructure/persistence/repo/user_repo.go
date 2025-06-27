@@ -245,6 +245,21 @@ func (r *UserRepoDB) GetByEmailPhoneNumber(ctx context.Context, user *user.User,
 	return nil
 }
 
+func (r *UserRepoDB) GetByEmail(ctx context.Context, user *user.User, email string) error {
+	var dbUser dbmodel.User
+
+	// Truy vấn chỉ lấy trường "id" (không cần toàn bộ user)
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).
+		Where("email = ?", email).
+		Find(&dbUser).Error; err != nil {
+		return errors.New("Lỗi khi tìm kiếm user bằng email: " + err.Error())
+	}
+
+	*user = dbmodel.ToDomainUser(dbUser)
+
+	return nil
+}
+
 func (r *UserRepoDB) Save(ctx context.Context, domainUser *user.User) error {
 	dbUser := dbmodel.ToDBUser(*domainUser)
 

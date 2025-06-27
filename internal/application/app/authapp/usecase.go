@@ -5,13 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"final_project/internal/domain/auth"
+	"final_project/internal/domain/email"
 	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	authdto "final_project/internal/dto/authDTO"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/hash"
 	"final_project/internal/pkg/helpers"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -25,9 +28,10 @@ type UseCase struct {
 	userRepo     user.Repository
 	clientID     uint
 	superAdminID uint
+	emailRepo    email.Repository
 }
 
-func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Repository, roleRepo rolepermission.Repository, userRepo user.Repository) *UseCase {
+func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Repository, roleRepo rolepermission.Repository, userRepo user.Repository, emailRepo email.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -48,10 +52,102 @@ func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposito
 		userRepo:     userRepo,
 		clientID:     clientID,
 		superAdminID: supderAdminID,
+		emailRepo:    emailRepo,
 	}
 }
 
+func (uc *UseCase) VerifyOTP(ctx context.Context, req authdto.VerifyOTPRequest) (string, error) {
+	//Kiểm tra số lần thử
+	verifyTryCountStr, err := uc.redisRepo.GetFromRedis(ctx, "verify:email:"+req.Email+":purpose:"+req.Purpose)
+
+	verifyTryCount := 0
+
+	if verifyTryCountStr != "" {
+		verifyTryCount, err = strconv.Atoi(verifyTryCountStr)
+		if err != nil {
+			return "", errors.New("Có lỗi khi chuyển đổi kiểu dữ liệu: " + err.Error())
+		}
+	}
+
+	if verifyTryCount > enums.MaxVerifyTry {
+		return "", errors.New("Bạn đã thử quá 5 lần, hãy đợi 10 phút để thử lại")
+	}
+
+	//Kiểm tra OTP
+	isSendedBefore, err := uc.redisRepo.GetFromRedis(ctx, "otp:email:"+req.Email+":purpose:"+req.Purpose)
+	if err != nil {
+		return "", errors.New("OTP không tồn tại: " + err.Error())
+	}
+
+	//Nếu OTP sai -> lưu lại lịch sử thử
+	if isSendedBefore != req.OTP {
+		if err := uc.redisRepo.InsertToRedis(ctx, "verify:email:"+req.Email+":purpose:"+req.Purpose, strconv.Itoa(verifyTryCount+1), 10*time.Minute); err != nil {
+			return "", err
+		}
+
+		return "", errors.New("OTP không chính xác, bạn còn " + strconv.Itoa(enums.MaxVerifyTry-(verifyTryCount+1)) + " lần thử")
+	}
+
+	//Nếu đúng sẽ xóa 2 key
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "verify:email:"+req.Email+":purpose:"+req.Purpose); err != nil {
+		return "", err
+	}
+
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "otp:email:"+req.Email+":purpose:"+req.Purpose); err != nil {
+		return "", err
+	}
+
+	//Tạo token xác minh các bước sau
+	token, err := uc.service.GenerateVerificationToken(req.Email)
+	if err != nil {
+		return "", errors.New("Lỗi khi tạo token xác minh: " + err.Error())
+	}
+
+	//Lưu token vào redis
+	if err := uc.redisRepo.InsertToRedis(ctx, token, req.Email, 10*time.Minute); err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (uc *UseCase) SendOTP(ctx context.Context, req authdto.SendOTPRequest) error {
+	isSendedBefore, _ := uc.redisRepo.GetFromRedis(ctx, "otp:email:"+req.Email+":purpose:"+req.Purpose)
+
+	if isSendedBefore != "" {
+		return errors.New("Hãy đợi đủ 5 phút để được gửi yêu cầu mới nhé")
+	}
+
+	otp := uc.service.GenerateEmailToken(req.Email)
+
+	go func() {
+		err := uc.sendOTP(otp, req.Email, "Mã xác thực của bạn")
+		if err != nil {
+			// return err
+			fmt.Println("-----Có lỗi khi gửi mail:" + err.Error())
+		}
+	}()
+
+	if err := uc.redisRepo.InsertToRedis(ctx, "otp:email:"+req.Email+":purpose:"+req.Purpose, otp, 5*time.Minute); err != nil {
+		// return errors.New("Có lỗi khi lưu mã OTP: " + err.Error())
+		fmt.Println("-----Có lỗi khi lưu mã OTP: " + err.Error())
+	}
+
+	return nil
+}
+
 func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) error {
+	//Kiểm tra token hợp lệ
+	isOK, err := uc.redisRepo.GetFromRedis(ctx, signUpReq.VerifyToken)
+	if err != nil {
+		return errors.New("Token không tồn tại hoặc hết hạn: " + err.Error())
+	}
+
+	if isOK != signUpReq.Email {
+		return errors.New("Email bạn sử dụng không phải email bạn đã xác thực")
+	}
+
+	//Kiểm tra email tồn tại
 	emailExisted, err := uc.userRepo.IsEmailExist(ctx, signUpReq.Email, 0)
 	if err != nil {
 		return err
@@ -61,6 +157,7 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 		return errors.New("Email đã tồn tại")
 	}
 
+	//Kiểm tra số điện thoại tồn tại
 	phoneNumberExisted, err := uc.userRepo.IsPhoneNumberExist(ctx, signUpReq.PhoneNumber, 0)
 	if err != nil {
 		return err
@@ -70,6 +167,7 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 		return errors.New("Số điện thoại đã tồn tại")
 	}
 
+	//Kiểm tra mật khẩu nhập lại chính xác
 	if signUpReq.Password != signUpReq.RePassword {
 		return errors.New("Nhập lại mật khẩu không chính xác")
 	}
@@ -100,6 +198,19 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 
 	if err := uc.repo.SignUp(ctx, &signUpUser); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) sendOTP(otp, email, sub string) error {
+	subject, htmlBody := uc.service.BuildOTPEmailContent(otp, sub)
+
+	err := uc.emailRepo.Send(email, subject, htmlBody)
+	if err != nil {
+		return errors.New("Gửi email thất bại:" + err.Error())
+	} else {
+		log.Println("Đã gửi OTP thành công!")
 	}
 
 	return nil

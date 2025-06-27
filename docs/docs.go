@@ -1278,6 +1278,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/send-otp": {
+            "post": {
+                "description": "API gửi OTP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client send OTP",
+                "parameters": [
+                    {
+                        "description": "Gửi OTP",
+                        "name": "sendOTP",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.SendOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.SendOTPResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/signup": {
             "post": {
                 "description": "API đăng kí",
@@ -1290,7 +1336,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Admin Signup",
+                "summary": "Client Signup",
                 "parameters": [
                     {
                         "description": "Dữ liệu đăng kí",
@@ -1409,6 +1455,52 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/client/verify-otp": {
+            "post": {
+                "description": "API xác thực OTP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client verify OTP",
+                "parameters": [
+                    {
+                        "description": "Xác thực OTP",
+                        "name": "sendOTP",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.VerifyOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.VerifyOTPResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/enums.AppError"
                         }
@@ -4303,6 +4395,37 @@ const docTemplate = `{
                 }
             }
         },
+        "authdto.SendOTPRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "purpose"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "purpose": {
+                    "type": "string",
+                    "enum": [
+                        "activeAccount",
+                        "resetPassword"
+                    ]
+                }
+            }
+        },
+        "authdto.SendOTPResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "authdto.SignUpRequest": {
             "type": "object",
             "required": [
@@ -4310,7 +4433,8 @@ const docTemplate = `{
                 "fullName",
                 "password",
                 "phoneNumber",
-                "rePassword"
+                "rePassword",
+                "verifyToken"
             ],
             "properties": {
                 "email": {
@@ -4329,6 +4453,9 @@ const docTemplate = `{
                 },
                 "rePassword": {
                     "type": "string"
+                },
+                "verifyToken": {
+                    "type": "string"
                 }
             }
         },
@@ -4339,6 +4466,51 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.VerifyOTPRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "otp",
+                "purpose"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "otp": {
+                    "type": "string"
+                },
+                "purpose": {
+                    "type": "string",
+                    "enum": [
+                        "activeAccount",
+                        "resetPassword"
+                    ]
+                }
+            }
+        },
+        "authdto.VerifyOTPResponse": {
+            "type": "object",
+            "properties": {
+                "verifyToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.VerifyOTPResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/authdto.VerifyOTPResponse"
+                },
                 "message": {
                     "type": "string"
                 }

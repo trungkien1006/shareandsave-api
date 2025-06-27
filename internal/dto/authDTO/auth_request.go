@@ -13,9 +13,21 @@ type GetAccessTokenRequest struct {
 }
 
 type SignUpRequest struct {
+	VerifyToken string `json:"verifyToken" validate:"required"`
 	Email       string `json:"email" validate:"required,email"`
 	PhoneNumber string `json:"phoneNumber" validate:"required,phone_vn"`
 	FullName    string `json:"fullName" validate:"required,min=2,max=50"`
 	Password    string `json:"password" validate:"required,password_strong"`
 	RePassword  string `json:"rePassword" validate:"required,eqfield=Password"`
+}
+
+type SendOTPRequest struct {
+	Email   string `json:"email" validate:"required,email"`
+	Purpose string `json:"purpose" validate:"required,oneof=activeAccount resetPassword"`
+}
+
+type VerifyOTPRequest struct {
+	Email   string `json:"email" validate:"required,email"`
+	Purpose string `json:"purpose" validate:"required,oneof=activeAccount resetPassword"`
+	OTP     string `json:"otp" validate:"required"`
 }

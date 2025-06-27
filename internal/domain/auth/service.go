@@ -2,8 +2,10 @@ package auth
 
 import (
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -116,6 +118,12 @@ func (s *AuthService) GenerateRefreshToken(user JWTSubject) string {
 	return token
 }
 
+func (s *AuthService) GenerateEmailToken(email string) string {
+	base := email + time.Now().Format("20060102150405")
+	hash := sha256.Sum256([]byte(base))
+	return hex.EncodeToString(hash[:])[:6] // Lấy 6 ký tự đầu của hash
+}
+
 func GetCurrentTimeVN() time.Time {
 	location, err := time.LoadLocation("Asia/Ho_Chi_Minh")
 	if err != nil {
@@ -124,4 +132,56 @@ func GetCurrentTimeVN() time.Time {
 	}
 
 	return time.Now().In(location)
+}
+
+func (s *AuthService) BuildOTPEmailContent(otp, sub string) (subject, body string) {
+	subject = sub
+
+	body = fmt.Sprintf(`
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="UTF-8">
+			<style>
+				body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+				.container { max-width: 600px; margin: 0 auto; background-color: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+				.title { color: #333; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+				.otp { font-size: 32px; font-weight: bold; color: #007bff; letter-spacing: 4px; margin: 20px 0; }
+				.footer { font-size: 14px; color: #888; margin-top: 30px; }
+			</style>
+		</head>
+		<body>
+			<div class="container">
+				<div class="title">Xin chào,</div>
+				<p>Bạn vừa yêu cầu xác thực tài khoản. Đây là mã OTP của bạn:</p>
+				<div class="otp">%s</div>
+				<p>Mã này sẽ hết hạn sau 5 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+				<div class="footer">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</div>
+			</div>
+		</body>
+		</html>
+	`, otp)
+
+	return
+}
+
+// GenerateVerificationToken tạo token duy nhất từ email
+func (s *AuthService) GenerateVerificationToken(email string) (string, error) {
+	// Tạo random salt 16 bytes
+	salt := make([]byte, 16)
+	_, err := rand.Read(salt)
+	if err != nil {
+		return "", err
+	}
+
+	// Kết hợp email + timestamp + salt
+	data := fmt.Sprintf("%s|%d|%s", email, time.Now().UnixNano(), base64.URLEncoding.EncodeToString(salt))
+
+	// Băm bằng SHA-256
+	hash := sha256.Sum256([]byte(data))
+
+	// Trả về token dạng base64
+	token := base64.URLEncoding.EncodeToString(hash[:])
+
+	return token, nil
 }

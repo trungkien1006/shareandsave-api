@@ -7,6 +7,7 @@ type AuthLogin struct {
 }
 
 type AuthSignUp struct {
+	VerifyToken string
 	Email       string
 	PhoneNumber string
 	FullName    string

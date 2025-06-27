@@ -14,6 +14,7 @@ func AuthDTOToDomain(dto LoginRequest) auth.AuthLogin {
 // DTO to Domain
 func SignUpAuthDTOToDomain(dto SignUpRequest) auth.AuthSignUp {
 	return auth.AuthSignUp{
+		VerifyToken: dto.VerifyToken,
 		Email:       dto.Email,
 		PhoneNumber: dto.PhoneNumber,
 		FullName:    dto.FullName,
