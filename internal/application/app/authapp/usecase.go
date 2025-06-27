@@ -193,7 +193,7 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 	signUpUser.FullName = signUpReq.FullName
 	signUpUser.PhoneNumber = signUpReq.PhoneNumber
 	signUpUser.Address = ""
-	signUpUser.Status = int8(enums.UserStatusInactive)
+	signUpUser.Status = int8(enums.UserStatusActive)
 	signUpUser.GoodPoint = 0
 
 	if err := uc.repo.SignUp(ctx, &signUpUser); err != nil {
