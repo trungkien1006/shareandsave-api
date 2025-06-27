@@ -39,8 +39,8 @@ func (uc *UseCase) GetAllTransaction(ctx context.Context, transactions *[]transa
 	return totalPage, nil
 }
 
-func (uc *UseCase) GetDetailPendingTransaction(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
-	if err := uc.repo.GetDetailPendingTransaction(ctx, transaction, interestID); err != nil {
+func (uc *UseCase) GetDetailTransactionByInterestID(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
+	if err := uc.repo.GetDetailTransactionByInterestID(ctx, transaction, interestID); err != nil {
 		return err
 	}
 

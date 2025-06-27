@@ -114,7 +114,7 @@ func (h *TransactionHandler) GetDetailPendingTransaction(c *gin.Context) {
 		return
 	}
 
-	if err := h.uc.GetDetailPendingTransaction(c.Request.Context(), &domainTransaction, req.InterestID); err != nil {
+	if err := h.uc.GetDetailTransactionByInterestID(c.Request.Context(), &domainTransaction, req.InterestID); err != nil {
 		c.JSON(
 			http.StatusConflict,
 			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrNotFound),

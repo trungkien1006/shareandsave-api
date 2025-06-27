@@ -88,7 +88,7 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 	return totalPages, nil
 }
 
-func (r *TransactionRepoDB) GetDetailPendingTransaction(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
+func (r *TransactionRepoDB) GetDetailTransactionByInterestID(ctx context.Context, transaction *transaction.DetailTransaction, interestID uint) error {
 	var (
 		dbTransaction dbmodel.Transaction
 	)
@@ -102,7 +102,8 @@ func (r *TransactionRepoDB) GetDetailPendingTransaction(ctx context.Context, tra
 		Preload("TransactionItems").
 		Preload("TransactionItems.PostItem").
 		Preload("TransactionItems.PostItem.Item").
-		Where("transaction.interest_id = ? AND transaction.status = ?", interestID, enums.TransactionStatusPending).
+		Where("transaction.interest_id = ?", interestID).
+		Order("created_at DESC").
 		First(&dbTransaction).Error; err != nil {
 		return errors.New("Có lỗi khi truy xuất chi tiết giao dịch đang chờ: " + err.Error())
 	}
