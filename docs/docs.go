@@ -3595,6 +3595,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/good-deeds": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new good deed for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a good deed",
+                "parameters": [
+                    {
+                        "description": "Create good deed request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userdto.CreateGoodDeedRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.CreateUserGoodDeedResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/warehouses": {
             "get": {
                 "security": [
@@ -6365,6 +6416,42 @@ const docTemplate = `{
                 "data": {
                     "$ref": "#/definitions/userdto.CreateClientResponse"
                 },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.CreateGoodDeedRequest": {
+            "type": "object",
+            "required": [
+                "goodDeedType",
+                "userID"
+            ],
+            "properties": {
+                "goodDeedType": {
+                    "description": "1: donate, 2: volunteer, 3: other",
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "transactionID": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "userdto.CreateUserGoodDeedResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
                 "message": {
                     "type": "string"
                 }

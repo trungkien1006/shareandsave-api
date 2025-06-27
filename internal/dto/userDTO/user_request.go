@@ -111,3 +111,9 @@ type DeleteClientRequest struct {
 type DeleteAdminRequest struct {
 	AdminID int `uri:"adminID" binding:"required"`
 }
+
+type CreateGoodDeedRequest struct {
+	UserID        uint `json:"userID" binding:"required"`
+	GoodDeedType  int  `json:"goodDeedType" binding:"required,oneof=1 2 3"` // 1: donate, 2: volunteer, 3: other
+	TransactionID uint `json:"transactionID"`
+}

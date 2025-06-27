@@ -7,6 +7,7 @@ import (
 	"final_project/internal/domain/filter"
 	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
+	"final_project/internal/domain/setting"
 	"final_project/internal/domain/user"
 	usergooddeed "final_project/internal/domain/user_good_deed"
 	"final_project/internal/pkg/enums"
@@ -25,9 +26,10 @@ type UseCase struct {
 	superAdminID     uint
 	redisRepo        redis.Repository
 	userGoodDeedRepo usergooddeed.Repository
+	settingRepo      setting.Repository
 }
 
-func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Repository, userGoodDeedRepo usergooddeed.Repository) *UseCase {
+func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo redis.Repository, userGoodDeedRepo usergooddeed.Repository, settingRepo setting.Repository) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -47,11 +49,47 @@ func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo
 		superAdminID:     supderAdminID,
 		redisRepo:        redisRepo,
 		userGoodDeedRepo: userGoodDeedRepo,
+		settingRepo:      settingRepo,
 	}
 }
 
 func (uc *UseCase) GetUserGoodDeed(ctx context.Context, userGoodDeeds *[]usergooddeed.UserGoodDeedDetail, userID int) error {
 	if err := uc.userGoodDeedRepo.GetUserGoodDeed(ctx, userGoodDeeds, userID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) CreateGoodDeed(ctx context.Context, goodDeed *usergooddeed.UserGoodDeed) error {
+	if goodDeed.UserID == 0 {
+		return errors.New(enums.ErrUserNotExist)
+	}
+
+	var setting setting.Setting
+
+	if err := uc.settingRepo.GetByKey(ctx, &setting, enums.GoodDeedType(goodDeed.GoodDeedType).String()); err != nil {
+		return errors.New("Có lỗi khi lấy cài đặt cho việc tốt: " + err.Error())
+	}
+
+	goodPoint, err := strconv.Atoi(setting.Value)
+	if err != nil {
+		return errors.New("Có lỗi khi chuyển đổi giá trị cài đặt cho việc tốt: " + err.Error())
+	}
+
+	goodDeed.GoodPoint = goodPoint
+
+	if err := uc.userGoodDeedRepo.CreateGoodDeed(ctx, goodDeed); err != nil {
+		return err
+	}
+
+	// Cập nhật điểm tốt cho người dùng
+	var user user.User
+
+	user.ID = goodDeed.UserID
+	user.GoodPoint = goodDeed.GoodPoint
+
+	if err := uc.repo.Update(ctx, &user); err != nil {
 		return err
 	}
 

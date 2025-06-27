@@ -54,6 +54,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//good deed dependency
 	userGoodDeedRepo := persistence.NewUserGoodDeedRepoDB(db)
 
+	//setting dependency
+	settingRepo := persistence.NewSettingRepoDB(db)
+	settingUC := settingapp.NewUseCase(settingRepo)
+	settingHandler := handler.NewSettingHandler(settingUC)
+
 	//appointment dependency
 	appointmentRepo := persistence.NewAppointmentRepoDB(db)
 	appointmentUC := appointmentapp.NewUseCase(appointmentRepo)
@@ -71,7 +76,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//user dependency
 	userRepo := persistence.NewUserRepoDB(db)
-	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo, userGoodDeedRepo)
+	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo, userGoodDeedRepo, settingRepo)
 	userHandler := handler.NewUserHandler(userUC)
 
 	//item dependency
@@ -116,11 +121,6 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentRepo := persistence.NewCommentRepoDB(db)
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
-
-	//setting dependency
-	settingRepo := persistence.NewSettingRepoDB(db)
-	settingUC := settingapp.NewUseCase(settingRepo)
-	settingHandler := handler.NewSettingHandler(settingUC)
 
 	//chat dependency
 	chatUC := chatapp.NewUseCase(commentRepo)
@@ -192,6 +192,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//client user API
 		v1.GET("/client/users/my-good-deeds", middlewares.AuthGuard, userHandler.GetUserGoodDeed)
+
+		// user API
+		v1.GET("/users/good-deeds", middlewares.AuthGuard, userHandler.CreateGoodDeed)
 
 		//client API
 		v1.GET("/clients", userHandler.GetAllClient)

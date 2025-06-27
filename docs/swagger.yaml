@@ -1720,6 +1720,31 @@ definitions:
       message:
         type: string
     type: object
+  userdto.CreateGoodDeedRequest:
+    properties:
+      goodDeedType:
+        description: '1: donate, 2: volunteer, 3: other'
+        enum:
+        - 1
+        - 2
+        - 3
+        type: integer
+      transactionID:
+        type: integer
+      userID:
+        type: integer
+    required:
+    - goodDeedType
+    - userID
+    type: object
+  userdto.CreateUserGoodDeedResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   userdto.DeleteAdminResponseWrapper:
     properties:
       code:
@@ -4545,6 +4570,38 @@ paths:
       summary: Update transaction
       tags:
       - transactions
+  /users/good-deeds:
+    post:
+      consumes:
+      - application/json
+      description: Create a new good deed for a user
+      parameters:
+      - description: Create good deed request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.CreateGoodDeedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.CreateUserGoodDeedResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create a good deed
+      tags:
+      - users
   /warehouses:
     get:
       consumes:

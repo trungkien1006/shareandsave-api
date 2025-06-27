@@ -109,3 +109,9 @@ type GetUserGoodDeedResponseWrapper struct {
 type GetUserGoodDeedResponse struct {
 	GoodDeeds []UserGoodDeedDetail `json:"goodDeeds"`
 }
+
+type CreateUserGoodDeedResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

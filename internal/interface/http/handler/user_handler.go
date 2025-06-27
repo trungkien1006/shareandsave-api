@@ -66,6 +66,49 @@ func (h *UserHandler) GetUserGoodDeed(c *gin.Context) {
 	})
 }
 
+// @Summary Create a good deed
+// @Description Create a new good deed for a user
+// @Security BearerAuth
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body userdto.CreateGoodDeedRequest true "Create good deed request"
+// @Success 200 {object} userdto.CreateUserGoodDeedResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 500 {object} enums.AppError
+// @Router /users/good-deeds [post]
+func (h *UserHandler) CreateGoodDeed(c *gin.Context) {
+	var req userdto.CreateGoodDeedRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	goodDeed := usergooddeed.UserGoodDeed{
+		UserID:        req.UserID,
+		GoodDeedType:  req.GoodDeedType,
+		TransactionID: req.TransactionID,
+	}
+
+	if err := h.uc.CreateGoodDeed(c.Request.Context(), &goodDeed); err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			enums.NewAppError(http.StatusInternalServerError, err.Error(), "ERR_CREATE_GOOD_DEED"),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, userdto.CreateUserGoodDeedResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Created user good deed successfully",
+		Data:    gin.H{},
+	})
+}
+
 // @Summary Get admins
 // @Description API bao gồm cả lọc, phân trang và sắp xếp
 // @Security BearerAuth
