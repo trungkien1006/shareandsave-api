@@ -8,7 +8,11 @@ import (
 	"final_project/internal/domain/redis"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
+	"final_project/internal/pkg/enums"
+	"final_project/internal/pkg/hash"
+	"final_project/internal/pkg/helpers"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
@@ -45,6 +49,60 @@ func NewUseCase(r auth.Repository, s *auth.AuthService, redisRepo redis.Reposito
 		clientID:     clientID,
 		superAdminID: supderAdminID,
 	}
+}
+
+func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) error {
+	emailExisted, err := uc.userRepo.IsEmailExist(ctx, signUpReq.Email, 0)
+	if err != nil {
+		return err
+	}
+
+	if emailExisted {
+		return errors.New("Email đã tồn tại")
+	}
+
+	phoneNumberExisted, err := uc.userRepo.IsPhoneNumberExist(ctx, signUpReq.PhoneNumber, 0)
+	if err != nil {
+		return err
+	}
+
+	if phoneNumberExisted {
+		return errors.New("Số điện thoại đã tồn tại")
+	}
+
+	if signUpReq.Password != signUpReq.RePassword {
+		return errors.New("Nhập lại mật khẩu không chính xác")
+	}
+
+	var signUpUser user.User
+
+	hashedPassword, err := hash.HashPassword(signUpReq.Password)
+	if err != nil {
+		return err
+	}
+
+	strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/user.png", enums.UserImageWidth, enums.UserImageHeight)
+
+	if err != nil {
+		return err
+	}
+
+	signUpUser.RoleID = uc.clientID
+	signUpUser.Email = signUpReq.Email
+	signUpUser.Password = hashedPassword
+	signUpUser.Avatar = strBase64Image
+	signUpUser.Active = false
+	signUpUser.FullName = signUpReq.FullName
+	signUpUser.PhoneNumber = signUpReq.PhoneNumber
+	signUpUser.Address = ""
+	signUpUser.Status = int8(enums.UserStatusInactive)
+	signUpUser.GoodPoint = 0
+
+	if err := uc.repo.SignUp(ctx, &signUpUser); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (uc *UseCase) GetMe(ctx context.Context, user *user.User, userID uint, isAdmin bool) error {

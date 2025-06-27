@@ -213,6 +213,35 @@ definitions:
       message:
         type: string
     type: object
+  authdto.SignUpRequest:
+    properties:
+      email:
+        type: string
+      fullName:
+        maxLength: 50
+        minLength: 2
+        type: string
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      rePassword:
+        type: string
+    required:
+    - email
+    - fullName
+    - password
+    - phoneNumber
+    - rePassword
+    type: object
+  authdto.SignUpResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   categorydto.CategoryDTO:
     properties:
       createdAt:
@@ -3116,6 +3145,36 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /client/signup:
+    post:
+      consumes:
+      - application/json
+      description: API đăng kí
+      parameters:
+      - description: Dữ liệu đăng kí
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/authdto.SignUpResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Admin Signup
+      tags:
+      - auth
   /client/users/my-good-deeds:
     get:
       consumes:

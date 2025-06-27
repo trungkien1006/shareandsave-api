@@ -22,9 +22,20 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
+// @Summary Admin Signup
+// @Description API đăng kí
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param signup body authdto.SignUpRequest true "Dữ liệu đăng kí"
+// @Success 201 {object} authdto.SignUpResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/signup [post]
 func (h *AuthHandler) ClientSignUp(c *gin.Context) {
 	var (
-		req authdto.SignUpRequest
+		req             authdto.SignUpRequest
+		domainSignUpReq auth.AuthSignUp
 	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -36,6 +47,19 @@ func (h *AuthHandler) ClientSignUp(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
 		return
 	}
+
+	domainSignUpReq = authdto.SignUpAuthDTOToDomain(req)
+
+	if err := h.uc.ClientSignUp(c.Request.Context(), domainSignUpReq); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusCreated,
+		"message": "Signup successfully",
+		"data":    gin.H{},
+	})
 }
 
 // @Summary Admin Get Me

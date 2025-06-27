@@ -300,6 +300,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/client/get-me", middlewares.AuthGuard, authHandler.ClientGetMe)
 		v1.POST("/client/login", authHandler.UserLogin)
 		v1.POST("/client/logout", middlewares.AuthGuard, authHandler.ClientLogout)
+		v1.POST("/client/signup", authHandler.ClientSignUp)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

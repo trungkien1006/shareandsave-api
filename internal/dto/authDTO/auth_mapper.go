@@ -10,3 +10,14 @@ func AuthDTOToDomain(dto LoginRequest) auth.AuthLogin {
 		Device:   dto.Device,
 	}
 }
+
+// DTO to Domain
+func SignUpAuthDTOToDomain(dto SignUpRequest) auth.AuthSignUp {
+	return auth.AuthSignUp{
+		Email:       dto.Email,
+		PhoneNumber: dto.PhoneNumber,
+		FullName:    dto.FullName,
+		Password:    dto.Password,
+		RePassword:  dto.RePassword,
+	}
+}

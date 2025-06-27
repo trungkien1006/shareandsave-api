@@ -19,6 +19,20 @@ func NewAuthRepoDB(db *gorm.DB) *AuthRepoDB {
 	return &AuthRepoDB{db: db}
 }
 
+func (r *AuthRepoDB) SignUp(ctx context.Context, user *user.User) error {
+	var dbUser dbmodel.User
+
+	dbUser = dbmodel.ToDBUser(*user)
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).
+		Create(&dbUser).Error; err != nil {
+		return errors.New("Có lỗi khi đăng kí người dùng mới: " + err.Error())
+	}
+
+	return nil
+}
+
 func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password string, isAdmin bool, clientRoleID uint) error {
 	var (
 		dbUser dbmodel.User
