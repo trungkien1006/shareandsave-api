@@ -24,6 +24,7 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 
 // @Summary Get users rank
 // @Description API bao gồm phân trang
+// @Security BearerAuth
 // @Tags users
 // @Accept json
 // @Produce json
@@ -47,28 +48,41 @@ func (h *UserHandler) GetUserRanks(c *gin.Context) {
 		return
 	}
 
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
 	req.SetDefault()
 
 	domainFilter.Page = req.Page
 	domainFilter.Limit = req.Limit
 
-	totalPage, err := h.uc.GetAllUserRank(c.Request.Context(), &domainUserRanks, domainFilter)
+	totalPage, userInfo, userRank, err := h.uc.GetAllUserRank(c.Request.Context(), &domainUserRanks, domainFilter, userID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return
 	}
 
-	userRankDTO := make([]userdto.UserRankDTO, 0)
+	userRankDTOs := make([]userdto.UserRankDTO, 0)
+	var userRankDTO userdto.UserRankDTO
 
 	for _, value := range domainUserRanks {
-		userRankDTO = append(userRankDTO, userdto.UserGoodDeedDomainToDTO(value))
+		userRankDTOs = append(userRankDTOs, userdto.UserGoodDeedDomainToDTO(value))
 	}
+
+	userRankDTO = userdto.UserGoodDeedDomainToDTO(*userInfo)
 
 	c.JSON(http.StatusOK, userdto.GetUserRankResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Fetched users rank successfully",
 		Data: userdto.GetUserRankResponse{
-			UserRanks: userRankDTO,
+			YourInfo:  userRankDTO,
+			YourRank:  userRank,
+			UserRanks: userRankDTOs,
 			TotalPage: totalPage,
 		},
 	})

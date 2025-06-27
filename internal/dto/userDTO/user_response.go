@@ -123,6 +123,8 @@ type GetUserRankResponseWrapper struct {
 }
 
 type GetUserRankResponse struct {
+	YourInfo  UserRankDTO   `json:"yourInfo"`
+	YourRank  int           `json:"yourRank"`
 	UserRanks []UserRankDTO `json:"userRanks"`
 	TotalPage int           `json:"totalPage"`
 }

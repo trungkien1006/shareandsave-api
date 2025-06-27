@@ -1320,6 +1320,11 @@ const docTemplate = `{
         },
         "/client/users/ranks": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API bao gồm phân trang",
                 "consumes": [
                     "application/json"
@@ -6721,6 +6726,12 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/userdto.UserRankDTO"
                     }
+                },
+                "yourInfo": {
+                    "$ref": "#/definitions/userdto.UserRankDTO"
+                },
+                "yourRank": {
+                    "type": "integer"
                 }
             }
         },

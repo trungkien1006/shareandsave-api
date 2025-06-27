@@ -13,6 +13,9 @@ type GetAccessTokenRequest struct {
 }
 
 type SignUpRequest struct {
-	// email, sdt, ho ten, matkhau, nhaplaimk
-	Email string `json:"email" binding:"required"`
+	Email       string `json:"email" validate:"required,email"`
+	PhoneNumber string `json:"phoneNumber" validate:"required,phone_vn"`
+	FullName    string `json:"fullName" validate:"required,min=2,max=50"`
+	Password    string `json:"password" validate:"required,password_strong"`
+	RePassword  string `json:"rePassword" validate:"required,eqfield=Password"`
 }

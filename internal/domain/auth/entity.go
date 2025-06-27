@@ -6,6 +6,14 @@ type AuthLogin struct {
 	Device   string
 }
 
+type AuthSignUp struct {
+	Email       string
+	PhoneNumber string
+	FullName    string
+	Password    string
+	RePassword  string
+}
+
 type JWTSubject struct {
 	Id      uint
 	Device  string

@@ -22,11 +22,21 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
-// func (h *AuthHandler) ClientSignUp(c *gin.Context) {
-// 	var (
-// 		req authdto.LoginRequest
-// 	)
-// }
+func (h *AuthHandler) ClientSignUp(c *gin.Context) {
+	var (
+		req authdto.SignUpRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+}
 
 // @Summary Admin Get Me
 // @Description API lấy thông tin admin + jwt

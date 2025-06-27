@@ -1859,6 +1859,10 @@ definitions:
         items:
           $ref: '#/definitions/userdto.UserRankDTO'
         type: array
+      yourInfo:
+        $ref: '#/definitions/userdto.UserRankDTO'
+      yourRank:
+        type: integer
     type: object
   userdto.GetUserRankResponseWrapper:
     properties:
@@ -3166,6 +3170,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Get users rank
       tags:
       - users

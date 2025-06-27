@@ -21,6 +21,46 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 	return &UserRepoDB{db: db}
 }
 
+func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID uint) (*user.UserRank, int, error) {
+	// Step 1: Lấy toàn bộ user + rank bằng subquery
+	type RankedUser struct {
+		ID   int64
+		Rank int
+	}
+
+	var ranked RankedUser
+
+	rankQuery := `
+		SELECT id, RANK() OVER (ORDER BY good_point DESC) AS rank
+		FROM user
+		WHERE deleted_at IS NULL AND role_id = ?
+	`
+
+	subQuery := fmt.Sprintf(`SELECT rank FROM (%s) AS ranked_users WHERE id = ?`, rankQuery)
+
+	if err := r.db.Raw(subQuery, clientID, userID).WithContext(ctx).Scan(&ranked).Error; err != nil {
+		return nil, 0, fmt.Errorf("Lỗi khi truy vấn rank: %w", err)
+	}
+
+	if ranked.Rank == 0 {
+		return nil, 0, fmt.Errorf("Không tìm thấy user với id = %d", userID)
+	}
+
+	// Step 2: Lấy chi tiết user
+	var dbUser dbmodel.User
+	if err := r.db.WithContext(ctx).
+		Preload("UserGoodDeeds").
+		Where("id = ? AND role_id = ?", userID, clientID).
+		First(&dbUser).Error; err != nil {
+		return nil, 0, fmt.Errorf("Không tìm thấy thông tin user: %w", err)
+	}
+
+	// Step 3: Mapping dữ liệu
+	result := dbmodel.UserGoodDeedDBToDomain(dbUser)
+
+	return &result, ranked.Rank, nil
+}
+
 func (r *UserRepoDB) GetAllUserRank(ctx context.Context, users *[]user.UserRank, req filter.FilterRequest, clientID uint) (int, error) {
 	var (
 		dbUsers      []dbmodel.User
