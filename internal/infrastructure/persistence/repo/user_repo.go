@@ -22,23 +22,22 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 }
 
 func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID uint) (*user.UserRank, int, error) {
-	// Step 1: Lấy toàn bộ user + rank bằng subquery
 	type RankedUser struct {
-		ID   int64
+		ID   uint
 		Rank int
 	}
 
 	var ranked RankedUser
 
-	rankQuery := `
-		SELECT id, RANK() OVER (ORDER BY good_point DESC) AS rank
-		FROM user
-		WHERE deleted_at IS NULL AND role_id = ?
-	`
+	query := "" +
+		"SELECT ranked.id, ranked.`rank` FROM ( " +
+		"  SELECT id, RANK() OVER (ORDER BY good_point DESC) AS `rank` " +
+		"  FROM user " +
+		"  WHERE deleted_at IS NULL AND role_id = ? " +
+		") AS ranked " +
+		"WHERE ranked.id = ?"
 
-	subQuery := fmt.Sprintf(`SELECT rank FROM (%s) AS ranked_users WHERE id = ?`, rankQuery)
-
-	if err := r.db.Raw(subQuery, clientID, userID).WithContext(ctx).Scan(&ranked).Error; err != nil {
+	if err := r.db.Raw(query, clientID, userID).WithContext(ctx).Scan(&ranked).Error; err != nil {
 		return nil, 0, fmt.Errorf("Lỗi khi truy vấn rank: %w", err)
 	}
 
@@ -46,7 +45,6 @@ func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID 
 		return nil, 0, fmt.Errorf("Không tìm thấy user với id = %d", userID)
 	}
 
-	// Step 2: Lấy chi tiết user
 	var dbUser dbmodel.User
 	if err := r.db.WithContext(ctx).
 		Preload("UserGoodDeeds").
@@ -55,7 +53,6 @@ func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID 
 		return nil, 0, fmt.Errorf("Không tìm thấy thông tin user: %w", err)
 	}
 
-	// Step 3: Mapping dữ liệu
 	result := dbmodel.UserGoodDeedDBToDomain(dbUser)
 
 	return &result, ranked.Rank, nil
