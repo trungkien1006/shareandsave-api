@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"final_project/internal/domain/appointment"
-	leaverequests "final_project/internal/domain/leave_requests"
 	"final_project/internal/domain/redis"
 	"final_project/internal/domain/setting"
 	"final_project/internal/domain/warehouse"
@@ -22,15 +21,13 @@ import (
 type AppointmentCronJob struct {
 	settingRepo     setting.Repository
 	redisRepo       redis.Repository
-	leaveReqRepo    leaverequests.Repository
 	appointmentRepo appointment.Repository
 }
 
-func NewAppointmentCronJob(settingRepo setting.Repository, redisRepo redis.Repository, leaveReqRepo leaverequests.Repository, appointmentRepo appointment.Repository) *AppointmentCronJob {
+func NewAppointmentCronJob(settingRepo setting.Repository, redisRepo redis.Repository, appointmentRepo appointment.Repository) *AppointmentCronJob {
 	return &AppointmentCronJob{
 		settingRepo:     settingRepo,
 		redisRepo:       redisRepo,
-		leaveReqRepo:    leaveReqRepo,
 		appointmentRepo: appointmentRepo,
 	}
 }

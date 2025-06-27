@@ -348,6 +348,23 @@ func (r *PostRepoDB) GetByID(ctx context.Context, post *post.Post, postID uint) 
 	return nil
 }
 
+func (r *PostRepoDB) GetPostType(ctx context.Context, interestID uint) (int64, error) {
+	var dbPostType int64 = 0
+
+	if err := r.db.Debug().
+		WithContext(ctx).
+		Model(&dbmodel.Post{}).
+		Table("post").
+		Joins("JOIN interest ON interest.post_id = post.id").
+		Where("interest.id = ?", interestID).
+		Select("post.type").
+		Scan(&dbPostType).Error; err != nil {
+		return 0, errors.New("Có lỗi khi tìm kiếm loại bài viết theo ID: " + err.Error())
+	}
+
+	return dbPostType, nil
+}
+
 func (r *PostRepoDB) Save(ctx context.Context, post *post.CreatePost) error {
 	tx := r.db.Begin()
 

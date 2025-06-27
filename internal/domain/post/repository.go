@@ -11,6 +11,7 @@ type Repository interface {
 	GetDetailByID(ctx context.Context, post *DetailPost, postID uint) error
 	GetDetailBySlug(ctx context.Context, post *DetailPost, postSlug string) error
 	GetByID(ctx context.Context, post *Post, postID uint) error
+	GetPostType(ctx context.Context, interestID uint) (int64, error)
 	Save(ctx context.Context, post *CreatePost) error
 	Update(ctx context.Context, post *Post) error
 	IsTableEmpty(ctx context.Context) (bool, error)

@@ -129,7 +129,8 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	var (
 		dbTransaction           dbmodel.Transaction
 		postID                  uint
-		senderID                uint
+		authorID                uint
+		postType                int64
 		pendingTransactionCount int64
 	)
 
@@ -176,12 +177,25 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	// Lấy ra id của author theo post id
 	if err := tx.WithContext(ctx).Model(&dbmodel.Post{}).
 		Select("author_id").Where("id = ?", postID).
-		Scan(&senderID).Error; err != nil {
+		Scan(&authorID).Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi lấy id của author theo post id: " + err.Error())
 	}
 
-	dbTransaction.SenderID = senderID
+	// Lấy ra type của post theo post id
+	if err := tx.WithContext(ctx).Model(&dbmodel.Post{}).
+		Select("type").Where("id = ?", postID).
+		Scan(&postType).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi lấy type của bài viết theo post id: " + err.Error())
+	}
+
+	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
+		dbTransaction.SenderID = authorID
+	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.GoodPointGiveLoseItem) {
+		dbTransaction.SenderID = dbTransaction.ReceiverID
+		dbTransaction.ReceiverID = authorID
+	}
 
 	// Tạo giao dịch
 	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).
@@ -189,16 +203,6 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 		tx.Rollback()
 		return errors.New("Có lỗi khi tạo giao dịch mới: " + err.Error())
 	}
-
-	// // Cập nhật lại số lượng đồ đạc ở post_item
-	// for _, value := range dbTransaction.TransactionItems {
-	// 	if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
-	// 		Where("id = ?", value.PostItemID).
-	// 		Update("current_quantity", gorm.Expr("current_quantity - ?", value.Quantity)).Error; err != nil {
-	// 		tx.Rollback()
-	// 		return errors.New("Có lỗi khi cập nhật lại số lượng đồ ở bài viết: " + err.Error())
-	// 	}
-	// }
 
 	// Commit transaction
 	if err := tx.Commit().Error; err != nil {

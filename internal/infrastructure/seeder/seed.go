@@ -148,6 +148,18 @@ func (s *Seeder) seedSetting() error {
 			Key:   "domain",
 			Value: "http://34.142.168.171:8000/",
 		},
+		{
+			Key:   "goodPointGiveOldItem",
+			Value: "100",
+		},
+		{
+			Key:   "goodPointGiveLoseItem",
+			Value: "200",
+		},
+		{
+			Key:   "goodPointJoinCampaign",
+			Value: "300",
+		},
 	}
 
 	for _, value := range settings {

@@ -240,7 +240,7 @@ func (uc *UseCase) UpdateClient(ctx context.Context, domainUser *user.User) erro
 	}
 
 	if domainUser.GoodPoint >= 0 {
-		updateUser.GoodPoint = domainUser.GoodPoint
+		updateUser.GoodPoint += domainUser.GoodPoint
 	}
 
 	if domainUser.Major != "" {

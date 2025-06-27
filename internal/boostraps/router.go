@@ -51,8 +51,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//redis
 	redisRepo := redisapp.NewRedisRepo(redisClient)
 
-	//leave requests dependency
-	leaverequestsRepo := persistence.NewLeaveRequestsRepoDB(db)
+	//good deed dependency
+	userGoodDeedRepo := persistence.NewUserGoodDeedRepoDB(db)
 
 	//appointment dependency
 	appointmentRepo := persistence.NewAppointmentRepoDB(db)
@@ -92,7 +92,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//transaction dependency
 	transactionRepo := persistence.NewTransactionRepoDB(db)
-	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo)
+	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo, userGoodDeedRepo)
 	transactionHandler := handler.NewTransactionHandler(transactionUC)
 
 	//import invoice dependency
@@ -160,7 +160,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	go chatHandler.Run(ctx)
 
 	//run auto appointment worker
-	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo, leaverequestsRepo, appointmentRepo)
+	appointmentCronJob := worker.NewAppointmentCronJob(settingRepo, redisRepo, appointmentRepo)
 	appointmentWorkerHandler := workerHandler.NewAppointmentHandler(nil, appointmentCronJob)
 
 	go appointmentWorkerHandler.Run(ctx)

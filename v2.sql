@@ -16,6 +16,17 @@ CREATE TABLE `user` (
   `deleted_at` timestamp
 );
 
+CREATE TABLE `user_good_deed` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int DEFAULT null,
+  `good_deed_type` int,
+  `good_point` int,
+  `transaction_id` int DEFAULT null,
+  `created_at` timestamp,
+  `updated_at` timestamp,
+  `deleted_at` timestamp
+);
+
 CREATE TABLE `category` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255),
@@ -266,6 +277,10 @@ CREATE TABLE `setting` (
   `updated_at` timestamp,
   `deleted_at` timestamp
 );
+
+ALTER TABLE `user_good_deed` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+ALTER TABLE `user_good_deed` ADD FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`);
 
 ALTER TABLE `warehouse` ADD FOREIGN KEY (`import_invoice_id`) REFERENCES `import_invoice` (`id`);
 
