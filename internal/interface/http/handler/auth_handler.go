@@ -22,6 +22,12 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
+// func (h *AuthHandler) ClientSignUp(c *gin.Context) {
+// 	var (
+// 		req authdto.LoginRequest
+// 	)
+// }
+
 // @Summary Admin Get Me
 // @Description API lấy thông tin admin + jwt
 // @Security BearerAuth

@@ -11,3 +11,8 @@ type LoginRequest struct {
 type GetAccessTokenRequest struct {
 	RefreshToken string `json:"refreshToken"`
 }
+
+type SignUpRequest struct {
+	// email, sdt, ho ten, matkhau, nhaplaimk
+	Email string `json:"email" binding:"required"`
+}

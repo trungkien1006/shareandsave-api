@@ -21,7 +21,7 @@ type CreatePostRequest struct {
 	// Email       string         `json:"email" example:"john@gmail.com"`
 	// FullName    string         `json:"fullName" example:"John Doe"`
 	// PhoneNumber string         `json:"phoneNumber" example:"0123456789"` // true: anonymous, false: not anonymous
-	Type        enums.PostType `json:"type" binding:"oneof=1 2 3 4" example:"1"`
+	Type        enums.PostType `json:"type" binding:"oneof=1 2 3 4 5 6" example:"1"`
 	Title       string         `json:"title" binding:"required" example:"Tôi muốn tìm đồ thất lạc"`
 	Info        string         `json:"info"`
 	Description string         `json:"description"`
