@@ -160,6 +160,26 @@ func (s *Seeder) seedSetting() error {
 			Key:   "goodPointJoinCampaign",
 			Value: "300",
 		},
+		{
+			Key:   "location",
+			Value: "Khu F, Lầu 5, Phòng F5.12",
+		},
+		{
+			Key:   "description",
+			Value: "Nền tảng kết nối sinh viên Cao đẳng Kỹ thuật Cao Thắng. Tạo môi trường an toàn, thuận tiện để tìm lại đồ thất lạc và chia sẻ đồ cũ.",
+		},
+		{
+			Key:   "email",
+			Value: "cristntk0162@gmail.com",
+		},
+		{
+			Key:   "phoneNumber",
+			Value: "0369344077",
+		},
+		{
+			Key:   "workDay",
+			Value: "T2-T6",
+		},
 	}
 
 	for _, value := range settings {

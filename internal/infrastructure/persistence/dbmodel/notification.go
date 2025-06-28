@@ -23,3 +23,6 @@ type Notification struct {
 	Sender   User `gorm:"foreignKey:SenderID"`
 	Receiver User `gorm:"foreignKey:ReceiverID"`
 }
+
+// Domain to DB
+// func

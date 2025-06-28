@@ -48,8 +48,8 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	smtpRepo := emailrepo.NewSMTPEmailSender(
 		"smtp.gmail.com",
 		587,
-		"trannguyentrungkien1006@gmail.com",
-		"vlmt ihzv xyla fzyz", // nên dùng biến môi trường
+		"cristntk0162@gmail.com",
+		"ocka qleg ehbw euro", // nên dùng biến môi trường
 		"Share&Save - Chia sẻ tạo nên giá trị mới",
 	)
 
