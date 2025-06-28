@@ -4496,6 +4496,9 @@ const docTemplate = `{
                 "verifyToken"
             ],
             "properties": {
+                "currentPassword": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },

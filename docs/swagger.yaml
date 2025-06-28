@@ -215,6 +215,8 @@ definitions:
     type: object
   authdto.ResetPasswordRequest:
     properties:
+      currentPassword:
+        type: string
       email:
         type: string
       password:
