@@ -1278,6 +1278,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/reset-password": {
+            "post": {
+                "description": "API đổi mật khẩu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client reset password",
+                "parameters": [
+                    {
+                        "description": "Dữ liệu đổi mật khẩu",
+                        "name": "signup",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.ResetPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.ResetPasswordResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/client/send-otp": {
             "post": {
                 "description": "API gửi OTP",
@@ -1336,7 +1382,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Client Signup",
+                "summary": "Client signup",
                 "parameters": [
                     {
                         "description": "Dữ liệu đăng kí",
@@ -4384,6 +4430,41 @@ const docTemplate = `{
             }
         },
         "authdto.LogoutResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.ResetPasswordRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "rePassword",
+                "verifyToken"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "rePassword": {
+                    "type": "string"
+                },
+                "verifyToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.ResetPasswordResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {

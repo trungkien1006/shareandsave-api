@@ -99,7 +99,7 @@ func (h *AuthHandler) ClientVerifyOTP(c *gin.Context) {
 	})
 }
 
-// @Summary Client Signup
+// @Summary Client signup
 // @Description API đăng kí
 // @Tags auth
 // @Accept json
@@ -135,6 +135,46 @@ func (h *AuthHandler) ClientSignUp(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusCreated,
 		"message": "Signup successfully",
+		"data":    gin.H{},
+	})
+}
+
+// @Summary Client reset password
+// @Description API đổi mật khẩu
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param signup body authdto.ResetPasswordRequest true "Dữ liệu đổi mật khẩu"
+// @Success 201 {object} authdto.ResetPasswordResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/reset-password [post]
+func (h *AuthHandler) ClientResetPassword(c *gin.Context) {
+	var (
+		req       authdto.ResetPasswordRequest
+		domainReq auth.AuthResetPassword
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	domainReq = authdto.ResetPasswordDTOToDomain(req)
+
+	if err := h.uc.ClientResetPassword(c.Request.Context(), domainReq); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusCreated,
+		"message": "Reset password successfully",
 		"data":    gin.H{},
 	})
 }

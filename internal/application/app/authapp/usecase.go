@@ -69,7 +69,7 @@ func (uc *UseCase) VerifyOTP(ctx context.Context, req authdto.VerifyOTPRequest) 
 		}
 	}
 
-	if verifyTryCount > enums.MaxVerifyTry {
+	if verifyTryCount >= enums.MaxVerifyTry {
 		return "", errors.New("Bạn đã thử quá 5 lần, hãy đợi 10 phút để thử lại")
 	}
 
@@ -104,7 +104,7 @@ func (uc *UseCase) VerifyOTP(ctx context.Context, req authdto.VerifyOTPRequest) 
 	}
 
 	//Lưu token vào redis
-	if err := uc.redisRepo.InsertToRedis(ctx, token, req.Email, 10*time.Minute); err != nil {
+	if err := uc.redisRepo.InsertToRedis(ctx, req.Purpose+":"+token, req.Email, 10*time.Minute); err != nil {
 		return "", err
 	}
 
@@ -138,7 +138,7 @@ func (uc *UseCase) SendOTP(ctx context.Context, req authdto.SendOTPRequest) erro
 
 func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) error {
 	//Kiểm tra token hợp lệ
-	isOK, err := uc.redisRepo.GetFromRedis(ctx, signUpReq.VerifyToken)
+	isOK, err := uc.redisRepo.GetFromRedis(ctx, "activeAccount:"+signUpReq.VerifyToken)
 	if err != nil {
 		return errors.New("Token không tồn tại hoặc hết hạn: " + err.Error())
 	}
@@ -197,6 +197,52 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 	signUpUser.GoodPoint = 0
 
 	if err := uc.repo.SignUp(ctx, &signUpUser); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) ClientResetPassword(ctx context.Context, req auth.AuthResetPassword) error {
+	//Kiểm tra token hợp lệ
+	isOK, err := uc.redisRepo.GetFromRedis(ctx, "resetPassword:"+req.VerifyToken)
+	if err != nil {
+		return errors.New("Token không tồn tại hoặc hết hạn: " + err.Error())
+	}
+
+	if isOK != req.Email {
+		return errors.New("Email bạn sử dụng không phải email bạn đã xác thực")
+	}
+
+	//Kiểm tra email tồn tại
+	emailExisted, err := uc.userRepo.IsEmailExist(ctx, req.Email, 0)
+	if err != nil {
+		return err
+	}
+
+	if !emailExisted {
+		return errors.New("Email không tồn tại")
+	}
+
+	if req.Password != req.RePassword {
+		return errors.New("Email không tồn tại")
+	}
+
+	//Update password
+	var updateUser user.User
+
+	hashedPassword, err := hash.HashPassword(req.Password)
+	if err != nil {
+		return err
+	}
+
+	if err := uc.userRepo.GetByEmail(ctx, &updateUser, req.Email); err != nil {
+		return err
+	}
+
+	updateUser.Password = hashedPassword
+
+	if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
 		return err
 	}
 

@@ -213,6 +213,30 @@ definitions:
       message:
         type: string
     type: object
+  authdto.ResetPasswordRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      rePassword:
+        type: string
+      verifyToken:
+        type: string
+    required:
+    - email
+    - password
+    - rePassword
+    - verifyToken
+    type: object
+  authdto.ResetPasswordResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   authdto.SendOTPRequest:
     properties:
       email:
@@ -3199,6 +3223,36 @@ paths:
       summary: Get posts client
       tags:
       - posts
+  /client/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: API đổi mật khẩu
+      parameters:
+      - description: Dữ liệu đổi mật khẩu
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/authdto.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/authdto.ResetPasswordResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Client reset password
+      tags:
+      - auth
   /client/send-otp:
     post:
       consumes:
@@ -3256,7 +3310,7 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
-      summary: Client Signup
+      summary: Client signup
       tags:
       - auth
   /client/users/my-good-deeds:

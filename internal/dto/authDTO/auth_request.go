@@ -21,6 +21,13 @@ type SignUpRequest struct {
 	RePassword  string `json:"rePassword" validate:"required,eqfield=Password"`
 }
 
+type ResetPasswordRequest struct {
+	VerifyToken string `json:"verifyToken" validate:"required"`
+	Email       string `json:"email" validate:"required,email"`
+	Password    string `json:"password" validate:"required,password_strong"`
+	RePassword  string `json:"rePassword" validate:"required,eqfield=Password"`
+}
+
 type SendOTPRequest struct {
 	Email   string `json:"email" validate:"required,email"`
 	Purpose string `json:"purpose" validate:"required,oneof=activeAccount resetPassword"`

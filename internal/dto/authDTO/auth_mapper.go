@@ -22,3 +22,13 @@ func SignUpAuthDTOToDomain(dto SignUpRequest) auth.AuthSignUp {
 		RePassword:  dto.RePassword,
 	}
 }
+
+// DTO to Domain
+func ResetPasswordDTOToDomain(dto ResetPasswordRequest) auth.AuthResetPassword {
+	return auth.AuthResetPassword{
+		VerifyToken: dto.VerifyToken,
+		Email:       dto.Email,
+		Password:    dto.Password,
+		RePassword:  dto.RePassword,
+	}
+}

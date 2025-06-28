@@ -83,3 +83,9 @@ type VerifyOTPResponseWrapper struct {
 type VerifyOTPResponse struct {
 	VerifyToken string `json:"verifyToken"`
 }
+
+type ResetPasswordResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

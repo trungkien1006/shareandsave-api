@@ -15,6 +15,13 @@ type AuthSignUp struct {
 	RePassword  string
 }
 
+type AuthResetPassword struct {
+	VerifyToken string
+	Email       string
+	Password    string
+	RePassword  string
+}
+
 type JWTSubject struct {
 	Id      uint
 	Device  string
