@@ -152,6 +152,35 @@ func (uc *UseCase) SendOTP(ctx context.Context, req authdto.SendOTPRequest) erro
 	return nil
 }
 
+func (uc *UseCase) VerifySignUp(ctx context.Context, req auth.AuthVerifySignUp) error {
+	//Kiểm tra email tồn tại
+	emailExisted, err := uc.userRepo.IsEmailExist(ctx, req.Email, 0)
+	if err != nil {
+		return err
+	}
+
+	if emailExisted {
+		return errors.New("email: Email đã tồn tại")
+	}
+
+	//Kiểm tra số điện thoại tồn tại
+	phoneNumberExisted, err := uc.userRepo.IsPhoneNumberExist(ctx, req.PhoneNumber, 0)
+	if err != nil {
+		return err
+	}
+
+	if phoneNumberExisted {
+		return errors.New("phoneNumer: Số điện thoại đã tồn tại")
+	}
+
+	//Kiểm tra mật khẩu nhập lại chính xác
+	if req.Password != req.RePassword {
+		return errors.New("rePassword: Nhập lại mật khẩu không chính xác")
+	}
+
+	return nil
+}
+
 func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) error {
 	//Kiểm tra token hợp lệ
 	isOK, err := uc.redisRepo.GetFromRedis(ctx, "activeAccount:"+signUpReq.VerifyToken)

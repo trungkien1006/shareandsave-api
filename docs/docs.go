@@ -1554,6 +1554,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/client/verify-signup": {
+            "post": {
+                "description": "API xác thực dữ liệu đăng kí",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Client verify signup data",
+                "parameters": [
+                    {
+                        "description": "Dữ liệu đăng kí",
+                        "name": "signupData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/authdto.VerifySignUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authdto.VerifySignupDataResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/clients": {
             "get": {
                 "description": "API bao gồm cả lọc, phân trang và sắp xếp",
@@ -4592,6 +4638,47 @@ const docTemplate = `{
                 "data": {
                     "$ref": "#/definitions/authdto.VerifyOTPResponse"
                 },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.VerifySignUpRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "fullName",
+                "password",
+                "phoneNumber",
+                "rePassword"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "rePassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "authdto.VerifySignupDataResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
                 "message": {
                     "type": "string"
                 }

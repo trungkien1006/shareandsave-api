@@ -15,6 +15,14 @@ type AuthSignUp struct {
 	RePassword  string
 }
 
+type AuthVerifySignUp struct {
+	Email       string
+	PhoneNumber string
+	FullName    string
+	Password    string
+	RePassword  string
+}
+
 type AuthResetPassword struct {
 	VerifyToken string
 	Email       string

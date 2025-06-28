@@ -315,6 +315,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.POST("/client/send-otp", authHandler.ClientSendOTP)
 		v1.POST("/client/verify-otp", authHandler.ClientVerifyOTP)
 		v1.POST("/client/reset-password", authHandler.ClientResetPassword)
+		v1.POST("/client/verify-signup", authHandler.VerifyClientSignUp)
 
 		//auth API
 		v1.GET("/get-me", middlewares.AuthGuard, authHandler.AdminGetMe)

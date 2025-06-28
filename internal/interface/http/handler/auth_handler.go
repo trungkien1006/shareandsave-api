@@ -22,6 +22,46 @@ func NewAuthHandler(uc *authapp.UseCase) *AuthHandler {
 	return &AuthHandler{uc: uc}
 }
 
+// @Summary Client verify signup data
+// @Description API xác thực dữ liệu đăng kí
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param signupData body authdto.VerifySignUpRequest true "Dữ liệu đăng kí"
+// @Success 200 {object} authdto.VerifySignupDataResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 401 {object} enums.AppError
+// @Router /client/verify-signup [post]
+func (h *AuthHandler) VerifyClientSignUp(c *gin.Context) {
+	var (
+		req             authdto.VerifySignUpRequest
+		domainSignUpReq auth.AuthVerifySignUp
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := validator.Validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	domainSignUpReq = authdto.VerifySignUpAuthDTOToDomain(req)
+
+	if err := h.uc.VerifySignUp(c.Request.Context(), domainSignUpReq); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusCreated,
+		"message": "Verified signup data successfully",
+		"data":    gin.H{},
+	})
+}
+
 // @Summary Client send OTP
 // @Description API gửi OTP
 // @Tags auth
