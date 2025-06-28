@@ -30,10 +30,11 @@ type VerifySignUpRequest struct {
 }
 
 type ResetPasswordRequest struct {
-	VerifyToken string `json:"verifyToken" validate:"required"`
-	Email       string `json:"email" validate:"required,email"`
-	Password    string `json:"password" validate:"required,password_strong"`
-	RePassword  string `json:"rePassword" validate:"required,eqfield=Password"`
+	VerifyToken     string `json:"verifyToken" validate:"required"`
+	Email           string `json:"email" validate:"required,email"`
+	CurrentPassword string `json:"currentPassword"`
+	Password        string `json:"password" validate:"required,password_strong"`
+	RePassword      string `json:"rePassword" validate:"required,eqfield=Password"`
 }
 
 type SendOTPRequest struct {

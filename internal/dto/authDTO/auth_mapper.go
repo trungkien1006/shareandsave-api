@@ -37,9 +37,10 @@ func VerifySignUpAuthDTOToDomain(dto VerifySignUpRequest) auth.AuthVerifySignUp 
 // DTO to Domain
 func ResetPasswordDTOToDomain(dto ResetPasswordRequest) auth.AuthResetPassword {
 	return auth.AuthResetPassword{
-		VerifyToken: dto.VerifyToken,
-		Email:       dto.Email,
-		Password:    dto.Password,
-		RePassword:  dto.RePassword,
+		VerifyToken:     dto.VerifyToken,
+		Email:           dto.Email,
+		CurrentPassword: dto.CurrentPassword,
+		Password:        dto.Password,
+		RePassword:      dto.RePassword,
 	}
 }

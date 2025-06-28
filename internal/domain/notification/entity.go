@@ -1,5 +1,7 @@
 package notification
 
+import "time"
+
 type Notification struct {
 	ID         uint
 	SenderID   uint
@@ -7,6 +9,7 @@ type Notification struct {
 	Type       string
 	TargetType string
 	TargetID   uint
-	Message    string
+	Content    string
 	IsRead     bool
+	CreatedAt  time.Time
 }

@@ -1,6 +1,11 @@
 package persistence
 
 import (
+	"context"
+	"errors"
+	"final_project/internal/domain/notification"
+	"final_project/internal/infrastructure/persistence/dbmodel"
+
 	"gorm.io/gorm"
 )
 
@@ -12,10 +17,16 @@ func NewNotificationRepoDB(db *gorm.DB) *NotificationRepoDB {
 	return &NotificationRepoDB{db: db}
 }
 
-// func (r *NotificationRepoDB) Create(ctx context.Context, noti *notification.Notification) error {
-// 	var dbNoti dbmodel.Notification
+func (r *NotificationRepoDB) Create(ctx context.Context, noti *notification.Notification) error {
+	dbNoti := dbmodel.NotificationDomainToDB(*noti)
 
-// 	dbNoti = dbmodel.
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Create(&dbNoti).Error; err != nil {
+		return errors.New("Có lỗi khi tạo thông báo mới: " + err.Error())
+	}
 
-// 	return nil
-// }
+	*noti = dbmodel.NotificationDBToDomain(dbNoti)
+
+	return nil
+}

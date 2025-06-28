@@ -1,6 +1,7 @@
 package dbmodel
 
 import (
+	"final_project/internal/domain/notification"
 	"time"
 
 	"gorm.io/gorm"
@@ -25,4 +26,30 @@ type Notification struct {
 }
 
 // Domain to DB
-// func
+func NotificationDomainToDB(domain notification.Notification) Notification {
+	return Notification{
+		ID:         domain.ID,
+		SenderID:   domain.SenderID,
+		ReceiverID: domain.ReceiverID,
+		Type:       domain.Type,
+		TargetType: domain.TargetType,
+		TargetID:   domain.TargetID,
+		Content:    domain.Content,
+		IsRead:     domain.IsRead,
+	}
+}
+
+// DB to Domain
+func NotificationDBToDomain(db Notification) notification.Notification {
+	return notification.Notification{
+		ID:         db.ID,
+		SenderID:   db.SenderID,
+		ReceiverID: db.ReceiverID,
+		Type:       db.Type,
+		TargetType: db.TargetType,
+		TargetID:   db.TargetID,
+		Content:    db.Content,
+		IsRead:     db.IsRead,
+		CreatedAt:  db.CreatedAt,
+	}
+}

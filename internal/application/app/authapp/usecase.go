@@ -276,16 +276,31 @@ func (uc *UseCase) ClientResetPassword(ctx context.Context, req auth.AuthResetPa
 	//Update password
 	var updateUser user.User
 
-	hashedPassword, err := hash.HashPassword(req.Password)
-	if err != nil {
-		return err
-	}
-
 	if err := uc.userRepo.GetByEmail(ctx, &updateUser, req.Email); err != nil {
 		return err
 	}
 
-	updateUser.Password = hashedPassword
+	hashedNewPassword, err := hash.HashPassword(req.Password)
+	if err != nil {
+		return err
+	}
+
+	hashedCurrentPassword, err := hash.HashPassword(req.CurrentPassword)
+	if err != nil {
+		return err
+	}
+
+	if req.CurrentPassword != "" {
+		if !hash.CheckPasswordHash(updateUser.Password, hashedCurrentPassword) {
+			return errors.New("Mật khẩu cũ không đúng")
+		}
+	}
+
+	if hash.CheckPasswordHash(updateUser.Password, hashedNewPassword) {
+		return errors.New("Mật khẩu mới không được trùng mật khẩu đã sử dụng")
+	}
+
+	updateUser.Password = hashedNewPassword
 
 	if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
 		return err

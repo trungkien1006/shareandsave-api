@@ -24,10 +24,11 @@ type AuthVerifySignUp struct {
 }
 
 type AuthResetPassword struct {
-	VerifyToken string
-	Email       string
-	Password    string
-	RePassword  string
+	VerifyToken     string
+	Email           string
+	CurrentPassword string
+	Password        string
+	RePassword      string
 }
 
 type JWTSubject struct {
