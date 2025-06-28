@@ -114,6 +114,22 @@ func (uc *UseCase) VerifyOTP(ctx context.Context, req authdto.VerifyOTPRequest) 
 func (uc *UseCase) SendOTP(ctx context.Context, req authdto.SendOTPRequest) error {
 	isSendedBefore, _ := uc.redisRepo.GetFromRedis(ctx, "otp:email:"+req.Email+":purpose:"+req.Purpose)
 
+	//Kiểm tra email tồn tại
+	emailExisted, err := uc.userRepo.IsEmailExist(ctx, req.Email, 0)
+	if err != nil {
+		return err
+	}
+
+	if req.Purpose == "activeAccount" {
+		if emailExisted {
+			return errors.New("Email đã tồn tại")
+		}
+	} else if req.Purpose == "resetPassword" {
+		if !emailExisted {
+			return errors.New("Email không tồn tại")
+		}
+	}
+
 	if isSendedBefore != "" {
 		return errors.New("Hãy đợi đủ 5 phút để được gửi yêu cầu mới nhé")
 	}
