@@ -290,6 +290,8 @@ func (uc *UseCase) ClientResetPassword(ctx context.Context, req auth.AuthResetPa
 		return err
 	}
 
+	fmt.Println(req.CurrentPassword)
+
 	if req.CurrentPassword != "" {
 		if !hash.CheckPasswordHash(updateUser.Password, hashedCurrentPassword) {
 			return errors.New("Mật khẩu cũ không đúng")
