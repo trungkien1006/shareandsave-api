@@ -170,7 +170,7 @@ func (uc *UseCase) VerifySignUp(ctx context.Context, req auth.AuthVerifySignUp) 
 	}
 
 	if phoneNumberExisted {
-		return errors.New("phoneNumer: Số điện thoại đã tồn tại")
+		return errors.New("phoneNumber: Số điện thoại đã tồn tại")
 	}
 
 	//Kiểm tra mật khẩu nhập lại chính xác
