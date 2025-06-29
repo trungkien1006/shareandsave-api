@@ -117,8 +117,6 @@ func (uc *UseCase) UpdateItem(ctx context.Context, domainItem *item.Item) error 
 		updateItem.Image = strBase64Image
 	}
 
-	// Cập nhật thêm các trường khác nếu có...
-
 	if err := uc.repo.Update(ctx, &updateItem); err != nil {
 		return err
 	}

@@ -12,5 +12,6 @@ func DomainItemToDTO(domain item.Item) dbmodel.Item {
 		Image:       domain.Image,
 		Description: domain.Description,
 		CategoryID:  domain.CategoryID,
+		MaxClaim:    uint(domain.MaxClaim),
 	}
 }
