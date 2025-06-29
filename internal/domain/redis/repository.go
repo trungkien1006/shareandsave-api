@@ -14,4 +14,5 @@ type Repository interface {
 	DeleteFromRedisHash(ctx context.Context, hashKey string, fields ...string) error
 	GetRedisHashLength(ctx context.Context, hashKey string) (int64, error)
 	GetAllFromRedisHash(ctx context.Context, hashKey string) (map[string]string, error)
+	InsertToStream(ctx context.Context, stream string, values map[string]interface{}) error
 }

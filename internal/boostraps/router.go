@@ -10,6 +10,7 @@ import (
 	"final_project/internal/application/app/importinvoiceapp"
 	"final_project/internal/application/app/interestapp"
 	"final_project/internal/application/app/itemapp"
+	"final_project/internal/application/app/notificationapp"
 	"final_project/internal/application/app/postapp"
 	"final_project/internal/application/app/roleapp"
 	"final_project/internal/application/app/settingapp"
@@ -133,6 +134,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
 
+	//notification dependency
+	notiRepo := persistence.NewNotificationRepoDB(db)
+	notiUC := notificationapp.NewUseCase(notiRepo)
+	notiHandler := handler.NewNotificationHandler(notiUC)
+
 	//chat dependency
 	chatUC := chatapp.NewUseCase(commentRepo)
 
@@ -200,6 +206,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	{
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
+
+		//notification API
+		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAll)
 
 		//client user API
 		v1.GET("/client/users/my-good-deeds", middlewares.AuthGuard, userHandler.GetUserGoodDeed)

@@ -90,3 +90,13 @@ func (r *RedisRepo) GetAllFromRedisHash(ctx context.Context, hashKey string) (ma
 	}
 	return result, nil
 }
+
+func (r *RedisRepo) InsertToStream(ctx context.Context, stream string, values map[string]interface{}) error {
+	if err := r.client.XAdd(ctx, &redis.XAddArgs{
+		Stream: stream,
+		Values: values,
+	}).Err(); err != nil {
+		return errors.New("Có lỗi khi insert vào Redis Stream: " + err.Error())
+	}
+	return nil
+}

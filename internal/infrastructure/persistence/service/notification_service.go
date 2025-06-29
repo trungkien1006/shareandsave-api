@@ -18,7 +18,26 @@ func NewNewNotificationService(repo notification.Repository, redisRepo redis.Rep
 	}
 }
 
-func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti notification.Notification) error {
+func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *notification.Notification) error {
+	if err := s.repo.Create(ctx, noti); err != nil {
+		return err
+	}
+
+	notiMap := map[string]interface{}{
+		"ID":         noti.ID,
+		"SenderId":   noti.SenderID,
+		"ReceiverID": noti.ReceiverID,
+		"Type":       noti.Type,
+		"TargetType": noti.TargetType,
+		"TargetID":   noti.TargetID,
+		"Content":    noti.Content,
+		"IsRead":     noti.IsRead,
+		"CreatedAt":  noti.CreatedAt,
+	}
+
+	if err := s.redisRepo.InsertToStream(ctx, "notistream", notiMap); err != nil {
+		return err
+	}
 
 	return nil
 }

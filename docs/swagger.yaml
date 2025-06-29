@@ -1082,6 +1082,45 @@ definitions:
       message:
         type: string
     type: object
+  notificationdto.GetAllNotiResponse:
+    properties:
+      notifications:
+        items:
+          $ref: '#/definitions/notificationdto.NotificationDTO'
+        type: array
+      totalPage:
+        type: integer
+    type: object
+  notificationdto.GetAllNotiResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/notificationdto.GetAllNotiResponse'
+      message:
+        type: string
+    type: object
+  notificationdto.NotificationDTO:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      isRead:
+        type: boolean
+      receiverID:
+        type: integer
+      senderID:
+        type: integer
+      targetID:
+        type: integer
+      targetType:
+        type: string
+      type:
+        type: string
+    type: object
   postdto.AdminPostDTO:
     properties:
       authorName:
@@ -4371,6 +4410,44 @@ paths:
       summary: Update is read message
       tags:
       - messages
+  /notifications:
+    get:
+      consumes:
+      - application/json
+      description: API bao gồm phân trang
+      parameters:
+      - description: Current page
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number record per page
+        example: 10
+        in: query
+        minimum: 1
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.GetAllNotiResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get notifications
+      tags:
+      - notifications
   /posts:
     get:
       consumes:

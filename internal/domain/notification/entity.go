@@ -13,3 +13,8 @@ type Notification struct {
 	IsRead     bool
 	CreatedAt  time.Time
 }
+
+type GetAllNotiRequest struct {
+	Page  int `form:"page"`
+	Limit int `form:"limit"`
+}
