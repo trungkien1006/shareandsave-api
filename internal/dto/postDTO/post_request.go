@@ -89,5 +89,5 @@ type UpdatePostRequest struct {
 	Status      enums.PostStatus `json:"status" binding:"omitempty,oneof=1 2 3 4"`
 	Images      []string         `json:"images" binding:"omitempty" example:"strbase64, strbase64"`
 	IsRepost    bool             `json:"isRepost"`
-	IsFeatured  int8             `json:"isFeatured"` // true: featured, false: not featured
+	IsFeatured  bool             `json:"isFeatured"` // true: featured, false: not featured
 }

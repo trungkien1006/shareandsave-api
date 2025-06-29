@@ -120,10 +120,10 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 	domainPost.Slug = uc.service.GenerateSlug(domainPost.Title)
 	domainPost.AuthorName = author.FullName
 
-	if domainPost.IsFeatured != 0 {
-		domainPost.IsFeatured = 1
+	if domainPost.IsFeatured {
+		domainPost.IsFeatured = true
 	} else {
-		domainPost.IsFeatured = 0
+		domainPost.IsFeatured = false
 	}
 
 	//resize ảnh
@@ -258,10 +258,10 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		updatePost.Description = domainPost.Description
 	}
 
-	if domainPost.IsFeatured == 1 {
-		updatePost.IsFeatured = 1
+	if domainPost.IsFeatured {
+		updatePost.IsFeatured = true
 	} else {
-		updatePost.IsFeatured = 0
+		updatePost.IsFeatured = false
 	}
 
 	if isRepost {

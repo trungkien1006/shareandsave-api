@@ -11,7 +11,7 @@ type AdminPostDTO struct {
 	Title      string    `json:"title"`
 	Status     int8      `json:"status"`
 	CreatedAt  time.Time `json:"createdAt"`
-	IsFeatured int8      `json:"isFeatured"`
+	IsFeatured bool      `json:"isFeatured"`
 	IsInterest bool      `json:"isInterest"`
 }
 
@@ -66,7 +66,7 @@ type DetailPostDTO struct {
 	Tag          []string            `json:"tags"`
 	Interest     []InterestDTO       `json:"interests"`
 	Items        []DetailPostItemDTO `json:"items"`
-	IsFeatured   int8                `json:"isFeatured"`
+	IsFeatured   bool                `json:"isFeatured"`
 }
 
 type PostWithCountDTO struct {
@@ -88,5 +88,5 @@ type PostWithCountDTO struct {
 	ItemCount        uint      `json:"itemCount"`
 	IsInterest       int       `json:"isInterest"`
 	CurrentItemCount uint      `json:"currentItemCount"`
-	IsFeatured       int8      `json:"isFeatured"`
+	IsFeatured       bool      `json:"isFeatured"`
 }

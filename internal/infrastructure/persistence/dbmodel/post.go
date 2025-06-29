@@ -20,7 +20,7 @@ type Post struct {
 	Status      int8        `gorm:"type:TINYINT"`
 	Image       StringArray `gorm:"type:JSON"`
 	Tag         StringArray `gorm:"type:JSON"`
-	IsFeatured  int8        `gorm:"type:TINYINT"`
+	IsFeatured  bool        `gorm:"type:TINYINT"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
