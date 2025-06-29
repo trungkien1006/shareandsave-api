@@ -138,6 +138,7 @@ func (h *UserHandler) GetUserGoodDeed(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param userID path int true "ID user"
 // @Success 200 {object} userdto.GetUserGoodDeedResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError

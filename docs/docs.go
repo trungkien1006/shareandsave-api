@@ -3979,6 +3979,15 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get user good deeds by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID user",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
