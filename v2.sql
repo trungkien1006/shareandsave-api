@@ -187,7 +187,7 @@ CREATE TABLE `role_permission` (
 CREATE TABLE `notification` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `sender_id` int,
-  `receiver_id` int,
+  `receiver_id` int DEFAULT null,
   `title` varchar(255),
   `type` varchar(64),
   `target_type` varchar(32),

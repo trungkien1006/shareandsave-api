@@ -52,6 +52,8 @@ func (h *NotificationHandler) GetAll(c *gin.Context) {
 		return
 	}
 
+	req.SetDefault()
+
 	domainReq.Page = req.Page
 	domainReq.Limit = req.Limit
 
