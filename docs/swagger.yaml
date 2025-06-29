@@ -1130,7 +1130,7 @@ definitions:
       id:
         type: integer
       isFeatured:
-        type: integer
+        type: boolean
       isInterest:
         type: boolean
       status:
@@ -1228,7 +1228,7 @@ definitions:
           $ref: '#/definitions/postdto.InterestDTO'
         type: array
       isFeatured:
-        type: integer
+        type: boolean
       items:
         items:
           $ref: '#/definitions/postdto.DetailPostItemDTO'
@@ -1388,7 +1388,7 @@ definitions:
       interestCount:
         type: integer
       isFeatured:
-        type: integer
+        type: boolean
       isInterest:
         type: integer
       itemCount:
@@ -1419,7 +1419,7 @@ definitions:
         type: array
       isFeatured:
         description: 'true: featured, false: not featured'
-        type: integer
+        type: boolean
       isRepost:
         type: boolean
       status:

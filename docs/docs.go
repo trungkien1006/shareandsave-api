@@ -5943,7 +5943,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "isFeatured": {
-                    "type": "integer"
+                    "type": "boolean"
                 },
                 "isInterest": {
                     "type": "boolean"
@@ -6084,7 +6084,7 @@ const docTemplate = `{
                     }
                 },
                 "isFeatured": {
-                    "type": "integer"
+                    "type": "boolean"
                 },
                 "items": {
                     "type": "array",
@@ -6328,7 +6328,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "isFeatured": {
-                    "type": "integer"
+                    "type": "boolean"
                 },
                 "isInterest": {
                     "type": "integer"
@@ -6374,7 +6374,7 @@ const docTemplate = `{
                 },
                 "isFeatured": {
                     "description": "true: featured, false: not featured",
-                    "type": "integer"
+                    "type": "boolean"
                 },
                 "isRepost": {
                     "type": "boolean"
