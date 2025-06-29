@@ -3481,11 +3481,6 @@ const docTemplate = `{
         },
         "/settings": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "API lấy ra tất cả cấu hình",
                 "consumes": [
                     "application/json"
@@ -3521,11 +3516,6 @@ const docTemplate = `{
         },
         "/settings/{settingKey}": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "API lấy ra cấu hình theo key",
                 "consumes": [
                     "application/json"

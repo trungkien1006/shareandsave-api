@@ -20,7 +20,6 @@ func NewSettingHandler(uc *settingapp.UseCase) *SettingHandler {
 
 // @Summary Get settings
 // @Description API lấy ra tất cả cấu hình
-// @Security BearerAuth
 // @Tags settings
 // @Accept json
 // @Produce json
@@ -54,7 +53,6 @@ func (h *SettingHandler) GetAll(c *gin.Context) {
 
 // @Summary Get settings
 // @Description API lấy ra cấu hình theo key
-// @Security BearerAuth
 // @Tags settings
 // @Accept json
 // @Produce json

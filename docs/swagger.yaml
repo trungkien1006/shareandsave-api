@@ -4712,8 +4712,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
       summary: Get settings
       tags:
       - settings
@@ -4743,8 +4741,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/enums.AppError'
-      security:
-      - BearerAuth: []
       summary: Get settings
       tags:
       - settings

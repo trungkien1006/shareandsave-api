@@ -180,6 +180,14 @@ func (s *Seeder) seedSetting() error {
 			Key:   "workDay",
 			Value: "T2-T6",
 		},
+		{
+			Key:   "workHourStart",
+			Value: "8:00",
+		},
+		{
+			Key:   "workHourEnd",
+			Value: "16:00",
+		},
 	}
 
 	for _, value := range settings {
