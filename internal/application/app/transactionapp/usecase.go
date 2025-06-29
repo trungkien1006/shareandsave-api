@@ -6,10 +6,12 @@ import (
 	"final_project/internal/domain/interest"
 	"final_project/internal/domain/item"
 	"final_project/internal/domain/post"
+	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/transaction"
 	"final_project/internal/domain/user"
 	usergooddeed "final_project/internal/domain/user_good_deed"
 	"final_project/internal/pkg/enums"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -21,9 +23,18 @@ type UseCase struct {
 	itemRepo         item.Repository
 	postRepo         post.Repository
 	userGoodDeedRepo usergooddeed.Repository
+	roleRepo         rolepermission.Repository
+	clientID         uint
 }
 
-func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo interest.Repository, itemRepo item.Repository, postRepo post.Repository, userGoodDeedRepo usergooddeed.Repository) *UseCase {
+func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo interest.Repository, itemRepo item.Repository, postRepo post.Repository, userGoodDeedRepo usergooddeed.Repository, roleRepo rolepermission.Repository) *UseCase {
+	ctx := context.Background()
+
+	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
+	if err != nil {
+		fmt.Println("Có lỗi khi set clientID cho user usecase: " + err.Error())
+	}
+
 	return &UseCase{
 		repo:             r,
 		userRepo:         userRepo,
@@ -31,6 +42,8 @@ func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo
 		itemRepo:         itemRepo,
 		postRepo:         postRepo,
 		userGoodDeedRepo: userGoodDeedRepo,
+		roleRepo:         roleRepo,
+		clientID:         clientID,
 	}
 }
 
@@ -67,6 +80,10 @@ func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transacti
 	if err := uc.repo.Create(ctx, transaction); err != nil {
 		return err
 	}
+
+	// noti := notification.Notification{
+	// 	SenderID: transaction.,
+	// }
 
 	return nil
 }
@@ -129,8 +146,8 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 
 	if domainTransaction.Status == int(enums.TransactionStatusRollBack) && tempStatus == int(enums.TransactionStatusSuccess) {
 		var (
-			user     user.User
-			postType int64
+			postType   int64
+			updateUser user.User
 		)
 
 		postType, err = uc.postRepo.GetPostType(ctx, updateTransaction.InterestID)
@@ -138,17 +155,23 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			return err
 		}
 
-		user.ID = domainTransaction.SenderID
-
-		if postType == int64(enums.PostTypeGiveAwayOldItem) {
-			user.GoodPoint = -enums.GoodPointGiveOldItem
-		} else if postType == int64(enums.PostTypeFoundItem) {
-			user.GoodPoint = -enums.GoodPointGiveLoseItem
-		} else if postType == int64(enums.PostTypeCampaign) {
-			user.GoodPoint = -enums.GoodPointJoinCampaign
+		if err := uc.userRepo.GetUserByID(ctx, &updateUser, int(updateTransaction.SenderID), uc.clientID, 0); err != nil {
+			return err
 		}
 
-		if err := uc.userRepo.Update(ctx, &user); err != nil {
+		if updateUser.ID == 0 {
+			return errors.New(enums.ErrUserNotExist)
+		}
+
+		if postType == int64(enums.PostTypeGiveAwayOldItem) {
+			updateUser.GoodPoint -= enums.GoodPointGiveOldItem
+		} else if postType == int64(enums.PostTypeFoundItem) {
+			updateUser.GoodPoint -= enums.GoodPointGiveLoseItem
+		} else if postType == int64(enums.PostTypeCampaign) {
+			updateUser.GoodPoint -= enums.GoodPointJoinCampaign
+		}
+
+		if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
 			return err
 		}
 
@@ -159,7 +182,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 	} else if domainTransaction.Status == int(enums.TransactionStatusSuccess) && tempStatus == int(enums.TransactionStatusPending) {
 		//Cập nhật điểm tốt của user
 		var (
-			user         user.User
+			updateUser   user.User
 			postType     int64
 			goodDeedType int
 		)
@@ -169,23 +192,29 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			return err
 		}
 
-		user.ID = updateTransaction.SenderID
+		if err := uc.userRepo.GetUserByID(ctx, &updateUser, int(updateTransaction.SenderID), uc.clientID, 0); err != nil {
+			return err
+		}
+
+		if updateUser.ID == 0 {
+			return errors.New(enums.ErrUserNotExist)
+		}
 
 		if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeWantOldItem) {
-			user.GoodPoint = enums.GoodPointGiveOldItem
+			updateUser.GoodPoint += enums.GoodPointGiveOldItem
 
 			goodDeedType = int(enums.GoodDeedTypeGiveOldItem)
 		} else if postType == int64(enums.PostTypeFoundItem) || postType == int64(enums.PostTypeSeekLoseItem) {
-			user.GoodPoint = enums.GoodPointGiveLoseItem
+			updateUser.GoodPoint += enums.GoodPointGiveLoseItem
 
 			goodDeedType = int(enums.GoodDeedTypeGiveLoseItem)
 		} else if postType == int64(enums.PostTypeCampaign) {
-			user.GoodPoint = enums.GoodPointJoinCampaign
+			updateUser.GoodPoint += enums.GoodPointJoinCampaign
 
 			goodDeedType = int(enums.GoodDeedTypeCampaign)
 		}
 
-		if err := uc.userRepo.Update(ctx, &user); err != nil {
+		if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
 			return err
 		}
 
@@ -193,7 +222,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		goodDeed := usergooddeed.UserGoodDeed{
 			UserID:        updateTransaction.SenderID,
 			GoodDeedType:  goodDeedType,
-			GoodPoint:     user.GoodPoint,
+			GoodPoint:     updateUser.GoodPoint,
 			TransactionID: &updateTransaction.ID,
 			CreatedAt:     time.Now(),
 		}
