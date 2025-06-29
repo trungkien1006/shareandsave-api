@@ -132,6 +132,51 @@ func (h *UserHandler) GetUserGoodDeed(c *gin.Context) {
 	})
 }
 
+// @Summary Get user good deeds by ID
+// @Description Get all good deeds of a user by user ID
+// @Security BearerAuth
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} userdto.GetUserGoodDeedResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /users/{userID}/my-good-deeds [get]
+func (h *UserHandler) GetUserGoodDeedByID(c *gin.Context) {
+	var goodDeeds []usergooddeed.UserGoodDeedDetail
+
+	userID, err := strconv.Atoi(c.Param("userID"))
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	if err := h.uc.GetUserGoodDeed(c.Request.Context(), &goodDeeds, int(userID)); err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			enums.NewAppError(http.StatusNotFound, err.Error(), "ERR_USER_NOT_FOUND"),
+		)
+		return
+	}
+
+	goodDeedsDTORes := make([]userdto.UserGoodDeedDetail, 0)
+
+	for _, goodDeed := range goodDeeds {
+		goodDeedsDTORes = append(goodDeedsDTORes, userdto.DomainUserGoodDeedToDTO(goodDeed))
+	}
+
+	c.JSON(http.StatusOK, userdto.GetUserGoodDeedResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched user good deeds by id successfully",
+		Data: userdto.GetUserGoodDeedResponse{
+			GoodDeeds: goodDeedsDTORes,
+		},
+	})
+}
+
 // @Summary Create a good deed
 // @Description Create a new good deed for a user
 // @Security BearerAuth

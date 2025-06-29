@@ -208,6 +208,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		// user API
 		v1.POST("/users/good-deeds", middlewares.AuthGuard, userHandler.CreateGoodDeed)
 		v1.DELETE("/users/good-deeds/:goodDeedID", middlewares.AuthGuard, userHandler.DeleteGoodDeed)
+		v1.GET("/users/:userID/my-good-deeds", middlewares.AuthGuard, userHandler.GetUserGoodDeedByID)
 
 		//client API
 		v1.GET("/clients", userHandler.GetAllClient)
