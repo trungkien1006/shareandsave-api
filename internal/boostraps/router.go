@@ -321,9 +321,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.PATCH("/messages/:interestID", middlewares.AuthGuard, commentHandler.UpdateReadMessage)
 
 		//setting API
-		v1.GET("/settings", middlewares.AuthGuard, settingHandler.GetAll)
-		v1.GET("/settings/:settingKey", middlewares.AuthGuard, settingHandler.GetByKey)
-		v1.PATCH("/settings/:settingKey", middlewares.AuthGuard, settingHandler.Update)
+		v1.GET("/settings", settingHandler.GetAll)
+		v1.GET("/settings/:settingKey", settingHandler.GetByKey)
+		v1.PATCH("/settings/:settingKey", settingHandler.Update)
 
 		//client auth API
 		v1.GET("/client/get-me", middlewares.AuthGuard, authHandler.ClientGetMe)
