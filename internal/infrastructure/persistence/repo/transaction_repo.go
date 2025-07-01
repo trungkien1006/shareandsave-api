@@ -46,15 +46,19 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 	if req.SearchBy != "" && req.SearchValue != "" {
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
 
-		if column == "sender_name" {
-			column = "sender.full_name"
-		} else if column == "receiver_name" {
-			column = "receiver.full_name"
+		if column == "sender_id" || column == "receiver_id" || column == "interest_id" {
+			query.Where("transaction"+column+" = ? ", req.SearchValue)
 		} else {
-			column = "transaction." + column
-		}
+			if column == "sender_name" {
+				column = "sender.full_name"
+			} else if column == "receiver_name" {
+				column = "receiver.full_name"
+			} else {
+				column = "transaction." + column
+			}
 
-		query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+			query.Where(column+" LIKE ? ", "%"+req.SearchValue+"%")
+		}
 	}
 
 	if req.PostID != 0 {
