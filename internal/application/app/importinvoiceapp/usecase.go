@@ -150,7 +150,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 
 		var itemClaim warehouse.ClaimRequestItem
 
-		if itemClaimJSON == "" {
+		if itemClaimJSON != "" {
 			err = json.Unmarshal([]byte(itemClaimJSON), &itemClaim)
 			if err != nil {
 				return errors.New("Có lỗi khi thực hiện tăng số lượng đồ trong redis hash map, decode JSON error: " + err.Error())

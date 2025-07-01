@@ -539,6 +539,18 @@ func (s *Seeder) seedUsers() error {
 	// 3 admin user với 3 role admin khác nhau
 	adminUsers := []user.User{
 		{
+			Email:       "anonymous@example.com",
+			Password:    "Kirn3423bh3b3y4b3",
+			FullName:    "Anonymous",
+			Status:      1,
+			RoleID:      roleMap["Client"],
+			PhoneNumber: "0900000001",
+			Address:     "nowhere",
+			GoodPoint:   0,
+			Major:       "nothing",
+			Active:      true,
+		},
+		{
 			Email:       "superadmin@example.com",
 			Password:    "Admin1234",
 			FullName:    "Super Admin",
