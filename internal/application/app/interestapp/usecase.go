@@ -33,18 +33,18 @@ func (uc *UseCase) GetAllInterest(ctx context.Context, postInterest *[]interest.
 		return 0, 0, errors.New("Người dùng không tồn tại")
 	}
 
-	unreadMessageCount, totalPage, err := uc.repo.GetAll(ctx, postInterest, userID, filter)
+	totalPage, err := uc.repo.GetAll(ctx, postInterest, userID, filter)
 
 	if err != nil {
 		return 0, 0, err
 	}
 
-	// unreadMessageCount, err := uc.repo.GetTotalUnreadMessage(ctx, userID, enums.InterestType(filter.Type))
-	// if err != nil {
-	// 	return 0, 0, err
-	// }
+	unreadMessageCount, err := uc.repo.GetTotalUnreadMessage(ctx, userID, enums.InterestType(filter.Type))
+	if err != nil {
+		return 0, 0, err
+	}
 
-	return uint(unreadMessageCount), totalPage, nil
+	return unreadMessageCount, totalPage, nil
 }
 
 func (uc *UseCase) GetUnreadMessageCount(ctx context.Context, userID uint) (uint, error) {
