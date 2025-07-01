@@ -128,7 +128,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 
 	//resize ảnh
 	for index, image := range domainPost.Images {
-		formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
+		formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 100, helpers.FormatJPEG)
 		if err != nil {
 			return errors.New("Không thể format ảnh:" + err.Error())
 		}
@@ -147,7 +147,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 		if oldItem.Image == "" {
 			domainPost.OldItems[key].Image = item.Image
 		} else {
-			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+			strBase64Image, err := helpers.ProcessImageBase64(oldItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 100, helpers.FormatJPEG)
 
 			if err != nil {
 				return err
@@ -171,14 +171,14 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 					return err
 				}
 
-				strBase64Image, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+				strBase64Image, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 100, helpers.FormatJPEG)
 				if err != nil {
 					return err
 				}
 
 				checkItem.Image = strBase64Image
 			} else {
-				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 100, helpers.FormatJPEG)
 
 				if err != nil {
 					return err
@@ -200,7 +200,7 @@ func (uc *UseCase) CreatePost(ctx context.Context, domainPost *post.CreatePost) 
 			var tempItem post.OldItemsInPost
 
 			if newItem.Image != "" {
-				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+				strBase64Image, err := helpers.ProcessImageBase64(newItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 100, helpers.FormatJPEG)
 				if err != nil {
 					return err
 				}
@@ -282,7 +282,7 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 
 		//resize ảnh
 		for _, image := range domainPost.Images {
-			formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 75, helpers.FormatJPEG)
+			formatedImage, err := helpers.ProcessImageBase64(image, uint(enums.PostImageWidth), uint(enums.PostImageHeight), 100, helpers.FormatJPEG)
 			if err != nil {
 				return errors.New("Không thể format ảnh:" + err.Error())
 			}
