@@ -92,19 +92,33 @@ func (uc *UseCase) GetMyClaimRequest(ctx context.Context, claimRequests *[]wareh
 		}
 
 		for _, value := range userClaimRequests {
-			var item item.Item
+			var (
+				item             item.Item
+				itemClaimRequest warehouse.ClaimRequestItem
+			)
 
 			if err := uc.itemRepo.GetByID(ctx, &item, value.ItemID); err != nil {
 				return err
 			}
 
+			itemClaimRequestJSON, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(item.ID)))
+			if err != nil {
+				return errors.New("Có lỗi khi truy xuất danh sách đồ đã đăng kí của thành viên: " + err.Error())
+			}
+
+			err = json.Unmarshal([]byte(itemClaimRequestJSON), &itemClaimRequest)
+			if err != nil {
+				return errors.New("Có lỗi khi encode JSON: " + err.Error())
+			}
+
 			*claimRequests = append(*claimRequests, warehouse.MyClaimRequest{
-				ItemID:       item.ID,
-				ItemName:     item.Name,
-				ItemImage:    item.Image,
-				CategoryName: item.CategoryName,
-				MaxClaim:     uint(item.MaxClaim),
-				Quantity:     value.Quantity,
+				ItemID:          item.ID,
+				ItemName:        item.Name,
+				ItemImage:       item.Image,
+				CategoryName:    item.CategoryName,
+				MaxClaim:        uint(item.MaxClaim),
+				Quantity:        value.Quantity,
+				CurrentQuantity: itemClaimRequest.ItemQuantity,
 			})
 		}
 	}

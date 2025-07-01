@@ -59,12 +59,13 @@ type ItemOldStock struct {
 }
 
 type MyClaimRequest struct {
-	ItemID       uint
-	ItemName     string
-	ItemImage    string
-	CategoryName string
-	MaxClaim     uint
-	Quantity     uint
+	ItemID          uint
+	ItemName        string
+	ItemImage       string
+	CategoryName    string
+	MaxClaim        uint
+	Quantity        uint
+	CurrentQuantity uint
 }
 
 type ClaimRequestItem struct {

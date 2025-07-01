@@ -112,11 +112,12 @@ func CreateClaimRequestDTOToDomain(dto CreateClaimRequestRequest) warehouse.Crea
 // Domain to DTO
 func MyClaimRequestDomainToDTO(domain warehouse.MyClaimRequest) MyClaimRequestDTO {
 	return MyClaimRequestDTO{
-		ItemID:       domain.ItemID,
-		ItemName:     domain.ItemName,
-		ItemImage:    domain.ItemImage,
-		CategoryName: domain.CategoryName,
-		MaxClaim:     domain.MaxClaim,
-		Quantity:     domain.Quantity,
+		ItemID:          domain.ItemID,
+		ItemName:        domain.ItemName,
+		ItemImage:       domain.ItemImage,
+		CategoryName:    domain.CategoryName,
+		MaxClaim:        domain.MaxClaim,
+		Quantity:        domain.Quantity,
+		CurrentQuantity: domain.CurrentQuantity,
 	}
 }
