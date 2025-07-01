@@ -23,6 +23,7 @@ import (
 	"final_project/internal/domain/post"
 	emailrepo "final_project/internal/infrastructure/email"
 	persistence "final_project/internal/infrastructure/persistence/repo"
+	persistenceService "final_project/internal/infrastructure/persistence/service"
 	redisapp "final_project/internal/infrastructure/redis"
 	"final_project/internal/infrastructure/seeder"
 	"final_project/internal/infrastructure/worker"
@@ -66,6 +67,12 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//good deed dependency
 	userGoodDeedRepo := persistence.NewUserGoodDeedRepoDB(db)
 
+	//notification dependency
+	notiRepo := persistence.NewNotificationRepoDB(db)
+	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo)
+	notiUC := notificationapp.NewUseCase(notiRepo)
+	notiHandler := handler.NewNotificationHandler(notiUC)
+
 	//setting dependency
 	settingRepo := persistence.NewSettingRepoDB(db)
 	settingUC := settingapp.NewUseCase(settingRepo)
@@ -108,7 +115,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	interestHandler := handler.NewInterestHandler(interestUC)
 
 	//transaction dependency
-	transactionRepo := persistence.NewTransactionRepoDB(db)
+	transactionRepo := persistence.NewTransactionRepoDB(db, notiService)
 	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo, userGoodDeedRepo, rolePerRepo)
 	transactionHandler := handler.NewTransactionHandler(transactionUC)
 
@@ -133,11 +140,6 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentRepo := persistence.NewCommentRepoDB(db)
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
-
-	//notification dependency
-	notiRepo := persistence.NewNotificationRepoDB(db)
-	notiUC := notificationapp.NewUseCase(notiRepo)
-	notiHandler := handler.NewNotificationHandler(notiUC)
 
 	//chat dependency
 	chatUC := chatapp.NewUseCase(commentRepo)

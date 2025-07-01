@@ -11,7 +11,7 @@ type NotificationService struct {
 	redisRepo redis.Repository
 }
 
-func NewNewNotificationService(repo notification.Repository, redisRepo redis.Repository) *NotificationService {
+func NewNotificationService(repo notification.Repository, redisRepo redis.Repository) *NotificationService {
 	return &NotificationService{
 		repo:      repo,
 		redisRepo: redisRepo,

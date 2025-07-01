@@ -53,7 +53,7 @@ func (uc *UseCase) GetAllItemOldStock(ctx context.Context, items *[]warehouse.It
 	var claimRequestCounts []warehouse.ClaimRequestItem
 
 	for _, value := range *items {
-		claimRequestStr, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, strconv.Itoa(int(value.ItemID)))
+		claimRequestStr, err := uc.redisRepo.GetFromRedisHash(ctx, enums.ItemClaimRequest, "item:"+strconv.Itoa(int(value.ItemID)))
 		if err != nil {
 			return nil, 0, errors.New("Có lỗi khi truy xuất số thành viên đã đăng kí nhận đồ: " + err.Error())
 		}

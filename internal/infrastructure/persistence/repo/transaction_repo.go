@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/notification"
 	"final_project/internal/domain/transaction"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"final_project/internal/pkg/enums"
@@ -14,11 +15,12 @@ import (
 )
 
 type TransactionRepoDB struct {
-	db *gorm.DB
+	db          *gorm.DB
+	notiService notification.Service
 }
 
-func NewTransactionRepoDB(db *gorm.DB) *TransactionRepoDB {
-	return &TransactionRepoDB{db: db}
+func NewTransactionRepoDB(db *gorm.DB, notiService notification.Service) *TransactionRepoDB {
+	return &TransactionRepoDB{db: db, notiService: notiService}
 }
 
 func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transaction.DetailTransaction, req transaction.FilterTransaction) (int, error) {
@@ -208,6 +210,26 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+
+	noti := notification.Notification{
+		Type:       "normal",
+		TargetType: "transaction",
+		TargetID:   dbTransaction.ID,
+		Content:    "Bạn có giao dịch mới cần xác nhận!",
+		IsRead:     false,
+	}
+
+	noti.ReceiverID = authorID
+
+	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
+		noti.SenderID = dbTransaction.ReceiverID
+	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.GoodPointGiveLoseItem) {
+		noti.SenderID = dbTransaction.SenderID
+	}
+
+	if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+		return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
 	}
 
 	*transaction = dbmodel.TransactionDBToDomain(dbTransaction)
