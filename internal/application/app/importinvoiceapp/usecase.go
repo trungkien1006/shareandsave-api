@@ -159,6 +159,7 @@ func (uc *UseCase) CreateImportInvoice(ctx context.Context, importInvoice *impor
 
 		itemClaim.ItemQuantity += uint(value.Quantity)
 		itemClaim.MaxClaim = uint(value.MaxClaim)
+		itemClaim.Users = make([]warehouse.ClaimRequestUser, 0)
 
 		newItemClaimJSON, err := json.Marshal(itemClaim)
 		if err != nil {
