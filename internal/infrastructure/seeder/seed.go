@@ -91,37 +91,37 @@ func (s *Seeder) seedSetting() error {
 	fmt.Println("Start seed setting...")
 
 	// Load múi giờ Việt Nam
-	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
-	if err != nil {
-		panic(err)
-	}
+	// loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// Lấy thời gian hiện tại theo múi giờ này
-	now := time.Now().In(loc)
+	// now := time.Now().In(loc)
 
-	startMorningTime := time.Date(
-		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
-		8, 0, 0, 0, // Giờ, phút, giây, nano giây
-		loc, // Múi giờ Việt Nam
-	)
+	// startMorningTime := time.Date(
+	// 	now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+	// 	8, 0, 0, 0, // Giờ, phút, giây, nano giây
+	// 	loc, // Múi giờ Việt Nam
+	// )
 
-	endMorningTime := time.Date(
-		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
-		11, 0, 0, 0, // Giờ, phút, giây, nano giây
-		loc, // Múi giờ Việt Nam
-	)
+	// endMorningTime := time.Date(
+	// 	now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+	// 	11, 0, 0, 0, // Giờ, phút, giây, nano giây
+	// 	loc, // Múi giờ Việt Nam
+	// )
 
-	startAfternoonTime := time.Date(
-		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
-		13, 0, 0, 0, // Giờ, phút, giây, nano giây
-		loc, // Múi giờ Việt Nam
-	)
+	// startAfternoonTime := time.Date(
+	// 	now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+	// 	13, 0, 0, 0, // Giờ, phút, giây, nano giây
+	// 	loc, // Múi giờ Việt Nam
+	// )
 
-	endAfternoonTime := time.Date(
-		now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
-		16, 0, 0, 0, // Giờ, phút, giây, nano giây
-		loc, // Múi giờ Việt Nam
-	)
+	// endAfternoonTime := time.Date(
+	// 	now.Year(), now.Month(), now.Day(), // Ngày tháng năm hôm nay
+	// 	16, 0, 0, 0, // Giờ, phút, giây, nano giây
+	// 	loc, // Múi giờ Việt Nam
+	// )
 
 	var settings = []setting.Setting{
 		{
@@ -130,19 +130,19 @@ func (s *Seeder) seedSetting() error {
 		},
 		{
 			Key:   "startMorningTime",
-			Value: startMorningTime.String(),
+			Value: "8:00",
 		},
 		{
 			Key:   "endMorningTime",
-			Value: endMorningTime.String(),
+			Value: "11:00",
 		},
 		{
 			Key:   "startAfternoonTime",
-			Value: startAfternoonTime.String(),
+			Value: "13:00",
 		},
 		{
 			Key:   "endAfternoonTime",
-			Value: endAfternoonTime.String(),
+			Value: "16:00",
 		},
 		{
 			Key:   "domain",
