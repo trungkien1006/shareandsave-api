@@ -16,7 +16,6 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
-	"github.com/nfnt/resize"
 )
 
 // ✅ Hàm resize ảnh từ file ảnh
@@ -171,13 +170,14 @@ func ImageToBase64(imagePath string) (string, error) {
 }
 
 // ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
+
 func ProcessImageBase64(inputBase64 string, width, height uint, quality int) (string, error) {
-	// Nếu ảnh đã được resize thì bỏ qua
+	// Nếu đã resize thì bỏ qua
 	if strings.Contains(inputBase64, ";resized;") {
 		return inputBase64, nil
 	}
 
-	// Tách prefix để lấy MIME type
+	// Tách prefix
 	prefix := ""
 	mimeType := ""
 	if idx := strings.Index(inputBase64, ","); idx != -1 {
@@ -207,11 +207,11 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int) (st
 		return "", err
 	}
 
-	// Chuyển về RGB để tránh lỗi encode JPEG
+	// Chuyển sang RGB để đảm bảo không bị lỗi encode JPEG
 	rgbImg := ensureRGB(img)
 
-	// Resize ảnh
-	resizedImg := resize.Resize(width, height, rgbImg, resize.Lanczos3)
+	// Resize bằng imaging (Lanczos chất lượng cao)
+	resizedImg := imaging.Resize(rgbImg, int(width), int(height), imaging.Lanczos)
 
 	// Encode lại ảnh
 	var buf bytes.Buffer
@@ -227,10 +227,10 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int) (st
 		return "", err
 	}
 
-	// Encode lại base64
+	// Encode base64
 	encoded := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-	// Tạo lại prefix với dấu hiệu đã resize
+	// Gắn lại prefix với dấu hiệu đã resize
 	newPrefix := strings.Replace(prefix, "base64,", "resized;base64,", 1)
 	return newPrefix + encoded, nil
 }
@@ -243,7 +243,6 @@ func ensureRGB(img image.Image) image.Image {
 		for x := b.Min.X; x < b.Max.X; x++ {
 			c := color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
 
-			// Alpha blending thủ công: nền trắng
 			alpha := float64(c.A) / 255
 			r := uint8(float64(c.R)*alpha + 255*(1-alpha))
 			g := uint8(float64(c.G)*alpha + 255*(1-alpha))
