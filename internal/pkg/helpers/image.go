@@ -171,18 +171,31 @@ func ImageToBase64(imagePath string) (string, error) {
 }
 
 // ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
-func ProcessImageBase64(inputBase64 string, width, height uint, quality int, outputFormat ImageFormat) (string, error) {
-	// Nếu ảnh đã được resize (có dấu ;resized; trong prefix), thì bỏ qua
+func ProcessImageBase64(inputBase64 string, width, height uint, quality int) (string, error) {
+	// Nếu ảnh đã được resize thì bỏ qua
 	if strings.Contains(inputBase64, ";resized;") {
 		return inputBase64, nil
 	}
 
-	// Loại bỏ prefix nếu có (data:image/...;base64,)
+	// Tách prefix để lấy MIME type
+	prefix := ""
+	mimeType := ""
 	if idx := strings.Index(inputBase64, ","); idx != -1 {
+		prefix = inputBase64[:idx+1]
 		inputBase64 = inputBase64[idx+1:]
+
+		if strings.Contains(prefix, "image/jpeg") || strings.Contains(prefix, "image/jpg") {
+			mimeType = "jpeg"
+		} else if strings.Contains(prefix, "image/png") {
+			mimeType = "png"
+		} else {
+			return "", errors.New("unsupported image format")
+		}
+	} else {
+		return "", errors.New("invalid base64 image data")
 	}
 
-	// Decode base64 thành []byte
+	// Decode base64
 	imgData, err := base64.StdEncoding.DecodeString(inputBase64)
 	if err != nil {
 		return "", err
@@ -194,32 +207,32 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int, out
 		return "", err
 	}
 
-	// Chuyển về RGB trước khi resize để tránh lỗi ảnh đen khi encode JPEG
+	// Chuyển về RGB để tránh lỗi encode JPEG
 	rgbImg := ensureRGB(img)
 
 	// Resize ảnh
 	resizedImg := resize.Resize(width, height, rgbImg, resize.Lanczos3)
 
-	// Encode ảnh đã resize với format tương ứng
+	// Encode lại ảnh
 	var buf bytes.Buffer
-	switch outputFormat {
-	case FormatJPEG:
+	switch mimeType {
+	case "jpeg":
 		err = jpeg.Encode(&buf, resizedImg, &jpeg.Options{Quality: quality})
-	case FormatPNG:
+	case "png":
 		err = png.Encode(&buf, resizedImg)
 	default:
-		return "", errors.New("unsupported output format")
+		return "", errors.New("unsupported image format for encoding")
 	}
 	if err != nil {
 		return "", err
 	}
 
-	// Encode ảnh sang base64
-	outputBase64 := base64.StdEncoding.EncodeToString(buf.Bytes())
+	// Encode lại base64
+	encoded := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-	// Gắn prefix với dấu hiệu đã resize
-	prefix := "data:image/" + string(outputFormat) + ";resized;base64,"
-	return prefix + outputBase64, nil
+	// Tạo lại prefix với dấu hiệu đã resize
+	newPrefix := strings.Replace(prefix, "base64,", "resized;base64,", 1)
+	return newPrefix + encoded, nil
 }
 
 func ensureRGB(img image.Image) image.Image {

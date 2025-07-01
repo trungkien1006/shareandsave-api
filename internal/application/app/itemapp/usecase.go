@@ -46,7 +46,7 @@ func (uc *UseCase) CreateItem(ctx context.Context, entity *item.Item) error {
 			return err
 		}
 
-		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 		if err != nil {
 			return err
 		}
@@ -115,7 +115,7 @@ func (uc *UseCase) UpdateItem(ctx context.Context, domainItem *item.Item) error 
 	updateItem.ID = domainItem.ID
 
 	if domainItem.Image != "" {
-		strBase64Image, err := helpers.ProcessImageBase64(domainItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(domainItem.Image, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75)
 		if err != nil {
 			return err
 		}

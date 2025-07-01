@@ -492,7 +492,7 @@ func (s *Seeder) seedItems() error {
 			return err
 		}
 
-		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75)
 		if err != nil {
 			return err
 		}
@@ -609,7 +609,7 @@ func (s *Seeder) seedUsers() error {
 			return err
 		}
 
-		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 
 		if err != nil {
 			return err
@@ -649,7 +649,7 @@ func (s *Seeder) seedPosts() error {
 		return err
 	}
 
-	postDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+	postDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75)
 	if err != nil {
 		return err
 	}
@@ -660,7 +660,7 @@ func (s *Seeder) seedPosts() error {
 		return err
 	}
 
-	itemDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+	itemDefaultImage, err := helpers.ProcessImageBase64(base64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75)
 	if err != nil {
 		return err
 	}

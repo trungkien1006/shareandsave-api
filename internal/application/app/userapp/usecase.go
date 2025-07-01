@@ -229,7 +229,7 @@ func (uc *UseCase) CreateClient(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 	if err != nil {
 		return err
 	}
@@ -287,7 +287,7 @@ func (uc *UseCase) CreateAdmin(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 	if err != nil {
 		return err
 	}
@@ -372,7 +372,7 @@ func (uc *UseCase) UpdateClient(ctx context.Context, domainUser *user.User) erro
 	}
 
 	if domainUser.Avatar != "" {
-		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 
 		if err != nil {
 			return err
@@ -445,7 +445,7 @@ func (uc *UseCase) UpdateAdmin(ctx context.Context, domainUser *user.User) error
 	}
 
 	if domainUser.Avatar != "" {
-		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+		strBase64Image, err := helpers.ProcessImageBase64(domainUser.Avatar, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75)
 
 		if err != nil {
 			return err
