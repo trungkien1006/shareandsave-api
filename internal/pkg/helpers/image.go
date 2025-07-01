@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"image/draw"
 	"image/jpeg"
 	"image/png"
 	"io/ioutil"
@@ -171,12 +172,17 @@ func ImageToBase64(imagePath string) (string, error) {
 
 // ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
 func ProcessImageBase64(inputBase64 string, width, height uint, quality int, outputFormat ImageFormat) (string, error) {
-	// Loại bỏ tiền tố nếu có
+	// Nếu ảnh đã được resize (có dấu ;resized; trong prefix), thì bỏ qua
+	if strings.Contains(inputBase64, ";resized;") {
+		return inputBase64, nil
+	}
+
+	// Loại bỏ prefix nếu có (data:image/...;base64,)
 	if idx := strings.Index(inputBase64, ","); idx != -1 {
 		inputBase64 = inputBase64[idx+1:]
 	}
 
-	// Decode base64 -> []byte
+	// Decode base64 thành []byte
 	imgData, err := base64.StdEncoding.DecodeString(inputBase64)
 	if err != nil {
 		return "", err
@@ -191,7 +197,12 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int, out
 	// Resize ảnh
 	resizedImg := resize.Resize(width, height, img, resize.Lanczos3)
 
-	// Encode lại ảnh đã resize với format + quality
+	// Nếu format là JPEG → ép về RGB để tránh lỗi ảnh đen
+	if outputFormat == FormatJPEG {
+		resizedImg = ensureRGB(resizedImg)
+	}
+
+	// Encode ảnh đã resize với format tương ứng
 	var buf bytes.Buffer
 	switch outputFormat {
 	case FormatJPEG:
@@ -205,10 +216,17 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int, out
 		return "", err
 	}
 
-	// Encode lại thành base64
+	// Encode ảnh sang base64
 	outputBase64 := base64.StdEncoding.EncodeToString(buf.Bytes())
 
-	// Thêm tiền tố nếu muốn
-	prefix := "data:image/" + string(outputFormat) + ";base64,"
+	// Gắn prefix với dấu hiệu đã resize
+	prefix := "data:image/" + string(outputFormat) + ";resized;base64,"
 	return prefix + outputBase64, nil
+}
+
+func ensureRGB(img image.Image) image.Image {
+	b := img.Bounds()
+	rgbImg := image.NewRGBA(b)
+	draw.Draw(rgbImg, b, img, b.Min, draw.Src)
+	return rgbImg
 }
