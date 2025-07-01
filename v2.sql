@@ -102,7 +102,7 @@ CREATE TABLE `transaction` (
   `sender_id` int,
   `receiver_id` int,
   `status` int,
-  `method` string,
+  `method` varchar(64),
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp
@@ -240,7 +240,7 @@ CREATE TABLE `item_export_invoice` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `invoice_id` int,
   `item_warehouse_id` int,
-  `sku` string,
+  `sku` varchar(255),
   `created_at` timestamp,
   `updated_at` timestamp,
   `deleted_at` timestamp

@@ -41,7 +41,7 @@ func (uc *UseCase) GetItemByID(ctx context.Context, entity *item.Item, itemID ui
 func (uc *UseCase) CreateItem(ctx context.Context, entity *item.Item) error {
 	// Xử lý ảnh giống userUsecase
 	if entity.Image == "" {
-		strBase64Image, err := helpers.ResizeImageFromFileToBase64(os.Getenv("IMAGE_PATH")+"/item.png", enums.ItemImageWidth, enums.ItemImageHeight)
+		strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/item.png", uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 		if err != nil {
 			return err
 		}
