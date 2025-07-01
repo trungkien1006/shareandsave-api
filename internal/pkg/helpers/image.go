@@ -194,13 +194,11 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int, out
 		return "", err
 	}
 
-	// Resize ảnh
-	resizedImg := resize.Resize(width, height, img, resize.Lanczos3)
+	// Chuyển về RGB trước khi resize để tránh lỗi ảnh đen khi encode JPEG
+	rgbImg := ensureRGB(img)
 
-	// Nếu format là JPEG → ép về RGB để tránh lỗi ảnh đen
-	if outputFormat == FormatJPEG {
-		resizedImg = ensureRGB(resizedImg)
-	}
+	// Resize ảnh
+	resizedImg := resize.Resize(width, height, rgbImg, resize.Lanczos3)
 
 	// Encode ảnh đã resize với format tương ứng
 	var buf bytes.Buffer
