@@ -30,6 +30,7 @@ import (
 	"final_project/internal/interface/http/handler"
 	middlewares "final_project/internal/interface/http/middleware"
 	workerHandler "final_project/internal/interface/worker/handler"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -168,8 +169,13 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		settingRepo,
 	)
 
-	seed.Seed()
-	redisSeed.SeedInitialData()
+	if err := seed.Seed(); err != nil {
+		fmt.Println("---Seed error: " + err.Error())
+	}
+
+	if err := redisSeed.SeedInitialData(); err != nil {
+		fmt.Println("---Redis seed error: " + err.Error())
+	}
 
 	//run chat worker
 	streamConsumer := worker.NewStreamConsumer(redisClient, stream, group, consumer)
