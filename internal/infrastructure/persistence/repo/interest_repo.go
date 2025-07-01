@@ -169,7 +169,7 @@ func (r *InterestRepoDB) GetAll(
 	}
 
 	// Đếm tổng số lượng cho phân trang
-	if err := query.Distinct("post.id").Count(&total).Error; err != nil {
+	if err := query.Select("post.id, post.updated_at").Distinct("post.id").Count(&total).Error; err != nil {
 		return 0, 0, err
 	}
 
