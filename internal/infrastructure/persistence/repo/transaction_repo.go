@@ -47,7 +47,7 @@ func (r *TransactionRepoDB) GetAll(ctx context.Context, transactions *[]transact
 		column := strcase.ToSnake(req.SearchBy) // "fullName" -> "full_name"
 
 		if column == "sender_id" || column == "receiver_id" || column == "interest_id" {
-			query.Where("transaction"+column+" = ? ", req.SearchValue)
+			query.Where("transaction."+column+" = ? ", req.SearchValue)
 		} else {
 			if column == "sender_name" {
 				column = "sender.full_name"
