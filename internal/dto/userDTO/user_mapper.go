@@ -100,6 +100,18 @@ func DomainAdminToDTO(u user.User) AdminDTO {
 
 // Domain -> DTO
 func DomainUserGoodDeedToDTO(ug usergooddeed.UserGoodDeedDetail) UserGoodDeedDetail {
+	items := make([]DetailTransactionItemDTO, 0)
+
+	for _, value := range ug.Items {
+		items = append(items, DetailTransactionItemDTO{
+			ItemID:     value.ItemID,
+			ItemName:   value.ItemName,
+			ItemImage:  value.ItemImage,
+			PostItemID: value.PostItemID,
+			Quantity:   value.Quantity,
+		})
+	}
+
 	return UserGoodDeedDetail{
 		ID:            ug.ID,
 		UserID:        ug.UserID,
@@ -108,7 +120,7 @@ func DomainUserGoodDeedToDTO(ug usergooddeed.UserGoodDeedDetail) UserGoodDeedDet
 		GoodPoint:     ug.GoodPoint,
 		TransactionID: ug.TransactionID,
 		CreatedAt:     ug.CreatedAt,
-		Items:         ug.Items,
+		Items:         items,
 	}
 }
 

@@ -1509,19 +1509,6 @@ definitions:
       value:
         type: string
     type: object
-  transaction.DetailTransactionItem:
-    properties:
-      itemID:
-        type: integer
-      itemImage:
-        type: string
-      itemName:
-        type: string
-      postItemID:
-        type: integer
-      quantity:
-        type: integer
-    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -1948,6 +1935,19 @@ definitions:
       message:
         type: string
     type: object
+  userdto.DetailTransactionItemDTO:
+    properties:
+      itemID:
+        type: integer
+      itemImage:
+        type: string
+      itemName:
+        type: string
+      postItemID:
+        type: integer
+      quantity:
+        type: integer
+    type: object
   userdto.GetAdminByIDResponse:
     properties:
       admin:
@@ -2171,7 +2171,7 @@ definitions:
         type: integer
       items:
         items:
-          $ref: '#/definitions/transaction.DetailTransactionItem'
+          $ref: '#/definitions/userdto.DetailTransactionItemDTO'
         type: array
       transactionID:
         type: integer
@@ -2398,6 +2398,8 @@ definitions:
     properties:
       categoryName:
         type: string
+      currentQuantity:
+        type: integer
       itemID:
         type: integer
       itemImage:

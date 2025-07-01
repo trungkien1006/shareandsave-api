@@ -6515,26 +6515,6 @@ const docTemplate = `{
                 }
             }
         },
-        "transaction.DetailTransactionItem": {
-            "type": "object",
-            "properties": {
-                "itemID": {
-                    "type": "integer"
-                },
-                "itemImage": {
-                    "type": "string"
-                },
-                "itemName": {
-                    "type": "string"
-                },
-                "postItemID": {
-                    "type": "integer"
-                },
-                "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
         "transactiondto.CreateTransactionItem": {
             "type": "object",
             "required": [
@@ -7177,6 +7157,26 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.DetailTransactionItemDTO": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "itemImage": {
+                    "type": "string"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "postItemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "userdto.GetAdminByIDResponse": {
             "type": "object",
             "properties": {
@@ -7519,7 +7519,7 @@ const docTemplate = `{
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/transaction.DetailTransactionItem"
+                        "$ref": "#/definitions/userdto.DetailTransactionItemDTO"
                     }
                 },
                 "transactionID": {
@@ -7867,6 +7867,9 @@ const docTemplate = `{
             "properties": {
                 "categoryName": {
                     "type": "string"
+                },
+                "currentQuantity": {
+                    "type": "integer"
                 },
                 "itemID": {
                     "type": "integer"
