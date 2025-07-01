@@ -486,7 +486,13 @@ func (s *Seeder) seedItems() error {
 
 	for i := range items {
 		fmt.Println("Start seed item: " + items[i].Name)
-		strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/item.png", uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
+
+		imageBase64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/item.png")
+		if err != nil {
+			return err
+		}
+
+		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 		if err != nil {
 			return err
 		}
@@ -598,7 +604,12 @@ func (s *Seeder) seedUsers() error {
 			return err
 		}
 
-		strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/user.png", uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+		imageBase64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/user.png")
+		if err != nil {
+			return err
+		}
+
+		strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 
 		if err != nil {
 			return err

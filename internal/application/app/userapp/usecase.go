@@ -224,8 +224,12 @@ func (uc *UseCase) CreateClient(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/user.png", uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+	imageBase64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/user.png")
+	if err != nil {
+		return err
+	}
 
+	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 	if err != nil {
 		return err
 	}
@@ -278,8 +282,12 @@ func (uc *UseCase) CreateAdmin(ctx context.Context, user *user.User) error {
 		return err
 	}
 
-	strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/user.png", uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
+	imageBase64, err := helpers.ImageToBase64(os.Getenv("IMAGE_PATH") + "/user.png")
+	if err != nil {
+		return err
+	}
 
+	strBase64Image, err := helpers.ProcessImageBase64(imageBase64, uint(enums.UserImageWidth), uint(enums.UserImageHeight), 75, helpers.FormatJPEG)
 	if err != nil {
 		return err
 	}
