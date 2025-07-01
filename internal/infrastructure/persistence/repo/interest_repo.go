@@ -112,7 +112,7 @@ func (r *InterestRepoDB) GetAll(ctx context.Context, postInterest *[]interest.Po
 
 			var newComment dbmodel.Comment
 			err := r.db.WithContext(ctx).
-				Where("interest_id = ?", interestID, userID).
+				Where("interest_id = ?", interestID).
 				Order("created_at DESC").
 				Limit(1).
 				First(&newComment).Error
