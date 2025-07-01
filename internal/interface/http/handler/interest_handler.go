@@ -64,7 +64,6 @@ func (h *InterestHandler) GetAll(c *gin.Context) {
 	domainReq = interestdto.GetDTOToDomain(req)
 
 	unreadMessageCount, totalPage, err := h.uc.GetAllInterest(context.Background(), &domainInterest, userID, domainReq)
-
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return

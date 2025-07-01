@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-	GetAll(ctx context.Context, postInterest *[]PostInterest, userID uint, filter GetInterest) (int, error)
+	GetAll(ctx context.Context, postInterest *[]PostInterest, userID uint, filter GetInterest) (int, int, error)
 	GetTotalUnreadMessage(ctx context.Context, userID uint, interestType enums.InterestType) (uint, error)
 	GetDetailByID(ctx context.Context, postInterest *PostInterest, interestID uint) error
 	Create(ctx context.Context, interest Interest) (uint, error)
