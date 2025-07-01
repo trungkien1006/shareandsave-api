@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
-	"image/draw"
+	"image/color"
 	"image/jpeg"
 	"image/png"
 	"io/ioutil"
@@ -225,6 +225,19 @@ func ProcessImageBase64(inputBase64 string, width, height uint, quality int, out
 func ensureRGB(img image.Image) image.Image {
 	b := img.Bounds()
 	rgbImg := image.NewRGBA(b)
-	draw.Draw(rgbImg, b, img, b.Min, draw.Src)
+
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			c := color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
+
+			// Alpha blending thủ công: nền trắng
+			alpha := float64(c.A) / 255
+			r := uint8(float64(c.R)*alpha + 255*(1-alpha))
+			g := uint8(float64(c.G)*alpha + 255*(1-alpha))
+			b := uint8(float64(c.B)*alpha + 255*(1-alpha))
+
+			rgbImg.Set(x, y, color.RGBA{r, g, b, 255})
+		}
+	}
 	return rgbImg
 }
