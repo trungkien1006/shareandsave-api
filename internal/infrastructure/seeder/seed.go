@@ -485,6 +485,7 @@ func (s *Seeder) seedItems() error {
 	}
 
 	for i := range items {
+		fmt.Println("Start seed item: " + items[i].Name)
 		strBase64Image, err := helpers.ProcessImageBase64(os.Getenv("IMAGE_PATH")+"/item.png", uint(enums.ItemImageWidth), uint(enums.ItemImageHeight), 75, helpers.FormatJPEG)
 		if err != nil {
 			return err
