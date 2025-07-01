@@ -2404,6 +2404,8 @@ definitions:
         type: string
       itemName:
         type: string
+      maxClaim:
+        type: integer
       quantity:
         type: integer
     type: object

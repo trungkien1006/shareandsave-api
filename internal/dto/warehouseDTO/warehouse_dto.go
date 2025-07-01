@@ -61,5 +61,6 @@ type MyClaimRequestDTO struct {
 	ItemName     string `json:"itemName"`
 	ItemImage    string `json:"itemImage"`
 	CategoryName string `json:"categoryName"`
+	MaxClaim     uint   `json:"maxClaim"`
 	Quantity     uint   `json:"quantity"`
 }

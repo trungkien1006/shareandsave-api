@@ -116,6 +116,7 @@ func MyClaimRequestDomainToDTO(domain warehouse.MyClaimRequest) MyClaimRequestDT
 		ItemName:     domain.ItemName,
 		ItemImage:    domain.ItemImage,
 		CategoryName: domain.CategoryName,
+		MaxClaim:     domain.MaxClaim,
 		Quantity:     domain.Quantity,
 	}
 }

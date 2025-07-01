@@ -7877,6 +7877,9 @@ const docTemplate = `{
                 "itemName": {
                     "type": "string"
                 },
+                "maxClaim": {
+                    "type": "integer"
+                },
                 "quantity": {
                     "type": "integer"
                 }

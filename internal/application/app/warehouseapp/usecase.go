@@ -103,6 +103,7 @@ func (uc *UseCase) GetMyClaimRequest(ctx context.Context, claimRequests *[]wareh
 				ItemName:     item.Name,
 				ItemImage:    item.Image,
 				CategoryName: item.CategoryName,
+				MaxClaim:     uint(item.MaxClaim),
 				Quantity:     value.Quantity,
 			})
 		}

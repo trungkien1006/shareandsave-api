@@ -63,6 +63,7 @@ type MyClaimRequest struct {
 	ItemName     string
 	ItemImage    string
 	CategoryName string
+	MaxClaim     uint
 	Quantity     uint
 }
 
