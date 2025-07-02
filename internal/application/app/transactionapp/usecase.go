@@ -119,9 +119,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 	tempStatus := updateTransaction.Status
 
 	if domainTransaction.Status != 0 {
-		if tempStatus == domainTransaction.Status {
-			return errors.New("Trạng thái giao dịch không thay đổi")
-		} else if tempStatus == int(enums.TransactionStatusPending) && domainTransaction.Status == int(enums.TransactionStatusRollBack) {
+		if tempStatus == int(enums.TransactionStatusPending) && domainTransaction.Status == int(enums.TransactionStatusRollBack) {
 			return errors.New("Không thể thể rollback giao dịch đang chờ")
 		} else if tempStatus == int(enums.TransactionStatusSuccess) && domainTransaction.Status == int(enums.TransactionStatusCancelled) {
 			return errors.New("Không thể hủy giao dịch đã thành công")
