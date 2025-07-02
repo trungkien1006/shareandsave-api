@@ -57,7 +57,7 @@ func (h *NotificationHandler) GetAllClient(c *gin.Context) {
 	domainReq.Page = req.Page
 	domainReq.Limit = req.Limit
 
-	totalPage, err := h.uc.GetAllClientNoti(c.Request.Context(), &domainNoti, domainReq, userID)
+	unreadCount, totalPage, err := h.uc.GetAllClientNoti(c.Request.Context(), &domainNoti, domainReq, userID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return
@@ -75,6 +75,7 @@ func (h *NotificationHandler) GetAllClient(c *gin.Context) {
 		Data: notificationdto.GetAllNotiResponse{
 			Notifications: notiDTORes,
 			TotalPage:     totalPage,
+			UnreadCount:   unreadCount,
 		},
 	})
 }
@@ -117,7 +118,7 @@ func (h *NotificationHandler) GetAllAdmin(c *gin.Context) {
 	domainReq.Page = req.Page
 	domainReq.Limit = req.Limit
 
-	totalPage, err := h.uc.GetAllAdminNoti(c.Request.Context(), &domainNoti, domainReq, userID)
+	unreadCount, totalPage, err := h.uc.GetAllAdminNoti(c.Request.Context(), &domainNoti, domainReq, userID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
 		return
@@ -135,6 +136,7 @@ func (h *NotificationHandler) GetAllAdmin(c *gin.Context) {
 		Data: notificationdto.GetAllNotiResponse{
 			Notifications: notiDTORes,
 			TotalPage:     totalPage,
+			UnreadCount:   unreadCount,
 		},
 	})
 }

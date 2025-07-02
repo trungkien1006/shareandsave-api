@@ -17,11 +17,12 @@ func NewNotificationRepoDB(db *gorm.DB) *NotificationRepoDB {
 	return &NotificationRepoDB{db: db}
 }
 
-func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int, error) {
+func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {
 	var (
 		query        *gorm.DB
 		totalRecords int64
 		dbNotis      []dbmodel.Notification
+		unreadCount  int64
 	)
 
 	query = r.db.Debug().
@@ -32,7 +33,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
-		return 0, err
+		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo")
 	}
 
 	if req.Limit > 0 && req.Page > 0 {
@@ -40,7 +41,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 	}
 
 	if err := query.Find(&dbNotis).Error; err != nil {
-		return 0, err
+		return 0, 0, errors.New("Có lỗi khi truy suất thông báo")
 	}
 
 	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
@@ -49,14 +50,23 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 		*notis = append(*notis, dbmodel.NotificationDBToDomain(value))
 	}
 
-	return totalPages, nil
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Where("receiver_id = ? AND is_read = 0", userID).
+		Or("receiver_id IS NULL AND senderID IS NULL AND is_read = 0").
+		Count(&unreadCount).Error; err != nil {
+		return 0, 0, errors.New("Có lỗi khi truy xuất thông báo chưa đọc")
+	}
+
+	return unreadCount, totalPages, nil
 }
 
-func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int, error) {
+func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {
 	var (
 		query        *gorm.DB
 		totalRecords int64
 		dbNotis      []dbmodel.Notification
+		unreadCount  int64
 	)
 
 	query = r.db.Debug().
@@ -66,7 +76,7 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
-		return 0, err
+		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo")
 	}
 
 	if req.Limit > 0 && req.Page > 0 {
@@ -74,7 +84,7 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 	}
 
 	if err := query.Find(&dbNotis).Error; err != nil {
-		return 0, err
+		return 0, 0, errors.New("Có lỗi khi truy suất thông báo")
 	}
 
 	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
@@ -83,7 +93,14 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 		*notis = append(*notis, dbmodel.NotificationDBToDomain(value))
 	}
 
-	return totalPages, nil
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Where("is_read = 0 AND receiver_id = ?", userID).
+		Count(&unreadCount).Error; err != nil {
+		return 0, 0, errors.New("Có lỗi khi truy xuất thông báo chưa đọc")
+	}
+
+	return unreadCount, totalPages, nil
 }
 
 func (r *NotificationRepoDB) Create(ctx context.Context, noti *notification.Notification) error {

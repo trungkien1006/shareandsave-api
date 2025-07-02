@@ -13,20 +13,20 @@ func NewUseCase(r notification.Repository) *UseCase {
 	return &UseCase{repo: r}
 }
 
-func (uc *UseCase) GetAllClientNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int, error) {
-	totalPage, err := uc.repo.GetAllClient(ctx, notis, req, userID)
+func (uc *UseCase) GetAllClientNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {
+	unreadCount, totalPage, err := uc.repo.GetAllClient(ctx, notis, req, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	return totalPage, nil
+	return unreadCount, totalPage, nil
 }
 
-func (uc *UseCase) GetAllAdminNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int, error) {
-	totalPage, err := uc.repo.GetAllAdmin(ctx, notis, req, userID)
+func (uc *UseCase) GetAllAdminNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {
+	unreadCount, totalPage, err := uc.repo.GetAllAdmin(ctx, notis, req, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	return totalPage, nil
+	return unreadCount, totalPage, nil
 }

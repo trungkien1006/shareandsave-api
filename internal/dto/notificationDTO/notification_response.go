@@ -9,4 +9,5 @@ type GetAllNotiResponseWrapper struct {
 type GetAllNotiResponse struct {
 	Notifications []NotificationDTO `json:"notifications"`
 	TotalPage     int               `json:"totalPage"`
+	UnreadCount   int64             `json:"unreadCount"`
 }
