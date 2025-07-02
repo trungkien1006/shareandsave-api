@@ -75,6 +75,8 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 		WithContext(ctx).
 		Model(&dbmodel.Notification{}).
 		Where("receiver_id = ?", userID).
+		Preload("Sender").
+		Preload("Receiver").
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
