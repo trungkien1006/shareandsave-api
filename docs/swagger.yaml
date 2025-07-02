@@ -4575,7 +4575,7 @@ paths:
             $ref: '#/definitions/enums.AppError'
       security:
       - BearerAuth: []
-      summary: Create is read notification
+      summary: Create system notification
       tags:
       - notifications
   /notifications/{notificationID}:

@@ -3121,7 +3121,7 @@ const docTemplate = `{
                 "tags": [
                     "notifications"
                 ],
-                "summary": "Create is read notification",
+                "summary": "Create system notification",
                 "parameters": [
                     {
                         "description": "Create noti info",

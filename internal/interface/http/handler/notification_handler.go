@@ -141,7 +141,7 @@ func (h *NotificationHandler) GetAllAdmin(c *gin.Context) {
 	})
 }
 
-// @Summary Create is read notification
+// @Summary Create system notification
 // @Description API tạo thông báo toàn hệ thống
 // @Security BearerAuth
 // @Tags notifications
