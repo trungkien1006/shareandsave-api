@@ -202,7 +202,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 
 	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
 		dbTransaction.SenderID = authorID
-	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.GoodPointGiveLoseItem) {
+	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.PostTypeSeekLoseItem) {
 		dbTransaction.SenderID = dbTransaction.ReceiverID
 		dbTransaction.ReceiverID = authorID
 	}
