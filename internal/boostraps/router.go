@@ -80,7 +80,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	settingHandler := handler.NewSettingHandler(settingUC)
 
 	//appointment dependency
-	appointmentRepo := persistence.NewAppointmentRepoDB(db)
+	appointmentRepo := persistence.NewAppointmentRepoDB(db, notiService)
 	appointmentUC := appointmentapp.NewUseCase(appointmentRepo)
 	appointmentHandler := handler.NewAppointmentHandler(appointmentUC)
 

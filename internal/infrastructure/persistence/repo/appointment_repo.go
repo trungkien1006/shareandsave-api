@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"final_project/internal/domain/appointment"
+	"final_project/internal/domain/notification"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"strconv"
 	"time"
 
 	"github.com/iancoleman/strcase"
@@ -12,11 +14,12 @@ import (
 )
 
 type AppointmentRepoDB struct {
-	db *gorm.DB
+	db          *gorm.DB
+	notiService notification.Service
 }
 
-func NewAppointmentRepoDB(db *gorm.DB) *AppointmentRepoDB {
-	return &AppointmentRepoDB{db: db}
+func NewAppointmentRepoDB(db *gorm.DB, notiService notification.Service) *AppointmentRepoDB {
+	return &AppointmentRepoDB{db: db, notiService: notiService}
 }
 
 func (r *AppointmentRepoDB) GetAll(ctx context.Context, appointments *[]appointment.Appointment, req appointment.FilterAllAppointment, userID uint) (int, error) {
@@ -111,6 +114,22 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
 	}
 
+	appointmentDay := strconv.Itoa(dbAppointment.StartTime.Hour()) + ":" + strconv.Itoa(dbAppointment.StartTime.Minute()) + " " + strconv.Itoa(dbAppointment.StartTime.Day()) + "/" + strconv.Itoa(int(dbAppointment.StartTime.Month())) + "/" + strconv.Itoa(dbAppointment.StartTime.Year())
+
+	noti := notification.Notification{
+		Type:       "system",
+		TargetType: "appointment",
+		TargetID:   dbAppointment.ID,
+		IsRead:     false,
+		SenderID:   nil,
+		ReceiverID: dbAppointment.UserID,
+		Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
+	}
+
+	if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+		return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+	}
+
 	return nil
 }
 
@@ -131,6 +150,25 @@ func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appo
 	if err := tx.Commit().Error; err != nil {
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
 	}
+
+	for _, value := range appointments {
+		appointmentDay := strconv.Itoa(value.StartTime.Hour()) + ":" + strconv.Itoa(value.StartTime.Minute()) + " " + strconv.Itoa(value.StartTime.Day()) + "/" + strconv.Itoa(int(value.StartTime.Month())) + "/" + strconv.Itoa(value.StartTime.Year())
+
+		noti := notification.Notification{
+			Type:       "system",
+			TargetType: "appointment",
+			TargetID:   value.ID,
+			IsRead:     false,
+			SenderID:   nil,
+			ReceiverID: value.UserID,
+			Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
+		}
+
+		if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -168,6 +206,24 @@ func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[ui
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi commit transaction: " + err.Error())
+	}
+
+	for _, value := range dbAppointments {
+		appointmentDay := strconv.Itoa(value.StartTime.Hour()) + ":" + strconv.Itoa(value.StartTime.Minute()) + " " + strconv.Itoa(value.StartTime.Day()) + "/" + strconv.Itoa(int(value.StartTime.Month())) + "/" + strconv.Itoa(value.StartTime.Year())
+
+		noti := notification.Notification{
+			Type:       "system",
+			TargetType: "appointment",
+			TargetID:   value.ID,
+			IsRead:     false,
+			SenderID:   nil,
+			ReceiverID: value.UserID,
+			Content:    "Bạn có cuộc hẹn mới vào lúc: " + appointmentDay,
+		}
+
+		if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		}
 	}
 
 	return nil

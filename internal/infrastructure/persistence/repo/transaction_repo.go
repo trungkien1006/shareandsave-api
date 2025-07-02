@@ -231,9 +231,9 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 	noti.ReceiverID = authorID
 
 	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
-		noti.SenderID = dbTransaction.ReceiverID
+		noti.SenderID = &dbTransaction.ReceiverID
 	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.GoodPointGiveLoseItem) {
-		noti.SenderID = dbTransaction.SenderID
+		noti.SenderID = &dbTransaction.SenderID
 	}
 
 	if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {

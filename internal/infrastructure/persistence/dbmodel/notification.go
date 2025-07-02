@@ -9,7 +9,7 @@ import (
 
 type Notification struct {
 	ID         uint   `gorm:"primaryKey;autoIncrement"`
-	SenderID   uint   `gorm:"index"`
+	SenderID   *uint  `gorm:"index"`
 	ReceiverID uint   `gorm:"index"`
 	Title      string `gorm:"size:255"`
 	Type       string `gorm:"size:64"`

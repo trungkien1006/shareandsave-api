@@ -244,7 +244,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		TargetType: "transaction",
 		TargetID:   updateTransaction.ID,
 		IsRead:     false,
-		SenderID:   updateTransaction.SenderID,
+		SenderID:   &updateTransaction.SenderID,
 		ReceiverID: updateTransaction.ReceiverID,
 	}
 
