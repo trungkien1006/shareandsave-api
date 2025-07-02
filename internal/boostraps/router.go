@@ -117,7 +117,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//transaction dependency
 	transactionRepo := persistence.NewTransactionRepoDB(db, notiService)
-	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo, userGoodDeedRepo, rolePerRepo)
+	transactionUC := transactionapp.NewUseCase(transactionRepo, userRepo, interestRepo, itemRepo, postRepo, userGoodDeedRepo, rolePerRepo, notiService)
 	transactionHandler := handler.NewTransactionHandler(transactionUC)
 
 	//import invoice dependency

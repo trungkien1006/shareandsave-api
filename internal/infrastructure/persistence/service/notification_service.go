@@ -24,15 +24,15 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 	}
 
 	notiMap := map[string]interface{}{
-		"ID":         noti.ID,
-		"SenderId":   noti.SenderID,
-		"ReceiverID": noti.ReceiverID,
-		"Type":       noti.Type,
-		"TargetType": noti.TargetType,
-		"TargetID":   noti.TargetID,
-		"Content":    noti.Content,
-		"IsRead":     noti.IsRead,
-		"CreatedAt":  noti.CreatedAt,
+		"iD":         noti.ID,
+		"senderId":   noti.SenderID,
+		"receiverID": noti.ReceiverID,
+		"type":       noti.Type,
+		"targetType": noti.TargetType,
+		"targetID":   noti.TargetID,
+		"content":    noti.Content,
+		"isRead":     noti.IsRead,
+		"createdAt":  noti.CreatedAt,
 	}
 
 	if err := s.redisRepo.InsertToStream(ctx, "notistream", notiMap); err != nil {

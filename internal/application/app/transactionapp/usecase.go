@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/interest"
 	"final_project/internal/domain/item"
+	"final_project/internal/domain/notification"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/transaction"
@@ -25,9 +26,10 @@ type UseCase struct {
 	userGoodDeedRepo usergooddeed.Repository
 	roleRepo         rolepermission.Repository
 	clientID         uint
+	notiService      notification.Service
 }
 
-func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo interest.Repository, itemRepo item.Repository, postRepo post.Repository, userGoodDeedRepo usergooddeed.Repository, roleRepo rolepermission.Repository) *UseCase {
+func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo interest.Repository, itemRepo item.Repository, postRepo post.Repository, userGoodDeedRepo usergooddeed.Repository, roleRepo rolepermission.Repository, notiService notification.Service) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -44,6 +46,7 @@ func NewUseCase(r transaction.Repository, userRepo user.Repository, interestRepo
 		userGoodDeedRepo: userGoodDeedRepo,
 		roleRepo:         roleRepo,
 		clientID:         clientID,
+		notiService:      notiService,
 	}
 }
 
@@ -91,6 +94,8 @@ func (uc *UseCase) CreateTransaction(ctx context.Context, transaction *transacti
 func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *transaction.Transaction) error {
 	var updateTransaction transaction.Transaction
 
+	notiContent := "Giao dịch: "
+
 	// Kiểm tra nếu không truyền lên gì cả
 	if domainTransaction.Status == 0 && domainTransaction.Items == nil && domainTransaction.Method == "" {
 		return errors.New("Không có trường nào để cập nhật")
@@ -133,10 +138,14 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 
 	if domainTransaction.Items != nil {
 		updateTransaction.Items = domainTransaction.Items
+
+		notiContent += "cập nhật đồ đạc, "
 	}
 
 	if domainTransaction.Method != "" {
 		updateTransaction.Method = domainTransaction.Method
+
+		notiContent += "cập nhật phương thức trao đổi, "
 	}
 
 	// Cập nhật
@@ -230,6 +239,35 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		if err := uc.userGoodDeedRepo.CreateGoodDeed(ctx, &goodDeed); err != nil {
 			return err
 		}
+	}
+
+	noti := notification.Notification{
+		Type:       "normal",
+		TargetType: "transaction",
+		TargetID:   updateTransaction.ID,
+		IsRead:     false,
+		SenderID:   updateTransaction.SenderID,
+		ReceiverID: updateTransaction.ReceiverID,
+	}
+
+	if tempStatus != updateTransaction.Status {
+		switch updateTransaction.Status {
+		case int(enums.TransactionStatusCancelled):
+			notiContent += "đã bị hủy, "
+			break
+		case int(enums.TransactionStatusSuccess):
+			notiContent += "đã được xác nhận, "
+			break
+		case int(enums.TransactionStatusRollBack):
+			notiContent += "đã bị hoàn tác, "
+			break
+		}
+	}
+
+	noti.Content = notiContent
+
+	if err := uc.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+		return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
 	}
 
 	return nil
