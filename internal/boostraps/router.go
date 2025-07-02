@@ -222,6 +222,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//notification API
 		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAllAdmin)
+		v1.POST("/notifications", middlewares.AuthGuard, notiHandler.CreateSystemNoti)
 		v1.PATCH("/notifications", middlewares.AuthGuard, notiHandler.ReadAllNoti)
 		v1.PATCH("/notifications/:notificationID", middlewares.AuthGuard, notiHandler.ReadNoti)
 
