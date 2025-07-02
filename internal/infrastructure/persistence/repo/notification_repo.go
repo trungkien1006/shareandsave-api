@@ -120,3 +120,25 @@ func (r *NotificationRepoDB) Create(ctx context.Context, noti *notification.Noti
 
 	return nil
 }
+
+func (r *NotificationRepoDB) ReadNoti(ctx context.Context, notiID uint) error {
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Where("id = ?", notiID).
+		Update("is_read", 1).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật đã đọc thông báo: " + err.Error())
+	}
+
+	return nil
+}
+
+func (r *NotificationRepoDB) ReadAllNoti(ctx context.Context, userID uint) error {
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Where("receiver_id = ?", userID).
+		Update("is_read", 1).Error; err != nil {
+		return errors.New("Có lỗi khi cập nhật đã đọc danh sách thông báo: " + err.Error())
+	}
+
+	return nil
+}

@@ -11,3 +11,15 @@ type GetAllNotiResponse struct {
 	TotalPage     int               `json:"totalPage"`
 	UnreadCount   int64             `json:"unreadCount"`
 }
+
+type ReadAllNotiResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type ReadNotiResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

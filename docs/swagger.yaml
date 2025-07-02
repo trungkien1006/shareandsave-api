@@ -1127,6 +1127,14 @@ definitions:
       type:
         type: string
     type: object
+  notificationdto.ReadAllNotiResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   postdto.AdminPostDTO:
     properties:
       authorName:
@@ -4496,6 +4504,55 @@ paths:
       summary: Get admin notifications
       tags:
       - notifications
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật trạng thái đọc toàn bộ thông báo
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.ReadAllNotiResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update is read notifications
+      tags:
+      - messages
+  /notifications/{notificationID}:
+    patch:
+      consumes:
+      - application/json
+      description: API cập nhật trạng thái đọc thông báo
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.ReadAllNotiResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Update is read notification
+      tags:
+      - messages
   /posts:
     get:
       consumes:

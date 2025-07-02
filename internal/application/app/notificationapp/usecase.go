@@ -30,3 +30,19 @@ func (uc *UseCase) GetAllAdminNoti(ctx context.Context, notis *[]notification.No
 
 	return unreadCount, totalPage, nil
 }
+
+func (uc *UseCase) ReadNoti(ctx context.Context, notiID uint) error {
+	if err := uc.repo.ReadNoti(ctx, notiID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uc *UseCase) ReadAllNoti(ctx context.Context, userID uint) error {
+	if err := uc.repo.ReadAllNoti(ctx, userID); err != nil {
+		return err
+	}
+
+	return nil
+}

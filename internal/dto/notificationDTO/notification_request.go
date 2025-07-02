@@ -13,3 +13,7 @@ func (r *GetAllNotiRequest) SetDefault() {
 		r.Limit = 10
 	}
 }
+
+type ReadNotiRequest struct {
+	NotificationID uint `uri:"notificationID"`
+}

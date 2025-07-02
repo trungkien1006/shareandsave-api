@@ -140,3 +140,68 @@ func (h *NotificationHandler) GetAllAdmin(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Update is read notifications
+// @Description API cập nhật trạng thái đọc toàn bộ thông báo
+// @Security BearerAuth
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Success 200 {object} notificationdto.ReadAllNotiResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /notifications [patch]
+func (h *NotificationHandler) ReadAllNoti(c *gin.Context) {
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.ReadAllNoti(c.Request.Context(), uint(userID)); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, notificationdto.ReadAllNotiResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated is read notifications successfully",
+		Data:    gin.H{},
+	})
+}
+
+// @Summary Update is read notification
+// @Description API cập nhật trạng thái đọc thông báo
+// @Security BearerAuth
+// @Tags messages
+// @Accept json
+// @Produce json
+// @Success 200 {object} notificationdto.ReadAllNotiResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /notifications/{notificationID} [patch]
+func (h *NotificationHandler) ReadNoti(c *gin.Context) {
+	var req notificationdto.ReadNotiRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	if err := h.uc.ReadNoti(c.Request.Context(), uint(req.NotificationID)); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, notificationdto.ReadAllNotiResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Updated is read notification successfully",
+		Data:    gin.H{},
+	})
+}
