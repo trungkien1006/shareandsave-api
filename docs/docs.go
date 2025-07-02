@@ -5977,8 +5977,14 @@ const docTemplate = `{
                 "receiverID": {
                     "type": "integer"
                 },
+                "receiverName": {
+                    "type": "string"
+                },
                 "senderID": {
                     "type": "integer"
+                },
+                "senderName": {
+                    "type": "string"
                 },
                 "targetID": {
                     "type": "integer"
