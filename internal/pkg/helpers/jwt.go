@@ -143,6 +143,10 @@ func CheckJWT(ctx context.Context, jwt string) error {
 	// Kiểm tra Token đúng version
 	currentVersionStr, err := Redis.Get(ctx, "user:"+strconv.Itoa(int(payload.Sub.Id))+":"+payload.Sub.Device).Result()
 	if err != nil {
+		if err.Error() == "redis: nil" {
+			errors.New("Phiên đăng nhập hết hạn do version bị hủy")
+		}
+
 		return errors.New("Có lỗi khi kiểm tra version JWT: " + err.Error())
 	}
 

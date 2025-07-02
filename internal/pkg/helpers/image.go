@@ -170,7 +170,6 @@ func ImageToBase64(imagePath string) (string, error) {
 }
 
 // ProcessImageBase64 xử lý ảnh base64: resize, nén chất lượng, đổi định dạng
-
 func ProcessImageBase64(inputBase64 string, width, height uint, quality int) (string, error) {
 	// Nếu đã resize thì bỏ qua
 	if strings.Contains(inputBase64, ";resized;") {
