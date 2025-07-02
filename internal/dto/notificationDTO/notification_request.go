@@ -17,3 +17,7 @@ func (r *GetAllNotiRequest) SetDefault() {
 type ReadNotiRequest struct {
 	NotificationID uint `uri:"notificationID"`
 }
+
+type CreateNotificationRequest struct {
+	Content string `json:"content"`
+}

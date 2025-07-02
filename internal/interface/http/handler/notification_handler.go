@@ -141,10 +141,52 @@ func (h *NotificationHandler) GetAllAdmin(c *gin.Context) {
 	})
 }
 
+// @Summary Create is read notification
+// @Description API tạo thông báo toàn hệ thống
+// @Security BearerAuth
+// @Tags notifications
+// @Accept json
+// @Produce json
+// @Param request body notificationdto.CreateNotificationRequest true "Create noti info"
+// @Success 200 {object} notificationdto.CreateNotiResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /notifications [post]
+func (h *NotificationHandler) CreateSystemNoti(c *gin.Context) {
+	var (
+		req        notificationdto.CreateNotificationRequest
+		domainNoti notification.Notification
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate))
+		return
+	}
+
+	domainNoti.Content = req.Content
+	domainNoti.Type = "system"
+
+	if err := h.uc.CreateSystemNoti(c.Request.Context(), &domainNoti); err != nil {
+		c.JSON(
+			http.StatusConflict,
+			enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict),
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, notificationdto.CreateNotiResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Created notification successfully",
+		Data: notificationdto.CreateNotiResponse{
+			Notification: notificationdto.NotificationDTO(domainNoti),
+		},
+	})
+}
+
 // @Summary Update is read notifications
 // @Description API cập nhật trạng thái đọc toàn bộ thông báo
 // @Security BearerAuth
-// @Tags messages
+// @Tags notifications
 // @Accept json
 // @Produce json
 // @Success 200 {object} notificationdto.ReadAllNotiResponseWrapper
@@ -176,7 +218,7 @@ func (h *NotificationHandler) ReadAllNoti(c *gin.Context) {
 // @Summary Update is read notification
 // @Description API cập nhật trạng thái đọc thông báo
 // @Security BearerAuth
-// @Tags messages
+// @Tags notifications
 // @Accept json
 // @Produce json
 // @Success 200 {object} notificationdto.ReadAllNotiResponseWrapper

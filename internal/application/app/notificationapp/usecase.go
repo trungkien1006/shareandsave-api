@@ -6,11 +6,12 @@ import (
 )
 
 type UseCase struct {
-	repo notification.Repository
+	repo    notification.Repository
+	service notification.Service
 }
 
-func NewUseCase(r notification.Repository) *UseCase {
-	return &UseCase{repo: r}
+func NewUseCase(r notification.Repository, service notification.Service) *UseCase {
+	return &UseCase{repo: r, service: service}
 }
 
 func (uc *UseCase) GetAllClientNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {
@@ -29,6 +30,14 @@ func (uc *UseCase) GetAllAdminNoti(ctx context.Context, notis *[]notification.No
 	}
 
 	return unreadCount, totalPage, nil
+}
+
+func (uc *UseCase) CreateSystemNoti(ctx context.Context, noti *notification.Notification) error {
+	if err := uc.service.CreateAndPushSocket(ctx, noti); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (uc *UseCase) ReadNoti(ctx context.Context, notiID uint) error {

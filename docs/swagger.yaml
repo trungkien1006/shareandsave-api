@@ -1082,6 +1082,25 @@ definitions:
       message:
         type: string
     type: object
+  notificationdto.CreateNotiResponse:
+    properties:
+      notification:
+        $ref: '#/definitions/notificationdto.NotificationDTO'
+    type: object
+  notificationdto.CreateNotiResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/notificationdto.CreateNotiResponse'
+      message:
+        type: string
+    type: object
+  notificationdto.CreateNotificationRequest:
+    properties:
+      content:
+        type: string
+    type: object
   notificationdto.GetAllNotiResponse:
     properties:
       notifications:
@@ -4527,7 +4546,38 @@ paths:
       - BearerAuth: []
       summary: Update is read notifications
       tags:
-      - messages
+      - notifications
+    post:
+      consumes:
+      - application/json
+      description: API tạo thông báo toàn hệ thống
+      parameters:
+      - description: Create noti info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/notificationdto.CreateNotificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.CreateNotiResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Create is read notification
+      tags:
+      - notifications
   /notifications/{notificationID}:
     patch:
       consumes:
@@ -4552,7 +4602,7 @@ paths:
       - BearerAuth: []
       summary: Update is read notification
       tags:
-      - messages
+      - notifications
   /posts:
     get:
       consumes:
