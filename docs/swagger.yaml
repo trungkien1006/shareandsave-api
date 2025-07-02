@@ -1090,6 +1090,8 @@ definitions:
         type: array
       totalPage:
         type: integer
+      unreadCount:
+        type: integer
     type: object
   notificationdto.GetAllNotiResponseWrapper:
     properties:

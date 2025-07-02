@@ -249,8 +249,8 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 	if isChange {
 		noti := notification.Notification{
 			Type:       "normal",
-			TargetType: "transaction",
-			TargetID:   updateTransaction.ID,
+			TargetType: "interest",
+			TargetID:   updateTransaction.InterestID,
 			IsRead:     false,
 			SenderID:   &updateTransaction.SenderID,
 			ReceiverID: &updateTransaction.ReceiverID,

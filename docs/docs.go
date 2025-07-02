@@ -5939,6 +5939,9 @@ const docTemplate = `{
                 },
                 "totalPage": {
                     "type": "integer"
+                },
+                "unreadCount": {
+                    "type": "integer"
                 }
             }
         },

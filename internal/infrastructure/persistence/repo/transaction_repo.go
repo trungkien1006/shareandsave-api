@@ -222,8 +222,8 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 
 	noti := notification.Notification{
 		Type:       "normal",
-		TargetType: "transaction",
-		TargetID:   dbTransaction.ID,
+		TargetType: "interest",
+		TargetID:   dbTransaction.InterestID,
 		Content:    "Bạn có giao dịch mới cần xác nhận!",
 		IsRead:     false,
 		SenderID:   &dbTransaction.ReceiverID,
