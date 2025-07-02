@@ -25,7 +25,7 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 
 	notiMap := map[string]interface{}{
 		"iD":         noti.ID,
-		"senderId":   noti.SenderID,
+		"senderID":   noti.SenderID,
 		"receiverID": noti.ReceiverID,
 		"type":       noti.Type,
 		"targetType": noti.TargetType,
