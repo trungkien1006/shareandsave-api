@@ -226,14 +226,8 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 		TargetID:   dbTransaction.ID,
 		Content:    "Bạn có giao dịch mới cần xác nhận!",
 		IsRead:     false,
-	}
-
-	noti.ReceiverID = &authorID
-
-	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
-		noti.SenderID = &dbTransaction.ReceiverID
-	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.GoodPointGiveLoseItem) {
-		noti.SenderID = &dbTransaction.SenderID
+		SenderID:   &dbTransaction.ReceiverID,
+		ReceiverID: &authorID,
 	}
 
 	if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
