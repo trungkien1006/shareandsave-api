@@ -65,12 +65,15 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//redis
 	redisRepo := redisapp.NewRedisRepo(redisClient)
 
+	//user repo
+	userRepo := persistence.NewUserRepoDB(db)
+
 	//good deed dependency
 	userGoodDeedRepo := persistence.NewUserGoodDeedRepoDB(db)
 
 	//notification dependency
 	notiRepo := persistence.NewNotificationRepoDB(db)
-	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo)
+	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo, userRepo)
 	notiUC := notificationapp.NewUseCase(notiRepo)
 	notiHandler := handler.NewNotificationHandler(notiUC)
 
@@ -95,7 +98,6 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	categoryHandler := handler.NewCategoryHandler(categoryUC)
 
 	//user dependency
-	userRepo := persistence.NewUserRepoDB(db)
 	userUC := userapp.NewUseCase(userRepo, rolePerRepo, redisRepo, userGoodDeedRepo, settingRepo)
 	userHandler := handler.NewUserHandler(userUC)
 

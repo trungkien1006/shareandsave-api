@@ -6,6 +6,7 @@ import (
 )
 
 type Repository interface {
+	GetUserNameByID(ctx context.Context, userID uint) (string, error)
 	GetUserRankByID(ctx context.Context, userID uint, clientID uint) (*UserRank, int, error)
 	GetAllUserRank(ctx context.Context, users *[]UserRank, req filter.FilterRequest, clientID uint) (int, error)
 	GetAll(ctx context.Context, users *[]User, req filter.FilterRequest, clientID uint, superAdminID uint) (int, error)

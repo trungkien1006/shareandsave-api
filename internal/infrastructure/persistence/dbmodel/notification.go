@@ -42,14 +42,16 @@ func NotificationDomainToDB(domain notification.Notification) Notification {
 // DB to Domain
 func NotificationDBToDomain(db Notification) notification.Notification {
 	return notification.Notification{
-		ID:         db.ID,
-		SenderID:   db.SenderID,
-		ReceiverID: db.ReceiverID,
-		Type:       db.Type,
-		TargetType: db.TargetType,
-		TargetID:   db.TargetID,
-		Content:    db.Content,
-		IsRead:     db.IsRead,
-		CreatedAt:  db.CreatedAt,
+		ID:           db.ID,
+		SenderID:     db.SenderID,
+		SenderName:   db.Sender.FullName,
+		ReceiverID:   db.ReceiverID,
+		ReceiverName: db.Receiver.FullName,
+		Type:         db.Type,
+		TargetType:   db.TargetType,
+		TargetID:     db.TargetID,
+		Content:      db.Content,
+		IsRead:       db.IsRead,
+		CreatedAt:    db.CreatedAt,
 	}
 }

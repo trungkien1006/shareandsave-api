@@ -21,6 +21,21 @@ func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
 	return &UserRepoDB{db: db}
 }
 
+func (r *UserRepoDB) GetUserNameByID(ctx context.Context, userID uint) (string, error) {
+	var userName string = ""
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.Notification{}).
+		Table("user").
+		Select("full_name").
+		Where("id = ?", userID).
+		Scan(&userName).Error; err != nil {
+		return "", errors.New("Có lỗi khi tìm tên theo id người dùng: " + err.Error())
+	}
+
+	return userName, nil
+}
+
 func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID uint) (*user.UserRank, int, error) {
 	type RankedUser struct {
 		ID   uint

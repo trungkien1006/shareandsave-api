@@ -30,6 +30,8 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 		Model(&dbmodel.Notification{}).
 		Where("receiver_id = ?", userID).
 		Or("receiver_id IS NULL AND senderID IS NULL").
+		Preload("Sender").
+		Preload("Receiver").
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
