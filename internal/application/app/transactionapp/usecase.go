@@ -245,7 +245,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		TargetID:   updateTransaction.ID,
 		IsRead:     false,
 		SenderID:   &updateTransaction.SenderID,
-		ReceiverID: updateTransaction.ReceiverID,
+		ReceiverID: &updateTransaction.ReceiverID,
 	}
 
 	if tempStatus != updateTransaction.Status {

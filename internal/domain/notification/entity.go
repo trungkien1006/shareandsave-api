@@ -5,7 +5,7 @@ import "time"
 type Notification struct {
 	ID         uint
 	SenderID   *uint
-	ReceiverID uint
+	ReceiverID *uint
 	Type       string
 	TargetType string
 	TargetID   uint

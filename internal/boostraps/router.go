@@ -215,8 +215,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
 
+		//client notification API
+		v1.GET("/client/notifications", middlewares.AuthGuard, notiHandler.GetAllClient)
+
 		//notification API
-		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAll)
+		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAllAdmin)
 
 		//client user API
 		v1.GET("/client/users/my-good-deeds", middlewares.AuthGuard, userHandler.GetUserGoodDeed)

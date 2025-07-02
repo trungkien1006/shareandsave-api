@@ -228,7 +228,7 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 		IsRead:     false,
 	}
 
-	noti.ReceiverID = authorID
+	noti.ReceiverID = &authorID
 
 	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
 		noti.SenderID = &dbTransaction.ReceiverID

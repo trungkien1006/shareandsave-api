@@ -122,7 +122,7 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		TargetID:   dbAppointment.ID,
 		IsRead:     false,
 		SenderID:   nil,
-		ReceiverID: dbAppointment.UserID,
+		ReceiverID: &dbAppointment.UserID,
 		Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
 	}
 
@@ -160,7 +160,7 @@ func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appo
 			TargetID:   value.ID,
 			IsRead:     false,
 			SenderID:   nil,
-			ReceiverID: value.UserID,
+			ReceiverID: &value.UserID,
 			Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
 		}
 
@@ -217,7 +217,7 @@ func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[ui
 			TargetID:   value.ID,
 			IsRead:     false,
 			SenderID:   nil,
-			ReceiverID: value.UserID,
+			ReceiverID: &value.UserID,
 			Content:    "Bạn có cuộc hẹn mới vào lúc: " + appointmentDay,
 		}
 

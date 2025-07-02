@@ -5,7 +5,7 @@ import "time"
 type NotificationDTO struct {
 	ID         uint      `json:"id"`
 	SenderID   *uint     `json:"senderID"`
-	ReceiverID uint      `json:"receiverID"`
+	ReceiverID *uint     `json:"receiverID"`
 	Type       string    `json:"type"`
 	TargetType string    `json:"targetType"`
 	TargetID   uint      `json:"targetID"`
