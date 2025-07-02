@@ -14,6 +14,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -95,6 +96,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 	var updateTransaction transaction.Transaction
 
 	notiContent := "Giao dịch: "
+	isChange := false
 
 	// Kiểm tra nếu không truyền lên gì cả
 	if domainTransaction.Status == 0 && domainTransaction.Items == nil && domainTransaction.Method == "" {
@@ -132,18 +134,23 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		}
 
 		updateTransaction.Status = domainTransaction.Status
+		isChange = true
 	}
 
 	if domainTransaction.Items != nil {
 		updateTransaction.Items = domainTransaction.Items
 
 		notiContent += "cập nhật đồ đạc, "
+
+		isChange = true
 	}
 
 	if domainTransaction.Method != "" {
 		updateTransaction.Method = domainTransaction.Method
 
 		notiContent += "cập nhật phương thức trao đổi, "
+
+		isChange = true
 	}
 
 	// Cập nhật
@@ -239,33 +246,35 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 		}
 	}
 
-	noti := notification.Notification{
-		Type:       "normal",
-		TargetType: "transaction",
-		TargetID:   updateTransaction.ID,
-		IsRead:     false,
-		SenderID:   &updateTransaction.SenderID,
-		ReceiverID: &updateTransaction.ReceiverID,
-	}
-
-	if tempStatus != updateTransaction.Status {
-		switch updateTransaction.Status {
-		case int(enums.TransactionStatusCancelled):
-			notiContent += "đã bị hủy, "
-			break
-		case int(enums.TransactionStatusSuccess):
-			notiContent += "đã được xác nhận, "
-			break
-		case int(enums.TransactionStatusRollBack):
-			notiContent += "đã bị hoàn tác, "
-			break
+	if isChange {
+		noti := notification.Notification{
+			Type:       "normal",
+			TargetType: "transaction",
+			TargetID:   updateTransaction.ID,
+			IsRead:     false,
+			SenderID:   &updateTransaction.SenderID,
+			ReceiverID: &updateTransaction.ReceiverID,
 		}
-	}
 
-	noti.Content = notiContent
+		if tempStatus != updateTransaction.Status {
+			switch updateTransaction.Status {
+			case int(enums.TransactionStatusCancelled):
+				notiContent += "đã bị hủy, "
+				break
+			case int(enums.TransactionStatusSuccess):
+				notiContent += "đã được xác nhận, "
+				break
+			case int(enums.TransactionStatusRollBack):
+				notiContent += "đã bị hoàn tác, "
+				break
+			}
+		}
 
-	if err := uc.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
-		return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		noti.Content = strings.TrimSuffix(notiContent, ",") + "!"
+
+		if err := uc.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		}
 	}
 
 	return nil
