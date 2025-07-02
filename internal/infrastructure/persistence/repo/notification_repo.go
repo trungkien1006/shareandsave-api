@@ -29,7 +29,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 		WithContext(ctx).
 		Model(&dbmodel.Notification{}).
 		Where("receiver_id = ?", userID).
-		Or("receiver_id IS NULL AND senderID IS NULL").
+		Or("receiver_id IS NULL AND sender_id IS NULL").
 		Preload("Sender").
 		Preload("Receiver").
 		Order("created_at DESC")
@@ -55,7 +55,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Notification{}).
 		Where("receiver_id = ? AND is_read = 0", userID).
-		Or("receiver_id IS NULL AND senderID IS NULL AND is_read = 0").
+		Or("receiver_id IS NULL AND sender_id IS NULL AND is_read = 0").
 		Count(&unreadCount).Error; err != nil {
 		return 0, 0, errors.New("Có lỗi khi truy xuất thông báo chưa đọc")
 	}
