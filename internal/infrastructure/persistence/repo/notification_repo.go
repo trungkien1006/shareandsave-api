@@ -35,7 +35,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
-		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo")
+		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo: " + err.Error())
 	}
 
 	if req.Limit > 0 && req.Page > 0 {
@@ -43,7 +43,7 @@ func (r *NotificationRepoDB) GetAllClient(ctx context.Context, notis *[]notifica
 	}
 
 	if err := query.Find(&dbNotis).Error; err != nil {
-		return 0, 0, errors.New("Có lỗi khi truy suất thông báo")
+		return 0, 0, errors.New("Có lỗi khi truy suất thông báo: " + err.Error())
 	}
 
 	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
@@ -78,7 +78,7 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 		Order("created_at DESC")
 
 	if err := query.Count(&totalRecords).Error; err != nil {
-		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo")
+		return 0, 0, errors.New("Có lỗi khi đếm tổng số thông báo: " + err.Error())
 	}
 
 	if req.Limit > 0 && req.Page > 0 {
@@ -86,7 +86,7 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 	}
 
 	if err := query.Find(&dbNotis).Error; err != nil {
-		return 0, 0, errors.New("Có lỗi khi truy suất thông báo")
+		return 0, 0, errors.New("Có lỗi khi truy suất thông báo: " + err.Error())
 	}
 
 	totalPages := int((totalRecords + int64(req.Limit) - 1) / int64(req.Limit))
@@ -99,7 +99,7 @@ func (r *NotificationRepoDB) GetAllAdmin(ctx context.Context, notis *[]notificat
 		Model(&dbmodel.Notification{}).
 		Where("is_read = 0 AND receiver_id = ?", userID).
 		Count(&unreadCount).Error; err != nil {
-		return 0, 0, errors.New("Có lỗi khi truy xuất thông báo chưa đọc")
+		return 0, 0, errors.New("Có lỗi khi truy xuất thông báo chưa đọc: " + err.Error())
 	}
 
 	return unreadCount, totalPages, nil
