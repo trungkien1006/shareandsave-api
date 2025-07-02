@@ -74,7 +74,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	//notification dependency
 	notiRepo := persistence.NewNotificationRepoDB(db)
 	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo, userRepo)
-	notiUC := notificationapp.NewUseCase(notiRepo)
+	notiUC := notificationapp.NewUseCase(notiRepo, notiService)
 	notiHandler := handler.NewNotificationHandler(notiUC)
 
 	//setting dependency
