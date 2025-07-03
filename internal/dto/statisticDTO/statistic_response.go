@@ -1,12 +1,12 @@
 package statisticdto
 
-type GetTransactionStatisticResponseWrapper struct {
-	Code    int                             `json:"code"`
-	Message string                          `json:"message"`
-	Data    GetTransactionStatisticResponse `json:"data"`
+type GetStatisticResponseWrapper struct {
+	Code    int                  `json:"code"`
+	Message string               `json:"message"`
+	Data    GetStatisticResponse `json:"data"`
 }
 
-type GetTransactionStatisticResponse struct {
+type GetStatisticResponse struct {
 	Total          uint `json:"total"`
 	TotalLastMonth uint `json:"totalLastMonth"`
 }

@@ -1542,19 +1542,19 @@ definitions:
       value:
         type: string
     type: object
-  statisticdto.GetTransactionStatisticResponse:
+  statisticdto.GetStatisticResponse:
     properties:
       total:
         type: integer
       totalLastMonth:
         type: integer
     type: object
-  statisticdto.GetTransactionStatisticResponseWrapper:
+  statisticdto.GetStatisticResponseWrapper:
     properties:
       code:
         type: integer
       data:
-        $ref: '#/definitions/statisticdto.GetTransactionStatisticResponse'
+        $ref: '#/definitions/statisticdto.GetStatisticResponse'
       message:
         type: string
     type: object
@@ -5039,7 +5039,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/statisticdto.GetTransactionStatisticResponseWrapper'
+            $ref: '#/definitions/statisticdto.GetStatisticResponseWrapper'
         "400":
           description: Bad Request
           schema:
@@ -5051,6 +5051,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Get transaction statistic
+      tags:
+      - statistics
+  /statistics/user:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra thống kê giao dịch
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/statisticdto.GetStatisticResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get user statistic
       tags:
       - statistics
   /transactions:

@@ -147,7 +147,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//statistic dependency
 	statisticRepo := persistence.NewStatisticRepoDB(db)
-	statisticUC := statisticapp.NewUseCase(statisticRepo)
+	statisticUC := statisticapp.NewUseCase(statisticRepo, rolePerRepo)
 	statisticHandler := handler.NewStatisticHandler(statisticUC)
 
 	//chat dependency
@@ -222,6 +222,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	{
 		//statistic API
 		v1.GET("/statistics/transaction", middlewares.AuthGuard, statisticHandler.TotalTransaction)
+		v1.GET("/statistics/user", middlewares.AuthGuard, statisticHandler.TotalUser)
 
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)

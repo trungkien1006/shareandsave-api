@@ -3879,7 +3879,47 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/statisticdto.GetTransactionStatisticResponseWrapper"
+                            "$ref": "#/definitions/statisticdto.GetStatisticResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy ra thống kê giao dịch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get user statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/statisticdto.GetStatisticResponseWrapper"
                         }
                     },
                     "400": {
@@ -6791,7 +6831,7 @@ const docTemplate = `{
                 }
             }
         },
-        "statisticdto.GetTransactionStatisticResponse": {
+        "statisticdto.GetStatisticResponse": {
             "type": "object",
             "properties": {
                 "total": {
@@ -6802,14 +6842,14 @@ const docTemplate = `{
                 }
             }
         },
-        "statisticdto.GetTransactionStatisticResponseWrapper": {
+        "statisticdto.GetStatisticResponseWrapper": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "data": {
-                    "$ref": "#/definitions/statisticdto.GetTransactionStatisticResponse"
+                    "$ref": "#/definitions/statisticdto.GetStatisticResponse"
                 },
                 "message": {
                     "type": "string"

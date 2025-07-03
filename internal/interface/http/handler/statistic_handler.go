@@ -23,7 +23,7 @@ func NewStatisticHandler(uc *statisticapp.UseCase) *StatisticHandler {
 // @Tags statistics
 // @Accept json
 // @Produce json
-// @Success 200 {object} statisticdto.GetTransactionStatisticResponseWrapper
+// @Success 200 {object} statisticdto.GetStatisticResponseWrapper
 // @Failure 400 {object} enums.AppError
 // @Failure 404 {object} enums.AppError
 // @Router /statistics/transaction [get]
@@ -34,10 +34,37 @@ func (h *StatisticHandler) TotalTransaction(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, statisticdto.GetTransactionStatisticResponseWrapper{
+	c.JSON(http.StatusOK, statisticdto.GetStatisticResponseWrapper{
 		Code:    http.StatusOK,
 		Message: "Fetched transaction statistic successfully",
-		Data: statisticdto.GetTransactionStatisticResponse{
+		Data: statisticdto.GetStatisticResponse{
+			Total:          uint(total),
+			TotalLastMonth: uint(totalLastMonth),
+		},
+	})
+}
+
+// @Summary Get user statistic
+// @Description API lấy ra thống kê thành viên
+// @Security BearerAuth
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Success 200 {object} statisticdto.GetStatisticResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /statistics/user [get]
+func (h *StatisticHandler) TotalUser(c *gin.Context) {
+	total, totalLastMonth, err := h.uc.TotalUser(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, statisticdto.GetStatisticResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched transaction statistic successfully",
+		Data: statisticdto.GetStatisticResponse{
 			Total:          uint(total),
 			TotalLastMonth: uint(totalLastMonth),
 		},
