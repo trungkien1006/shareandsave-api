@@ -5028,6 +5028,31 @@ paths:
       summary: Update settings
       tags:
       - settings
+  /statistics/post:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra thống kê bài viết
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/statisticdto.GetStatisticResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get post statistic
+      tags:
+      - statistics
   /statistics/transaction:
     get:
       consumes:
@@ -5057,7 +5082,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: API lấy ra thống kê giao dịch
+      description: API lấy ra thống kê thành viên
       produces:
       - application/json
       responses:

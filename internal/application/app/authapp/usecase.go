@@ -234,7 +234,7 @@ func (uc *UseCase) ClientSignUp(ctx context.Context, signUpReq auth.AuthSignUp) 
 	signUpUser.Email = signUpReq.Email
 	signUpUser.Password = hashedPassword
 	signUpUser.Avatar = strBase64Image
-	signUpUser.Active = false
+	signUpUser.Active = true
 	signUpUser.FullName = signUpReq.FullName
 	signUpUser.PhoneNumber = signUpReq.PhoneNumber
 	signUpUser.Address = ""

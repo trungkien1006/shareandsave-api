@@ -45,3 +45,12 @@ func (uc *UseCase) TotalUser(ctx context.Context) (int64, int64, error) {
 
 	return total, totalLastMonth, nil
 }
+
+func (uc *UseCase) TotalPost(ctx context.Context) (int64, int64, error) {
+	total, totalLastMonth, err := uc.repo.TotalPost(ctx)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return total, totalLastMonth, nil
+}

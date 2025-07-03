@@ -63,7 +63,34 @@ func (h *StatisticHandler) TotalUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, statisticdto.GetStatisticResponseWrapper{
 		Code:    http.StatusOK,
-		Message: "Fetched transaction statistic successfully",
+		Message: "Fetched user statistic successfully",
+		Data: statisticdto.GetStatisticResponse{
+			Total:          uint(total),
+			TotalLastMonth: uint(totalLastMonth),
+		},
+	})
+}
+
+// @Summary Get post statistic
+// @Description API lấy ra thống kê bài viết
+// @Security BearerAuth
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Success 200 {object} statisticdto.GetStatisticResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /statistics/post [get]
+func (h *StatisticHandler) TotalPost(c *gin.Context) {
+	total, totalLastMonth, err := h.uc.TotalPost(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, statisticdto.GetStatisticResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched post statistic successfully",
 		Data: statisticdto.GetStatisticResponse{
 			Total:          uint(total),
 			TotalLastMonth: uint(totalLastMonth),

@@ -67,6 +67,10 @@ func (r *AuthRepoDB) Login(ctx context.Context, user *user.User, email, password
 		return errors.New("Tài khoản đã bị khóa")
 	}
 
+	if dbUser.Status == int8(enums.UserStatusInactive) {
+		return errors.New("Tài khoản đã chưa kích hoạt")
+	}
+
 	*user = dbmodel.ToDomainUser(dbUser)
 
 	return nil

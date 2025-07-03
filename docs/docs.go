@@ -3857,6 +3857,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/statistics/post": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy ra thống kê bài viết",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get post statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/statisticdto.GetStatisticResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/statistics/transaction": {
             "get": {
                 "security": [
@@ -3904,7 +3944,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "API lấy ra thống kê giao dịch",
+                "description": "API lấy ra thống kê thành viên",
                 "consumes": [
                     "application/json"
                 ],
