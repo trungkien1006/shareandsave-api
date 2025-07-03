@@ -5028,6 +5028,31 @@ paths:
       summary: Update settings
       tags:
       - settings
+  /statistics/item-warehouse:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra thống kê hàng tồn
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/statisticdto.GetStatisticResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get item warehouse statistic
+      tags:
+      - statistics
   /statistics/post:
     get:
       consumes:

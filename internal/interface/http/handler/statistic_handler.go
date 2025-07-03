@@ -97,3 +97,30 @@ func (h *StatisticHandler) TotalPost(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Get item warehouse statistic
+// @Description API lấy ra thống kê hàng tồn
+// @Security BearerAuth
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Success 200 {object} statisticdto.GetStatisticResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /statistics/item-warehouse [get]
+func (h *StatisticHandler) TotalItemWarehouse(c *gin.Context) {
+	total, totalLastMonth, err := h.uc.TotalItemWarehouse(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, statisticdto.GetStatisticResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched item warehouse statistic successfully",
+		Data: statisticdto.GetStatisticResponse{
+			Total:          uint(total),
+			TotalLastMonth: uint(totalLastMonth),
+		},
+	})
+}
