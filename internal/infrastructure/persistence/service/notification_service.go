@@ -5,6 +5,7 @@ import (
 	"final_project/internal/domain/notification"
 	"final_project/internal/domain/redis"
 	"final_project/internal/domain/user"
+	"time"
 )
 
 type NotificationService struct {
@@ -27,6 +28,8 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 		receiverName string = ""
 		err          error
 	)
+
+	noti.CreatedAt = time.Now()
 
 	if err := s.repo.Create(ctx, noti); err != nil {
 		return err
