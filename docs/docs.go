@@ -3857,6 +3857,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/statistics/transaction": {
+            "get": {
+                "description": "API lấy ra thống kê giao dịch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get transaction statistic",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/statisticdto.GetTransactionStatisticResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/transactions": {
             "get": {
                 "security": [
@@ -6747,6 +6782,31 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "statisticdto.GetTransactionStatisticResponse": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer"
+                },
+                "totalLastMonth": {
+                    "type": "integer"
+                }
+            }
+        },
+        "statisticdto.GetTransactionStatisticResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/statisticdto.GetTransactionStatisticResponse"
+                },
+                "message": {
                     "type": "string"
                 }
             }

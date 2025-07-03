@@ -1542,6 +1542,22 @@ definitions:
       value:
         type: string
     type: object
+  statisticdto.GetTransactionStatisticResponse:
+    properties:
+      total:
+        type: integer
+      totalLastMonth:
+        type: integer
+    type: object
+  statisticdto.GetTransactionStatisticResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/statisticdto.GetTransactionStatisticResponse'
+      message:
+        type: string
+    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -5012,6 +5028,29 @@ paths:
       summary: Update settings
       tags:
       - settings
+  /statistics/transaction:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra thống kê giao dịch
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/statisticdto.GetTransactionStatisticResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      summary: Get transaction statistic
+      tags:
+      - statistics
   /transactions:
     get:
       consumes:
