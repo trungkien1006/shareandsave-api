@@ -14,6 +14,7 @@ import (
 	"final_project/internal/application/app/postapp"
 	"final_project/internal/application/app/roleapp"
 	"final_project/internal/application/app/settingapp"
+	"final_project/internal/application/app/statisticapp"
 	"final_project/internal/application/app/transactionapp"
 	"final_project/internal/application/app/userapp"
 	"final_project/internal/application/app/warehouseapp"
@@ -144,6 +145,11 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	commentUC := commentapp.NewUseCase(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentUC)
 
+	//statistic dependency
+	statisticRepo := persistence.NewStatisticRepoDB(db)
+	statisticUC := statisticapp.NewUseCase(statisticRepo)
+	statisticHandler := handler.NewStatisticHandler(statisticUC)
+
 	//chat dependency
 	chatUC := chatapp.NewUseCase(commentRepo)
 
@@ -214,6 +220,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	v1 := r.Group("/api/v1")
 	{
+		//statistic API
+		v1.GET("/statistics/transaction", middlewares.AuthGuard, statisticHandler.TotalTransaction)
+
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
 
