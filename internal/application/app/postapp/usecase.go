@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/internal/domain/category"
 	"final_project/internal/domain/item"
+	"final_project/internal/domain/notification"
 	"final_project/internal/domain/post"
 	rolepermission "final_project/internal/domain/role_permission"
 	"final_project/internal/domain/user"
@@ -24,9 +25,10 @@ type UseCase struct {
 	itemRepo     item.Repository
 	categoryRepo category.Repository
 	clientID     uint
+	notiService  notification.Service
 }
 
-func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository, categoryRepo category.Repository) *UseCase {
+func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermission.Repository, service *post.PostService, itemRepo item.Repository, categoryRepo category.Repository, notiService notification.Service) *UseCase {
 	ctx := context.Background()
 
 	clientID, err := roleRepo.GetRoleIDByName(ctx, "Client")
@@ -42,6 +44,7 @@ func NewUseCase(r post.Repository, userRepo user.Repository, roleRepo rolepermis
 		itemRepo:     itemRepo,
 		categoryRepo: categoryRepo,
 		clientID:     uint(clientID),
+		notiService:  notiService,
 	}
 }
 
@@ -301,6 +304,27 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 
 	if err := uc.repo.Update(ctx, &updatePost); err != nil {
 		return err
+	}
+
+	if updatePost.Status == int8(enums.PostStatusApproved) || updatePost.Status == int8(enums.PostStatusRejected) {
+		noti := notification.Notification{
+			Type:       "system",
+			TargetType: "post",
+			TargetID:   updatePost.ID,
+			IsRead:     false,
+			SenderID:   nil,
+			ReceiverID: &updatePost.AuthorID,
+		}
+
+		if updatePost.Status == int8(enums.PostStatusApproved) {
+			noti.Content = "Bài viết của bạn đã được duyệt!"
+		} else {
+			noti.Content = "Bài viết của bạn đã bị từ chối!"
+		}
+
+		if err := uc.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		}
 	}
 
 	return nil
