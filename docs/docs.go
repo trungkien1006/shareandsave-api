@@ -3859,6 +3859,11 @@ const docTemplate = `{
         },
         "/statistics/transaction": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API lấy ra thống kê giao dịch",
                 "consumes": [
                     "application/json"

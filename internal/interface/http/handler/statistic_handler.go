@@ -19,6 +19,7 @@ func NewStatisticHandler(uc *statisticapp.UseCase) *StatisticHandler {
 
 // @Summary Get transaction statistic
 // @Description API lấy ra thống kê giao dịch
+// @Security BearerAuth
 // @Tags statistics
 // @Accept json
 // @Produce json
