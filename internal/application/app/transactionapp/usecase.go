@@ -173,25 +173,23 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			return err
 		}
 
-		if updateUser.ID == 0 {
-			return errors.New(enums.ErrUserNotExist)
-		}
+		if updateUser.ID != 0 {
+			if postType == int64(enums.PostTypeGiveAwayOldItem) {
+				updateUser.GoodPoint -= enums.GoodPointGiveOldItem
+			} else if postType == int64(enums.PostTypeFoundItem) {
+				updateUser.GoodPoint -= enums.GoodPointGiveLoseItem
+			} else if postType == int64(enums.PostTypeCampaign) {
+				updateUser.GoodPoint -= enums.GoodPointJoinCampaign
+			}
 
-		if postType == int64(enums.PostTypeGiveAwayOldItem) {
-			updateUser.GoodPoint -= enums.GoodPointGiveOldItem
-		} else if postType == int64(enums.PostTypeFoundItem) {
-			updateUser.GoodPoint -= enums.GoodPointGiveLoseItem
-		} else if postType == int64(enums.PostTypeCampaign) {
-			updateUser.GoodPoint -= enums.GoodPointJoinCampaign
-		}
+			if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
+				return err
+			}
 
-		if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
-			return err
-		}
-
-		//Xóa việc tốt cho user
-		if err := uc.userGoodDeedRepo.DeleteGoodDeed(ctx, domainTransaction.ID, domainTransaction.SenderID); err != nil {
-			return err
+			//Xóa việc tốt cho user
+			if err := uc.userGoodDeedRepo.DeleteGoodDeed(ctx, domainTransaction.ID, domainTransaction.SenderID); err != nil {
+				return err
+			}
 		}
 	} else if domainTransaction.Status == int(enums.TransactionStatusSuccess) && tempStatus == int(enums.TransactionStatusPending) {
 		//Cập nhật điểm tốt của user
@@ -210,39 +208,37 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			return err
 		}
 
-		if updateUser.ID == 0 {
-			return errors.New(enums.ErrUserNotExist)
-		}
+		if updateUser.ID != 0 {
+			if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeWantOldItem) {
+				updateUser.GoodPoint += enums.GoodPointGiveOldItem
 
-		if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeWantOldItem) {
-			updateUser.GoodPoint += enums.GoodPointGiveOldItem
+				goodDeedType = int(enums.GoodDeedTypeGiveOldItem)
+			} else if postType == int64(enums.PostTypeFoundItem) || postType == int64(enums.PostTypeSeekLoseItem) {
+				updateUser.GoodPoint += enums.GoodPointGiveLoseItem
 
-			goodDeedType = int(enums.GoodDeedTypeGiveOldItem)
-		} else if postType == int64(enums.PostTypeFoundItem) || postType == int64(enums.PostTypeSeekLoseItem) {
-			updateUser.GoodPoint += enums.GoodPointGiveLoseItem
+				goodDeedType = int(enums.GoodDeedTypeGiveLoseItem)
+			} else if postType == int64(enums.PostTypeCampaign) {
+				updateUser.GoodPoint += enums.GoodPointJoinCampaign
 
-			goodDeedType = int(enums.GoodDeedTypeGiveLoseItem)
-		} else if postType == int64(enums.PostTypeCampaign) {
-			updateUser.GoodPoint += enums.GoodPointJoinCampaign
+				goodDeedType = int(enums.GoodDeedTypeCampaign)
+			}
 
-			goodDeedType = int(enums.GoodDeedTypeCampaign)
-		}
+			if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
+				return err
+			}
 
-		if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
-			return err
-		}
+			//Tạo việc tốt cho user
+			goodDeed := usergooddeed.UserGoodDeed{
+				UserID:        updateTransaction.SenderID,
+				GoodDeedType:  goodDeedType,
+				GoodPoint:     updateUser.GoodPoint,
+				TransactionID: &updateTransaction.ID,
+				CreatedAt:     time.Now(),
+			}
 
-		//Tạo việc tốt cho user
-		goodDeed := usergooddeed.UserGoodDeed{
-			UserID:        updateTransaction.SenderID,
-			GoodDeedType:  goodDeedType,
-			GoodPoint:     updateUser.GoodPoint,
-			TransactionID: &updateTransaction.ID,
-			CreatedAt:     time.Now(),
-		}
-
-		if err := uc.userGoodDeedRepo.CreateGoodDeed(ctx, &goodDeed); err != nil {
-			return err
+			if err := uc.userGoodDeedRepo.CreateGoodDeed(ctx, &goodDeed); err != nil {
+				return err
+			}
 		}
 	}
 

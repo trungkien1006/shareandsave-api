@@ -190,6 +190,10 @@ func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, use
 			Model(&dbmodel.User{}).Where("id = ?", userID).
 			Where("role_id = ?", clientID).
 			First(&dbUser).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil
+			}
+
 			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 		}
 	} else {
@@ -198,6 +202,9 @@ func (r *UserRepoDB) GetUserByID(ctx context.Context, domainUser *user.User, use
 			Where("user.role_id != ? AND user.role_id != ?", clientID, superAdminID).
 			Preload("Role").
 			First(&dbUser).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil
+			}
 			return errors.New("Lỗi khi tìm kiếm user bằng id: " + err.Error())
 		}
 	}
