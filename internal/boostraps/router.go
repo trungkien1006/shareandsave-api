@@ -221,6 +221,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	v1 := r.Group("/api/v1")
 	{
 		//statistic API
+		v1.GET("/statistics/transaction/:year", middlewares.AuthGuard, statisticHandler.StatisticTransactionInYear)
 		v1.GET("/statistics/transaction", middlewares.AuthGuard, statisticHandler.TotalTransaction)
 		v1.GET("/statistics/user", middlewares.AuthGuard, statisticHandler.TotalUser)
 		v1.GET("/statistics/post", middlewares.AuthGuard, statisticHandler.TotalPost)

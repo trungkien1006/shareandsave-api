@@ -1558,6 +1558,22 @@ definitions:
       message:
         type: string
     type: object
+  statisticdto.StatisticTransactionResponse:
+    properties:
+      totals:
+        items:
+          type: integer
+        type: array
+    type: object
+  statisticdto.StatisticTransactionResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/statisticdto.StatisticTransactionResponse'
+      message:
+        type: string
+    type: object
   transactiondto.CreateTransactionItem:
     properties:
       postItemID:
@@ -5101,6 +5117,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Get transaction statistic
+      tags:
+      - statistics
+  /statistics/transaction/{year}:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra thống kê giao dịch trong năm
+      parameters:
+      - description: year
+        in: path
+        name: year
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/statisticdto.StatisticTransactionResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get year transaction statistic
       tags:
       - statistics
   /statistics/user:

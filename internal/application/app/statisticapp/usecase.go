@@ -28,6 +28,15 @@ func NewUseCase(repo statistic.Repository, roleRepo rolepermission.Repository) *
 	}
 }
 
+func (uc *UseCase) StatisticTransactionInYear(ctx context.Context, year string) ([]int64, error) {
+	totals, err := uc.repo.StatisticTransactionInYear(ctx, year)
+	if err != nil {
+		return totals, err
+	}
+
+	return totals, nil
+}
+
 func (uc *UseCase) TotalTransaction(ctx context.Context) (int64, int64, error) {
 	total, totalLastMonth, err := uc.repo.TotalTransaction(ctx)
 	if err != nil {

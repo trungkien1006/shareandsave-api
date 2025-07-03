@@ -3970,6 +3970,55 @@
                 }
             }
         },
+        "/statistics/transaction/{year}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy ra thống kê giao dịch trong năm",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get year transaction statistic",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "year",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/statisticdto.StatisticTransactionResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/statistics/user": {
             "get": {
                 "security": [
@@ -6923,6 +6972,31 @@
                 },
                 "data": {
                     "$ref": "#/definitions/statisticdto.GetStatisticResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "statisticdto.StatisticTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "totals": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "statisticdto.StatisticTransactionResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/statisticdto.StatisticTransactionResponse"
                 },
                 "message": {
                     "type": "string"

@@ -17,6 +17,43 @@ func NewStatisticHandler(uc *statisticapp.UseCase) *StatisticHandler {
 	return &StatisticHandler{uc: uc}
 }
 
+// @Summary Get year transaction statistic
+// @Description API lấy ra thống kê giao dịch trong năm
+// @Security BearerAuth
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Param year path string true "year"
+// @Success 200 {object} statisticdto.StatisticTransactionResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /statistics/transaction/{year} [get]
+func (h *StatisticHandler) StatisticTransactionInYear(c *gin.Context) {
+	var req statisticdto.GetStatisticTransactionYearRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	totals, err := h.uc.StatisticTransactionInYear(c.Request.Context(), req.Year)
+	if err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, statisticdto.StatisticTransactionResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched year transaction statistic successfully",
+		Data: statisticdto.StatisticTransactionResponse{
+			Totals: totals,
+		},
+	})
+}
+
 // @Summary Get transaction statistic
 // @Description API lấy ra thống kê giao dịch
 // @Security BearerAuth
