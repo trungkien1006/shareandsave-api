@@ -224,7 +224,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		v1.GET("/statistics/transaction", middlewares.AuthGuard, statisticHandler.TotalTransaction)
 		v1.GET("/statistics/user", middlewares.AuthGuard, statisticHandler.TotalUser)
 		v1.GET("/statistics/post", middlewares.AuthGuard, statisticHandler.TotalPost)
-		v1.GET("/statistics/item-warehouse", middlewares.AuthGuard, statisticHandler.TotalPost)
+		v1.GET("/statistics/item-warehouse", middlewares.AuthGuard, statisticHandler.TotalItemWarehouse)
 
 		//role API
 		v1.GET("/roles", roleHandler.GetAll)
