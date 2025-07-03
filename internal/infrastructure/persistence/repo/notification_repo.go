@@ -111,7 +111,6 @@ func (r *NotificationRepoDB) Create(ctx context.Context, noti *notification.Noti
 	dbNoti := dbmodel.NotificationDomainToDB(*noti)
 
 	if err := r.db.Debug().WithContext(ctx).
-		Model(&dbmodel.Notification{}).
 		Create(&dbNoti).Error; err != nil {
 		return errors.New("Có lỗi khi tạo thông báo mới: " + err.Error())
 	}

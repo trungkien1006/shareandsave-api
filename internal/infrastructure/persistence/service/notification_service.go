@@ -5,7 +5,7 @@ import (
 	"final_project/internal/domain/notification"
 	"final_project/internal/domain/redis"
 	"final_project/internal/domain/user"
-	"time"
+	"fmt"
 )
 
 type NotificationService struct {
@@ -28,8 +28,6 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 		receiverName string = ""
 		err          error
 	)
-
-	noti.CreatedAt = time.Now()
 
 	if err := s.repo.Create(ctx, noti); err != nil {
 		return err
@@ -62,6 +60,8 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 		"isRead":       noti.IsRead,
 		"createdAt":    noti.CreatedAt,
 	}
+
+	fmt.Println("----Thời gian tạo thông báo: " + noti.CreatedAt.String())
 
 	if err := s.redisRepo.InsertToStream(ctx, "notistream", notiMap); err != nil {
 		return err

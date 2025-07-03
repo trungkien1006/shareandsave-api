@@ -17,7 +17,7 @@ type Notification struct {
 	TargetID   uint
 	Content    string `gorm:"size:255"`
 	IsRead     bool
-	CreatedAt  time.Time
+	CreatedAt  time.Time `gorm:"autoCreateTime"`
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
 
