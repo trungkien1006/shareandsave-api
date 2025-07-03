@@ -7871,7 +7871,8 @@ const docTemplate = `{
                     "enum": [
                         0,
                         1,
-                        2
+                        2,
+                        3
                     ],
                     "allOf": [
                         {
@@ -7923,7 +7924,8 @@ const docTemplate = `{
                     "enum": [
                         0,
                         1,
-                        2
+                        2,
+                        3
                     ],
                     "allOf": [
                         {
