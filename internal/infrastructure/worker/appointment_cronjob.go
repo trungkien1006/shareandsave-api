@@ -195,7 +195,11 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 
 		tempItemQuantity := itemClaimReq.ItemQuantity
 
-		var tempItemClaimReqs warehouse.ClaimRequestItem
+		tempItemClaimReqs := warehouse.ClaimRequestItem{
+			ItemQuantity: itemClaimReq.ItemQuantity,
+			MaxClaim:     itemClaimReq.MaxClaim,
+			Users:        make([]warehouse.ClaimRequestUser, 0),
+		}
 
 		//Lọc qua từng user đã đăng kí nhận đồ trong item
 		for idx, user := range itemClaimReq.Users {
