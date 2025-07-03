@@ -105,17 +105,14 @@ func (r *StatisticRepoDB) TotalPost(ctx context.Context) (int64, int64, error) {
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Post{}).
-		Where("status = ?", enums.PostStatusApproved).
-		Or("status = ?", enums.PostStatusSeal).
+		Where("status = ? OR status = ?", enums.PostStatusApproved, enums.PostStatusSeal).
 		Count(&total).Error; err != nil {
 		return total, totalLastMonth, errors.New("Có lỗi khi thống kê tổng số bài viết: " + err.Error())
 	}
 
 	if err := r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.Post{}).
-		Where("status = ?", enums.PostStatusApproved).
-		Or("status = ?", enums.PostStatusSeal).
-		Where("created_at >= ? AND created_at < ?", start, end).
+		Where("(status = ? OR status = ?) AND (created_at >= ? AND created_at < ?)", enums.PostStatusApproved, enums.PostStatusSeal, start, end).
 		Count(&totalLastMonth).Error; err != nil {
 		return total, totalLastMonth, errors.New("Có lỗi khi thống kê tổng số bài viết tháng vừa qua: " + err.Error())
 	}
