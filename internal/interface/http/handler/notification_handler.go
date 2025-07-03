@@ -165,6 +165,7 @@ func (h *NotificationHandler) CreateSystemNoti(c *gin.Context) {
 
 	domainNoti.Content = req.Content
 	domainNoti.Type = "system"
+	domainNoti.IsRead = true
 
 	if err := h.uc.CreateSystemNoti(c.Request.Context(), &domainNoti); err != nil {
 		c.JSON(
