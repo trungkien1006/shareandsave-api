@@ -266,7 +266,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			}
 		}
 
-		noti.Content = strings.TrimSuffix(notiContent, ",") + "!"
+		noti.Content = strings.TrimSuffix(notiContent, ", ") + "!"
 
 		if err := uc.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
 			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())

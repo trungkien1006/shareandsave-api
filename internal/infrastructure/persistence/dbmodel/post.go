@@ -70,6 +70,7 @@ func PostDBToDomain(dbPost Post) post.Post {
 
 	return post.Post{
 		ID:           dbPost.ID,
+		AuthorID:     dbPost.AuthorID,
 		AuthorName:   dbPost.Author.FullName,
 		AuthorAvatar: dbPost.Author.Avatar,
 		Type:         dbPost.Type,

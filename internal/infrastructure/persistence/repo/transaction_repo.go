@@ -242,6 +242,8 @@ func (r *TransactionRepoDB) Create(ctx context.Context, transaction *transaction
 func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction.Transaction) error {
 	var (
 		dbTransaction dbmodel.Transaction
+		postID        int64
+		authorID      int64
 	)
 
 	tx := r.db.Debug().Begin()
@@ -255,7 +257,23 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		return errors.New("Không tìm thấy transaction: " + err.Error())
 	}
 
-	if dbTransaction.SenderID != transaction.SenderID {
+	// Lấy ra id của post theo interest id
+	if err := tx.WithContext(ctx).Model(&dbmodel.Interest{}).
+		Select("post_id").Where("id = ?", dbTransaction.InterestID).
+		Scan(&postID).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi lấy post id từ interest id: " + err.Error())
+	}
+
+	// Lấy ra id của author theo post id
+	if err := tx.WithContext(ctx).Model(&dbmodel.Post{}).
+		Select("author_id").Where("id = ?", postID).
+		Scan(&authorID).Error; err != nil {
+		tx.Rollback()
+		return errors.New("Có lỗi khi lấy id của author theo post id: " + err.Error())
+	}
+
+	if uint(authorID) != transaction.SenderID {
 		tx.Rollback()
 		return errors.New("Bạn không có quyền cập nhật transaction này")
 	}
@@ -318,15 +336,16 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 	}
 
 	// Cập nhật giao dịch
-	if err := tx.WithContext(ctx).Model(&dbmodel.Transaction{}).
+	if err := tx.WithContext(ctx).
+		Model(&dbmodel.Transaction{}).
 		Where("id = ?", dbTransaction.ID).
 		Updates(&dbTransaction).Error; err != nil {
 		tx.Rollback()
 		return errors.New("Có lỗi khi cập nhật giao dịch: " + err.Error())
 	}
 
+	// Cập nhật lại số lượng đồ đạc ở post_item
 	if dbTransaction.Status == int(enums.TransactionStatusSuccess) {
-		// Cập nhật lại số lượng đồ đạc ở post_item
 		for _, value := range dbTransaction.TransactionItems {
 			if err := tx.WithContext(ctx).Model(&dbmodel.PostItem{}).
 				Where("id = ?", value.PostItemID).

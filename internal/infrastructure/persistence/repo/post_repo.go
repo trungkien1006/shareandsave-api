@@ -396,6 +396,8 @@ func (r *PostRepoDB) Update(ctx context.Context, post *post.Post) error {
 		return errors.New("Lỗi khi cập nhật bài viết: " + err.Error())
 	}
 
+	*post = dbmodel.PostDBToDomain(dbPost)
+
 	return nil
 }
 
