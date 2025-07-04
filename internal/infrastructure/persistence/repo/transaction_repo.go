@@ -244,6 +244,7 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		dbTransaction dbmodel.Transaction
 		postID        int64
 		authorID      int64
+		postType      int64
 	)
 
 	tx := r.db.Debug().Begin()
@@ -273,9 +274,24 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 		return errors.New("Có lỗi khi lấy id của author theo post id: " + err.Error())
 	}
 
-	if uint(authorID) != transaction.SenderID {
+	// Lấy ra type của post theo post id
+	if err := tx.WithContext(ctx).Model(&dbmodel.Post{}).
+		Select("type").Where("id = ?", postID).
+		Scan(&postType).Error; err != nil {
 		tx.Rollback()
-		return errors.New("Bạn không có quyền cập nhật transaction này")
+		return errors.New("Có lỗi khi lấy type của bài viết theo post id: " + err.Error())
+	}
+
+	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
+		if uint(authorID) != transaction.ReceiverID {
+			tx.Rollback()
+			return errors.New("Bạn không có quyền cập nhật transaction này")
+		}
+	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.PostTypeSeekLoseItem) {
+		if uint(authorID) != transaction.SenderID {
+			tx.Rollback()
+			return errors.New("Bạn không có quyền cập nhật transaction này")
+		}
 	}
 
 	dbTransaction.Status = transaction.Status
