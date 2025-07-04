@@ -283,12 +283,12 @@ func (r *TransactionRepoDB) Update(ctx context.Context, transaction *transaction
 	}
 
 	if postType == int64(enums.PostTypeGiveAwayOldItem) || postType == int64(enums.PostTypeFoundItem) {
-		if uint(authorID) != transaction.ReceiverID {
+		if uint(authorID) != transaction.SenderID {
 			tx.Rollback()
 			return errors.New("Bạn không có quyền cập nhật transaction này")
 		}
 	} else if postType == int64(enums.PostTypeCampaign) || postType == int64(enums.PostTypeWantOldItem) || postType == int64(enums.PostTypeSeekLoseItem) {
-		if uint(authorID) != transaction.SenderID {
+		if uint(authorID) != transaction.ReceiverID {
 			tx.Rollback()
 			return errors.New("Bạn không có quyền cập nhật transaction này")
 		}
