@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/appointment"
 	"final_project/internal/domain/notification"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -152,7 +153,13 @@ func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appo
 	}
 
 	for _, value := range appointments {
-		appointmentDay := strconv.Itoa(value.StartTime.Hour()) + ":" + strconv.Itoa(value.StartTime.Minute()) + " " + strconv.Itoa(value.StartTime.Day()) + "/" + strconv.Itoa(int(value.StartTime.Month())) + "/" + strconv.Itoa(value.StartTime.Year())
+		appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
+			value.StartTime.Hour(),
+			value.StartTime.Minute(),
+			value.StartTime.Day(),
+			int(value.StartTime.Month()),
+			value.StartTime.Year(),
+		)
 
 		noti := notification.Notification{
 			Type:       "system",
@@ -209,7 +216,13 @@ func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[ui
 	}
 
 	for _, value := range dbAppointments {
-		appointmentDay := strconv.Itoa(value.StartTime.Hour()) + ":" + strconv.Itoa(value.StartTime.Minute()) + " " + strconv.Itoa(value.StartTime.Day()) + "/" + strconv.Itoa(int(value.StartTime.Month())) + "/" + strconv.Itoa(value.StartTime.Year())
+		appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
+			value.StartTime.Hour(),
+			value.StartTime.Minute(),
+			value.StartTime.Day(),
+			int(value.StartTime.Month()),
+			value.StartTime.Year(),
+		)
 
 		noti := notification.Notification{
 			Type:       "system",
