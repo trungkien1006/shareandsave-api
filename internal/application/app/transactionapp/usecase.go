@@ -197,6 +197,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			updateUser   user.User
 			postType     int64
 			goodDeedType int
+			goodPoint    int
 		)
 
 		postType, err = uc.postRepo.GetPostType(ctx, updateTransaction.InterestID)
@@ -213,14 +214,20 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 				updateUser.GoodPoint += enums.GoodPointGiveOldItem
 
 				goodDeedType = int(enums.GoodDeedTypeGiveOldItem)
+
+				goodPoint = enums.GoodPointGiveOldItem
 			} else if postType == int64(enums.PostTypeFoundItem) || postType == int64(enums.PostTypeSeekLoseItem) {
 				updateUser.GoodPoint += enums.GoodPointGiveLoseItem
 
 				goodDeedType = int(enums.GoodDeedTypeGiveLoseItem)
+
+				goodPoint = enums.GoodPointGiveLoseItem
 			} else if postType == int64(enums.PostTypeCampaign) {
 				updateUser.GoodPoint += enums.GoodPointJoinCampaign
 
 				goodDeedType = int(enums.GoodDeedTypeCampaign)
+
+				goodPoint = enums.GoodPointJoinCampaign
 			}
 
 			if err := uc.userRepo.Update(ctx, &updateUser); err != nil {
@@ -231,7 +238,7 @@ func (uc *UseCase) UpdateTransaction(ctx context.Context, domainTransaction *tra
 			goodDeed := usergooddeed.UserGoodDeed{
 				UserID:        updateTransaction.SenderID,
 				GoodDeedType:  goodDeedType,
-				GoodPoint:     updateUser.GoodPoint,
+				GoodPoint:     goodPoint,
 				TransactionID: &updateTransaction.ID,
 				CreatedAt:     time.Now(),
 			}
