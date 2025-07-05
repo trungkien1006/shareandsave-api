@@ -52,7 +52,7 @@ func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID 
 		") AS ranked " +
 		"WHERE ranked.id = ?"
 
-	if err := r.db.Raw(query, clientID, userID).WithContext(ctx).Scan(&ranked).Error; err != nil {
+	if err := r.db.Debug().Raw(query, clientID, userID).WithContext(ctx).Scan(&ranked).Error; err != nil {
 		return nil, 0, fmt.Errorf("Lỗi khi truy vấn rank: %w", err)
 	}
 
@@ -61,7 +61,8 @@ func (r *UserRepoDB) GetUserRankByID(ctx context.Context, userID uint, clientID 
 	}
 
 	var dbUser dbmodel.User
-	if err := r.db.WithContext(ctx).
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).
 		Preload("UserGoodDeeds").
 		Where("id = ? AND role_id = ?", userID, clientID).
 		First(&dbUser).Error; err != nil {

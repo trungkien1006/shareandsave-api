@@ -22,9 +22,9 @@ func NewAppointmentHandler(uc *appointmentapp.UseCase, cronjob *worker.Appointme
 }
 
 func (w *AppointmentHandler) Run(ctx context.Context) {
-	if err := w.cronjob.ScheduleAppointment(ctx); err != nil {
-		log.Println("Schedule appointment error: " + err.Error())
-	}
+	// if err := w.cronjob.ScheduleAppointment(ctx); err != nil {
+	// 	log.Println("Schedule appointment error: " + err.Error())
+	// }
 
 	// Chạy goroutine scan pending định kỳ
 	c := cron.New()
