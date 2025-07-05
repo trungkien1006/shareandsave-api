@@ -94,7 +94,7 @@ func UserGoodDeedDBToDomain(db User) user.UserRank {
 	userGoodDeedMap := make(map[int]int, 0)
 
 	for _, value := range db.UserGoodDeeds {
-		userGoodDeedMap[value.GoodDeedType] += 1
+		userGoodDeedMap[value.GoodDeedType] = userGoodDeedMap[value.GoodDeedType] + 1
 	}
 
 	for key, value := range userGoodDeedMap {
