@@ -6,6 +6,7 @@ import (
 	appointmentdto "final_project/internal/dto/appointmentDTO"
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -213,6 +214,8 @@ func (h *AppointmentHandler) Update(c *gin.Context) {
 	}
 
 	domainAppointment = appointmentdto.UpdateAppointmentDTOToDomain(req)
+
+	log.Println("------handler:" + domainAppointment.StartTime.String())
 
 	if err := h.uc.Update(c.Request.Context(), domainAppointment, uint(appointmentID)); err != nil {
 		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
