@@ -7,7 +7,6 @@ import (
 	"final_project/internal/domain/notification"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/iancoleman/strcase"
@@ -115,7 +114,13 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
 	}
 
-	appointmentDay := strconv.Itoa(dbAppointment.StartTime.Hour()) + ":" + strconv.Itoa(dbAppointment.StartTime.Minute()) + " " + strconv.Itoa(dbAppointment.StartTime.Day()) + "/" + strconv.Itoa(int(dbAppointment.StartTime.Month())) + "/" + strconv.Itoa(dbAppointment.StartTime.Year())
+	appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
+		dbAppointment.StartTime.Hour(),
+		dbAppointment.StartTime.Minute(),
+		dbAppointment.StartTime.Day(),
+		int(dbAppointment.StartTime.Month()),
+		dbAppointment.StartTime.Year(),
+	)
 
 	noti := notification.Notification{
 		Type:       "system",
