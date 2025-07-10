@@ -114,6 +114,8 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
 	}
 
+	fmt.Println("awdawdawdawdawdawdawd: " + string(domainAppointment.StartTime.Hour()))
+
 	appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
 		domainAppointment.StartTime.Hour(),
 		domainAppointment.StartTime.Minute(),
