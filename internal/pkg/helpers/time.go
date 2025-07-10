@@ -2,8 +2,33 @@ package helpers
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
+
+func FormatDurationVi(d time.Duration) string {
+	if d < 0 {
+		d = 0
+	}
+
+	totalMinutes := int(d.Minutes())
+	days := totalMinutes / (60 * 24)
+	hours := (totalMinutes % (60 * 24)) / 60
+	minutes := totalMinutes % 60
+
+	var parts []string
+	if days > 0 {
+		parts = append(parts, fmt.Sprintf("%d ngày", days))
+	}
+	if hours > 0 {
+		parts = append(parts, fmt.Sprintf("%d giờ", hours))
+	}
+	if minutes > 0 || len(parts) == 0 {
+		parts = append(parts, fmt.Sprintf("%d phút", minutes))
+	}
+
+	return strings.Join(parts, " ")
+}
 
 func GetCurrentTimeVN() time.Time {
 	location, err := time.LoadLocation("Asia/Ho_Chi_Minh")
