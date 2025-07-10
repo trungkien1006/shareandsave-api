@@ -208,7 +208,7 @@ func (h *ItemHandler) DeleteItem(c *gin.Context) {
 		return
 	}
 	if err := h.uc.DeleteItem(c.Request.Context(), req.ItemID); err != nil {
-		c.JSON(http.StatusInternalServerError, enums.NewAppError(http.StatusInternalServerError, err.Error(), enums.ErrInternal))
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

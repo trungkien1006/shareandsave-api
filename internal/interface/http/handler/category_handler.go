@@ -157,7 +157,7 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 	}
 
 	if err := h.uc.DeleteCategory(c.Request.Context(), uint(categoryID)); err != nil {
-		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
 	}
 
