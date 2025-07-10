@@ -8,6 +8,7 @@ import (
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"fmt"
 	"math"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
@@ -312,7 +313,9 @@ func (r *UserRepoDB) Update(ctx context.Context, domainUser *user.User) error {
 }
 
 func (r *UserRepoDB) Delete(ctx context.Context, domainUser *user.User) error {
-	if err := r.db.Debug().WithContext(ctx).Model(&user.User{}).Delete(&domainUser).Error; err != nil {
+	if err := r.db.Debug().WithContext(ctx).Model(&dbmodel.User{}).
+		Where("id = ?", domainUser.ID).
+		Update("deleted_at", time.Now()).Error; err != nil {
 		return errors.New("Lỗi khi xóa người dùng: " + err.Error())
 	}
 
