@@ -160,7 +160,7 @@ func (r *WarehouseRepoDB) GetAllOldStockItem(ctx context.Context, items *[]wareh
 
 	if req.Search != "" {
 		query.Where("item.name LIKE ? ", "%"+req.Search+"%").
-			Where("item.description LIKE ? ", "%"+req.Search+"%")
+			Or("item.description LIKE ? ", "%"+req.Search+"%")
 	}
 
 	if req.CategoryID != 0 {
