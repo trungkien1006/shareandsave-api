@@ -7,7 +7,6 @@ import (
 	"final_project/internal/domain/notification"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/iancoleman/strcase"
@@ -114,8 +113,6 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		Updates(&dbAppointment).Error; err != nil {
 		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
 	}
-
-	log.Println("------repo:" + domainAppointment.StartTime.String())
 
 	appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
 		domainAppointment.StartTime.Hour(),
