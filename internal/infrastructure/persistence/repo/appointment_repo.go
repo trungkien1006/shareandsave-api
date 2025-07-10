@@ -115,11 +115,11 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 	}
 
 	appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
-		dbAppointment.StartTime.Hour(),
-		dbAppointment.StartTime.Minute(),
-		dbAppointment.StartTime.Day(),
-		int(dbAppointment.StartTime.Month()),
-		dbAppointment.StartTime.Year(),
+		domainAppointment.StartTime.Hour(),
+		domainAppointment.StartTime.Minute(),
+		domainAppointment.StartTime.Day(),
+		int(domainAppointment.StartTime.Month()),
+		domainAppointment.StartTime.Year(),
 	)
 
 	noti := notification.Notification{
