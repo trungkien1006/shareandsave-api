@@ -1,6 +1,9 @@
 package appointmentdto
 
-import "final_project/internal/domain/appointment"
+import (
+	"final_project/internal/domain/appointment"
+	"time"
+)
 
 // Domain to DTO
 func AppointmentDomainToDTO(domain appointment.Appointment) AppointmentDTO {
@@ -33,9 +36,11 @@ func AppointmentDomainToDTO(domain appointment.Appointment) AppointmentDTO {
 
 // DTO to Domain
 func UpdateAppointmentDTOToDomain(dto UpdateAppointmentRequest) appointment.Appointment {
+	loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
+
 	return appointment.Appointment{
-		StartTime: dto.StartTime,
-		EndTime:   dto.EndTime,
+		StartTime: dto.StartTime.In(loc),
+		EndTime:   dto.EndTime.In(loc),
 		Status:    int(dto.Status),
 	}
 }
