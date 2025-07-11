@@ -115,6 +115,9 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time,
 				numPerHour, _ := c.appointmentRepo.IsInDay(ctx, startTime, endTime)
 
 				if numPerHour < numPerHourCan {
+					fmt.Println(strconv.Itoa(tempStart) + " là giờ bắt đầu")
+					fmt.Println(strconv.Itoa(tempEnd) + " là giờ kết thúc")
+
 					return tomorrow, numPerHourCan - numPerHour, startTime.Hour(), endTime.Hour(), nil
 				}
 			}
