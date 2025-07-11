@@ -288,11 +288,6 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 			appointmentDay.Location(), // giữ nguyên location theo `day`
 		)
 
-		if currentEndHour > endMorningTime.Hour() {
-			currentStartHour = startAfternoonTime.Hour()
-			currentEndHour = currentStartHour + 1
-		}
-
 		userAppointment[key] = appointment.Appointment{
 			UserID:           key,
 			StartTime:        startTime,
