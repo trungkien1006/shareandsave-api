@@ -115,10 +115,6 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 	var (
 		itemClaimReqs map[string]string
 		numPerHour    int = 0
-		// startMorningTime        time.Time
-		// endMorningTime          time.Time
-		// startAfternoonTime      time.Time
-		// endAfternoonTime        time.Time
 	)
 
 	var err error
