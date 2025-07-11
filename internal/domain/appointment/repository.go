@@ -11,5 +11,5 @@ type Repository interface {
 	GetByID(ctx context.Context, appointment *Appointment, appointmentID uint) error
 	Update(ctx context.Context, domainAppointment Appointment) error
 	UpdateBatch(ctx context.Context, appointments []Appointment) error
-	IsInDay(ctx context.Context, day time.Time) (bool, error)
+	IsInDay(ctx context.Context, start time.Time, end time.Time) (int, error)
 }

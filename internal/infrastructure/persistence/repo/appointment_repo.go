@@ -184,19 +184,19 @@ func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appo
 	return nil
 }
 
-func (r *AppointmentRepoDB) IsInDay(ctx context.Context, day time.Time) (bool, error) {
+func (r *AppointmentRepoDB) IsInDay(ctx context.Context, start time.Time, end time.Time) (int, error) {
 	var count int64
 
 	err := r.db.WithContext(ctx).
 		Model(&dbmodel.Appointment{}).
-		Where("start_time <= ? AND end_time >= ?", day, day).
+		Where("start_time <= ? AND end_time >= ?", start, end).
 		Count(&count).Error
 
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
-	return count > 0, nil
+	return int(count), nil
 }
 
 func (r *AppointmentRepoDB) CreateBatch(ctx context.Context, appointments map[uint]appointment.Appointment) error {

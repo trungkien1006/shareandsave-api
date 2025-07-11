@@ -64,7 +64,7 @@ func (c *AppointmentCronJob) ScheduleAppointment(ctx context.Context) error {
 	return nil
 }
 
-func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time) (time.Time, error) {
+func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time, start, end int, numPerHourCan int, endAfternoonTime, startAfternoonTime, endMorningTime time.Time) (time.Time, int, int, int, error) {
 	loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
 	today = today.In(loc)
 
@@ -85,13 +85,38 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time)
 		if calendar.IsWorkday(tomorrow) {
 			fmt.Println(tomorrow.String() + " là ngày làm việc")
 
-			haveAppointment, err := c.appointmentRepo.IsInDay(ctx, tomorrow)
-			if err != nil {
-				return tomorrow, err
-			}
+			tempStart := start
+			tempEnd := end
 
-			if !haveAppointment {
-				return tomorrow, nil
+			for j := 0; j < 12; j++ {
+				if tempEnd+j > endMorningTime.Hour() {
+					tempStart = startAfternoonTime.Hour()
+					tempEnd = tempStart + 1
+				} else {
+					tempStart = start + j
+					tempEnd = end + j
+				}
+
+				startTime := time.Date(
+					tomorrow.Year(), tomorrow.Month(), tomorrow.Day(),
+					tempStart, 0, 0, 0,
+					tomorrow.Location(), // hoặc timePart.Location() nếu cần
+				)
+				endTime := time.Date(
+					tomorrow.Year(), tomorrow.Month(), tomorrow.Day(),
+					tempEnd, 0, 0, 0,
+					tomorrow.Location(), // hoặc timePart.Location() nếu cần
+				)
+
+				if endTime.Hour() > endAfternoonTime.Hour() {
+					break
+				}
+
+				numPerHour, _ := c.appointmentRepo.IsInDay(ctx, startTime, endTime)
+
+				if numPerHour < numPerHourCan {
+					return tomorrow, numPerHourCan - numPerHour, startTime.Hour(), endTime.Hour(), nil
+				}
 			}
 		} else if cal.IsWeekend(tomorrow) {
 			fmt.Println(tomorrow.String() + " là ngày cuối tuần")
@@ -102,7 +127,7 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time)
 		}
 	}
 
-	return today, nil
+	return today, 0, 0, 0, errors.New("No valid day")
 }
 
 func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentDay time.Time, settings map[string]string) error {
@@ -115,14 +140,8 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 	var (
 		itemClaimReqs map[string]string
 		numPerHour    int = 0
+		err           error
 	)
-
-	var err error
-
-	appointmentDay, err = c.checkValidDay(ctx, appointmentDay)
-	if err != nil {
-		return err
-	}
 
 	numPerHour, err = strconv.Atoi(settings["numPerHour"])
 	if err != nil {
@@ -163,6 +182,15 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		return err
 	} else {
 		fmt.Println("Kết quả end afternoon time:", endAfternoonTime.String())
+	}
+
+	tempNumPerHour := numPerHour
+	currentStartHour := startMorningTime.Hour()
+	currentEndHour := currentStartHour + 1
+
+	appointmentDay, tempNumPerHour, currentStartHour, currentEndHour, err = c.checkValidDay(ctx, appointmentDay, startMorningTime.Hour(), startMorningTime.Hour()+1, tempNumPerHour, endAfternoonTime, startAfternoonTime, endMorningTime)
+	if err != nil {
+		return err
 	}
 
 	newItemClaimReqs := make(map[string]warehouse.ClaimRequestItem, 0)
@@ -231,28 +259,22 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 		newItemClaimReqs[key] = tempItemClaimReqs
 	}
 
-	tempNumPerHour := numPerHour
-	currentStartHour := startMorningTime.Hour()
-	currentEndHour := currentStartHour + 1
-
 	for key, value := range userAppointmentItem {
 		var (
 			startTime time.Time
 			endTime   time.Time
 		)
 
-		if tempNumPerHour == 0 && currentEndHour == endAfternoonTime.Hour() {
-			appointmentDay, _ = c.checkValidDay(ctx, appointmentDay)
-		} else if tempNumPerHour == 0 {
-			tempNumPerHour = numPerHour
-			currentStartHour++
-			currentEndHour++
+		if tempNumPerHour == 0 || currentEndHour >= endAfternoonTime.Hour() {
+			appointmentDay, tempNumPerHour, currentStartHour, currentEndHour, _ = c.checkValidDay(ctx, appointmentDay, currentStartHour, currentEndHour, numPerHour, endAfternoonTime, startAfternoonTime, endMorningTime)
 		}
 
-		if currentEndHour > endMorningTime.Hour() {
-			currentStartHour = startAfternoonTime.Hour()
-			currentEndHour = currentStartHour + 1
-		}
+		// else if tempNumPerHour == 0 {
+		// 	appointmentDay, tempNumPerHour, currentStartHour, currentEndHour, _ = c.checkValidDay(ctx, appointmentDay, currentStartHour, currentEndHour, numPerHour, endAfternoonTime)
+
+		// 	currentStartHour++
+		// 	currentEndHour++
+		// }
 
 		startTime = time.Date(
 			appointmentDay.Year(), appointmentDay.Month(), appointmentDay.Day(), // lấy ngày từ biến `day`
@@ -265,6 +287,11 @@ func (c *AppointmentCronJob) createAppointment(ctx context.Context, appointmentD
 			currentEndHour, 0, 0, 0, // lấy giờ từ biến `hourOnly`
 			appointmentDay.Location(), // giữ nguyên location theo `day`
 		)
+
+		if currentEndHour > endMorningTime.Hour() {
+			currentStartHour = startAfternoonTime.Hour()
+			currentEndHour = currentStartHour + 1
+		}
 
 		userAppointment[key] = appointment.Appointment{
 			UserID:           key,
