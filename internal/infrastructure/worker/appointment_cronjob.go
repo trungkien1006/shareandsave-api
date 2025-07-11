@@ -69,7 +69,7 @@ func (c *AppointmentCronJob) checkValidDay(ctx context.Context, today time.Time)
 	today = today.In(loc)
 
 	for i := 1; i < 356; i++ {
-		tomorrow := today.AddDate(0, 0, 1)
+		tomorrow := today.AddDate(0, 0, i)
 
 		// Tạo lịch Việt Nam cho năm hiện tại
 		year := tomorrow.Year()
