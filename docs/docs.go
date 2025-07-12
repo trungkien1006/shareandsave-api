@@ -4413,6 +4413,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/report": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API lấy ra báo cáo thành tích của sinh viên",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get users report",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userdto.GetUserReportResponseWrapper"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/enums.AppError"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{userID}/my-good-deeds": {
             "get": {
                 "security": [
@@ -7831,6 +7865,31 @@ const docTemplate = `{
                 }
             }
         },
+        "userdto.GetUserReportResponse": {
+            "type": "object",
+            "properties": {
+                "userReports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.UserReportDTO"
+                    }
+                }
+            }
+        },
+        "userdto.GetUserReportResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/userdto.GetUserReportResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "userdto.Permission": {
             "type": "object",
             "properties": {
@@ -8052,6 +8111,29 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "userdto.UserReportDTO": {
+            "type": "object",
+            "properties": {
+                "fullName": {
+                    "type": "string"
+                },
+                "goodDeeds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/userdto.UserGoodDeedDTO"
+                    }
+                },
+                "goodPoint": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "major": {
                     "type": "string"
                 }
             }

@@ -37,3 +37,11 @@ type UserGoodDeed struct {
 	GoodDeedType  int
 	GoodDeedCount int
 }
+
+type UserReport struct {
+	ID        uint
+	FullName  string
+	Major     string
+	GoodPoint uint
+	GoodDeeds []UserGoodDeed
+}

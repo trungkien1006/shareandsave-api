@@ -22,6 +22,40 @@ func NewUserHandler(uc *userapp.UseCase) *UserHandler {
 	return &UserHandler{uc: uc}
 }
 
+// @Summary Get users report
+// @Description API lấy ra báo cáo thành tích của sinh viên
+// @Security BearerAuth
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} userdto.GetUserReportResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Router /users/report [get]
+func (h *UserHandler) GetUserReport(c *gin.Context) {
+	var (
+		domainUserReport []user.UserReport
+	)
+
+	if err := h.uc.GetUserReport(c.Request.Context(), &domainUserReport); err != nil {
+		c.JSON(http.StatusNotFound, enums.NewAppError(http.StatusNotFound, err.Error(), enums.ErrNotFound))
+		return
+	}
+
+	userReportDTORes := make([]userdto.UserReportDTO, 0)
+
+	for _, value := range domainUserReport {
+		userReportDTORes = append(userReportDTORes, userdto.UserReportDomainToDTO(value))
+	}
+
+	c.JSON(http.StatusOK, userdto.GetUserReportResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Fetched user reports successfully",
+		Data: userdto.GetUserReportResponse{
+			UserReports: userReportDTORes,
+		},
+	})
+}
+
 // @Summary Get users rank
 // @Description API bao gồm phân trang
 // @Security BearerAuth

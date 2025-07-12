@@ -40,6 +40,30 @@ type User struct {
 	NotificationsRecv []Notification `gorm:"foreignKey:ReceiverID"`
 }
 
+func ToDomainUserReport(db User) user.UserReport {
+	userGoodDeeds := make([]user.UserGoodDeed, 0)
+	userGoodDeedMap := make(map[int]int, 0)
+
+	for _, value := range db.UserGoodDeeds {
+		userGoodDeedMap[value.GoodDeedType] = userGoodDeedMap[value.GoodDeedType] + 1
+	}
+
+	for key, value := range userGoodDeedMap {
+		userGoodDeeds = append(userGoodDeeds, user.UserGoodDeed{
+			GoodDeedType:  key,
+			GoodDeedCount: value,
+		})
+	}
+
+	return user.UserReport{
+		ID:        db.ID,
+		FullName:  db.FullName,
+		Major:     db.Major,
+		GoodPoint: uint(db.GoodPoint),
+		GoodDeeds: userGoodDeeds,
+	}
+}
+
 func ToDomainUser(dbUser User) user.User {
 	permissions := make([]user.Permission, 0)
 

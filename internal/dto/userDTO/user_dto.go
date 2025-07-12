@@ -98,3 +98,11 @@ type UserGoodDeedDTO struct {
 	GoodDeedType  int `json:"goodDeedType"`
 	GoodDeedCount int `json:"goodDeedCount"`
 }
+
+type UserReportDTO struct {
+	ID        uint              `json:"id"`
+	FullName  string            `json:"fullName"`
+	Major     string            `json:"major"`
+	GoodPoint uint              `json:"goodPoint"`
+	GoodDeeds []UserGoodDeedDTO `json:"goodDeeds"`
+}

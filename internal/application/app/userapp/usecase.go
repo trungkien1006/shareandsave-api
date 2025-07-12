@@ -53,6 +53,14 @@ func NewUseCase(r user.Repository, roleRepo rolepermission.Repository, redisRepo
 	}
 }
 
+func (uc *UseCase) GetUserReport(ctx context.Context, userReports *[]user.UserReport) error {
+	if err := uc.userGoodDeedRepo.GetUserReport(ctx, userReports); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uc *UseCase) GetAllUserRank(ctx context.Context, users *[]user.UserRank, filter filter.FilterRequest, userID uint) (int, *user.UserRank, int, error) {
 	totalPage, err := uc.repo.GetAllUserRank(ctx, users, filter, uc.clientID)
 	if err != nil {

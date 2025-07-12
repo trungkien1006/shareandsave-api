@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"errors"
+	"final_project/internal/domain/user"
 	usergooddeed "final_project/internal/domain/user_good_deed"
 	"final_project/internal/infrastructure/persistence/dbmodel"
 
@@ -15,6 +16,24 @@ type UserGoodDeedRepoDB struct {
 
 func NewUserGoodDeedRepoDB(db *gorm.DB) *UserGoodDeedRepoDB {
 	return &UserGoodDeedRepoDB{db: db}
+}
+
+func (r *UserGoodDeedRepoDB) GetUserReport(ctx context.Context, userReports *[]user.UserReport) error {
+	var dbUser []dbmodel.User
+
+	if err := r.db.Debug().WithContext(ctx).
+		Model(&dbmodel.User{}).
+		Where("email LIKE ?", `%caothang.edu.vn%`).
+		Preload("UserGoodDeeds").
+		Find(&dbUser).Error; err != nil {
+		return errors.New("Có lỗi khi lấy ra danh sách báo cáo: " + err.Error())
+	}
+
+	for _, value := range dbUser {
+		*userReports = append(*userReports, dbmodel.ToDomainUserReport(value))
+	}
+
+	return nil
 }
 
 func (r *UserGoodDeedRepoDB) GetUserGoodDeed(ctx context.Context, userGoodDeeds *[]usergooddeed.UserGoodDeedDetail, userID int) error {

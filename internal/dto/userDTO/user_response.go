@@ -134,3 +134,13 @@ type DeleteUserGoodDeedResponseWrapper struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+
+type GetUserReportResponseWrapper struct {
+	Code    int                   `json:"code"`
+	Message string                `json:"message"`
+	Data    GetUserReportResponse `json:"data"`
+}
+
+type GetUserReportResponse struct {
+	UserReports []UserReportDTO `json:"userReports"`
+}

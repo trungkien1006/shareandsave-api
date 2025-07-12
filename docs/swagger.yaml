@@ -2115,6 +2115,22 @@ definitions:
       message:
         type: string
     type: object
+  userdto.GetUserReportResponse:
+    properties:
+      userReports:
+        items:
+          $ref: '#/definitions/userdto.UserReportDTO'
+        type: array
+    type: object
+  userdto.GetUserReportResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/userdto.GetUserReportResponse'
+      message:
+        type: string
+    type: object
   userdto.Permission:
     properties:
       code:
@@ -2262,6 +2278,21 @@ definitions:
       userID:
         type: integer
       userName:
+        type: string
+    type: object
+  userdto.UserReportDTO:
+    properties:
+      fullName:
+        type: string
+      goodDeeds:
+        items:
+          $ref: '#/definitions/userdto.UserGoodDeedDTO'
+        type: array
+      goodPoint:
+        type: integer
+      id:
+        type: integer
+      major:
         type: string
     type: object
   warehousedto.CreateClaimRequestRequest:
@@ -5429,6 +5460,27 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete a good deed
+      tags:
+      - users
+  /users/report:
+    get:
+      consumes:
+      - application/json
+      description: API lấy ra báo cáo thành tích của sinh viên
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userdto.GetUserReportResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Get users report
       tags:
       - users
   /warehouses:
