@@ -13,11 +13,12 @@ type UseCase struct {
 	redisRepo redis.Repository
 }
 
-func NewUseCase(r notification.Repository, service notification.Service) *UseCase {
-	return &UseCase{repo: r, service: service}
+func NewUseCase(r notification.Repository, service notification.Service, redisRepo redis.Repository) *UseCase {
+	return &UseCase{repo: r, service: service, redisRepo: redisRepo}
 }
 
 func (uc *UseCase) StoreFCMToken(ctx context.Context, token, userID string) error {
+
 	if err := uc.redisRepo.InsertToRedis(ctx, "user:"+userID+":fcmToken", token, 24*30*time.Hour); err != nil {
 		return err
 	}
