@@ -60,7 +60,15 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		"Share&Save - Chia sẻ tạo nên giá trị mới",
 	)
 
-	fmt.Println("Đường dẫn đến file cấu hình: " + os.Getenv("FCM_PATH"))
+	path := os.Getenv("FCM_PATH")
+	fmt.Println("FCM_PATH:", path)
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatal("Không thể đọc file service_account:", err)
+	}
+	fmt.Println("Nội dung file:", string(data))
+
 	app, err := firebase.NewFirebaseApp(os.Getenv("FCM_PATH"))
 	if err != nil {
 		log.Fatal("FCM init error:", err)
