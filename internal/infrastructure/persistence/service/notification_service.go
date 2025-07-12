@@ -77,7 +77,29 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 			return err
 		}
 
-		if err := s.fcm.SendToToken(token, noti.TargetType, noti.Content); err != nil {
+		isRead := ""
+
+		if noti.IsRead {
+			isRead = "true"
+		} else {
+			isRead = "false"
+		}
+
+		notiMapStr := map[string]string{
+			"ID":           strconv.Itoa(int(noti.ID)),
+			"senderID":     strconv.Itoa(int(*noti.SenderID)),
+			"senderName":   senderName,
+			"receiverID":   strconv.Itoa(int(*noti.ReceiverID)),
+			"receiverName": receiverName,
+			"type":         noti.Type,
+			"targetType":   noti.TargetType,
+			"targetID":     strconv.Itoa(int(noti.TargetID)),
+			"content":      noti.Content,
+			"isRead":       isRead,
+			"createdAt":    noti.CreatedAt.String(),
+		}
+
+		if err := s.fcm.SendToToken(token, "Bạn có thông báo mới!", noti.Content, notiMapStr); err != nil {
 			return errors.New("Có lỗi khi gửi thông báo đẩy: " + err.Error())
 		}
 	}

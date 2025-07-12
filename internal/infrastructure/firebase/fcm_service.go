@@ -23,13 +23,14 @@ func NewFCMService(app *firebase.App) (notification.Notifier, error) {
 	return &fcmService{client: client}, nil
 }
 
-func (f *fcmService) SendToToken(token, title, body string) error {
+func (f *fcmService) SendToToken(token, title, body string, noti map[string]string) error {
 	msg := &messaging.Message{
 		Token: token,
 		Notification: &messaging.Notification{
 			Title: title,
 			Body:  body,
 		},
+		Data: noti,
 	}
 
 	_, err := f.client.Send(context.Background(), msg)

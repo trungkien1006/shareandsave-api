@@ -11,5 +11,5 @@ type Repository interface {
 }
 
 type Notifier interface {
-	SendToToken(token, title, body string) error
+	SendToToken(token, title, body string, noti map[string]string) error
 }
