@@ -85,11 +85,22 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 			isRead = "false"
 		}
 
+		senderID := ""
+		receiverID := ""
+
+		if noti.SenderID != nil {
+			senderID = strconv.Itoa(int(*noti.SenderID))
+		}
+
+		if noti.ReceiverID != nil {
+			receiverID = strconv.Itoa(int(*noti.ReceiverID))
+		}
+
 		notiMapStr := map[string]string{
 			"ID":           strconv.Itoa(int(noti.ID)),
-			"senderID":     strconv.Itoa(int(*noti.SenderID)),
+			"senderID":     senderID,
 			"senderName":   senderName,
-			"receiverID":   strconv.Itoa(int(*noti.ReceiverID)),
+			"receiverID":   receiverID,
 			"receiverName": receiverName,
 			"type":         noti.Type,
 			"targetType":   noti.TargetType,
