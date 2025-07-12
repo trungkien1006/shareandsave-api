@@ -60,6 +60,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		"Share&Save - Chia sẻ tạo nên giá trị mới",
 	)
 
+	fmt.Println("Đường dẫn đến file cấu hình: " + os.Getenv("FCM_PATH"))
 	app, err := firebase.NewFirebaseApp(os.Getenv("FCM_PATH"))
 	if err != nil {
 		log.Fatal("FCM init error:", err)
