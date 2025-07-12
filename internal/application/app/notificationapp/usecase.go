@@ -5,6 +5,8 @@ import (
 	"final_project/internal/domain/notification"
 	"final_project/internal/domain/redis"
 	"time"
+
+	redisV9 "github.com/redis/go-redis/v9"
 )
 
 type UseCase struct {
@@ -18,13 +20,54 @@ func NewUseCase(r notification.Repository, service notification.Service, redisRe
 }
 
 func (uc *UseCase) StoreFCMToken(ctx context.Context, token, userID string) error {
-
-	if err := uc.redisRepo.InsertToRedis(ctx, "user:"+userID+":fcmToken", token, 24*30*time.Hour); err != nil {
-		return err
+	redisToken, err := uc.redisRepo.GetFromRedis(ctx, "user:"+userID+":fcmToken")
+	if err != nil {
+		if err == redisV9.Nil {
+			redisToken = ""
+		} else {
+			return err
+		}
 	}
 
-	if err := uc.redisRepo.InsertToRedis(ctx, "fcmToken:"+token, userID, 24*30*time.Hour); err != nil {
-		return err
+	if redisToken != token {
+		if err := uc.redisRepo.InsertToRedis(ctx, "user:"+userID+":fcmToken", token, 24*30*time.Hour); err != nil {
+			return err
+		}
+
+		if err := uc.redisRepo.InsertToRedis(ctx, "fcmToken:"+token, userID, 24*30*time.Hour); err != nil {
+			return err
+		}
+	} else {
+		if err := uc.redisRepo.InsertToRedis(ctx, "fcmToken:"+token, userID, 24*30*time.Hour); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (uc *UseCase) DeleteFCMToken(ctx context.Context, token, userID string) error {
+	redisToken, err := uc.redisRepo.GetFromRedis(ctx, "user:"+userID+":fcmToken")
+	if err != nil {
+		if err == redisV9.Nil {
+			redisToken = ""
+		} else {
+			return err
+		}
+	}
+
+	if redisToken != token {
+		if err := uc.redisRepo.DeleteFromRedis(ctx, "user:"+userID+":fcmToken"); err != nil {
+			return err
+		}
+
+		if err := uc.redisRepo.DeleteFromRedis(ctx, "fcmToken:"+token); err != nil {
+			return err
+		}
+	} else {
+		if err := uc.redisRepo.DeleteFromRedis(ctx, "fcmToken:"+token); err != nil {
+			return err
+		}
 	}
 
 	return nil

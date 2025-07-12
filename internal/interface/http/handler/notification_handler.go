@@ -73,6 +73,59 @@ func (h *NotificationHandler) StoreFCMToken(c *gin.Context) {
 	})
 }
 
+// @Summary Delete FCM token
+// @Description API xóa FCM token
+// @Security BearerAuth
+// @Tags notifications
+// @Accept json
+// @Produce json
+// @Param request body notificationdto.DeleteFCMTokenRequest true "Delete FCM token info"
+// @Success 200 {object} notificationdto.DeleteFCMTokenResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /notifications/fcm-token [delete]
+func (h *NotificationHandler) DeleteFCMToken(c *gin.Context) {
+	var (
+		req notificationdto.DeleteFCMTokenRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	device, err := helpers.GetStringFromContext(c, "device")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if device != "mobile" {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, "Thiết bị phải là mobile", enums.ErrConflict))
+		return
+	}
+
+	if err := h.uc.DeleteFCMToken(c.Request.Context(), req.Token, strconv.Itoa(int(userID))); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, notificationdto.DeleteFCMTokenResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Deleted FCM token successfully",
+		Data:    gin.H{},
+	})
+}
+
 // @Summary Get client notifications
 // @Description API bao gồm phân trang
 // @Security BearerAuth

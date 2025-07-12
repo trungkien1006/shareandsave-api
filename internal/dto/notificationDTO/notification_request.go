@@ -25,3 +25,7 @@ type CreateNotificationRequest struct {
 type StoreFCMTokenRequest struct {
 	Token string `json:"token"`
 }
+
+type DeleteFCMTokenRequest struct {
+	Token string `json:"token"`
+}

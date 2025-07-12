@@ -246,6 +246,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		//client notification API
 		v1.GET("/client/notifications", middlewares.AuthGuard, notiHandler.GetAllClient)
 		v1.POST("/notifications/fcm-token", middlewares.AuthGuard, notiHandler.StoreFCMToken)
+		v1.DELETE("/notifications/fcm-token", middlewares.AuthGuard, notiHandler.DeleteFCMToken)
 
 		//notification API
 		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAllAdmin)

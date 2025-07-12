@@ -1101,6 +1101,19 @@ definitions:
       content:
         type: string
     type: object
+  notificationdto.DeleteFCMTokenRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  notificationdto.DeleteFCMTokenResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   notificationdto.GetAllNotiResponse:
     properties:
       notifications:
@@ -4682,6 +4695,37 @@ paths:
       tags:
       - notifications
   /notifications/fcm-token:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa FCM token
+      parameters:
+      - description: Delete FCM token info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/notificationdto.DeleteFCMTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.DeleteFCMTokenResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Delete FCM token
+      tags:
+      - notifications
     post:
       consumes:
       - application/json
