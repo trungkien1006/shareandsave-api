@@ -50,6 +50,17 @@ func (h *NotificationHandler) StoreFCMToken(c *gin.Context) {
 		return
 	}
 
+	device, err := helpers.GetStringFromContext(c, "device")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if device != "mobile" {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, "Thiết bị phải là mobile", enums.ErrConflict))
+		return
+	}
+
 	if err := h.uc.StoreFCMToken(c.Request.Context(), req.Token, strconv.Itoa(int(userID))); err != nil {
 		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
 		return
