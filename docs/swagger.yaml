@@ -1154,6 +1154,19 @@ definitions:
       message:
         type: string
     type: object
+  notificationdto.StoreFCMTokenRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  notificationdto.StoreFCMTokenResponseWrapper:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   postdto.AdminPostDTO:
     properties:
       authorName:
@@ -4666,6 +4679,38 @@ paths:
       security:
       - BearerAuth: []
       summary: Update is read notification
+      tags:
+      - notifications
+  /notifications/fcm-token:
+    post:
+      consumes:
+      - application/json
+      description: API lưu FCM token
+      parameters:
+      - description: Store FCM token info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/notificationdto.StoreFCMTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationdto.StoreFCMTokenResponseWrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/enums.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
+      summary: Store FCM token
       tags:
       - notifications
   /posts:
