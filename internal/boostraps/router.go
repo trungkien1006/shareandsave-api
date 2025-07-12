@@ -23,6 +23,7 @@ import (
 	importinvoice "final_project/internal/domain/import_invoice"
 	"final_project/internal/domain/post"
 	emailrepo "final_project/internal/infrastructure/email"
+	"final_project/internal/infrastructure/firebase"
 	persistence "final_project/internal/infrastructure/persistence/repo"
 	persistenceService "final_project/internal/infrastructure/persistence/service"
 	redisapp "final_project/internal/infrastructure/redis"
@@ -32,7 +33,9 @@ import (
 	middlewares "final_project/internal/interface/http/middleware"
 	workerHandler "final_project/internal/interface/worker/handler"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -57,6 +60,16 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		"Share&Save - Chia sẻ tạo nên giá trị mới",
 	)
 
+	app, err := firebase.NewFirebaseApp(os.Getenv("FCM_PATH"))
+	if err != nil {
+		log.Fatal("FCM init error:", err)
+	}
+
+	notifier, err := firebase.NewFCMService(app)
+	if err != nil {
+		log.Fatal("FCM client error:", err)
+	}
+
 	// sendEmailUC := emailapp.NewSendEmailUseCase(smtpRepo)
 
 	stream := "chatstream"
@@ -74,7 +87,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 	//notification dependency
 	notiRepo := persistence.NewNotificationRepoDB(db)
-	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo, userRepo)
+	notiService := persistenceService.NewNotificationService(notiRepo, redisRepo, userRepo, notifier)
 	notiUC := notificationapp.NewUseCase(notiRepo, notiService)
 	notiHandler := handler.NewNotificationHandler(notiUC)
 
@@ -232,6 +245,7 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 
 		//client notification API
 		v1.GET("/client/notifications", middlewares.AuthGuard, notiHandler.GetAllClient)
+		v1.POST("/notifications/fcm-token", middlewares.AuthGuard, notiHandler.StoreFCMToken)
 
 		//notification API
 		v1.GET("/notifications", middlewares.AuthGuard, notiHandler.GetAllAdmin)

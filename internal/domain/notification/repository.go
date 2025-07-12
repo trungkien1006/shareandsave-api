@@ -9,3 +9,7 @@ type Repository interface {
 	ReadNoti(ctx context.Context, notiID uint) error
 	ReadAllNoti(ctx context.Context, userID uint) error
 }
+
+type Notifier interface {
+	SendToToken(token, title, body string) error
+}

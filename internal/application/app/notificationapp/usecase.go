@@ -3,15 +3,30 @@ package notificationapp
 import (
 	"context"
 	"final_project/internal/domain/notification"
+	"final_project/internal/domain/redis"
+	"time"
 )
 
 type UseCase struct {
-	repo    notification.Repository
-	service notification.Service
+	repo      notification.Repository
+	service   notification.Service
+	redisRepo redis.Repository
 }
 
 func NewUseCase(r notification.Repository, service notification.Service) *UseCase {
 	return &UseCase{repo: r, service: service}
+}
+
+func (uc *UseCase) StoreFCMToken(ctx context.Context, token, userID string) error {
+	if err := uc.redisRepo.InsertToRedis(ctx, "user:"+userID+":fcmToken", token, 24*30*time.Hour); err != nil {
+		return err
+	}
+
+	if err := uc.redisRepo.InsertToRedis(ctx, "fcmToken:"+token, userID, 24*30*time.Hour); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (uc *UseCase) GetAllClientNoti(ctx context.Context, notis *[]notification.Notification, req notification.GetAllNotiRequest, userID uint) (int64, int, error) {

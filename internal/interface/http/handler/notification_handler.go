@@ -7,6 +7,7 @@ import (
 	"final_project/internal/pkg/enums"
 	"final_project/internal/pkg/helpers"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,48 @@ type NotificationHandler struct {
 
 func NewNotificationHandler(uc *notificationapp.UseCase) *NotificationHandler {
 	return &NotificationHandler{uc: uc}
+}
+
+// @Summary Store FCM token
+// @Description API lưu FCM token
+// @Security BearerAuth
+// @Tags notifications
+// @Accept json
+// @Produce json
+// @Param request body notificationdto.StoreFCMTokenRequest true "Store FCM token info"
+// @Success 200 {object} notificationdto.StoreFCMTokenResponseWrapper
+// @Failure 400 {object} enums.AppError
+// @Failure 404 {object} enums.AppError
+// @Router /notifications/fcm-token [post]
+func (h *NotificationHandler) StoreFCMToken(c *gin.Context) {
+	var (
+		req notificationdto.StoreFCMTokenRequest
+	)
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrValidate),
+		)
+		return
+	}
+
+	userID, err := helpers.GetUintFromContext(c, "userID")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, enums.NewAppError(http.StatusBadRequest, err.Error(), enums.ErrBadRequest))
+		return
+	}
+
+	if err := h.uc.StoreFCMToken(c.Request.Context(), req.Token, strconv.Itoa(int(userID))); err != nil {
+		c.JSON(http.StatusConflict, enums.NewAppError(http.StatusConflict, err.Error(), enums.ErrConflict))
+		return
+	}
+
+	c.JSON(http.StatusOK, notificationdto.StoreFCMTokenResponseWrapper{
+		Code:    http.StatusOK,
+		Message: "Stored FCM token successfully",
+		Data:    gin.H{},
+	})
 }
 
 // @Summary Get client notifications

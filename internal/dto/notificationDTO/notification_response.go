@@ -33,3 +33,9 @@ type CreateNotiResponseWrapper struct {
 type CreateNotiResponse struct {
 	Notification NotificationDTO `json:"notification"`
 }
+
+type StoreFCMTokenResponseWrapper struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

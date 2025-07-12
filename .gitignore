@@ -2,4 +2,5 @@
 go.mod
 go.sum
 bin
+service_account.json
 # do something to test

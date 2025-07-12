@@ -21,3 +21,7 @@ type ReadNotiRequest struct {
 type CreateNotificationRequest struct {
 	Content string `json:"content"`
 }
+
+type StoreFCMTokenRequest struct {
+	Token string `json:"token"`
+}
