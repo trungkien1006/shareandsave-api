@@ -2,10 +2,12 @@ package persistence
 
 import (
 	"context"
+	"errors"
 	"final_project/internal/domain/notification"
 	"final_project/internal/domain/redis"
 	"final_project/internal/domain/user"
 	"fmt"
+	"strconv"
 )
 
 type NotificationService struct {
@@ -67,6 +69,17 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 
 	if err := s.redisRepo.InsertToStream(ctx, "notistream", notiMap); err != nil {
 		return err
+	}
+
+	if noti.ReceiverID != nil {
+		token, err := s.redisRepo.GetFromRedis(ctx, "user:"+strconv.Itoa(int(*noti.ReceiverID))+":fcmToken")
+		if err != nil {
+			return err
+		}
+
+		if err := s.fcm.SendToToken(token, noti.TargetType, noti.Content); err != nil {
+			return errors.New("Có lỗi khi gửi thông báo đẩy: " + err.Error())
+		}
 	}
 
 	return nil
