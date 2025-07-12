@@ -47,27 +47,12 @@ func (uc *UseCase) StoreFCMToken(ctx context.Context, token, userID string) erro
 }
 
 func (uc *UseCase) DeleteFCMToken(ctx context.Context, token, userID string) error {
-	redisToken, err := uc.redisRepo.GetFromRedis(ctx, "user:"+userID+":fcmToken")
-	if err != nil {
-		if err == redisV9.Nil {
-			redisToken = ""
-		} else {
-			return err
-		}
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "user:"+userID+":fcmToken"); err != nil {
+		return err
 	}
 
-	if redisToken != token {
-		if err := uc.redisRepo.DeleteFromRedis(ctx, "user:"+userID+":fcmToken"); err != nil {
-			return err
-		}
-
-		if err := uc.redisRepo.DeleteFromRedis(ctx, "fcmToken:"+token); err != nil {
-			return err
-		}
-	} else {
-		if err := uc.redisRepo.DeleteFromRedis(ctx, "fcmToken:"+token); err != nil {
-			return err
-		}
+	if err := uc.redisRepo.DeleteFromRedis(ctx, "fcmToken:"+token); err != nil {
+		return err
 	}
 
 	return nil
