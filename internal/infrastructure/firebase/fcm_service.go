@@ -24,6 +24,14 @@ func NewFCMService(app *firebase.App) (notification.Notifier, error) {
 }
 
 func (f *fcmService) SendToToken(token, title, body string, noti map[string]string) error {
+	log.Println("-------token: " + token)
+	log.Println("-------body: " + body)
+
+	for key, value := range noti {
+		log.Println("---key: " + key)
+		log.Println("---value: " + value)
+	}
+
 	msg := &messaging.Message{
 		Token: token,
 		Notification: &messaging.Notification{
