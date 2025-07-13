@@ -295,8 +295,6 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		updatePost.Images = images
 	}
 
-	updatePost.Status = domainPost.Status
-
 	if domainPost.Status == int8(enums.PostStatusApproved) {
 		updatePost.CreatedAt = time.Now()
 	}
@@ -305,17 +303,17 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		return err
 	}
 
-	if updatePost.Status == int8(enums.PostStatusApproved) || updatePost.Status == int8(enums.PostStatusRejected) {
+	if (domainPost.Status == int8(enums.PostStatusApproved) && updatePost.Status != int8(enums.PostStatusSeal)) || domainPost.Status == int8(enums.PostStatusRejected) {
 		noti := notification.Notification{
 			Type:       "system",
 			TargetType: "post",
-			TargetID:   updatePost.ID,
+			TargetID:   domainPost.ID,
 			IsRead:     false,
 			SenderID:   nil,
-			ReceiverID: &updatePost.AuthorID,
+			ReceiverID: &domainPost.AuthorID,
 		}
 
-		if updatePost.Status == int8(enums.PostStatusApproved) {
+		if domainPost.Status == int8(enums.PostStatusApproved) {
 			noti.Content = "Bài viết của bạn đã được duyệt!"
 		} else {
 			noti.Content = "Bài viết của bạn đã bị từ chối!"
@@ -325,6 +323,8 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
 		}
 	}
+
+	updatePost.Status = domainPost.Status
 
 	return nil
 }

@@ -6,6 +6,7 @@ import (
 	"final_project/internal/domain/appointment"
 	"final_project/internal/domain/notification"
 	"final_project/internal/infrastructure/persistence/dbmodel"
+	"final_project/internal/pkg/enums"
 	"fmt"
 	"time"
 
@@ -114,26 +115,28 @@ func (r *AppointmentRepoDB) Update(ctx context.Context, domainAppointment appoin
 		return errors.New("Có lỗi khi cập nhật phiếu hẹn: " + err.Error())
 	}
 
-	appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
-		domainAppointment.StartTime.Hour(),
-		domainAppointment.StartTime.Minute(),
-		domainAppointment.StartTime.Day(),
-		int(domainAppointment.StartTime.Month()),
-		domainAppointment.StartTime.Year(),
-	)
+	if dbAppointment.Status != int(enums.AppointmentStatusCanceled) {
+		appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
+			domainAppointment.StartTime.Hour(),
+			domainAppointment.StartTime.Minute(),
+			domainAppointment.StartTime.Day(),
+			int(domainAppointment.StartTime.Month()),
+			domainAppointment.StartTime.Year(),
+		)
 
-	noti := notification.Notification{
-		Type:       "system",
-		TargetType: "appointment",
-		TargetID:   dbAppointment.ID,
-		IsRead:     false,
-		SenderID:   nil,
-		ReceiverID: &dbAppointment.UserID,
-		Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
-	}
+		noti := notification.Notification{
+			Type:       "system",
+			TargetType: "appointment",
+			TargetID:   dbAppointment.ID,
+			IsRead:     false,
+			SenderID:   nil,
+			ReceiverID: &dbAppointment.UserID,
+			Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
+		}
 
-	if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
-		return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+		}
 	}
 
 	return nil
@@ -158,26 +161,28 @@ func (r *AppointmentRepoDB) UpdateBatch(ctx context.Context, appointments []appo
 	}
 
 	for _, value := range appointments {
-		appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
-			value.StartTime.Hour(),
-			value.StartTime.Minute(),
-			value.StartTime.Day(),
-			int(value.StartTime.Month()),
-			value.StartTime.Year(),
-		)
+		if value.Status != int(enums.AppointmentStatusCanceled) {
+			appointmentDay := fmt.Sprintf("%02d:%02d %02d/%02d/%04d",
+				value.StartTime.Hour(),
+				value.StartTime.Minute(),
+				value.StartTime.Day(),
+				int(value.StartTime.Month()),
+				value.StartTime.Year(),
+			)
 
-		noti := notification.Notification{
-			Type:       "system",
-			TargetType: "appointment",
-			TargetID:   value.ID,
-			IsRead:     false,
-			SenderID:   nil,
-			ReceiverID: &value.UserID,
-			Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
-		}
+			noti := notification.Notification{
+				Type:       "system",
+				TargetType: "appointment",
+				TargetID:   value.ID,
+				IsRead:     false,
+				SenderID:   nil,
+				ReceiverID: &value.UserID,
+				Content:    "Có 1 cuộc hẹn của bạn được hẹn lại vào lúc: " + appointmentDay,
+			}
 
-		if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
-			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+			if err := r.notiService.CreateAndPushSocket(ctx, &noti); err != nil {
+				return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
+			}
 		}
 	}
 
