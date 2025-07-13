@@ -77,6 +77,10 @@ func (s *NotificationService) CreateAndPushSocket(ctx context.Context, noti *not
 			return err
 		}
 
+		if token == "" {
+			return nil
+		}
+
 		isRead := ""
 
 		if noti.IsRead {
