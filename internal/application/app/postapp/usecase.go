@@ -307,10 +307,10 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		noti := notification.Notification{
 			Type:       "system",
 			TargetType: "post",
-			TargetID:   domainPost.ID,
+			TargetID:   updatePost.ID,
 			IsRead:     false,
 			SenderID:   nil,
-			ReceiverID: &domainPost.AuthorID,
+			ReceiverID: &updatePost.AuthorID,
 		}
 
 		if domainPost.Status == int8(enums.PostStatusApproved) {
