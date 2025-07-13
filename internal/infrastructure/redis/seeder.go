@@ -25,6 +25,11 @@ func NewRedisSeeder(repo redis.Repository, rolePerRepo rolepermission.Repository
 	}
 }
 
+// Kiểm tra lỗi group đã tồn tại
+func isGroupExistsErr(err error) bool {
+	return err != nil && err.Error() == "BUSYGROUP Consumer Group name already exists"
+}
+
 func (s *RedisSeeder) SeedInitialData() error {
 	ctx := context.Background()
 
@@ -35,6 +40,17 @@ func (s *RedisSeeder) SeedInitialData() error {
 
 	fmt.Println("Seeding Redis done.")
 	return nil
+}
+
+func (s *RedisSeeder) SeedStreamAndGroup(stream, group string) {
+	ctx := context.Background()
+
+	fmt.Println("Seeding Redis stream: " + stream)
+	fmt.Println("Seeding Redis group: " + group)
+
+	s.repo.InitStreamAndGroup(ctx, stream, group)
+
+	fmt.Println("Seeding Redis stream and group done.")
 }
 
 func (s *RedisSeeder) seedItemOldStock(ctx context.Context) {

@@ -207,6 +207,9 @@ func InitRoute(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 		fmt.Println("---Redis seed error: " + err.Error())
 	}
 
+	redisSeed.SeedStreamAndGroup("chatstream", "chatgroup")
+	redisSeed.SeedStreamAndGroup("notistream", "notigroup")
+
 	//run chat worker
 	streamConsumer := worker.NewStreamConsumer(redisClient, stream, group, consumer)
 	streamConsumer.CreateConsumerGroup()

@@ -3,6 +3,7 @@ package redisapp
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -14,6 +15,20 @@ type RedisRepo struct {
 
 func NewRedisRepo(c *redis.Client) *RedisRepo {
 	return &RedisRepo{client: c}
+}
+
+func (r *RedisRepo) InitStreamAndGroup(ctx context.Context, streamName string, groupName string) {
+	// Tạo stream và group nếu chưa tồn tại
+	err := r.client.XGroupCreateMkStream(ctx, streamName, groupName, "$").Err()
+	if err != nil {
+		if isGroupExistsErr(err) {
+			log.Printf("[Redis] Consumer Group '%s' đã tồn tại, không cần tạo lại.", groupName)
+		} else {
+			log.Fatalf("[Redis] Lỗi khi tạo Stream/Group: %v", err)
+		}
+	} else {
+		log.Printf("[Redis] Đã tạo Stream '%s' và Consumer Group '%s'.", streamName, groupName)
+	}
 }
 
 // InsertToRedis insert 1 key-value vào Redis

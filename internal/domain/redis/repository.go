@@ -6,6 +6,7 @@ import (
 )
 
 type Repository interface {
+	InitStreamAndGroup(ctx context.Context, streamName string, groupName string)
 	InsertToRedis(ctx context.Context, key string, value string, expiration time.Duration) error
 	GetFromRedis(ctx context.Context, key string) (string, error)
 	DeleteFromRedis(ctx context.Context, key string) error
