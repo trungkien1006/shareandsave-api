@@ -99,6 +99,7 @@ func (r *WarehouseRepoDB) GetAllItem(ctx context.Context, itemWarehouses *[]ware
 		Model(&dbmodel.ItemWarehouse{}).
 		Table("item_warehouse as iw").
 		Joins("JOIN item ON item.id = iw.item_id").
+		Where("iw.status = ?", enums.ItemWarehouseStatusInStock).
 		Preload("Item").
 		Preload("Item.Category")
 
