@@ -299,11 +299,14 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 		updatePost.CreatedAt = time.Now()
 	}
 
+	tempPostStatus := updatePost.Status
+	updatePost.Status = domainPost.Status
+
 	if err := uc.repo.Update(ctx, &updatePost); err != nil {
 		return err
 	}
 
-	if (domainPost.Status == int8(enums.PostStatusApproved) && updatePost.Status != int8(enums.PostStatusSeal)) || domainPost.Status == int8(enums.PostStatusRejected) {
+	if (domainPost.Status == int8(enums.PostStatusApproved) && tempPostStatus != int8(enums.PostStatusSeal)) || domainPost.Status == int8(enums.PostStatusRejected) {
 		noti := notification.Notification{
 			Type:       "system",
 			TargetType: "post",
@@ -323,8 +326,6 @@ func (uc *UseCase) UpdatePost(ctx context.Context, domainPost *post.Post, isRepo
 			return errors.New("Có lỗi khi thêm thông báo: " + err.Error())
 		}
 	}
-
-	updatePost.Status = domainPost.Status
 
 	return nil
 }
