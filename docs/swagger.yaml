@@ -3368,6 +3368,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Client Logout
       tags:
       - auth
@@ -4495,6 +4497,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/enums.AppError'
+      security:
+      - BearerAuth: []
       summary: Admin Logout
       tags:
       - auth

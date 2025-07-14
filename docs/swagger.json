@@ -1165,6 +1165,11 @@
         },
         "/client/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Đăng xuất dành cho client",
                 "consumes": [
                     "application/json"
@@ -2888,6 +2893,11 @@
         },
         "/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Đăng xuất dành cho admin",
                 "consumes": [
                     "application/json"

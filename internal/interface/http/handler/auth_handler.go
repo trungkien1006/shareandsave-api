@@ -443,6 +443,7 @@ func (h *AuthHandler) GetAccessToken(c *gin.Context) {
 
 // @Summary Admin Logout
 // @Description Đăng xuất dành cho admin
+// @Security BearerAuth
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -476,6 +477,7 @@ func (h *AuthHandler) AdminLogout(c *gin.Context) {
 
 // @Summary Client Logout
 // @Description Đăng xuất dành cho client
+// @Security BearerAuth
 // @Tags auth
 // @Accept json
 // @Produce json

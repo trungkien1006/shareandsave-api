@@ -1172,6 +1172,11 @@ const docTemplate = `{
         },
         "/client/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Đăng xuất dành cho client",
                 "consumes": [
                     "application/json"
@@ -2895,6 +2900,11 @@ const docTemplate = `{
         },
         "/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Đăng xuất dành cho admin",
                 "consumes": [
                     "application/json"
