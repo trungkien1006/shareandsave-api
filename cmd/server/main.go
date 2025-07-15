@@ -42,6 +42,9 @@ func main() {
 
 	db := boostraps.GormConnection()
 
+	// Khởi chạy gRPC listener
+	go boostraps.StartGRPCServer(db)
+
 	route := boostraps.InitRoute(db, redisClient)
 
 	port := os.Getenv("PORT")

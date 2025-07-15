@@ -4,10 +4,11 @@
 // - protoc             v5.29.4
 // source: message.proto
 
-package __
+package grpcpb
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

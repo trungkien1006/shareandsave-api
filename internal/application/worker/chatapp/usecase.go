@@ -37,7 +37,7 @@ func (uc *UseCase) CreateMessage(ctx context.Context, messages []map[string]stri
 		})
 	}
 
-	if err := uc.commentRepo.Create(ctx, &domainComment); err != nil {
+	if err := uc.commentRepo.CreateBatch(ctx, &domainComment); err != nil {
 		return err
 	}
 

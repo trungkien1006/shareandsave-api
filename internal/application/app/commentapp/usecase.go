@@ -13,6 +13,14 @@ func NewUseCase(r comment.Repository) *UseCase {
 	return &UseCase{repo: r}
 }
 
+func (uc *UseCase) CreateComment(ctx context.Context, domainComment *comment.Comment) error {
+	if err := uc.repo.Create(ctx, domainComment); err != nil {
+		return nil
+	}
+
+	return nil
+}
+
 func (uc *UseCase) GetAllComment(ctx context.Context, domainComment *[]comment.Comment, filter comment.GetComment) error {
 	if err := uc.repo.GetAll(ctx, domainComment, filter); err != nil {
 		return err
