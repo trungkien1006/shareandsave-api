@@ -1,0 +1,29 @@
+syntax = "proto3";         // dùng cú pháp proto3
+
+import "google/protobuf/timestamp.proto";
+
+package message; // tên package trong protobuf
+
+option go_package = "./";
+
+// Service là nơi chứa các RPC hàm
+service MessageHandler {
+  rpc StoreMessage (InputMessage) returns (OutputMessage);
+}
+
+// Định nghĩa message (input)
+message InputMessage {
+  uint64 id = 1;
+  uint64 interest_id = 2;
+  uint64 sender_id = 3;
+  uint64 receiver_id = 4;
+  string content = 5;
+  uint32 is_read = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+// Định nghĩa message (output)
+message OutputMessage {
+    int32 code = 1;
+    string message = 2;
+}
