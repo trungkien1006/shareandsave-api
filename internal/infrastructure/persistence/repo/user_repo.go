@@ -84,6 +84,7 @@ func (r *UserRepoDB) GetAllUserRank(ctx context.Context, users *[]user.UserRank,
 
 	query = r.db.Debug().WithContext(ctx).
 		Model(&dbmodel.User{}).
+		Where("full_name != ?", "Anonymous").
 		Preload("UserGoodDeeds").
 		Where("role_id = ?", clientID)
 
